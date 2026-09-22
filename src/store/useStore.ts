@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { NoorMarkState } from '../modules/noormark/store/noorMarkSlice';
+import { NoorMarkState } from '../modules/noormark_old/store/noorMarkSlice';
 
 export const useStore = create<NoorMarkState>()(
   persist(

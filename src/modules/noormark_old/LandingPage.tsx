@@ -81,7 +81,7 @@ export default function LandingPage({ onEnter }: LandingPageProps) {
               <div className={`dev-avatar-container ${isBioExpanded ? 'avatar-large' : ''}`}>
                 {!imgError ? (
                   <img 
-                    src={devImage}
+                    src={typeof devImage === 'string' ? devImage : devImage.src}
                     alt="حسين الملك" 
                     className="dev-avatar-img" 
                     onError={() => setImgError(true)}
