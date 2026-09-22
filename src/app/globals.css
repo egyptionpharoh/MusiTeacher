@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&display=swap');
+@import "tailwindcss";
+
+/* =========================================
+   1. المتغيرات الموحدة للوضع النهاري والليلي
+========================================= */
+:root {
+  /* اللون الأزرق الاحترافي (SaaS & Educational Enterprise) */
+  --bg-from: #93C5FD;
+  --bg-via: #2563EB;
+  --bg-to: #1E40AF;
+  
+  --night-start: #0f172a;
+  --night-end: #020617;
+  
+  --primary-gradient: linear-gradient(135deg, #2563EB, #1D4ED8);
+  --success-gradient: linear-gradient(135deg, #10B981, #059669);
+  --text-gradient-primary: linear-gradient(to left, #4F46E5, #0284C7, #2563EB);
+}
+
+.dark {
+  --bg-from: #0A192F; /* الأزرق الداكن العميق */
+  --bg-via: #0f172a;
+  --bg-to: #020617;
+  --primary-gradient: linear-gradient(135deg, #0F766E, #064E3B);
+  --success-gradient: linear-gradient(135deg, #059669, #064E3B);
+  --text-gradient-primary: linear-gradient(to left, #9333EA, #3B82F6, #22D3EE);
+}
+
+/* =========================================
+   2. تنسيق الـ Body الأساسي
+========================================= */
+body {
+  background: linear-gradient(to bottom, var(--bg-from), var(--bg-to));
+  color: #1e293b;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  font-family: 'Cairo', sans-serif;
+  min-height: 100vh;
+}
+
+.dark body {
+  background: linear-gradient(to bottom, var(--night-start), var(--night-end));
+  color: #f8fafc;
+}
+
+/* =========================================
+   3. تنسيق الكروت الزجاجية (Glassmorphism)
+========================================= */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.dark .glass-card {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================
+   4. ألوان هيدر البطاقات الاحترافية 
+========================================= */
+.theme-blue { background: linear-gradient(135deg, #1E3A8A, #3B82F6); }
+.theme-green { background: linear-gradient(135deg, #064E3B, #10B981); }
+.theme-purple { background: linear-gradient(135deg, #4C1D95, #8B5CF6); }
+.theme-orange { background: linear-gradient(135deg, #7C2D12, #F97316); }
+.theme-teal { background: linear-gradient(135deg, #115E59, #14B8A6); }
+.theme-pink { background: linear-gradient(135deg, #831843, #EC4899); }
+
+/* =========================================
+   5. تنسيق النصوص الداخلي للدروس
+========================================= */
+.pro-lesson-content {
+  font-family: 'Amiri', serif;
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 2.4;
+  font-size: 1.3rem;
+}
+
+.pro-lesson-content p {
+  margin-bottom: 1.5rem;
+  color: inherit;
+}
+
+/* =========================================
+   6. تنسيق الصور التفاعلية للدروس
+========================================= */
+.pro-lesson-content img {
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 450px;
+  width: auto;
+  margin: 2.5rem auto;
+  display: block;
+}
+
+.dark .pro-lesson-content img {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.pro-lesson-content img:hover {
+  transform: scale(1.02) translateY(-4px);
+  box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.12);
+}
+
+.dark .pro-lesson-content img:hover {
+  box-shadow: 0 20px 40px -5px rgba(0, 210, 255, 0.15);
+}
+
+/* =========================================
+   7. حركات وتأثيرات صفحة الألعاب البصرية
+========================================= */
+
+/* حركة مرور الشعاع الضوئي (Premium Light Sweep) للعنوان */
+@keyframes premiumShine {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+.hover-title-flow {
+  background-size: 200% auto;
+  transition: filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-title-flow:hover {
+  /* سحب الشعاع الضوئي بسلاسة فائقة */
+  animation: premiumShine 2.5s linear infinite;
+  /* توهج هالة ضوئية ناعمة جداً وراقية */
+  filter: drop-shadow(0 8px 24px rgba(34, 211, 238, 0.35));
+}
+
+/* حركات العنوان والخلفية لصفحة الألعاب */
+@keyframes textGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-text-gradient {
+  background-size: 200% auto;
+  animation: textGradient 4s linear infinite;
+}
+
+@keyframes blobBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+.animate-blob {
+  animation: blobBounce 7s infinite;
+}
+
+.animation-delay-2000 { 
+  animation-delay: 2s; 
+}
+
+.animation-delay-4000 { 
+  animation-delay: 4s; 
+}
+
+/* =========================================
+   8. طبقات وعناصر حماية الدروس
+========================================= */
+.lesson-container-wrapper {
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.lesson-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 10;
+  cursor: default;
+}

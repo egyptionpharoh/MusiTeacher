@@ -1,0 +1,18 @@
+[
+  {
+    "id": "ejada",
+    "title": "منظومة إجادة",
+    "recommendedFor": ["إجادة", "أهداف", "أداء", "تقييم مهني"],
+    "navigationPath": "لوحة التحكم ← اختصارات المنصات ← إجادة",
+    "externalLink": "https://ejada.gov.om/",
+    "assistantMessage": "يمكنك الوصول السريع لمنظومة إجادة لصياغة ومتابعة أهدافك المهنية."
+  },
+  {
+    "id": "maward",
+    "title": "نظام مورد",
+    "recommendedFor": ["مورد", "إجازة", "راتب", "إفادة"],
+    "navigationPath": "لوحة التحكم ← اختصارات المنصات ← مورد",
+    "externalLink": "https://maward.gov.om/",
+    "assistantMessage": "لتقديم طلبات الإجازات أو متابعة شؤونك، يمكنك الانتقال لنظام مورد من هنا."
+  }
+]

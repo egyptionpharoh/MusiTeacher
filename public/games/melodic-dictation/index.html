@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة التدوين والإملاء اللحني - برمجة وتنفيذ: حسين الملك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Noto+Music&family=Orbitron:wght@900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="countdown-overlay">
+        <div id="countdown-number"></div>
+    </div>
+    <div id="flash" style="position:fixed; inset:0; background:white; z-index:100001; opacity:0; pointer-events:none;"></div>
+
+    <div class="musi-modal-overlay" id="musi-alert-modal">
+        <div class="musi-modal-card">
+            <div class="musi-modal-icon">⚠️</div>
+            <div class="musi-modal-text" id="musi-modal-msg">رسالة تنبيه</div>
+            <button class="musi-modal-btn" onclick="closeMusiAlert()">حسناً</button>
+        </div>
+    </div>
+
+    <button class="fullscreen-btn" onclick="toggleFullScreen()">
+        <svg id="fs-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+        </svg>
+        <span id="fs-text">ملء الشاشة</span>
+    </button>
+
+    <div id="main-stage">
+        <div id="neon-right" class="neon-circle">🎹</div>
+        <div id="neon-left" class="neon-circle">𝄞</div>
+        <div class="contest-title">
+            <h1 id="main-game-title">مسابقة التدوين والإملاء اللحنية</h1>
+            <p style="font-family:'Cairo'; font-size:1.2rem; font-weight:bold; background: linear-gradient(to bottom, #e0ffff 30%, #00d4ff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">فقط للحاسوب والشاشات الذكية </p>
+        </div>
+        <div id="login-card">
+             <h2 style="color: white; margin-top: 0; font-family:'Cairo'">التسجيل لدخول الجولة</h2>
+            <input type="text" id="pName" class="name-input" placeholder="اكتب اسم المتسابق هنا" autocomplete="off">
+             <button class="btn-start" onclick="launchGame()">ابدأ الجولة ⚡</button>
+        </div>
+    </div>
+
+    <div id="game-lab-container">
+        <div class="container">
+            <div class="player-stats">
+                <div class="stat-badge">الفنان: <span id="display-name" class="stat-value">...</span></div>
+                <div class="stat-badge">المستوى: <span class="stat-value">1</span></div>
+                <div class="stat-badge">XP: <span id="player-xp" class="stat-value">0</span></div>
+                <div class="stat-badge">صح ✅: <span id="correct-count" class="stat-value">0</span></div>
+                <div style="display: flex; align-items: center; gap: 5px; background: #f1f2f6; padding: 5px 15px; border-radius: 10px; border: 1px solid #dcdde1;">
+                    <span title="مستوى الصوت">🔊</span>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" style="width: 80px; accent-color: var(--primary-color);">
+                </div>
+            </div>
+
+            <div class="setup-bar" id="setup-bar">
+                <div class="setup-group">
+                    <label>نوع النشاط</label>
+                    <select id="activity-type" onchange="updateActivityMode()">
+                        <option value="reading">قراءة صولفائية</option>
+                        <option value="singing">صولفيج غنائي</option>
+                    </select>
+                </div>
+                <div class="setup-group">
+                    <label>السلم الموسيقي</label>
+                    <select id="scale-type">
+                        <option value="C">دو الكبير (C Major)</option>
+                        <option value="G">صول الكبير (G Major)</option>
+                        <option value="F">فا الكبير (F Major)</option>
+                    </select>
+                </div>
+                <div class="setup-group">
+                    <label>المستوى</label>
+                    <select id="diff-level">
+                        <option value="1">المستوى الأول</option>
+                        <option value="2">المستوى الثاني</option>
+                    </select>
+                </div>
+                <div class="setup-group">
+                    <label>الميزان الموسيقي</label>
+                    <select id="timeSig" onchange="resetMeasures()" style="font-family:'Cairo'; padding:10px; border-radius:10px; font-weight:900; border: 2px solid #bdc3c7; outline: none; cursor: pointer; background: white;">
+                        <option value="2">2/4</option>
+                        <option value="3">3/4</option>
+                        <option value="4" selected>4/4</option>
+                    </select>
+                </div>
+                <div class="setup-group" style="align-items: center; justify-content: center; margin-top: 15px;">
+                    <label style="font-size: 1.1rem; margin-bottom: 10px; font-weight: 900; color: #2c3e50;">أرقام الموازير 🔢</label>
+                    <button id="btn-toggle-measures" onclick="toggleMeasureState()" style="background: linear-gradient(to bottom, #e74c3c, #c0392b); color: white; border: none; padding: 8px 30px; border-radius: 12px; font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 1.1rem; cursor: pointer; box-shadow: 0 5px 0 #922b21, 0 6px 5px rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s, background 0.3s; outline: none;">إخفاء</button>
+                    <input type="checkbox" id="toggle-measure-numbers" checked style="display: none;">
+                </div>
+                <div class="setup-group">
+                    <label>عدد الموازير</label>
+                    <select id="measuresCount" style="font-family:'Cairo'; padding:10px; border-radius:10px; font-weight:900; border: 2px solid #bdc3c7; outline: none; cursor: pointer; background: white;">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="8">8</option>
+                        <option value="16">16</option>
+                    </select>
+                </div>
+                <div class="setup-group">
+                    <label>السرعة</label>
+                    <input type="number" id="bpm" value="70" style="font-family:'Cairo'; padding:10px; border-radius:10px; font-weight:900; border: 2px solid #bdc3c7; outline: none; background: white; width: 70px;">
+                </div>
+                <div class="setup-group" style="justify-content: flex-end;">
+                    <button class="btn-generate" id="btn-generate" onclick="generateExercise()">إنشاء التمرين 🚀</button>
+                </div>
+            </div>
+
+             <!-- المنطقة 3: منطقة الأدوات اللحنية (النسخة المنقحة الوحيدة) -->
+        <div class="tools-area" id="tools-area">
+            <div class="tools-section">
+                <span class="tools-section-title">الأزمنة</span>
+                <div class="tool-btn duration-tool" data-type="note" data-value="4" title="روند" style="font-family: serif; font-size: 2rem;">𝅝</div>
+                <div class="tool-btn duration-tool" data-type="note" data-value="2" title="بلانش" style="font-family: serif; font-size: 2rem;">𝅗𝅥</div>
+                <div class="tool-btn duration-tool active" data-type="note" data-value="1" title="نوار" style="font-family: serif; font-size: 2rem;">𝅘𝅥</div>
+                <div class="tool-btn duration-tool" data-type="note" data-value="0.5" title="كروش" style="font-family: serif; font-size: 2rem;">𝅘𝅥𝅮</div>
+                <div class="tool-btn duration-tool" data-type="note" data-value="0.25" title="دوبل كروش" style="font-family: serif; font-size: 2rem;">𝅘𝅥𝅯</div>
+            </div>
+            
+            <div class="tools-section">
+                <span class="tools-section-title">السكتات</span>
+                <div class="tool-btn duration-tool" data-type="rest" data-value="4" title="سكتة روند" style="font-family: serif; font-size: 1.5rem;">𝄻</div>
+                <div class="tool-btn duration-tool" data-type="rest" data-value="2" title="سكتة بلانش" style="font-family: serif; font-size: 1.5rem;">𝄼</div>
+                <div class="tool-btn duration-tool" data-type="rest" data-value="1" title="سكتة نوار" style="font-family: serif; font-size: 1.5rem;">𝄽</div>
+                <div class="tool-btn duration-tool" data-type="rest" data-value="0.5" title="سكتة كروش" style="font-family: serif; font-size: 1.5rem;">𝄾</div>
+                <div class="tool-btn duration-tool" data-type="rest" data-value="0.25" title="سكتة دوبل كروش" style="font-family: serif; font-size: 1.5rem;">𝄿</div>
+            </div>
+
+            <div class="tools-section">
+                <span class="tools-section-title">تحويلات</span>
+                <div class="tool-btn acc-tool" data-acc="sharp" title="دييز">♯</div>
+                <div class="tool-btn acc-tool" data-acc="flat" title="بيمول">♭</div>
+                <div class="tool-btn acc-tool" data-acc="natural" title="بيكار">♮</div>
+            </div>
+
+            <div class="tools-section">
+                <span class="tools-section-title">إضافات</span>
+                <div class="tool-btn dot-tool" id="dot-toggle-btn" title="بوانتيه (نقطة)">.</div>
+            </div>
+
+            <div class="tools-section" style="position: relative;">
+                <span class="tools-section-title">إعادات</span>
+                <!-- الزر الرئيسي لفتح وإغلاق القائمة المنبثقة -->
+                <div class="tool-btn" id="btn-toggle-repeats" onclick="document.getElementById('repeats-popup').classList.toggle('show')" title="الإعادات والقفزات" style="font-size: 1.5rem;">𝄇</div>
+                
+                <!-- النافذة المنبثقة (Grid) التي تظهر عند النقر -->
+                <div id="repeats-popup" class="repeats-popup">
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="segno" title="Segno" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-size: 1.8rem !important;">𝄋</div>
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="coda" title="Coda" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-size: 1.8rem !important;">𝄌</div>
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="dc" title="Da Capo" onclick="document.getElementById('repeats-popup').classList.remove('show')">D.C.</div>
+                    
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="fine" title="Fine" onclick="document.getElementById('repeats-popup').classList.remove('show')">Fine</div>
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="to_coda" title="To Coda" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-size: 0.9rem !important;">To Coda</div>
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="ds_al_coda" title="D.S. al Coda" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-size: 0.8rem !important;">D.S. al Coda</div>
+                    
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="dc_al_fine" title="D.C. al Fine" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-size: 0.8rem !important;">D.C. al Fine</div>
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="ds_al_fine" title="D.S. al Fine" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-size: 0.8rem !important;">D.S. al Fine</div>
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="ds" title="Dal Segno" onclick="document.getElementById('repeats-popup').classList.remove('show')">D.S.</div>
+                    
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="start_repeat" title="بداية إعادة" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-weight: bold; font-size: 1.2rem !important; letter-spacing: 2px;">:||</div>
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="end_start_repeat" title="نهاية وبداية" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-weight: bold; font-size: 1.2rem !important; letter-spacing: 2px;">:||:</div>
+                    <div class="repeat-grid-btn duration-tool" data-type="repeat" data-value="end_repeat" title="نهاية إعادة" onclick="document.getElementById('repeats-popup').classList.remove('show')" style="font-weight: bold; font-size: 1.2rem !important; letter-spacing: 2px;">||:</div>
+                </div>
+            </div>
+
+            <div class="tools-section">
+                <span class="tools-section-title">تحرير</span>
+                <div class="tool-btn edit-btn" onclick="deleteSelectedNote()">🗑️<span>مسح</span></div>
+                <div class="tool-btn edit-btn" onclick="clearStaff()">🧹<span>تفريغ</span></div>
+            </div>
+        </div>
+            
+            <div id="transport-controls" style="display: none; justify-content: center; gap: 15px; margin-bottom: -10px; background: #fff; padding: 10px 20px; border-radius: 20px; border: 3px solid #bdc3c7; width: max-content; margin-left: auto; margin-right: auto; box-shadow: 0 5px 0 #bdc3c7; position: relative; z-index: 10;">
+                <button id="btn-stop" class="tool-btn" onclick="PlaybackEngine.stop()" style="color: #e74c3c; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem;" title="إيقاف">⏹</button>
+                <button id="btn-play-pause" class="tool-btn" onclick="PlaybackEngine.togglePlayPause()" style="color: #2ecc71; width: 60px; height: 60px; border-radius: 50%; font-size: 2.2rem;" title="تشغيل">▶</button>
+                <button id="btn-loop" class="tool-btn" onclick="PlaybackEngine.toggleLoop()" style="color: #7f8c8d; width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem;" title="تكرار">🔁</button>
+            </div>
+
+            <div class="staff-container" id="staff-container" onmousedown="placeNoteOnStaff(event)" style="cursor: crosshair;">
+                <div id="manual-ui-container">
+                    <div class="clef-area"><span id="clef-symbol">𝄞</span> <span id="key-signature"></span> <div class="time-signature"><span>4</span><span>4</span></div></div>
+                    <div class="staff-lines-wrapper" id="staff-lines">
+                        <div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div><div class="staff-line"></div>
+                    </div>
+                </div>
+                <div id="vexflow-container" style="display: none; width: 100%; overflow-x: auto; min-height: 150px; background: white; border-radius: 10px;"></div>
+            </div>
+
+            <div class="controls-area" id="controls-area">
+                <label style="display: flex; align-items: center; background: #fff; padding: 0 10px; border-radius: 15px; border: 2px solid var(--primary-color); cursor: pointer;">
+                    <input type="checkbox" id="metro-toggle" style="margin-left: 5px;"> المترنوم 🎧
+                </label>
+                <button class="btn-lab btn-check" onclick="checkAnswer()">✔️ تحقق من الإجابة</button>
+            </div>
+            <div id="feedback-area"></div>
+        </div>
+    </div>
+
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

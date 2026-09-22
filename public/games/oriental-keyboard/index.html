@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Oriental Maestro AI - Original Sound Edition</title>
+<style>
+    :root {
+        --neon-pink: #ff00ea;
+        --neon-cyan: #00fbff;
+        --bg-dark: #0a0a0a;
+        --panel-bg: #151515;
+    }
+
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        background: var(--bg-dark); 
+        color: white; 
+        text-align: center; 
+        margin: 0; 
+        padding: 10px; 
+        overflow: hidden; 
+        height: 100vh; 
+        display: flex; 
+        flex-direction: column; 
+    }
+    
+    .header-bar { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 10px 40px; 
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid #333;
+    }
+    .signature { font-family: 'Brush Script MT', cursive; font-size: 26px; color: #d4af37; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+    #note-display { font-size: 45px; color: var(--neon-pink); height: 60px; text-shadow: 0 0 15px var(--neon-pink); font-weight: bold; min-width: 200px; }
+
+    .control-dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        padding: 15px 40px;
+        background: var(--panel-bg);
+        margin: 10px 40px;
+        border-radius: 15px;
+        border: 1px solid #333;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        z-index: 10;
+    }
+
+    .control-group { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .control-group label { font-size: 14px; color: #888; font-weight: bold; text-transform: uppercase; }
+
+    select, .main-btn {
+        background: #222; color: #fff; border: 2px solid #444; padding: 8px 15px;
+        border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;
+        transition: 0.3s; width: 100%; text-align: center;
+    }
+    select:focus, .main-btn:hover { border-color: var(--neon-cyan); outline: none; }
+    .main-btn.active { 
+        background: var(--neon-pink); border-color: var(--neon-pink); 
+        box-shadow: 0 0 15px var(--neon-pink); animation: pulse 1.5s infinite;
+    }
+
+    .switch-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+        position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #444; transition: .4s; border-radius: 24px;
+    }
+    .slider:before {
+        position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 3px;
+        background-color: white; transition: .4s; border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+    input:checked + .slider:before { transform: translateX(24px); }
+
+    .qt-panel { display: flex; justify-content: center; gap: 8px; padding: 10px; margin: 0 40px; }
+    .qt-btn { 
+        background: #1a1a1a; color: #888; border: 1px solid #333; padding: 10px; 
+        border-radius: 5px; cursor: pointer; min-width: 65px; font-weight: bold; transition: 0.2s;
+    }
+    .qt-btn.active { color: #000; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); border-color: var(--neon-cyan); }
+
+    .piano-wrapper { direction: ltr; display: flex; justify-content: center; perspective: 1500px; padding: 20px; flex-grow: 1; align-items: center; overflow-x: auto; }
+    .piano-container { display: flex; background: #1a1a1a; padding: 40px 15px; border-radius: 15px; transform: rotateX(10deg); border: 3px solid #333; position: relative; }
+    
+    .white-key { 
+        width: 42px; height: 230px; background: linear-gradient(to bottom, #eee 0%, #fff 100%); 
+        border: 1px solid #999; border-radius: 0 0 8px 8px; cursor: pointer; position: relative; 
+        z-index: 1; margin: 0 1px; box-shadow: 0 8px 0 #bbb; transition: 0.05s; 
+        display: flex; align-items: flex-end; justify-content: center; 
+        color: #888; padding-bottom: 10px; font-size: 11px; font-weight: bold;
+    }
+    .white-key.active { background: var(--neon-pink) !important; box-shadow: 0 2px 0 #99008d !important; transform: translateY(6px); color: #fff; }
+    
+    .black-key { 
+        width: 28px; height: 140px; background: linear-gradient(to bottom, #444 0%, #000 100%); 
+        border-radius: 0 0 5px 5px; cursor: pointer; margin-left: -14px; margin-right: -14px; 
+        z-index: 2; box-shadow: 0 5px 0 #111; transition: 0.05s; 
+    }
+    .black-key.active { background: #ff0000 !important; box-shadow: 0 2px 0 #990000 !important; transform: translateY(3px); }
+
+    .sikah { color: var(--neon-cyan) !important; text-shadow: 0 0 5px var(--neon-cyan); border-bottom: 4px solid var(--neon-cyan); }
+    .hidden-labels .white-key { color: transparent !important; }
+    .hidden-labels .sikah { border-bottom: none !important; }
+
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+    #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    #start-btn { padding: 20px 50px; font-size: 26px; background: var(--neon-pink); border: none; border-radius: 50px; cursor: pointer; color: #fff; font-weight: bold; box-shadow: 0 0 30px var(--neon-pink); }
+</style>
+</head>
+<body>
+
+<div id="overlay">
+    <h2 style="font-size: 40px; margin-bottom: 10px;">Oriental Maestro AI</h2>
+    <p style="color: #888; margin-bottom: 30px;">Professional Music Education System</p>
+    <button id="start-btn" onclick="initAudio()">ابدأ العزف 🔊</button>
+</div>
+
+<div class="header-bar">
+    <div class="signature">By: Hussein Elmalek</div>
+    <div id="note-display">---</div>
+    <div style="width: 100px;"></div>
+</div>
+
+<div class="control-dashboard">
+    <div class="control-group">
+        <label>الآلة الموسيقية</label>
+        <select id="inst-select" onchange="window.currentInstrument = this.value">
+            <option value="organ">أورج شرقي (Organ)</option>
+            <option value="piano">بيانو كلاسيك (Piano)</option>
+        </select>
+    </div>
+
+    <div class="control-group">
+        <label>نظام التسمية</label>
+        <div class="switch-container" onclick="document.getElementById('name-toggle-check').click()">
+            <span style="font-size: 12px;">غربي</span>
+            <label class="switch">
+                <input type="checkbox" id="name-toggle-check">
+                <span class="slider"></span>
+            </label>
+            <span style="font-size: 12px;">شرقي</span>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label>الرنين (Sustain)</label>
+        <button id="sustain-btn" class="main-btn">Sustain (Space)</button>
+    </div>
+
+    <div class="control-group">
+        <label>عرض البيانات</label>
+        <button id="labels-toggle-btn" class="main-btn">إخفاء الأسماء</button>
+    </div>
+</div>
+
+<div class="qt-panel" id="qt-container"></div>
+
+<div class="piano-wrapper">
+    <div id="piano" class="piano-container"></div>
+</div>
+
+<script>
+let audioCtx;
+const pianoElement = document.getElementById('piano');
+window.currentInstrument = "organ";
+window.isSustainActive = false;
+
+const NOTE_MAPPING = {
+    "دو قرار": "قبا راست", "دو دييز قرار": "قبا زيركوله", "ري بيمول قرار": "قبا كرد", "ري قرار": "قبا دوكاه",
+    "ري دييز قرار": "قبا حصار", "مي بيمول قرار": "قبا عجم", "مي سيكاه قرار": "قبا سيكاه", "مي نصف بيمول قرار": "قبا سيكاه",
+    "مي قرار": "قبا سيكاه", "فا قرار": "عجم عشيران", "فا دييز قرار": "قبا حجاز", "صول بيمول قرار": "قبا صبا",
+    "صول قرار": "يكاه", "صول دييز قرار": "قبا حصار", "لا بيمول قرار": "قبا حصار", "لا قرار": "عشيران",
+    "لا دييز قرار": "قبا عجم", "سي بيمول قرار": "عجم عشيران", "سي سيكاه قرار": "عراق", "سي بيكار قرار": "عراق",
+    "دو": "راست", "دو الوسطى": "راست", "دو دييز": "زيركوله", "ري بيمول": "كرد", "ري": "دوكاه",
+    "مي بيمول": "كرد", "مي نصف بيمول": "سيكاه", "مي سيكاه": "سيكاه", "مي": "بوسليك", "فا": "جهاركاه",
+    "فا دييز": "حجاز", "صول بيمول": "صبا", "صول": "نواه", "صول دييز": "حصار", "لا بيمول": "حصار",
+    "لا": "حسيني", "لا دييز": "عجم", "سي بيمول": "عجم", "سي نصف بيمول": "أوج", "سي سيكاه": "أوج",
+    "دو جواب": "كردان", "ري جواب": "محير", "مي جواب": "جواب سيكاه", "فا جواب": "جواب جهاركاه",
+    "صول جواب": "جواب نواه", "لا جواب": "جواب حسيني", "سي جواب": "جواب أوج"
+};
+
+const notesData = [
+    {f: 130.81, n: 'دو قرار', type: 'w', codes: ['KeyZ'], id: 'z'}, 
+    {f: 138.59, n: 'دو دييز', type: 'b', codes: ['KeyS'], id: 's'},
+    {f: 146.83, n: 'ري قرار', type: 'w', codes: ['KeyX'], id: 'x'},
+    {f: 155.56, n: 'ري دييز', type: 'b', codes: ['KeyD'], id: 'd'},
+    {f: 159.25, n: 'مي سيكاه قرار', type: 'w', codes: ['KeyC'], id: 'c', s: true},
+    {f: 174.61, n: 'فا قرار', type: 'w', codes: ['KeyV'], id: 'v'},
+    {f: 185.00, n: 'فا دييز', type: 'b', codes: ['KeyG'], id: 'g'},
+    {f: 196.00, n: 'صول قرار', type: 'w', codes: ['KeyB'], id: 'b'},
+    {f: 207.65, n: 'صول دييز', type: 'b', codes: ['KeyH'], id: 'h'},
+    {f: 220.00, n: 'لا قرار', type: 'w', codes: ['KeyN'], id: 'n'},
+    {f: 233.08, n: 'لا دييز', type: 'b', codes: ['KeyJ'], id: 'j'},
+    {f: 238.25, n: 'سي سيكاه قرار', type: 'w', codes: ['KeyM'], id: 'm', s: true},
+    {f: 261.63, n: 'دو', type: 'w', codes: ['Digit1', 'KeyA'], id: 'k1'}, 
+    {f: 277.18, n: 'دو دييز', type: 'b', codes: ['KeyQ'], id: 'kq'},
+    {f: 293.66, n: 'ري', type: 'w', codes: ['Digit2', 'KeyS'], id: 'k2'},
+    {f: 311.13, n: 'ري دييز', type: 'b', codes: ['KeyW'], id: 'kw'},
+    {f: 318.50, n: 'مي سيكاه', type: 'w', codes: ['Digit3', 'KeyD'], id: 'k3', s: true},
+    {f: 349.23, n: 'فا', type: 'w', codes: ['Digit4', 'KeyF'], id: 'k4'},
+    {f: 369.99, n: 'فا دييز', type: 'b', codes: ['KeyE'], id: 'ke'},
+    {f: 392.00, n: 'صول', type: 'w', codes: ['Digit5', 'KeyG'], id: 'k5'},
+    {f: 415.30, n: 'صول دييز', type: 'b', codes: ['KeyR'], id: 'kr'},
+    {f: 440.00, n: 'لا', type: 'w', codes: ['Digit6', 'KeyH'], id: 'k6'},
+    {f: 466.16, n: 'لا دييز', type: 'b', codes: ['KeyT'], id: 'kt'},
+    {f: 476.50, n: 'سي سيكاه', type: 'w', codes: ['Digit7', 'KeyJ'], id: 'k7', s: true},
+    {f: 523.25, n: 'دو جواب', type: 'w', codes: ['Digit8', 'KeyK'], id: 'k8'},
+    {f: 554.37, n: 'دو دييز جواب', type: 'b', codes: ['KeyU'], id: 'ku'},
+    {f: 587.33, n: 'ري جواب', type: 'w', codes: ['Digit9'], id: 'k9'},
+    {f: 622.25, n: 'ري دييز جواب', type: 'b', codes: ['KeyI'], id: 'ki'},
+    {f: 637.00, n: 'مي سيكاه جواب', type: 'w', codes: ['Digit0'], id: 'k0', s: true}
+];
+
+notesData.forEach(note => {
+    const div = document.createElement('div');
+    div.id = note.id;
+    div.className = note.type === 'w' ? 'white-key note' : 'black-key note';
+    div.innerText = note.type === 'w' ? note.n : '';
+    div.dataset.western = note.n;
+    div.dataset.eastern = NOTE_MAPPING[note.n] || note.n;
+    if(note.s) div.classList.add('sikah');
+    div.onmousedown = () => play(note.f, note.n, note.id);
+    pianoElement.appendChild(div);
+});
+
+function initAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    document.getElementById('overlay').style.display = 'none';
+}
+
+// استعادة الـ Audio Engine الأصلي بدقة 100%
+function play(freq, name, visualId) {
+    if (!audioCtx) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    
+    const isEastern = document.getElementById('name-toggle-check').checked;
+    const displayName = isEastern ? (NOTE_MAPPING[name] || name) : name;
+    document.getElementById('note-display').innerText = displayName;
+
+    const el = document.getElementById(visualId);
+    if(el) {
+        el.classList.add('active');
+        setTimeout(() => el.classList.remove('active'), 200);
+    }
+
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const filter = audioCtx.createBiquadFilter();
+    const gain = audioCtx.createGain();
+    
+    const releaseTime = window.isSustainActive ? 2.5 : (window.currentInstrument === 'piano' ? 1.0 : 1.5);
+
+    if (window.currentInstrument === 'piano') {
+        osc.type = 'triangle';
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + releaseTime);
+    } else {
+        osc.type = 'sawtooth';
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + releaseTime);
+    }
+
+    osc.frequency.setValueAtTime(freq, now);
+
+    // استعادة الـ Vibrato الأصلي للأورج
+    if (window.currentInstrument === 'organ') {
+        const vibrato = audioCtx.createOscillator();
+        const vGain = audioCtx.createGain();
+        vibrato.frequency.value = 5.8;
+        vGain.gain.value = freq * 0.007;
+        vibrato.connect(vGain); 
+        vGain.connect(osc.frequency);
+        vibrato.start();
+        vibrato.stop(now + releaseTime);
+    }
+
+    filter.type = 'lowpass';
+    filter.frequency.value = window.currentInstrument === 'piano' ? 3000 : 2200;
+    
+    osc.connect(filter); 
+    filter.connect(gain); 
+    gain.connect(audioCtx.destination);
+    
+    osc.start(); 
+    osc.stop(now + releaseTime);
+}
+
+(() => {
+    const qtContainer = document.getElementById('qt-container');
+    const arabicLabels = { 'C': 'دو', 'D': 'ري', 'E': 'مي', 'F': 'فا', 'G': 'صول', 'A': 'لا', 'B': 'سي' };
+    const qtState = { 'C': false, 'D': false, 'E': true, 'F': false, 'G': false, 'A': false, 'B': true };
+
+    Object.keys(qtState).forEach(key => {
+        const btn = document.createElement('button');
+        btn.className = 'qt-btn' + (qtState[key] ? ' active' : '');
+        btn.innerText = arabicLabels[key] + ' ½♭';
+        btn.onclick = () => {
+            qtState[key] = !qtState[key];
+            btn.classList.toggle('active');
+            updateFrequencies();
+        };
+        qtContainer.appendChild(btn);
+    });
+
+    function updateFrequencies() {
+        const mapping = { 'دو': 'C', 'ري': 'D', 'مي': 'E', 'فا': 'F', 'صول': 'G', 'لا': 'A', 'سي': 'B' };
+        notesData.forEach(note => {
+            let baseName = note.n.split(' ')[0];
+            let letter = mapping[baseName];
+            const keyEl = document.getElementById(note.id);
+            if (letter && qtState[letter] && !note.n.includes('دييز')) {
+                note.f = note.f * Math.pow(2, -50/1200); 
+                if(keyEl) keyEl.classList.add('sikah');
+            } else {
+                if(keyEl) keyEl.classList.remove('sikah');
+            }
+        });
+    }
+
+    document.getElementById('labels-toggle-btn').onclick = function() {
+        pianoElement.classList.toggle('hidden-labels');
+        this.classList.toggle('active');
+        this.innerText = pianoElement.classList.contains('hidden-labels') ? "إظهار الأسماء" : "إخفاء الأسماء";
+    };
+
+    const sustainBtn = document.getElementById('sustain-btn');
+    const toggleSustain = () => {
+        window.isSustainActive = !window.isSustainActive;
+        sustainBtn.classList.toggle('active', window.isSustainActive);
+    };
+    sustainBtn.onclick = toggleSustain;
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') { e.preventDefault(); if(!window.isSustainActive) toggleSustain(); }
+        if (e.repeat) return;
+        const note = notesData.find(n => n.codes.includes(e.code));
+        if (note) play(note.f, note.n, note.id);
+    });
+
+    document.addEventListener('keyup', (e) => {
+        if (e.code === 'Space') { if(window.isSustainActive) toggleSustain(); }
+    });
+
+    document.getElementById('name-toggle-check').onchange = function() {
+        const keys = document.querySelectorAll('.white-key');
+        keys.forEach(key => {
+            key.innerText = this.checked ? key.dataset.eastern : key.dataset.western;
+        });
+    };
+})();
+</script>
+</body>
+</html>

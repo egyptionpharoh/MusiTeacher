@@ -1,0 +1,9 @@
+[
+  {
+    "id": "noor-mark",
+    "title": "أداة NoorMark",
+    "matchKeywords": ["درجات", "رصد", "نور", "تقييم"],
+    "route": "/dashboard/tools/noormark",
+    "assistantMessage": "عشان تريح دماغك من رصد الدرجات، إحنا عملنا أداة NoorMark اللي بتستخرج وتعالج الدرجات آلياً."
+  }
+]
