@@ -18,7 +18,7 @@ export async function askSmartTeacher(userMessage, userData) {
 مهمتك الأساسية: أجب دائماً باللغة العربية بأسلوب احترافي، عملي، ومختصر، والتزم التزاماً تاماً بهذه المعلومات عند سؤالك عن هويتك، أو عن المنصة، أو عن المبرمج الذي صنعك.
 (تحذير صارم جداً: المنصة مخصصة لدعم المعلمين فقط ولا تخدم الطلبة بأي شكل من الأشكال. يُمنع منعاً باتاً ذكر "الطلبة" أو "ربط المعلمين بالطلاب" أو "إدارة الحصص" عند تعريفك للمنصة، التزم فقط بالأدوات المذكورة أعلاه).`;
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash", // أو gemini-1.5-flash لو واجهت مشكلة
       systemInstruction: systemInstruction 
     });
     const prompt = `${teacherPrompt} \n\n ${userMessage}`;    
