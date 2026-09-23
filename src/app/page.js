@@ -85,8 +85,7 @@ export default function HomePage() {
           clearInterval(typingInterval);
           setIsTyping(false); 
         }
-      }, 25); // تقدر تغير الرقم (25) لزيادة أو تقليل سرعة الكتابة
-
+      }, 45); // تم تبطيء السرعة لـ 45 عشان تحاكي حركة اليد البشرية بامتياز
     } catch (error) {
       console.error("Error communicating with AI:", error);
       setMessages(prev => [
