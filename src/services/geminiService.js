@@ -11,8 +11,7 @@ export async function askSmartTeacher(userMessage, userData) {
     }
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    const prompt = `${teacherPrompt} \n\n سؤال المعلم: ${userMessage}`;
-    
+    const prompt = `${teacherPrompt} \n\n ${userMessage}`;    
     const result = await model.generateContent(prompt);
     return result.response.text();
     
