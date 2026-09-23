@@ -33,18 +33,16 @@ export default function HomePage() {
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   useEffect(() => { scrollToBottom(); }, [messages, isTyping]);
 
-  const handleSendMessage = async (e) => {
+ const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputText.trim() || isTyping) return;
 
     const userMessage = inputText.trim();
-    // إضافة رسالة المستخدم للشاشة
     setMessages(prev => [...prev, { text: userMessage, isUser: true }]);
     setInputText('');
-    setIsTyping(true);
+    setIsTyping(true); // تشغيل تأثير نقاط التحميل (الثلاث نقاط)
 
     try {
-      // إرسال الطلب للـ API الخاص بـ Gemini
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -54,21 +52,50 @@ export default function HomePage() {
       });
 
       const data = await response.json();
-      const aiReply = data.reply || data.text || "حدث خطأ أثناء استقبال الرد من الذكاء الاصطناعي.";
 
-      // إظهار رد الذكاء الاصطناعي الحقيقي
-      setMessages(prev => [...prev, { text: aiReply, isUser: false }]);
+      if (!response.ok) {
+        throw new Error(data.error || data.message || `Server error: ${response.status}`);
+      }
+
+      const aiReply = data.reply || data.response || data.message || data.text || data.result;
+
+      if (!aiReply) {
+        throw new Error("لم يتم استلام نص في استجابة الذكاء الاصطناعي");
+      }
+
+      // أولاً: نضيف رسالة فارغة للذكاء الاصطناعي عشان نبدأ نكتب جواها
+      setMessages(prev => [...prev, { text: "", isUser: false }]);
+      
+      // ثانياً: تشغيل تأثير الكتابة (Typing Effect)
+      let currentIndex = 0;
+      const typingInterval = setInterval(() => {
+        setMessages(prev => {
+          const newMessages = [...prev];
+          const lastIndex = newMessages.length - 1;
+          newMessages[lastIndex] = { 
+            ...newMessages[lastIndex], 
+            text: aiReply.slice(0, currentIndex + 1) 
+          };
+          return newMessages;
+        });
+        currentIndex++;
+        
+        // لما النص يخلص، نوقف التكرار ونقفل حالة الكتابة
+        if (currentIndex >= aiReply.length) {
+          clearInterval(typingInterval);
+          setIsTyping(false); 
+        }
+      }, 25); // تقدر تغير الرقم (25) لزيادة أو تقليل سرعة الكتابة
+
     } catch (error) {
       console.error("Error communicating with AI:", error);
       setMessages(prev => [
         ...prev, 
-        { text: "عذراً، حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً.", isUser: false }
+        { text: "عذراً، حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. تأكد من إعدادات الـ API ومسار /api/chat.", isUser: false }
       ]);
-    } finally {
       setIsTyping(false);
     }
   };
-
  // تبويبات الإعدادات لتسهيل التنقل
   const settingsTabs = [
     { id: 'account', label: 'الحساب', icon: User },
