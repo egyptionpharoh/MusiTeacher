@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  PRINCIPAL
+}
+
+model User {
+  id            String      @id @default(uuid())
+  email         String      @unique
+  passwordHash  String
+  name          String
+  role          Role        @default(TEACHER)
+  schoolId      String?
+  school        School?     @relation(fields: [schoolId], references: [id])
+  gradebooks    Gradebook[]
+  templates     Template[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model School {
+  id            String      @id @default(uuid())
+  name          String
+  principalName String?
+  logoUrl       String?
+  users         User[]
+  gradebooks    Gradebook[]
+  createdAt     DateTime    @default(now())
+}
+
+model Template {
+  id            String   @id @default(uuid())
+  name          String
+  subject       String   @default("مهارات موسيقية")
+  themeColor    String   @default("#113f67")
+  isDefault     Boolean  @default(false)
+  createdBy     String
+  user          User     @relation(fields: [createdBy], references: [id])
+  config        Json     // لتخزين إعدادات الهيدر والفوتر والزخارف
+  createdAt     DateTime @default(now())
+}
+
+model Gradebook {
+  id            String   @id @default(uuid())
+  title         String
+  grade         String
+  term          String
+  year          String
+  schoolId      String
+  school        School   @relation(fields: [schoolId], references: [id])
+  teacherId     String
+  teacher       User     @relation(fields: [teacherId], references: [id])
+  studentsData  Json     // تخزين بيانات الطلاب والدرجات بعد المعالجة
+  status        String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  fileUrl       String?  // رابط الملف الأصلي المرفوع
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

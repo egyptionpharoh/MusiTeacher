@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap');
+
+:root {
+    --header-bg: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
+    --header-text: white;
+    --header-border: #d4af37;
+}
+
+/* قاموس الثيمات */
+.blue { --header-bg: linear-gradient(135deg, #1e3a8a 0%, #172554 100%); --header-text: white; --header-border: #d4af37; }
+.navy { --header-bg: linear-gradient(135deg, #db2777 0%, #831843 100%); --header-text: white; --header-border: #f472b6; }
+.royal-blue { --header-bg: radial-gradient(circle at 50% 0%, #1a4fd6 0%, #001233 80%); --header-text: #f8f9fa; --header-border: #ffffff; }
+.maroon { --header-bg: linear-gradient(135deg, #5e0000 0%, #1a0000 100%); --header-text: white; --header-border: #bf953f; }
+.emerald { --header-bg: linear-gradient(135deg, #7e22ce 0%, #3b0764 100%); --header-text: #f3e8ff; --header-border: #d8b4fe; }
+.classic-school { --header-bg: linear-gradient(135deg, #475569 0%, #1e293b 100%); --header-text: #f8fafc; --header-border: #cbd5e1; }
+.arabic-art { --header-bg: linear-gradient(135deg, #581c0c 0%, #290a03 100%); --header-text: #fef08a; --header-border: #eab308; }
+.gold { --header-bg: linear-gradient(135deg, #0a0a0a 0%, #171717 100%); --header-text: #fcd34d; --header-border: #d4af37; }
+.simple { --header-bg: #ffffff; --header-text: #0f172a; --header-border: #cbd5e1; }
+
+body { 
+    margin: 0 auto !important; 
+    padding: 20px; 
+    background: #e2e8f0; 
+    font-family: 'Cairo', sans-serif; 
+    color: black; 
+    direction: rtl; 
+    max-width: 1920px;
+    overflow-x: hidden;
+}
+
+/* الهيدر الديناميكي */
+.header {
+    background: var(--header-bg);
+    color: var(--header-text);
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 6px solid var(--header-border);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; overflow: hidden;
+}
+
+.simple .header { border: 1px solid #e2e8f0; box-shadow: none; }
+
+.header h1 { font-family: 'Reem Kufi', sans-serif; font-size: 26px; margin: 0 0 5px 0; white-space: normal; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.header h1 span { font-family: inherit; font-size: 34px; font-weight: bold; padding: 0 8px; }
+.header p { font-family: 'Cairo', sans-serif; font-size: 15px; margin: 0; opacity: 0.9; white-space: normal; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.header p span { font-family: 'Amiri', serif; font-size: 18px; font-weight: bold; padding: 0 5px; }
+
+/* شريط الأدوات */
+.toolbar { 
+    background: white; 
+    padding: 15px; 
+    border-radius: 8px; 
+    margin-bottom: 20px; 
+    display: flex; 
+    gap: 10px; 
+    justify-content: center; 
+    align-items: center;
+    flex-wrap: wrap; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    width: 210mm; 
+    margin: 0 auto 20px auto; 
+    box-sizing: border-box;
+}
+
+.toolbar.blue { background: #e0e7ff; }
+.toolbar.navy { background: #fce7f3; }
+.toolbar.royal-blue { background: #dbeafe; }
+.toolbar.maroon { background: #fee2e2; }
+.toolbar.emerald { background: #f3e8ff; }
+.toolbar.arabic-art { background: #ffedd5; }
+.toolbar.gold { background: #fef3c7; }
+.toolbar.simple { background: #ffffff; }
+
+.toolbar input, 
+.toolbar select, 
+.toolbar button, 
+.custom-file-upload { 
+    height: 46px; 
+    flex-shrink: 1; 
+    max-width: 150px; 
+    box-sizing: border-box; 
+    font-size: 13px; 
+    font-family: 'Cairo', sans-serif; 
+    border-radius: 5px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+}
+
+.toolbar input, .toolbar select { border: 1px solid #cbd5e1; background: white; }
+
+.toolbar button, .custom-file-upload {
+    background: var(--header-bg); 
+    color: var(--header-text);    
+    border: 1px solid var(--header-border); 
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.toolbar button:hover, .custom-file-upload:hover {
+    filter: brightness(1.2); 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.simple .toolbar button, .simple .custom-file-upload { text-shadow: none; }
+
+/* ورقة العمل والجدول في العرض العادي */
+.page { width: 210mm; min-height: 297mm; background: white; margin: 0 auto; padding: 8mm 15mm; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-bottom: 15px; 
+    background: white; 
+    border: 1px solid #000; 
+}
+
+th, td { 
+    border: 1px solid #000; 
+    padding: 6px 8px; 
+    text-align: center; 
+    font-size: 14px; 
+    font-weight: 600; 
+    color: black; 
+}
+th { background: #f1f5f9; color: #0f172a; font-weight: bold; font-size: 15px; }
+tr { border-bottom: 1px solid #000; }
+tr:nth-child(even) { background: #f8fafc; }
+
+.signatures { margin-top: 20px; display: flex; justify-content: space-between; text-align: center; font-weight: bold; font-size: 15px; padding: 0 20px; color: black; }
+.sign-name { font-family: 'Amiri', serif; font-size: 18px; color: #1e3a8a; margin-top: 5px; }
+
+/* الـ Landing Page */
+.landing-wrapper { background: radial-gradient(circle at 50% -20%, #2563eb 0%, #020617 80%); min-height: 100vh; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+.landing-container { max-width: 1600px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 40px 20px; text-align: center; }
+.folded-paper-container { display: flex; justify-content: center; align-items: center; margin-bottom: 40px; position: relative; margin-top: 10px; }
+.folded-paper-logo { position: relative; width: 85px; height: 105px; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border-radius: 12px 0 12px 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.8); display: flex; align-items: center; justify-content: center; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+.folded-paper-logo::before { content: ""; position: absolute; top: 0; right: 0; border-width: 0 32px 32px 0; border-style: solid; border-color: transparent transparent #e2e8f0 #e2e8f0; border-bottom-left-radius: 8px; box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.15); }
+.n-check-svg { position: absolute; width: 130px; height: 130px; top: -15px; left: -20px; overflow: visible !important; z-index: 2; }
+.red-check-mark { animation: check-pulse 3s infinite ease-in-out; filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6)); }
+@keyframes check-pulse { 0%, 100% { opacity: 0.8; transform: translateY(0); } 50% { opacity: 0.4; transform: translateY(-3px); } }
+.glow-title { font-size: 4.5rem; font-weight: 800; margin: 0; background: linear-gradient(135deg, #ffffff 30%, #d4af37 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 10px rgba(212,175,55,.25), 0 0 20px rgba(212,175,55,.15); }
+.platform-desc { max-width: 650px; font-size: 1.25rem; line-height: 1.8; color: #cbd5e1; margin: 24px 0 40px; }
+.cta-button { background: linear-gradient(90deg, #d4af37 0%, #b48600 100%); color: #0f172a; font-size: 1.2rem; font-weight: 700; padding: 16px 44px; border: none; border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+.cards-wrapper { display: flex; margin-top: 64px; width: 100%; max-width: 800px; justify-content: center; }
+.glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 32px; width: 100%; text-align: right; }
+.developer-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.dev-avatar-container { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; }
+.dev-avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.dev-info h3 { margin: 0; color: #d4af37; font-weight: 700; }
+.dev-info p { margin: 4px 0 0; color: #94a3b8; }
+.glass-card-text { color: #e2e8f0; line-height: 1.8; font-size: 1.05rem; margin: 0; }
+.contact-email { display: flex; align-items: center; gap: 8px; margin-top: 20px; direction: ltr; justify-content: flex-end; color: #cbd5e1;}
+.expandable-card { cursor: pointer; transition: all 0.3s ease; }
+.expandable-card:hover { transform: translateY(-5px); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5); border-color: rgba(253, 224, 71, 0.4); }
+.click-to-expand { text-align: center; font-size: 0.95rem; color: #94a3b8; margin-top: 15px; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+/* التجاوب مع الشاشة */
+@media screen and (max-width: 1440px) {
+    .page { zoom: 0.9; margin-bottom: 20px; }
+}
+
+@media screen and (max-width: 1366px) {
+    .page { zoom: 0.85; margin-bottom: 20px; }
+    .glow-title { font-size: 3.5rem; }
+    .platform-desc { font-size: 1.1rem; }
+}
+
+/* =========================================
+   إعدادات الطباعة الدقيقة (الحل النهائي)
+   ========================================= */
+/* =========================================
+   إعدادات الطباعة القياسية (Clean Print Architecture)
+   ========================================= */
+@media print {
+    /* إخفاء شريط الأدوات */
+    .toolbar, .no-print { display: none !important; }
+    
+    /* 1. هوامش الطباعة (إعادة الهامش لحماية الصفحات المتعددة) */
+    @page { 
+        size: A4 portrait; 
+        margin: 10mm; 
+    }
+    
+    html, body { 
+        width: 100%;
+        height: auto !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        background: white; 
+        box-sizing: border-box !important;
+    }
+    
+    /* 2. الإلغاء الصحيح للطول الإجباري وتثبيت الـ Box-sizing */
+    .page { 
+        box-sizing: border-box !important;
+        width: 100% !important; 
+        height: auto !important; 
+        min-height: unset !important; 
+        margin: 0 !important; 
+        padding: 0 !important; /* شيلنا الـ padding لأن @page رجع يقوم بدوره */
+        box-shadow: none !important; 
+    }
+
+    /* 3. تنسيق الجدول والخطوط بشكل مرن */
+    th, td { 
+        padding: 4px 6px !important; 
+        font-size: 13px !important; /* حجم متوازن */
+    }
+    th { font-size: 14px !important; font-weight: bold !important; }
+    
+    .header { padding: 10px !important; margin-bottom: 10px !important; min-height: auto !important; }
+    .header h1 { font-size: 24px !important; margin-bottom: 5px !important; }
+    .header h1 span { font-size: 28px !important; }
+    .header p { font-size: 14px !important; margin: 0 !important; }
+
+    /* 4. الأوامر الحديثة لمنع التقسيم (Modern Break Properties) */
+    table { 
+        margin-bottom: 10px !important; 
+        break-inside: auto !important; 
+    }
+    thead { display: table-header-group !important; }
+    
+    /* هذا الكود هو المسؤول عن منع كسر صفوف الجدول بين الصفحات */
+    tr, td, th { 
+        page-break-inside: avoid !important; 
+        break-inside: avoid !important; 
+    }
+    tr { 
+        break-inside: avoid !important; 
+        break-after: auto !important;
+        page-break-inside: avoid !important; /* لدعم المتصفحات الأقدم */
+    }
+    
+    .signatures { 
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        margin-top: 15px !important; 
+    }
+    
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+}
