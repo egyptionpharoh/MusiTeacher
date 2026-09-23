@@ -14,6 +14,32 @@ export default function HomePage() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('account'); // للتحكم بتبويبات الإعدادات
   const [isReady, setIsReady] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
+
+  // تحقق محلي بسيط من تسجيل الدخول اعتماداً على بيانات الجلسة المحلية
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return Boolean(localStorage.getItem('user_token') || localStorage.getItem('isLoggedIn'));
+    }
+    return false;
+  });
+
+  const [isShaking, setIsShaking] = useState(false);
+
+  const triggerLockFeedback = (msg) => {
+    setIsShaking(true);
+    setToastMessage(msg);
+    
+    // إيقاف الاهتزاز بعد انتهاء الحركة مباشرة
+    setTimeout(() => {
+      setIsShaking(false);
+    }, 500);
+
+    // إخفاء التوست بعد ثانية واحدة
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 1200);
+  };
 
   // إعدادات الشات بوت
   const [messages, setMessages] = useState([
@@ -341,15 +367,45 @@ export default function HomePage() {
             )}
           </div>
           
-          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-blue-700'}`}>بنك التحضيرات</h2>
-          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>استعرض وحمل خطط الدروس المعتمدة رسمياً.</p>
+          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-blue-700'}`}>مصنع التحضيرات</h2>
+          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>توليد تحضيرات الدروس (نصوص وصور) بسرعة البرق بالذكاء الاصطناعي بدقة عالية.</p>
         </Link>
 
-        <Link href="/factory" className={`group relative overflow-hidden rounded-2xl transition-all duration-300 ease-out transform
+        <div 
+          onClick={(e) => {
+            if (!isLoggedIn) {
+              e.preventDefault();
+              triggerLockFeedback('🔒 يرجى تسجيل الدخول أولاً للوصول إلى المعلم المساعد.');
+            } else {
+              window.location.href = '/factory';
+            }
+          }}
+          className={`group relative overflow-hidden rounded-2xl transition-all duration-300 ease-out transform cursor-pointer select-none
+          ${isShaking ? 'animate-card-shake' : ''}
           ${isDark 
             ? 'p-8 duration-500 hover:-translate-y-3 bg-[#111827]/60 backdrop-blur-md border border-orange-500/20 hover:border-orange-400/60 hover:shadow-[0_0_30px_rgba(249,115,22,0.2)]' 
-            : 'p-6 hover:-translate-y-2 hover:scale-[1.05] bg-white border border-gray-200/60 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.12)] hover:border-orange-400'}`}>
-          
+            : 'p-6 hover:-translate-y-2 hover:scale-[1.05] bg-white border border-gray-200/60 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.12)] hover:border-orange-400'}`}
+        >
+          {/* التوست المنبثق من داخل الكارت نفسه */}
+          {toastMessage && (
+            <div className="absolute inset-0 z-30 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
+              <div className={`px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 text-center shadow-2xl ${
+                isDark ? 'bg-amber-950/90 border-amber-500/50 text-amber-200' : 'bg-amber-50 border-amber-300 text-amber-900'
+              }`}>
+                {toastMessage}
+              </div>
+            </div>
+          )}
+
+          {/* أيقونة شارة تقييد الوصول العلوية (Badge) */}
+          <div className="absolute top-4 left-4 z-20" title="يتطلب تسجيل الدخول">
+            <div className={`p-1.5 rounded-lg border backdrop-blur-md flex items-center justify-center transition-all shadow-sm ${
+              isDark ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-amber-50 border-amber-200 text-amber-600'
+            }`}>
+              <Lock size={14} />
+            </div>
+          </div>
+
           <div className={isDark ? "block" : "flex justify-between items-start mb-5"}>
             <div className={isDark ? "" : "w-12 h-12 rounded-xl bg-gradient-to-b from-orange-50/50 to-orange-100/50 border border-orange-100/50 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm"}>
               <Wand2 size={isDark ? 48 : 22} className={`transition-colors ${isDark ? 'mb-6 drop-shadow-md text-orange-400' : 'text-orange-500'}`} />
@@ -361,9 +417,9 @@ export default function HomePage() {
             )}
           </div>
           
-          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-orange-600'}`}>مصنع التحضيرات</h2>
-          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>مساعدك الذكي لتوليد تحضيرات إبداعية جديدة.</p>
-        </Link>
+          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-orange-600'}`}>المعلم المساعد</h2>
+          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>المساعد الذكي لإلهام المعلمين أدوات إبداعية جديدة لكل درس بالذكاء الاصطناعي.</p>
+        </div>
 
         <Link href="/dashboard/guide" className={`group relative block w-full h-full z-10 overflow-hidden rounded-2xl transition-all duration-300 ease-out transform pointer-events-auto
           ${isDark 
@@ -382,7 +438,7 @@ export default function HomePage() {
           </div>
           
           <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-green-700'}`}>الأدوات والألعاب التعليمية</h2>
-          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>أتمتة إدخال الدرجات في سجلات البوابة التعليمية.</p>
+          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}> كنوز تعليمية لا غنى عنها لاي معلم فنون/مهارات موسيقية.</p>
         </Link>
       </div>
 
