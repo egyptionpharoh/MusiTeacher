@@ -40,6 +40,6 @@
   ],
   "exclude": [
     "node_modules",
-    "src/features/NoorMark/NoorMark-Backend"
+    "src/features/NoorMark/NoorMark-Backend/**/*"
   ]
 }
