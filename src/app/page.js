@@ -33,51 +33,40 @@ export default function HomePage() {
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   useEffect(() => { scrollToBottom(); }, [messages, isTyping]);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || isTyping) return;
 
     const userMessage = inputText.trim();
+    // إضافة رسالة المستخدم للشاشة
     setMessages(prev => [...prev, { text: userMessage, isUser: true }]);
     setInputText('');
     setIsTyping(true);
 
-    setTimeout(() => {
+    try {
+      // إرسال الطلب للـ API الخاص بـ Gemini
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage, history: messages }),
+      });
+
+      const data = await response.json();
+      const aiReply = data.reply || data.text || "حدث خطأ أثناء استقبال الرد من الذكاء الاصطناعي.";
+
+      // إظهار رد الذكاء الاصطناعي الحقيقي
+      setMessages(prev => [...prev, { text: aiReply, isUser: false }]);
+    } catch (error) {
+      console.error("Error communicating with AI:", error);
+      setMessages(prev => [
+        ...prev, 
+        { text: "عذراً، حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً.", isUser: false }
+      ]);
+    } finally {
       setIsTyping(false);
-      let fullResponse = "";
-      const lowerMessage = userMessage.toLowerCase();
-
-      if (lowerMessage.includes('جوجل') || lowerMessage.includes('جيمني') || lowerMessage.includes('gemini') || lowerMessage.includes('google') || lowerMessage.includes('gpt')) {
-        fullResponse = "لا يا فندم، أنا لست تابعاً لجوجل أو جيمني. أنا 'المعلم الذكي'، تم برمجتي وتطويري حصرياً بواسطة الفنان المصري 'حسين الملك' لخدمة منصة MusiTeacher ومعلمي المهارات والفنون الموسيقية في سلطنة عمان.";      } 
-      else if (lowerMessage.includes('من أنت') || lowerMessage.includes('مين انت') || lowerMessage.includes('اسمك') || lowerMessage.includes('برمجك') || lowerMessage.includes('صنعك') || lowerMessage.includes('حسين')) {
-        fullResponse = "أنا مساعدك الذكي الخاص بمنصة MusiTeacher. مطوري هو الباحث الأكاديمي والمهندس 'حسين الملك'، وهدفي هو مساعدتك في أتمتة وتحضير دروسك بكل سهولة واحترافية.";
-      }
-      else if (lowerMessage.includes('مساء') || lowerMessage.includes('صباح') || lowerMessage.includes('سلام') || lowerMessage.includes('أهلا') || lowerMessage.includes('مرحبا')) {
-        fullResponse = "وعليكم السلام ورحمة الله وبركاته، أهلاً وسهلاً بك في بوابتك الذكية. يسعدني أن أكون مساعدك الرقمي في إعداد التحضيرات وتنظيم المهام التعليمية بكل سهولة ودقة. تفضل، أنا جاهز لمساعدتك.";      } 
-      else if (lowerMessage.includes('موسيقى') || lowerMessage.includes('إيقاع') || lowerMessage.includes('نوتة') || lowerMessage.includes('عزف') || lowerMessage.includes('درس') || lowerMessage.includes('تحضير')) {
-        fullResponse = "موضوع رائع! يمكننا استخدام 'مصنع التحضيرات' لتوليد أهداف دقيقة لهذا الدرس مع أنشطة تفاعلية للطلاب. هل ننتقل للمصنع الآن؟";
-      }
-      else if (lowerMessage.includes('شكرا') || lowerMessage.includes('تسلم') || lowerMessage.includes('يعطيك العافية') || lowerMessage.includes('بطل')) {
-        fullResponse = "العفو يا معلمنا المبدع! أنا هنا دائماً لتسهيل عملك. لا تتردد في سؤالي في أي وقت.";
-      }
-      else {
-        fullResponse = "هممم.. فهمت قصدك. لنجعل الأمور أكثر عملية، ما رأيك أن نتوجه إلى 'مصنع التحضيرات' لنقوم بصياغة هذه الفكرة في شكل درس موسيقي متكامل؟";
-      }
-
-      setMessages(prev => [...prev, { text: "", isUser: false }]);
-      
-      let currentIndex = 0;
-      const typingInterval = setInterval(() => {
-        setMessages(prev => {
-          const newMessages = [...prev];
-          const lastIndex = newMessages.length - 1;
-          newMessages[lastIndex] = { ...newMessages[lastIndex], text: fullResponse.slice(0, currentIndex + 1) };
-          return newMessages;
-        });
-        currentIndex++;
-        if (currentIndex >= fullResponse.length) clearInterval(typingInterval);
-      }, 40); // زيادة القيمة قليلاً تجعل الكتابة تبدو أكثر تأنياً ومحاكاة للبشر
-    }, 1000);
+    }
   };
 
  // تبويبات الإعدادات لتسهيل التنقل
