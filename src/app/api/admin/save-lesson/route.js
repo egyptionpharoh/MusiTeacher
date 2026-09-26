@@ -6,7 +6,8 @@ import path from 'path';
 const gradeMap = {
   "الصف الأول": "grade1", "الصف الثاني": "grade2", "الصف الثالث": "grade3",
   "الصف الرابع": "grade4", "الصف الخامس": "grade5", "الصف السادس": "grade6",
-  "الصف السابع": "grade7"
+  "الصف السابع": "grade7", "الصف الثامن": "grade8", "الصف التاسع": "grade9",
+  "الصف العاشر": "grade10", "الصف الحادي عشر": "grade11", "الصف الثاني عشر": "grade12"
 };
 
 export async function POST(req) {
@@ -100,12 +101,17 @@ export async function POST(req) {
 
     // 4. تجميع الدرس وحفظه كملف JSON (نحفظه كما جاء من المربع الآمن بالضبط)
     const finalLessonData = { metadata, core, precomputed_ai };
-    const jsonFilePath = path.join(jsonDir, `${safeTitle}.json`);
+    
+    // تحديد نوع المحتوى (لو مش موجود نعتبره تحضير كافتراضي)
+    const typeSuffix = metadata.contentType === 'summary' ? 'summary' : 'preparation';
+    
+    // إضافة النوع لاسم الملف عشان ميحصلش تداخل أو مسح للملفات
+    const jsonFileName = `${safeTitle}-${typeSuffix}.json`;
+    const jsonFilePath = path.join(jsonDir, jsonFileName);
     
     await fs.writeFile(jsonFilePath, JSON.stringify(finalLessonData, null, 2), 'utf8');
 
     return NextResponse.json({ success: true, message: 'تم حفظ الدرس والصور بنجاح!' });
-
   } catch (error) {
     console.error("Error saving lesson:", error);
     return NextResponse.json({ success: false, error: 'حصل خطأ أثناء حفظ الدرس.' }, { status: 500 });

@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "semester": "الفصل الدراسي الأول",
+    "grade": "الصف الثامن",
+    "title": "نشيد من فن النساء",
+    "contentType": "preparation",
+    "lessonScreenshots": [
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAA9CAYAAADoByY0AAAZHElEQVR4Xu3dB5RdVdUH8JOZhEAgEEhASgAJAkF6V4gooiiidBSlryUgUqREsVCkSEexSxFRUJSqUpSi9F6kSsdQQkBDLyFlJt/6Hdyzrjf3vZmBzPCG7/7Xuuu+d+8p++x22j7vDZo5c+bMVKNGjUoMqg2k7zFjxoy3mD1oUGpvb8+fOzs7E9/kmjZtWn7X1taW75HOd+jo6MhlRBrfp06dmoYPH56f1eg71AbSD2AAzz//fHrf+973P0ofRvK3v/0trbDCCumOO+5IH/3oR9PgwYPTsGHD8h0Yx+WXX57WX3/9NOecc6bnnnsufe9730s/+MEP0tChQ/uhBf9/URtIH4EBhHd/8skn009+8pN09NFHd/UCDIPiM5JvfOMbaaeddkrf/va3832xxRZLH/7wh9OQIUNy+jfffDN97nOfS2eccUY2sldeeSWnO+ecc3IahlT3JH2D2kD6CG+88Ub64Q9/mBZddNG0+eabp5NOOil961vfykYxffr0NNdcc+U7Q2FACy20UDr99NPT6quvniZOnJi+9KUv/c+w6qijjsqGJO3IkSPT8ccfn1ZaaaV08803pwMOOCCNGTOmq+4asw+1gfQRLr300qzwa6+9dtpqq63Saaedlr75zW+mq666Ki255JLp1VdfTddcc01ad91185BpvvnmS4899lhOf/3116evfe1r6bXXXks33HBD2mijjdKvf/3rnPbuu+/O5es9GNOkSZPSJptskj772c/+t+YasxO1gfQR7rzzzrTZZpul9dZbLx1xxBG59zDHYAiMQ+/gMtk2rzAkc2cIDz74YNp5553TU089le699970mc98Jl144YVp/PjxeTglP8wzzzzpxRdfTL/73e+ykdSY/agNpI/wj3/8I/3rX/9Kn/70p9Mcc8yRXnjhhfTvf/87D7l89sz84eWXX87DKHMRyr/gggvmOcf888+fnnjiifTlL385vf/9708PPfRQ+s53vpPLNJE3OY+J/hJLLJFGjBjRVXeN2YfaQPoIegcKHNtMsbzreyznulNw6WLiHu/dPb/sssuyoehFTM6vuOKKtP/+++eyvGdkxfJrzF7UBtIPoOyxylT8HKh6BuXnvkNV2hp9g9pAatRogh4biKEAzyW5IUAzRFqIu3ye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"
+    ]
+  },
+  "core": {
+    "strategies": [
+      "استراتيجية العرض التوضيحي / النمذجة",
+      "الاستماع والتذوق",
+      "العرض التوضيحي",
+      "النمذجة",
+      "الحوار والمناقشة",
+      "البيان العملي والمحاكاة",
+      "التكرار والممارسة",
+      "استراتيجية التعلم التعاوني"
+    ],
+    "resources": [
+      "آلة الأورج",
+      "طبلا الكاسر والرحماني",
+      "نموذج مرئي لإيقاع فن طبل النساء",
+      "بطاقات كلمات النشيد"
+    ],
+    "introduction": "اعرضي نموذجاً مرئياً على الطالبات يحوي إيقاع فن طبل النساء، ثم اعرضي عليهن النموذج (١)، واطلبي إليهن اختيار الإيقاع الصحيح من بين الإيقاعات المدرجة، ثم قسّمي الطالبات إلى مجموعتين، واطلبي إلى المجموعة الأولى تأدية إيقاع طبل الرحماني، والمجموعة الثانية تأدية إيقاع طبل الكاسر، كل على حدة.[صورة_1]",
+    "concepts": [
+      "زاهي: جميل المنظر.",
+      "تزدان: تتجمل.",
+      "قرة العين: ما تُسعد به العين.",
+      "حَوَّطَها: حَصَّنتها."
+    ],
+    "procedures": [
+      {
+        "stepIndex": 1,
+        "actionText": "يُنفذ نشيد 'زاهي وَطَنَّا بيومك'.",
+        "assignedStrategy": "استراتيجية العرض التوضيحي / النمذجة",
+        "subSteps": []
+      },
+      {
+        "stepIndex": 2,
+        "actionText": "ينبغي للمعلمة أن تُدَرِّسَ النشيد بالطريقة الموضحة فى إرشادات المعلمة وهي على النحو التالي:",
+        "assignedStrategy": null,
+        "subSteps": [
+          {
+            "stepIndex": 1,
+            "actionText": "تُسمعَ الطالبات موسيقا النشيد كاملة على آلة الأورج للتذوق، باستخدام استراتيجية \"الاستماع والتذوق\".",
+            "assignedStrategy": "الاستماع والتذوق"
+          },
+          {
+            "stepIndex": 2,
+            "actionText": "تَعرضَ نموذجاً لكلمات النشيد، وتقرأه عليهن مع التأكيد على تشكيل الكلمات، باستخدام استراتيجية \"العرض التوضيحي\".",
+            "assignedStrategy": "العرض التوضيحي"
+          },
+          {
+            "stepIndex": 3,
+            "actionText": "تُعيدَ قراءة النشيد، وتطلب إلى الطالبات الترديد بعدها، باستخدام استراتيجية \"النمذجة\".",
+            "assignedStrategy": "النمذجة"
+          },
+          {
+            "stepIndex": 4,
+            "actionText": "تُوضّحَ المعنى العام للنشيد، ومعاني المفردات التي تحتاج إلى إيضاح، باستخدام استراتيجية \"الحوار والمناقشة\".",
+            "assignedStrategy": "الحوار والمناقشة"
+          },
+          {
+            "stepIndex": 5,
+            "actionText": "تُعطي الطالبات بعض التدريبات الصوتية بما يتناسب مع سلم أو مقام النشيد، مع مراعاة أماكن أخذ النفس، باستخدام استراتيجية \"البيان العملي والمحاكاة\".",
+            "assignedStrategy": "البيان العملي والمحاكاة"
+          },
+          {
+            "stepIndex": 6,
+            "actionText": "تُنشِدَ الجزء الأول من النشيد بمصاحبة العزف، باستخدام استراتيجية \"العرض التوضيحي\".",
+            "assignedStrategy": "العرض التوضيحي"
+          },
+          {
+            "stepIndex": 7,
+            "actionText": "تُعيدَ إنشاد الجزء الأول شطراً بشطراً مع العزف، وتتابعْهُ الطالبات بالإنشاد، باستخدام استراتيجية \"البيان العملي والمحاكاة\".",
+            "assignedStrategy": "البيان العملي والمحاكاة"
+          },
+          {
+            "stepIndex": 8,
+            "actionText": "تطلبَ إلى الطالبات إنشاد الجزء الأول كاملاً مع مصاحبة العزف، باستخدام استراتيجية \"البيان العملي والمحاكاة\".",
+            "assignedStrategy": "البيان العملي والمحاكاة"
+          },
+          {
+            "stepIndex": 9,
+            "actionText": "تُكرّرَ العمل السابق مع بقية أجزاء النشيد، باستخدام استراتيجية \"التكرار والممارسة\".",
+            "assignedStrategy": "التكرار والممارسة"
+          },
+          {
+            "stepIndex": 10,
+            "actionText": "تطلبَ إلى الطالبات إنشاد النشيد كاملاً، وتصاحبهن بالعزف، باستخدام استراتيجية \"البيان العملي والمحاكاة\".",
+            "assignedStrategy": "البيان العملي والمحاكاة"
+          }
+        ]
+      },
+      {
+        "stepIndex": 3,
+        "actionText": "تتخير بعض الطالبات لأداء الإيقاع الخاص بالفن على طبلي الكاسر والرحماني، وتطلب إلى بقية الطالبات إنشاد النشيد مع مصاحبتهن بالعزف، وتكرر ذلك مع بقية الطالبات.",
+        "assignedStrategy": "استراتيجية التعلم التعاوني",
+        "subSteps": []
+      }
+    ],
+    "formativeAssessment": "النشاط الأول: قسّمي الطالبات إلى مجموعات، وتخيري طالبة من كل مجموعة لاختيار إحدى البطاقات، مع مراعاة كتابتكِ لبيتين من كلمات النشيد في كل منها مسبقاً، ثم اطلبي إلى كل مجموعة إنشاد ما ورد بها وصاحبيهن بالعزف، ثم بادلي الأدوار بينهن. النشاط الثاني: استعيني بما درسته الطالبات في فن طبل النساء (للإناث)، واطلبي إليهن مسبقاً توفير المتاح فيما يتعلق بالفن لأدائه حركياً وإيقاعياً، مع إنشاد النشيد الخاص به.",
+    "summativeAssessment": "س1: أنشدي النشيد بطريقة صحيحة. س2: أدِّي إيقاع فن طبل النساء (للإناث) أثناء الإنشاد."
+  },
+  "precomputed_ai": {}
+}

@@ -13,10 +13,18 @@ export default function SmartTeacher() {
     setMessages((prev) => [...prev, userMsg]);
 
     try {
+      // تجميع المحادثة (الرسائل القديمة + الرسالة الجديدة) ليفهم النموذج السياق
+      const currentChat = [...messages, userMsg];
+      const chatHistory = currentChat.map(msg => 
+        `${msg.type === 'user' ? 'المعلم' : 'المساعد الذكي'}: ${msg.text}`
+      ).join('\n');
+      
+      const fullContextMessage = `إليك سياق المحادثة حتى الآن:\n${chatHistory}\n\nرد الآن كالمساعد الذكي بشكل طبيعي ومختصر بناءً على آخر رسالة من المعلم في السياق.`;
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text }), // مستقبلاً هنجيب بيانات المستخدم من Firebase Auth
+        body: JSON.stringify({ message: fullContextMessage }), // مستقبلاً هنجيب بيانات المستخدم من Firebase Auth
       });
 
       const data = await res.json();

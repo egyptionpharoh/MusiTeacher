@@ -1,9 +1,10 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import AppHeader from '../../../components/AppHeader'; // تأكد من صحة المسار
-import { CheckCircle, XCircle } from 'lucide-react'; // استدعاء الأيقونات
+import { useRouter } from 'next/navigation';
+import AppHeader from '@/components/AppHeader';
+import { CheckCircle, XCircle } from 'lucide-react';
 
-// داتا المنهج (كما هي)
+// داتا المنهج
 const semesterOneData = {
   "الصف الأول": ["النشيد الوطني", "العلامة الإيقاعية النوار والسكتة المقابلة لها", "الحدة والغلظة - السرعة والبطء", "اللعبة الشعبية (حبوه موه تدوري)", "المدرج الموسيقي ومفتاح صول", "تطبيقات على المدرج الموسيقي"],
   "الصف الثاني": ["النشيد الوطني", "سلم (دو) الكبير وإشارات اليد الدالة على الأثر النفسي", "تدريبات صوتية وغنائية", "العلامة الإيقاعية البلانش والسكتة المقابلة لها", "نشيد (أقسمت أحبك يا وطني)", "الشدة والخفوت"],
@@ -12,23 +13,69 @@ const semesterOneData = {
   "الصف الخامس": ["نشيد (نهضة متجددة)", "الميزان الرباعي", "العلامة الإيقاعية (الروند) والسكتة المقابلة لها", "آلة الأوكورديون", "قراءة إيقاعية وصولفيج غنائي", "عزف مقطوعة موسيقية على آلة الأكورديون"],
   "الصف السادس": ["الأزمنة الأساسية وتقسيماتها", "نشيد (عُمان عظيمة بشعبها )", "التمييز السمعي", "الشكل الإيقاعي (طفافي)", "قراءة إيقاعية وصولفيج غنائي", "عزف مقطوعة موسيقية"],
   "الصف السابع": ["نشيد (وَحْيُ الإِلْهَامِ).", "الرِّباط الزَّمَنِي والنُّقْطَة الزَّمَنِيَّة.", "الشَّكْلان الإِيقاعيَّان (تافي&تافا).", "شَخْصيَّة موسيقيَّة عالميَّة (موتسارت).", "قِراءَة إِيقاعيَّة وصولفيج غِنائي.", "عَزْف مَقْطوعَة موسيقيَّة."],
-  "الصف الثامن": ["فَنَّا (البَرْعة) و(طَبْل النِّساء).", "نشيدان من فَنَّي (البرعة) و(طبل النِّساء).", "ابتكارات لحنية.", "أبعاد سلَّم (دو) الكبير.", "قراءة إيقاعية وصولفيج غنائي.", "عزف مقطوعة موسيقية."],
-  "الصف التاسع": ["الحبال الصوتية والجهاز التنفسي", "العيوب الشائعة في الغناء وطرق معالجتها", "تدريبات لتحسين مستوى الصوت", "الدور", "إنشاد دور يا من به تجلى الكروب", "عزف موسيقا الدور", "الآلات الإيقاعية العربية", "ضربي سماعي سربند وسماعي ثقيل", "استماع وتذوق موسيقا عربية سماعي بياتي"],
-  "الصف العاشر": ["مفتاح ( فا ) الخط الرابع", "سلم ( فا ) الكبير وسلم ( رى ) الصغير الهارموني", "التآلف الكبير والتآلف الصغير", "فن المولد", "نشيد (يا نبي سلام عليك)", "آلات من التراث العماني", "العصر الرومانسي (الرومانتيكي) (١٨٠٠ - ١٩٠٠)", "جوزيبه فردي (١٨١٣ - ١٩٠١)", "عزف مقطوعة موسيقية"],
-  "الصف الحادي عشر": [
-  "1. عنصر الإيقاع",
-"2. عنصر النغم",
-"3. عنصر التعبير (التظليل)",
-"4. التآلفات الهارمونية",
-"5. المصاحبة الهارمونية",
-"6. عزف الألحان الهارمونية",
-"7. نبذة تاريخية لآلة الجيتار",
-"8. مكونات آلة الجيتار",
-"9. طريقة العزف على آلة الجيتار",
-"10. فن الصوت",
-"11. من فن الصوت (صوت عمان الجميلة)",
+"الصف الثامن": [
+    "فَنَّا (البَرْعة) و(طَبْل النِّساء).", 
+    "نشيد من فن البرعة", 
+    "نشيد من فن النساء", 
+    "ابتكارات لحنية.", 
+    "أبعاد سلَّم (دو) الكبير.", 
+    "قراءة إيقاعية وصولفيج غنائي.", 
+    "عزف مقطوعة موسيقية."
   ],
-  "الصف الثاني عشر": ["الطبقات الصوتية", "التنفس والرنين", "تدريبات عملية لتربية الصوت", "قواعد هارمونية", "مصاحبة هارمونية", "عزف تآلفات هارمونية", "انتشار الموسيقا في الأندلس", "زرياب (٧٧٧م - ٨٥٢م)", "الموشحات الأندلسية"]};
+"الصف التاسع": [
+  "الحبال الصوتية والجهاز التنفسي",
+  "العيوب الشائعة في الغناء وطرق معالجتها",
+  "تدريبات لتحسين مستوى الصوت",
+  "الدور",
+  "إنشاد دور يا من به تجلى الكروب",
+  "عزف موسيقا الدور",
+  "الآلات الإيقاعية العربية",
+  "ضربي سماعي سربند وسماعي ثقيل",
+  "استماع وتذوق موسيقا عربية سماعي بياتي",
+  "حل اسئلة كتاب الانشطة ص9",
+  "حل اسئلة كتاب الانشطة ص10",
+  "حل اسئلة كتاب الانشطة ص 11",
+  "حل اسئلة كتاب الانشطة ص15",
+  "حل اسئلة كتاب الانشطة ص16",
+  "حل اسئلة كتاب الانشطة ص17",  "حل اسئلة كتاب الانشطة ص21",
+  "حل اسئلة كتاب الانشطة ص22",  "حل اسئلة كتاب الانشطة ص23"
+],
+"الصف العاشر": [
+  "مفتاح ( فا ) الخط الرابع",
+  "سلم ( فا ) الكبير وسلم ( رى ) الصغير الهارموني",
+  "التآلف الكبير والتآلف الصغير",
+  "فن المولد",
+  "نشيد (يا نبي سلام عليك)",
+  "آلات من التراث العماني",
+  "العصر الرومانسي (الرومانتيكي) (١٨٠٠ - ١٩٠٠)",
+  "جوزيبه فردي (١٨١٣ - ١٩٠١)",
+  "عزف مقطوعة موسيقية",
+  "حل اسئلة كتاب الانشطة ص9",
+  "حل اسئلة كتاب الانشطة ص11",
+  "حل اسئلة كتاب الانشطة ص 14",
+  "حل اسئلة كتاب الانشطة ص16",
+  "حل اسئلة كتاب الانشطة ص18",
+  "حل اسئلة كتاب الانشطة ص20",
+  "حل اسئلة كتاب الانشطة ص22",
+  "حل اسئلة كتاب الانشطة ص24",
+  "حل اسئلة كتاب الانشطة ص26"
+],
+  "الصف الحادي عشر": [
+    "1. عنصر الإيقاع",
+    "2. عنصر النغم",
+    "3. عنصر التعبير (التظليل)",
+    "4. التآلفات الهارمونية",
+    "5. المصاحبة الهارمونية",
+    "6. عزف الألحان الهارمونية",
+    "7. نبذة تاريخية لآلة الجيتار",
+    "8. مكونات آلة الجيتار",
+    "9. طريقة العزف على آلة الجيتار",
+    "10. فن الصوت",
+    "11. من فن الصوت (صوت عمان الجميلة)"
+  ],
+  "الصف الثاني عشر": ["الطبقات الصوتية", "التنفس والرنين", "تدريبات عملية لتربية الصوت", "قواعد هارمونية", "مصاحبة هارمونية", "عزف تآلفات هارمونية", "انتشار الموسيقا في الأندلس", "زرياب (٧٧٧م - ٨٥٢م)", "الموشحات الأندلسية"]
+};
+
 const semesterTwoData = {
   "الصف الأول": ["نشيد (أرقامي)", "العلامة الإيقاعية الكروش والسكتة المقابلة لها", "إيقاع حركي", "نشيد (أسرتي)", "آلات الباند", "عزف مقطوعة على آلات الباند"],
   "الصف الثاني": ["اللعبة الشعبية (حدلجي مدلجي)", "الميزان الثنائي", "قراءة إيقاعية وغناء صولفائي", "نشيد (أركان الإسلام)", "عزف مقطوعة موسيقية على آلات الباند", "إيقاع حركي للبلانش (ل)"],
@@ -50,26 +97,27 @@ const syllabusData = {
 };
 
 export default function SmartContentEditor() {
+  const router = useRouter();
   const [metadata, setMetadata] = useState({ semester: '', grade: '', title: '' });
+  const [contentType, setContentType] = useState('preparation'); // 'preparation' أو 'summary'
+
   const proceduresRef = useRef(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  // حالة التوست الجديد
-  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   const availableGrades = metadata.semester ? Object.keys(syllabusData[metadata.semester] || {}) : [];
   const availableLessons = (metadata.semester && metadata.grade) ? syllabusData[metadata.semester][metadata.grade] || [] : [];
 
-  // دالة تشغيل التوست
   const showToastMessage = (message, type = 'success') => {
     setToast({ show: true, message, type });
     setTimeout(() => {
       setToast({ show: false, message: '', type: 'success' });
-    }, 4000); // التوست بيختفي لوحده بعد 4 ثواني
+    }, 4000);
   };
 
   const handleSemesterChange = (e) => {
@@ -100,28 +148,15 @@ export default function SmartContentEditor() {
 
       let rawJsonText = editorClone.textContent;
       
-      // --- بداية كود التنظيف والإصلاح الذكي للـ JSON ---
-      
-      // 1. إزالة وسوم الكود (Markdown) مثل ```json و ```
+      // --- تنظيف وإصلاح الـ JSON ---
       rawJsonText = rawJsonText.replace(/```json/gi, '').replace(/```/g, '');
-
-      // 2. تنظيف الحروف المخفية غير المرئية
       rawJsonText = rawJsonText.replace(/[\uFFFC\u200B\u200C\u200D\uFEFF]/g, '');
-
-      // 3. تحويل علامات التنصيص المائلة والعربية (“” « ») إلى مفردة (') حتى لا تكسر الـ JSON
       rawJsonText = rawJsonText.replace(/[“”«»]/g, "'");
-
-      // 4. معالجة علامات التنصيص المزدوجة الداخليّة الملتصقة بنصوص عربية وتحويلها لمفردة (')
       rawJsonText = rawJsonText.replace(/([\u0600-\u06FF]\s*)"([\u0600-\u06FF])/g, "$1'$2");
-
-      // 5. إزالة الفواصل الزائدة قبل الأقواس المغلقة
       rawJsonText = rawJsonText.replace(/,\s*([\}\]])/g, '$1');
-
-      // 6. إصلاح مشكلة انفصال علامات التنصيص حول الصورة
       rawJsonText = rawJsonText.replace(/"\s*\[(صورة_\d+)\]\s*"/g, ' [$1] ');
       rawJsonText = rawJsonText.replace(/"\s*\[(صورة_\d+)\]\s*,/g, ' [$1]",');
       
-      // 7. تأمين الأسطر الجديدة (Enter) والمسافات الخاصة داخل النصوص
       let safeJson = '';
       let isInsideString = false;
       let isEscaped = false;
@@ -132,24 +167,14 @@ export default function SmartContentEditor() {
         if (char === '\\') { safeJson += char; isEscaped = true; continue; }
         if (char === '"') { isInsideString = !isInsideString; safeJson += char; continue; }
         
-        // تحويل Enter والـ Tab داخل النصوص إلى رموز آمنة للـ JSON
         if (char === '\n' || char === '\r') {
-          if (isInsideString) {
-            safeJson += '\\n';
-          } else {
-            safeJson += char;
-          }
+          safeJson += isInsideString ? '\\n' : char;
         } else if (char === '\t') {
-          if (isInsideString) {
-            safeJson += '\\t';
-          } else {
-            safeJson += char;
-          }
+          safeJson += isInsideString ? '\\t' : char;
         } else {
           safeJson += char;
         }
       }
-      // --- نهاية كود التنظيف ---
 
       let parsedLesson;
       try {
@@ -161,14 +186,21 @@ export default function SmartContentEditor() {
         return;
       }
 
+      // مرونة استخراج كائن البيانات سواء كان ملتف داخل core أو كائن مباشر
+      const targetCore = parsedLesson.core ? parsedLesson.core : parsedLesson;
+
       const updatedMetadata = {
         ...metadata,
+        contentType: contentType,
         lessonScreenshots: extractedImages
       };
 
+      // بناء الـ Payload ليدعم بنك التحضيرات والملخصات معاً
       const lessonPayload = {
         metadata: updatedMetadata,
-        core: parsedLesson.core,
+        core: targetCore,
+        preparation: contentType === 'preparation' ? targetCore : undefined,
+        summary: contentType === 'summary' ? targetCore : undefined,
         precomputed_ai: {}
       };
 
@@ -199,7 +231,7 @@ export default function SmartContentEditor() {
       
       <AppHeader /> 
       
-      {/* تصميم التوست العائم (يظهر ويختفي بأنيميشن سلس) */}
+      {/* التوست العائم */}
       <div 
         className={`fixed bottom-10 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ease-in-out ${
           toast.show ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-10 scale-95 pointer-events-none'
@@ -217,13 +249,22 @@ export default function SmartContentEditor() {
 
       <div className="w-full max-w-5xl mt-32 p-4">
         <h1 className="text-4xl font-bold text-transparent bg-clip-text mb-8 drop-shadow-md text-center" style={{ backgroundImage: 'var(--text-gradient-primary)' }}>
-          مصنع إدخال الدروس (نوت بوك LM إلى JSON)
+          مصنع إدخال الدروس بصيغة ال JSON
         </h1>
 
-        {/* الميتاداتا */}
+        {/* الميتاداتا ونوع المحتوى */}
         <div className="glass-card p-8 rounded-3xl mb-8 transition-all duration-500 relative overflow-hidden">
-          <h2 className="text-xl font-bold mb-4 text-stone-800 dark:text-cyan-300">1. بيانات الدرس</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <h2 className="text-xl font-bold mb-4 text-stone-800 dark:text-cyan-300">1. بيانات الدرس ونوع المحتوى</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <select 
+              value={contentType} 
+              onChange={(e) => setContentType(e.target.value)} 
+              className="w-full bg-stone-50 hover:bg-stone-100 dark:bg-white/5 text-stone-900 dark:text-white border border-stone-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500 outline-none transition-all duration-300 dark:backdrop-blur-sm font-bold text-emerald-500"
+            >
+              <option value="preparation" className="bg-white dark:bg-[#111827]">تحضير درس</option>
+              <option value="summary" className="bg-white dark:bg-[#111827]">تلخيص درس</option>
+            </select>
+
             <select 
               value={metadata.semester} 
               onChange={handleSemesterChange} 
@@ -237,7 +278,7 @@ export default function SmartContentEditor() {
             <select 
               value={metadata.grade} 
               onChange={handleGradeChange} 
-              disabled={!isMounted || !metadata.semester}
+              disabled={!metadata.semester}
               className="w-full bg-stone-50 hover:bg-stone-100 dark:bg-white/5 text-stone-900 dark:text-white border border-stone-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500 outline-none disabled:opacity-50 transition-all duration-300 dark:backdrop-blur-sm"
             >
               <option value="" disabled className="bg-white dark:bg-[#111827] text-stone-500">اختر الصف...</option>
@@ -249,7 +290,7 @@ export default function SmartContentEditor() {
             <select 
               value={metadata.title} 
               onChange={(e) => setMetadata({...metadata, title: e.target.value})} 
-              disabled={!isMounted || !metadata.grade}
+              disabled={!metadata.grade}
               className="w-full bg-stone-50 hover:bg-stone-100 dark:bg-white/5 text-stone-900 dark:text-white border border-stone-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 dark:focus:ring-cyan-500 outline-none disabled:opacity-50 transition-all duration-300 dark:backdrop-blur-sm"
             >
               <option value="" disabled className="bg-white dark:bg-[#111827] text-stone-500">اختر الدرس...</option>
@@ -264,12 +305,9 @@ export default function SmartContentEditor() {
         <div className="glass-card p-8 rounded-3xl mb-8 transition-all duration-500 relative overflow-hidden">
           <h2 className="text-xl font-bold mb-2 text-stone-800 dark:text-cyan-300">2. إجراءات السير (انسخ النص والصور هنا)</h2>
           
-          {/* تعديل 1: العبارة باللون الأبيض في الوضع الليلي فقط */}
           <p className="text-sm text-stone-600 dark:text-white mb-4 transition-colors">
-            اضغط بالأسفل واعمل Paste لرد NotebookLM مع صور الاسكرين شوت...
-          </p>
+قم بنسخ الداتا المطلوبة لتوليد التحضيرات المطلوبة فى ميوزيتيتشر           </p>
           
-          {/* المربع الآمن للحفاظ على صناديق الليجو (JSON) والصور معاً */}
           <div 
             ref={proceduresRef}
             contentEditable="true"
@@ -278,20 +316,18 @@ export default function SmartContentEditor() {
             data-placeholder="قم بلصق كود JSON الخارج من نوت بوك والصور هنا..."
             dir="ltr"
             onPaste={(e) => {
-              // التقاط الصور المنسوخة (Screenshots) وتحويلها للعرض الفوري
               const items = e.clipboardData?.items;
               if (items) {
                 for (let i = 0; i < items.length; i++) {
                   if (items[i].type.indexOf('image') !== -1) {
-                    e.preventDefault(); // نمنع السلوك الافتراضي للصورة فقط حتى لا تضيع
+                    e.preventDefault();
                     const file = items[i].getAsFile();
                     const reader = new FileReader();
                     reader.onload = (event) => {
                       const img = document.createElement('img');
-                      img.src = event.target.result; // Data URL (Base64)
+                      img.src = event.target.result;
                       img.className = 'max-w-full rounded-lg my-4 border border-stone-200 shadow-sm';
                       
-                      // وضع الصورة في المكان الذي يقف فيه مؤشر الماوس
                       const selection = window.getSelection();
                       if (selection.rangeCount > 0) {
                         const range = selection.getRangeAt(0);
@@ -318,7 +354,7 @@ export default function SmartContentEditor() {
           className="w-full text-white font-bold text-xl px-12 py-5 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-[0.98] disabled:opacity-50 transition-all duration-300 flex justify-center items-center gap-2"
           style={{ background: 'var(--primary-gradient)' }}
         >
-          {isSaving ? 'جاري استخراج الصور وحفظ الدرس...' : 'حفظ في البنك 💾'}
+          {isSaving ? 'جاري المعالجة والحفظ...' : (contentType === 'preparation' ? 'حفظ في مصنع التحضيرات 💾' : 'حفظ في مصنع الملخصات 💾')}
         </button>
       </div>
     </div>

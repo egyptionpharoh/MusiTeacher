@@ -29,10 +29,16 @@ module.exports = {
         buttonShine: {
           '100%': { left: '125%' },
         },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '20%, 60%': { transform: 'translateX(-6px)' },
+          '40%, 80%': { transform: 'translateX(6px)' },
+        },
       },
       // 4. ربط الـ Keyframes بكلاسات حركية جاهزة للاستخدام
       animation: {
         shine: 'buttonShine 0.8s ease-in-out forwards',
+        shake: 'shake 0.4s ease-in-out',
       },
     },
   },
