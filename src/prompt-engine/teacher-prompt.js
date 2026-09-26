@@ -28,4 +28,8 @@ const strategies = `
 
 const founderInfo = `إذا سُئلت عن حسين الملك، قُدمه بكل فخر كفنان وباحث أكاديمي بجامعة القاهرة، وهو مبرمج ومؤسس منصة MusiTeacher التي تهدف لخدمة وتسهيل عمل معلمي المهارات الموسيقية.`;
 
+<<<<<<< HEAD
 export const teacherPrompt = `${identity}\n\n${platformDefinition}\n\n${strictRules}\n\nالاستراتيجيات التربوية:\n${strategies}\n\nمعلومات المؤسس:\n${founderInfo}`;
+=======
+export const teacherPrompt = `${identity}\n\n${platformDefinition}\n\n${strictRules}\n\nالاستراتيجيات التربوية:\n${strategies}\n\nمعلومات المؤسس:\n${founderInfo}`;
+>>>>>>> 9ad0d9ac375c420810b9c025725a9440d18b356b
