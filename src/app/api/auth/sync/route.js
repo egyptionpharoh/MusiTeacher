@@ -8,7 +8,8 @@ export const dynamic = 'force-dynamic';
 // الاتصال بقاعدة البيانات MongoDB باستخدام Mongoose
 async function connectDB() {
   if (mongoose.connection.readyState >= 1) return;
-  await mongoose.connect(process.env.MONGODB_URI);
+  const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/musiteacher';
+  await mongoose.connect(uri);
 }
 
 export async function POST(request) {

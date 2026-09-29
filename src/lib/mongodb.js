@@ -1,10 +1,10 @@
 import { MongoClient } from 'mongodb';
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('يرجى إضافة MONGODB_URI في ملف .env.local');
-}
+const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/musiteacher';
 
-const uri = process.env.MONGODB_URI;
+if (!process.env.MONGODB_URI && process.env.NODE_ENV === 'production') {
+  console.warn('تحذير: MONGODB_URI غير معرف في بيئة الإنتاج');
+}
 let client;
 let clientPromise;
 
