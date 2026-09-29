@@ -3,6 +3,8 @@ import clientPromise from '@/lib/mongodb';
 import User from '@/models/User';
 import mongoose from 'mongoose';
 
+export const dynamic = 'force-dynamic';
+
 // الاتصال بقاعدة البيانات MongoDB باستخدام Mongoose
 async function connectDB() {
   if (mongoose.connection.readyState >= 1) return;
