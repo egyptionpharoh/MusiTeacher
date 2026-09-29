@@ -2,13 +2,17 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '@/context/AuthContext';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut } from 'firebase/auth';
 import Image from 'next/image';
 import { 
   BookOpen, Wand2, FileSpreadsheet, X, Send as SendIcon, Bot, Settings,
-  User, Palette, Bell, Lock, Database, Accessibility, HelpCircle, LogOut, Trash2, Eye, ArrowUpLeft 
+  User, Palette, Bell, Lock, Database, Accessibility, HelpCircle, LogOut, Trash2, Eye, EyeOff, ArrowUpLeft 
 } from 'lucide-react';
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const { theme, changeTheme, isDark } = useTheme();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -16,13 +20,126 @@ export default function HomePage() {
   const [isReady, setIsReady] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  // تحقق محلي بسيط من تسجيل الدخول اعتماداً على بيانات الجلسة المحلية
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return Boolean(localStorage.getItem('user_token') || localStorage.getItem('isLoggedIn'));
+  // حقول بيانات الحساب والتسجيل الفوري
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
+
+  // مزامنة حالة تسجيل الدخول الحقيقية من Firebase Auth
+  const isLoggedIn = Boolean(user);
+
+  useEffect(() => {
+    if (user) {
+      setFullName(user.displayName || (typeof window !== 'undefined' ? localStorage.getItem('user_name') : '') || '');
+      setEmail(user.email || (typeof window !== 'undefined' ? localStorage.getItem('user_email') : '') || '');
+    } else if (typeof window !== 'undefined') {
+      setFullName(localStorage.getItem('user_name') || '');
+      setEmail(localStorage.getItem('user_email') || '');
     }
-    return false;
-  });
+  }, [user]);
+
+  // دوال حفظ التعديلات وتسجيل الدخول الفعلي في Firebase وتسجيل الخروج وحذف الحساب
+  const handleSaveProfile = async () => {
+    if (!email || !password) {
+      alert('يرجى إدخال البريد الإلكتروني وكلمة المرور لتسجيل الدخول.');
+      return;
+    }
+    setIsAuthLoading(true);
+    try {
+      let userCredential;
+      try {
+        // تجربة تسجيل الدخول بحساب Firebase موجود
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        // إذا لم يكن الحساب موجوداً أو كانت الاعتمادات لإنشاء حساب جديد
+        if (
+          err.code === 'auth/user-not-found' || 
+          err.code === 'auth/invalid-credential' ||
+          err.code === 'auth/invalid-email'
+        ) {
+          try {
+            userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          } catch (createErr) {
+            throw createErr;
+          }
+        } else {
+          throw err;
+        }
+      }
+
+      // تحديث اسم المستخدم في Firebase
+      if (fullName && userCredential?.user) {
+        await updateProfile(userCredential.user, { displayName: fullName });
+      }
+
+      // حفظ نسخة محلياً
+      localStorage.setItem('user_name', fullName);
+      localStorage.setItem('user_email', email);
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('user_token', 'active_session');
+
+      alert('تم حفظ البيانات وتسجيل الدخول بنجاح!');
+      setIsSettingsOpen(false);
+    } catch (error) {
+      console.error("خطأ أثناء تسجيل الدخول/الحفظ:", error);
+      let errorMsg = 'حدث خطأ أثناء المصادقة. يرجى التأكد من البيانات والمحاولة مجدداً.';
+      
+      if (error.code === 'auth/configuration-not-found' || error.code === 'auth/operation-not-allowed') {
+        errorMsg = 'ميزة تسجيل الدخول بالبريد غير مفعّلة في لوحة تحكم Firebase Console.\n\nيرجى التوجه إلى Firebase Console -> Authentication -> Sign-in method وتفعيل خيار (Email/Password).';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMsg = 'كلمة المرور غير صحيحة.';
+      } else if (error.code === 'auth/email-already-in-use') {
+        errorMsg = 'كلمة المرور التي أدخلتها غير صحيحة لهذا الحساب المسجل بالفعل.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMsg = 'صيغة البريد الإلكتروني غير صحيحة.';
+      } else if (error.code === 'auth/weak-password') {
+        errorMsg = 'كلمة المرور ضعيفة (يجب أن تكون 6 أحرف أو أرقام على الأقل).';
+      } else if (error.code === 'auth/api-key-not-valid') {
+        errorMsg = 'مفتاح Firebase API Key غير صحيح في ملف .env.local';
+      }
+      
+      alert(errorMsg);
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem('user_token');
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_email');
+      alert('تم تسجيل الخروج بنجاح.');
+      setIsSettingsOpen(false);
+    } catch (error) {
+      console.error("خطأ أثناء تسجيل الخروج:", error);
+      alert('حدث خطأ أثناء تسجيل الخروج.');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (confirm('هل أنت متأكد من حذف الحساب نهائياً؟')) {
+      try {
+        if (auth.currentUser) {
+          await auth.currentUser.delete();
+        }
+        await signOut(auth);
+        localStorage.clear();
+        alert('تم حذف الحساب والبيانات بنجاح.');
+        setIsSettingsOpen(false);
+      } catch (error) {
+        console.error("خطأ أثناء حذف الحساب:", error);
+        await signOut(auth);
+        localStorage.clear();
+        alert('تم تفريغ بيانات الحساب وتسجيل الخروج.');
+        setIsSettingsOpen(false);
+      }
+    }
+  };
 
   const [isShaking, setIsShaking] = useState(false);
 
@@ -205,25 +322,54 @@ export default function HomePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-medium opacity-80">الاسم الكامل</label>
-                      <input type="text" placeholder="حسين الملك" className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition-all ${isDark ? 'bg-[#0A1628] border-gray-700' : 'bg-gray-50 border-gray-200'}`} />
+                      <input 
+                        type="text" 
+                        value={fullName} 
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="مثال: حسين الملك" 
+                        className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder:text-gray-400 placeholder:opacity-60 ${isDark ? 'bg-[#0A1628] border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} 
+                      />
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium opacity-80">البريد الإلكتروني</label>
-                      <input type="email" placeholder="hussien.elmalek@gmail.com" className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition-all ${isDark ? 'bg-[#0A1628] border-gray-700' : 'bg-gray-50 border-gray-200'}`} />
+                      <input 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="مثال: hussien.elmalek@gmail.com" 
+                        className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder:text-gray-400 placeholder:opacity-60 ${isDark ? 'bg-[#0A1628] border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} 
+                      />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium opacity-80">كلمة المرور</label>
+                      <label className="text-sm font-medium opacity-80">كلمة المرور (للدخول وتثبيت الجلسة)</label>
                       <div className="relative">
-                        <input type="password" placeholder="••••••••" className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition-all ${isDark ? 'bg-[#0A1628] border-gray-700' : 'bg-gray-50 border-gray-200'}`} />
-                        <Eye className="absolute left-3 top-3.5 opacity-50 cursor-pointer hover:opacity-100" size={20} />
+                        <input 
+                          type={showPassword ? "text" : "password"} 
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••" 
+                          className={`w-full px-4 py-3 pl-10 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition-all ${isDark ? 'bg-[#0A1628] border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} 
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute left-3 top-3.5 opacity-60 hover:opacity-100 transition-all duration-200 focus:outline-none"
+                          title={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+                        >
+                          {showPassword ? (
+                            <EyeOff size={20} className="text-blue-500 transition-transform duration-300 scale-110" />
+                          ) : (
+                            <Eye size={20} className="transition-transform duration-300 hover:scale-110" />
+                          )}
+                        </button>
                       </div>
                     </div>
                   </div>
 
                   <div className="pt-6 flex gap-4 flex-wrap">
-                    <button className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30">حفظ التعديلات</button>
-                    <button className="px-6 py-2.5 flex items-center gap-2 bg-red-500/10 text-red-500 font-medium rounded-xl hover:bg-red-500 hover:text-white transition-colors"><LogOut size={18} /> تسجيل الخروج</button>
-                    <button className="px-6 py-2.5 flex items-center gap-2 border border-red-500/50 text-red-500 font-medium rounded-xl hover:bg-red-500 hover:text-white transition-colors mr-auto"><Trash2 size={18} /> حذف الحساب</button>
+                    <button onClick={handleSaveProfile} className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30">حفظ الدخول والتعديلات</button>
+                    <button onClick={handleLogout} className="px-6 py-2.5 flex items-center gap-2 bg-red-500/10 text-red-500 font-medium rounded-xl hover:bg-red-500 hover:text-white transition-colors"><LogOut size={18} /> تسجيل الخروج</button>
+                    <button onClick={handleDeleteAccount} className="px-6 py-2.5 flex items-center gap-2 border border-red-500/50 text-red-500 font-medium rounded-xl hover:bg-red-500 hover:text-white transition-colors mr-auto"><Trash2 size={18} /> حذف الحساب</button>
                   </div>
                 </div>
               )}

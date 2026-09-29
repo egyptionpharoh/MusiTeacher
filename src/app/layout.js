@@ -1,6 +1,7 @@
 // ده السقف والحيطان الخارجية للموقع كله
 import './globals.css';
 import { ThemeProvider } from '../context/ThemeContext';
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata = {
   title: 'MusiTeacher - منصة معلمي المهارات الموسيقية',
@@ -14,9 +15,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <body className="transition-colors duration-500">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,17 +1,55 @@
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-    username: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    // تخصص المعلم عشان الروبوت يعرف يتكلم معاه في إيه
-    specialization: { type: String, default: 'موسيقى' }, 
-    // حالة الاشتراك في MusiTeacher
-    status: { 
-        type: String, 
-        enum: ['active', 'expired', 'suspended'], 
-        default: 'active' 
+const UserSchema = new mongoose.Schema(
+  {
+    // الرقم التعريفي الفريد القادم من Firebase (أساسي للربط)
+    uid: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    subscriptionDate: { type: Date, default: Date.now }
-}, { timestamps: true });
+    // البريد الإلكتروني للمستخدم
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+    // اسم المستخدم
+    displayName: {
+      type: String,
+      default: '',
+    },
+    // صورة البروفايل
+    photoURL: {
+      type: String,
+      default: '',
+    },
+    // تخصص المعلم
+    specialization: {
+      type: String,
+      default: 'موسيقى',
+    },
+    // صلاحية المستخدم (مستخدم عادي، معلم، أو أدمن)
+    role: {
+      type: String,
+      enum: ['user', 'teacher', 'admin'],
+      default: 'teacher',
+    },
+    // هل الاشتراك حالياً فعال؟
+    isSubscribed: {
+      type: Boolean,
+      default: false,
+    },
+    // تاريخ انتهاء الاشتراك
+    subscriptionEndDate: {
+      type: Date,
+      default: null,
+    },
+  },
+  {
+    timestamps: true, // يضيف تلقائياً تاريخ إنشاء الحساب وتاريخ آخر تعديل
+  }
+);
 
-export default mongoose.models.User || mongoose.model('User', userSchema);
+export default mongoose.models.User || mongoose.model('User', UserSchema);
