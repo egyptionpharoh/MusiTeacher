@@ -20,3 +20,4 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export default clientPromise;
+// تحديث إجباري لحل مشكلة البناء في Vercel
