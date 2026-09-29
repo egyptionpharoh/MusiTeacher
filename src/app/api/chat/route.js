@@ -1,8 +1,39 @@
 import { NextResponse } from 'next/server';
+import clientPromise from '@/lib/mongodb';
+import User from '@/models/User';
+import mongoose from 'mongoose';
+
+async function connectDB() {
+  if (mongoose.connection.readyState >= 1) return;
+  const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/musiteacher';
+  await mongoose.connect(uri);
+}
 
 export async function POST(req) {
   try {
-    const { message } = await req.json();
+    const body = await req.json();
+    const { message, uid } = body;
+
+    await connectDB();
+    const dbUser = uid ? await User.findOne({ uid }) : null;
+
+    // التحقق من حالة الاشتراك وتاريخ الانتهاء
+    let isValidSub = false;
+    if (dbUser && dbUser.isSubscribed) {
+      if (dbUser.subscriptionEndDate) {
+        const endDate = new Date(dbUser.subscriptionEndDate);
+        const now = new Date();
+        if (endDate > now) {
+          isValidSub = true;
+        }
+      }
+    }
+
+    // إذا لم يكن مسجلاً للدخول أو ليس لديه اشتراك فعال، نجعل البوت يرد بهذه الرسالة مباشرة
+    if (!uid || !isValidSub) {
+      const replyText = "عذراً لا يمكنك التحدث مع المعلم الذكي The Smart Teacher إلا إذا كنت مشتركاً فى إحدى الباقات المدفوعة، يمكنك اختيار الباقة المناسبة لك، مع أطيب امنياتي لك بيوم سعيد.. 🎵";
+      return NextResponse.json({ reply: replyText });
+    }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
