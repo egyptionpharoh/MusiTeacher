@@ -29,17 +29,38 @@ export async function POST(request) {
     const isAdminEmail = email.toLowerCase().trim() === 'egyptionpharoh5@gmail.com';
 
     if (!user) {
-      user = await User.create({
-        uid,
-        email,
-        displayName: displayName || '',
-        photoURL: photoURL || '',
-        role: isAdminEmail ? 'admin' : 'teacher',
-        isSubscribed: false,
-        subscriptionEndDate: null,
-      });
+      // 🚨 الجدار الواقي الجديد: 
+      // قبل أن نعتبره مستخدماً جديداً وننشئ حساباً فارغاً من الاشتراكات،
+      // نبحث أولاً هل له حساب سابق بنفس الإيميل (إذا دخل بحساب جوجل مثلاً ولديه حساب سابق)
+      let existingUserByEmail = await User.findOne({ email: email.toLowerCase().trim() });
+
+      if (existingUserByEmail) {
+        // ممتاز! وجدنا حسابه القديم (الذي قد يحتوي على اشتراك مفعل).
+        // سنقوم بتحديث رقم uid الخاص به ليتطابق مع تسجيل دخوله الحالي لمنع ضياع الباقة
+        existingUserByEmail.uid = uid;
+        existingUserByEmail.displayName = displayName || existingUserByEmail.displayName;
+        existingUserByEmail.photoURL = photoURL || existingUserByEmail.photoURL;
+        
+        if (isAdminEmail) {
+          existingUserByEmail.role = 'admin';
+        }
+        
+        await existingUserByEmail.save();
+        user = existingUserByEmail; // نعتمد هذا الحساب ليعود للواجهة
+      } else {
+        // مستخدم جديد كلياً
+        user = await User.create({
+          uid,
+          email: email.toLowerCase().trim(), // توحيد حالة الأحرف لتفادي أخطاء التفعيل مستقبلاً
+          displayName: displayName || '',
+          photoURL: photoURL || '',
+          role: isAdminEmail ? 'admin' : 'teacher',
+          isSubscribed: false,
+          subscriptionEndDate: null,
+        });
+      }
     } else {
-      // تحديث البيانات الأساسية وترقية حسابك إلى admin تلقائياً
+      // المستخدم موجود وتم العثور عليه برقم uid، نحدث بياناته الأساسية
       user.displayName = displayName || user.displayName;
       user.photoURL = photoURL || user.photoURL;
       if (isAdminEmail) {
