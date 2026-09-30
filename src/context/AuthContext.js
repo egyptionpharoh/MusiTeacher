@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState(null); 
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export const AuthProvider = ({ children }) => {
               const isValidSubscription = userData.isSubscribed && endDate && endDate > now;
               
               setIsSubscribed(isValidSubscription);
+              setIsAdmin(userData.role === 'admin');
               setSubscriptionData({
                 isSubscribed: userData.isSubscribed,
                 endDate: endDate
@@ -66,6 +68,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setIsSubscribed(false);
         setSubscriptionData(null);
+        setIsAdmin(false);
       }
       
       setLoading(false);
@@ -76,7 +79,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     // توفير بيانات الاشتراك المفصلة للمنصة لاستخدامها في واجهة الباقات
-    <AuthContext.Provider value={{ user, isSubscribed, subscriptionData, loading }}>
+    <AuthContext.Provider value={{ user, isSubscribed, subscriptionData, isAdmin, loading }}>
       {children}
     </AuthContext.Provider>
   );

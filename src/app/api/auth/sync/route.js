@@ -25,19 +25,26 @@ export async function POST(request) {
     // البحث عن المستخدم أو إنشاؤه/تحديثه
     let user = await User.findOne({ uid });
 
+    // فحص ما إذا كان البريد هو بريد مدير المنصة
+    const isAdminEmail = email.toLowerCase().trim() === 'egyptionpharoh5@gmail.com';
+
     if (!user) {
       user = await User.create({
         uid,
         email,
         displayName: displayName || '',
         photoURL: photoURL || '',
+        role: isAdminEmail ? 'admin' : 'teacher',
         isSubscribed: false,
         subscriptionEndDate: null,
       });
     } else {
-      // تحديث البيانات الأساسية إن تطلب الأمر
+      // تحديث البيانات الأساسية وترقية حسابك إلى admin تلقائياً
       user.displayName = displayName || user.displayName;
       user.photoURL = photoURL || user.photoURL;
+      if (isAdminEmail) {
+        user.role = 'admin';
+      }
       await user.save();
     }
 
