@@ -48,8 +48,12 @@ export default function AdminSubscriptions() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        showToastMessage(`تم التفعيل بنجاح! ينتهي الاشتراك في: ${new Date(data.endDate).toLocaleDateString('ar-OM')}`, 'success');
-        setEmail(''); // تنظيف الحقل ليكون جاهزاً للمستخدم التالي
+        if (data.alreadyActive) {
+          showToastMessage(`المستخدم مشترك بالفعل وينتهي اشتراكه في: ${new Date(data.endDate).toLocaleDateString('ar-OM')}`, 'error');
+        } else {
+          showToastMessage(`تم التفعيل بنجاح! ينتهي الاشتراك في: ${new Date(data.endDate).toLocaleDateString('ar-OM')}`, 'success');
+          setEmail(''); // تنظيف الحقل ليكون جاهزاً للمستخدم التالي
+        }
       } else {
         showToastMessage(data.message || 'حصل خطأ أثناء التفعيل', 'error');
       }
