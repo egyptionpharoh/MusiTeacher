@@ -39,15 +39,20 @@ export async function POST(req) {
         message: 'لم يتم العثور على مستخدم بهذا البريد الإلكتروني في المنصة.' 
       }, { status: 404 });
     }
-    if (!targetUser) {
+
+    const now = new Date();
+
+    // فحص: هل المستخدم لديه اشتراك فعال حالياً؟
+    if (targetUser.isSubscribed && targetUser.subscriptionEndDate && targetUser.subscriptionEndDate > now) {
       return NextResponse.json({ 
-        success: false, 
-        message: 'لم يتم العثور على مستخدم بهذا البريد الإلكتروني في المنصة.' 
-      }, { status: 404 });
+        success: true, 
+        alreadyActive: true, // علامة مميزة لنخبر الواجهة الأمامية أن الاشتراك مفعل مسبقاً
+        message: 'المستخدم مشترك بالفعل',
+        endDate: targetUser.subscriptionEndDate // نرسل تاريخ الانتهاء الحقيقي المحفوظ في قاعدة البيانات
+      });
     }
 
     // 4. حساب تاريخ انتهاء الاشتراك بناءً على نوع الباقة
-    const now = new Date();
     let expirationDate = new Date(now);
 
     if (planType === 'semester') {
