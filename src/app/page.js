@@ -80,8 +80,17 @@ export default function HomePage() {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('user_token', 'active_session');
 
-      alert('تم حفظ البيانات وتسجيل الدخول بنجاح!');
+      // تشغيل الـ Toast بدلاً من الأليرت
+      setToastMessage('تم حفظ البيانات وتسجيل الدخول بنجاح!');
+      if (typeof triggerLockFeedback === 'function') triggerLockFeedback(); // تشغيل الاهتزاز لو الدالة موجودة
+
+      // إغلاق صفحة الإعدادات فورًا (نفس سلوك زر X تمامًا) للعودة للصفحة الرئيسية
       setIsSettingsOpen(false);
+
+      // إخفاء الـ Toast بعد 3 ثواني
+      setTimeout(() => {
+        setToastMessage('');
+      }, 3000);
     } catch (error) {
       console.error("خطأ أثناء تسجيل الدخول/الحفظ:", error);
       let errorMsg = 'حدث خطأ أثناء المصادقة. يرجى التأكد من البيانات والمحاولة مجدداً.';
@@ -367,8 +376,12 @@ export default function HomePage() {
                   </div>
 
                   <div className="pt-6 flex gap-4 flex-wrap">
-                    <button onClick={handleSaveProfile} className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30">حفظ الدخول والتعديلات</button>
-                    <button onClick={handleLogout} className="px-6 py-2.5 flex items-center gap-2 bg-red-500/10 text-red-500 font-medium rounded-xl hover:bg-red-500 hover:text-white transition-colors"><LogOut size={18} /> تسجيل الخروج</button>
+                    <button 
+                      onClick={isLoggedIn ? handleLogout : handleSaveProfile} 
+                      className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/30"
+                    >
+                      {isLoggedIn ? 'تسجيل الخروج' : 'تسجيل الدخول'}
+                    </button>
                     <button onClick={handleDeleteAccount} className="px-6 py-2.5 flex items-center gap-2 border border-red-500/50 text-red-500 font-medium rounded-xl hover:bg-red-500 hover:text-white transition-colors mr-auto"><Trash2 size={18} /> حذف الحساب</button>
                   </div>
                 </div>
@@ -637,12 +650,29 @@ export default function HomePage() {
         </div>
 
         <button 
-  onClick={() => setIsChatOpen(!isChatOpen)} 
-  className="relative w-[70px] h-[70px] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 group border-2 pointer-events-auto shadow-[0_0_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(0,210,256,0.3)] bg-white border-blue-100 dark:bg-gray-900 dark:border-gray-700"
->
+          onClick={() => setIsChatOpen(!isChatOpen)} 
+          className="relative w-[70px] h-[70px] rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 group border-2 pointer-events-auto shadow-[0_0_20px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(0,210,256,0.3)] bg-white border-blue-100 dark:bg-gray-900 dark:border-gray-700"
+        >
           <span className="text-3xl z-10 transition-transform duration-300 group-hover:scale-110">🤖</span>
         </button>
       </div>
+
+      {/* 🚀 Toast Notification UI */}
+      {toastMessage && (
+        <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 z-[100] bg-[#1a1f2e] border border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.3)] text-white px-6 py-3.5 rounded-2xl flex items-center gap-3 transition-all duration-300 animate-[bounce_0.5s_ease-in-out]">
+          {/* أيقونة علامة الصح */}
+          <div className="bg-blue-500/20 p-1 rounded-full">
+            <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <span className="font-medium text-sm md:text-base tracking-wide">
+            {toastMessage}
+          </span>
+        </div>
+      )}
+
     </div>
+    
   );
 }
