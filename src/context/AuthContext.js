@@ -30,10 +30,22 @@ export const AuthProvider = ({ children }) => {
             }),
           });
 
+          // 🔍 [كشاف أستاذ حسين] - طباعة حالة استجابة السيرفر
+          console.log("🔍 API /auth/sync Status:", res.status);
+
           if (res.ok) {
             const data = await res.json();
+            
+            // 🔍 [كشاف أستاذ حسين] - طباعة هويتك كما يراها النظام
+            console.log("🔥 Firebase User:", { uid: currentUser.uid, email: currentUser.email });
+            console.log("🔥 Mongo Server Response:", data);
+
             if (data.success && data.user) {
               const userData = data.user;
+
+              // 🔍 [كشاف أستاذ حسين] - طباعة الصلاحية الفعلية وقيمة الأدمن
+              console.log("👑 User Role from DB:", userData.role);
+              console.log("🛡️ Is Admin Value:", userData.role === 'admin');
               
               // معالجة تاريخ الانتهاء القادم من MongoDB
               let endDate = null;

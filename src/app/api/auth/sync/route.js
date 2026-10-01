@@ -26,7 +26,12 @@ export async function POST(request) {
     let user = await User.findOne({ uid });
 
     // فحص ما إذا كان البريد هو بريد مدير المنصة
-    const isAdminEmail = email.toLowerCase().trim() === 'egyptionpharoh5@gmail.com';
+    const adminEmails = [
+      'egyptionpharoh5@gmail.com',
+      // يمكنك إضافة إيميلك الحالي هنا بين علامتي تنصيص، على سبيل المثال:
+       'hussien.elmalek.gmail.com'
+    ];
+    const isAdminEmail = adminEmails.includes(email.toLowerCase().trim());
 
     if (!user) {
       // 🚨 الجدار الواقي الجديد: 

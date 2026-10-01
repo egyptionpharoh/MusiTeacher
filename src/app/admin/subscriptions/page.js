@@ -34,7 +34,8 @@ export default function AdminSubscriptions() {
     setIsActivating(true);
     try {
       // إرسال طلب التفعيل إلى الـ API السري الذي أنشأناه في المرحلة السابقة
-      const res = await fetch('/api/admin/subscriptions/activate', {
+      // 🚀 تم تصحيح المسار ليتطابق مع مجلد route.js الفعلي
+      const res = await fetch('/api/admin/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

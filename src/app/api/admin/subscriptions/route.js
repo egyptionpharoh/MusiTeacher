@@ -29,8 +29,16 @@ export async function POST(req) {
       }, { status: 403 });
     }
 
-    // 3. البحث عن المستخدم المراد تفعيل اشتراكه باستخدام الإيميل
-    const targetUser = await User.findOne({ email: targetEmail.toLowerCase().trim() });
+    // 3. البحث عن المستخدم المراد تفعيل اشتراكه باستخدام الإيميل وتحديث حالته مباشرة لضمان عدم ضياع الاشتراك
+    const normalizedEmail = targetEmail.toLowerCase().trim();
+    let targetUser = await User.findOne({ email: normalizedEmail });
+
+    if (!targetUser) {
+      return NextResponse.json({ 
+        success: false, 
+        message: 'لم يتم العثور على مستخدم بهذا البريد الإلكتروني في المنصة.' 
+      }, { status: 404 });
+    }
     if (!targetUser) {
       return NextResponse.json({ 
         success: false, 
