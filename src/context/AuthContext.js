@@ -55,13 +55,18 @@ export const AuthProvider = ({ children }) => {
 
               const now = new Date();
               
-              // الاشتراك فعال إذا كان isSubscribed صحيح وتاريخ الانتهاء لم يأتِ بعد
-              const isValidSubscription = userData.isSubscribed && endDate && endDate > now;
+              // 1. استخراج حالة الأدمن من قاعدة البيانات
+              const isAdminUser = userData.role === 'admin';
+              
+              // 2. الاشتراك يكون فعالاً (true) بشكل دائم للأدمن، 
+              // أو للمستخدم العادي إذا كان مشتركاً وتاريخ انتهائه لم يأتِ بعد
+              const isValidSubscription = isAdminUser || (userData.isSubscribed && endDate && endDate > now);
               
               setIsSubscribed(isValidSubscription);
-              setIsAdmin(userData.role === 'admin');
+              setIsAdmin(isAdminUser);
               setSubscriptionData({
-                isSubscribed: userData.isSubscribed,
+                // دمج حالة الصلاحية الدائمة للأدمن مع بيانات الاشتراك
+                isSubscribed: isValidSubscription,
                 endDate: endDate
               });
             } else {

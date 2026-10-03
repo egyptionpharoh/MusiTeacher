@@ -80,10 +80,12 @@ export default function HomePage() {
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('user_token', 'active_session');
 
-      // تشغيل الـ Toast بدلاً من الأليرت
-      setToastMessage('تم حفظ البيانات وتسجيل الدخول بنجاح!');
-      if (typeof triggerLockFeedback === 'function') triggerLockFeedback(); // تشغيل الاهتزاز لو الدالة موجودة
-
+      // تشغيل الـ Toast والاهتزاز مع تمرير الرسالة بشكل صحيح للدالة
+      if (typeof triggerLockFeedback === 'function') {
+        triggerLockFeedback('تم حفظ البيانات وتسجيل الدخول بنجاح!');
+      } else {
+        setToastMessage('تم حفظ البيانات وتسجيل الدخول بنجاح!');
+      }
       // إغلاق صفحة الإعدادات فورًا (نفس سلوك زر X تمامًا) للعودة للصفحة الرئيسية
       setIsSettingsOpen(false);
 
@@ -195,11 +197,20 @@ export default function HomePage() {
     setIsTyping(true); // تشغيل تأثير نقاط التحميل (الثلاث نقاط)
 
     try {
+      // تجهيز الهيدرات الأساسية
+      let requestHeaders = {
+        'Content-Type': 'application/json',
+      };
+
+      // لو المستخدم مسجل دخول، بنجيب التوكن ونضيفه للحماية
+      if (auth.currentUser) {
+        const idToken = await auth.currentUser.getIdToken();
+        requestHeaders['Authorization'] = `Bearer ${idToken}`;
+      }
+
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: requestHeaders,
         body: JSON.stringify({ message: userMessage, history: messages }),
       });
 

@@ -231,10 +231,37 @@ export default function BankPage() {
       setCustomAlert({ type: 'warning', title: 'خطوة مفقودة!', message: 'يرجى اختيار الصف والدرس.' });
       return;
     }
+
+    // 🚨 === [Police Patch: جدار الحماية لتسجيل الدخول والاشتراك] === 🚨
     
+    // 1. التحقق من تسجيل الدخول
+    if (!user) {
+      setCustomAlert({
+        type: 'warning',
+        title: 'تنبيه تسجيل الدخول',
+        message: 'عذراً، يرجى تسجيل الدخول أولاً لتتمكن من توليد التحضيرات.'
+      });
+      return; // حظر إكمال العملية
+    }
+    
+    // 2. التحقق من اشتراك المعلم في الباقة المدفوعة
+    if (!isSubscribed) {
+      setCustomAlert({
+        type: 'warning',
+        title: 'تنبيه الاشتراك 👑',
+        message: 'ميزة توليد التحضيرات بالذكاء الاصطناعي حصرية لمشتركي MusiTeacher Pro.\nيرجى الترقية للاستفادة من الميزة كاملة.'
+      });
+      setIsPricingOpen(true); // فتح نافذة باقات الاشتراك فوراً
+      return; // حظر التوليد واستدعاء السيرفر نهائياً
+    }
+    
+    // ==========================================================
+
     setCustomAlert({ type: 'info', title: 'جاري توليد التحضير...', message: 'يرجى الانتظار، النظام يقوم بمعالجة البيانات...' });
     setIsLoading(true);
     setShowLesson(false);
+
+    // ... (باقي كود الدالة كما هو بدون تغيير بدءاً من const startTime = Date.now(); ) ...
 
     // إضافة زمن تحميل لا يقل عن 2.5 ثانية ليشعر المستخدم بواقعية العمل في الخلفية
     const startTime = Date.now();
@@ -276,14 +303,16 @@ export default function BankPage() {
 
       {/* قسم العنوان والترحيب - الهوية البصرية الفاخرة (Premium SaaS Vibe) */}
       <div className="text-center mt-32 md:mt-40 mb-12 w-full max-w-4xl px-4 flex flex-col items-center z-10 relative">
-        {/* زر ترقية الحساب واستعراض الباقات */}
-        <button
-          onClick={() => setIsPricingOpen(true)}
-          className="mb-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500/20 via-red-500/20 to-rose-500/20 border border-red-500/40 text-red-500 dark:text-red-400 font-bold text-sm shadow-lg hover:scale-105 transition-all duration-300"
-        >
-          <span>👑</span>
-          <span>ترقية الحساب واستعراض الباقات</span>
-        </button>
+        {/* زر ترقية الحساب واستعراض الباقات (يظهر فقط لمن ليس لديه اشتراك فعال أو صلاحية أدمن) */}
+        {!isSubscribed && (
+          <button
+            onClick={() => setIsPricingOpen(true)}
+            className="mb-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500/20 via-red-500/20 to-rose-500/20 border border-red-500/40 text-red-500 dark:text-red-400 font-bold text-sm shadow-lg hover:scale-105 transition-all duration-300"
+          >
+            <span>👑</span>
+            <span>ترقية الحساب واستعراض الباقات</span>
+          </button>
+        )}
         {/* التدرج اللوني الأحمر النيون مع مساحة سفلية لمنع حجب النقاط وظل فاتح للعزل البصري */}
         <h1 className="text-6xl md:text-7xl font-black mb-8 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-red-600 to-rose-500 pb-4 leading-[1.2] drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]">
           مصنع التحضيرات المتطورة

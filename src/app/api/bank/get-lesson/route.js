@@ -2,7 +2,13 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 
-// نفس الأداة اللي استخدمناها في الحفظ عشان نوحد مسارات الفولدرات
+// 🚨 الخطوة 1: استيراد دوال التحقق من المستخدم من نظامك 
+// (قم بتعديل هذا السطر بناءً على النظام اللي بتستخدمه: NextAuth أو Firebase أو JWT مخصص)
+// import { getServerSession } from "next-auth/next";
+// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// أو لو بتستخدم MongoDB وتوكن مخصص:
+// import { verifyTokenAndGetUser } from '@/lib/auth';
+
 const gradeMap = {
   "الصف الأول": "grade1", "الصف الثاني": "grade2", "الصف الثالث": "grade3",
   "الصف الرابع": "grade4", "الصف الخامس": "grade5", "الصف السادس": "grade6",
@@ -12,6 +18,37 @@ const gradeMap = {
 
 export async function POST(req) {
   try {
+    // ==========================================
+    // 🚨 POLICE PATCH: حماية السيرفر من المتطفلين 🚨
+    // ==========================================
+    
+    // 1. التحقق من تسجيل الدخول (Authentication)
+    // لو بتستخدم NextAuth:
+    // const session = await getServerSession(authOptions);
+    // if (!session || !session.user) {
+    //   return NextResponse.json({ success: false, error: 'غير مصرح: يرجى تسجيل الدخول أولاً. 🚫' }, { status: 401 });
+    // }
+
+    // -- أو لو بتستخدم نظام Token في الـ Headers --
+    /*
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ success: false, error: 'غير مصرح: توكن مفقود أو غير صالح. 🚫' }, { status: 401 });
+    }
+    const token = authHeader.split(' ')[1];
+    const user = await verifyTokenAndGetUser(token); // دالة مخصصة للتحقق من التوكن في الداتابيز (MongoDB)
+    */
+
+    // 2. التحقق من حالة الاشتراك (Authorization)
+    // هنا بنتأكد إن اليوزر مش بس مسجل دخول، لأ وكمان حسابه مفعل ومشترك
+    // if (!session.user.isSubscribed) { // أو user.isSubscribed حسب طريقتك
+    //   return NextResponse.json({ success: false, error: 'عفواً، هذا المحتوى متاح للمشتركين فقط. 🔒' }, { status: 403 });
+    // }
+    
+    // ==========================================
+    // نهاية الـ Police Patch
+    // ==========================================
+
     const { semester, grade, title, contentType } = await req.json();
 
     // 1. تحديد المسار اللي هندور فيه بناءً على طلب المعلم
@@ -54,7 +91,7 @@ export async function POST(req) {
       }
     }
 
-    // 3. قراءة الملف وإرساله للواجهة (في أجزاء من الثانية - بدون أي ذكاء اصطناعي)
+    // 3. قراءة الملف وإرساله للواجهة
     const fileContent = await fs.readFile(jsonFilePath, 'utf8');
     const lessonData = JSON.parse(fileContent);
 
