@@ -2,10 +2,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import broadcastsData from "@/data/school-broadcasts.json";
-import { Cairo, Amiri } from "next/font/google";
-
-const cairo = Cairo({ subsets: ["arabic"], weight: ["400", "600", "700"] });
-const amiri = Amiri({ subsets: ["arabic"], weight: ["400", "700"] });
 
 export default function SchoolBroadcastsPage() {
   const [category, setCategory] = useState("");
@@ -16,10 +12,9 @@ export default function SchoolBroadcastsPage() {
   const [broadcastDetails, setBroadcastDetails] = useState(null);
   const [displayedText, setDisplayedText] = useState("");
   const [copied, setCopied] = useState(false);
-  const [isTypingFinished, setIsTypingFinished] = useState(false);
 
-  // استخراج التصنيفات (المناسبات) من المصفوفة بدون تكرار
-  const categories = [...new Set(broadcastsData.map(item => item.occasion))].filter(Boolean);
+  const categories = Object.keys(broadcastsData);
+
   // تحديث المواضيع بناءً على القسم المختار
   const handleCategoryChange = (e) => {
     const val = e.target.value;
@@ -28,9 +23,7 @@ export default function SchoolBroadcastsPage() {
     setBroadcastDetails(null);
     setDisplayedText("");
     if (val) {
-      // جلب عناوين الإذاعات التي تتطابق مع المناسبة المختارة
-      const filteredTopics = broadcastsData.filter(item => item.occasion === val).map(item => item.title);
-      setTopicsList(filteredTopics);
+      setTopicsList(Object.keys(broadcastsData[val]));
     } else {
       setTopicsList([]);
     }
@@ -45,11 +38,9 @@ export default function SchoolBroadcastsPage() {
       setIsLoading(true);
       setBroadcastDetails(null);
       setDisplayedText("");
-      setIsTypingFinished(false);
       
       setTimeout(() => {
-        // البحث عن الإذاعة ككائن كامل يطابق العنوان والمناسبة
-        const data = broadcastsData.find(item => item.title === val && item.occasion === category);
+        const data = broadcastsData[category]?.[val];
         if (data) {
           setBroadcastDetails(data);
         }
@@ -64,11 +55,7 @@ export default function SchoolBroadcastsPage() {
   // تأثير الآلة الكاتبة لعرض فقرات الإذاعة
   useEffect(() => {
     if (broadcastDetails) {
-      // دمج العناوين والمحتوى من sections في نص واحد، مع حماية ضد البيانات الناقصة
-      const textToType = broadcastDetails.sections 
-        ? broadcastDetails.sections.map(sec => `📌 ${sec.title}\n${sec.content}`).join("\n")
-        : (broadcastDetails.content || "عذراً، محتوى الإذاعة غير متوفر بصيغة صحيحة.");
-        
+      const textToType = broadcastDetails.content;
       let i = 0;
       setDisplayedText("");
       
@@ -78,7 +65,6 @@ export default function SchoolBroadcastsPage() {
           i++;
         } else {
           clearInterval(typingInterval);
-          setIsTypingFinished(true);
         }
       }, 20);
       
@@ -89,133 +75,10 @@ export default function SchoolBroadcastsPage() {
   // نسخ المحتوى للسبورة أو الحافظة
   const handleCopy = () => {
     if (broadcastDetails) {
-      const fullText = broadcastDetails.sections 
-        ? broadcastDetails.sections.map(sec => `📌 ${sec.title}\n${sec.content}`).join("\n\n")
-        : (broadcastDetails.content || "");
-        
-      navigator.clipboard.writeText(fullText);
+      navigator.clipboard.writeText(broadcastDetails.content);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
-  };
-
-  // تجهيز الإذاعة للطباعة أو الحفظ كملف PDF
-  const handlePrint = () => {
-    if (!broadcastDetails) return;
-    
-    const printWindow = window.open('', '_blank');
-    const contentHtml = broadcastDetails.sections 
-      ? broadcastDetails.sections.map(sec => `
-          <div class="section">
-            <h3>📌 ${sec.title}</h3>
-            <p>${sec.content}</p>
-          </div>
-        `).join('')
-      : `<p style="white-space: pre-wrap; line-height: 1.9; color: #111; font-size: 18px;">${broadcastDetails.content || ""}</p>`;
-
-    printWindow.document.write(`
-      <html dir="rtl" lang="ar">
-        <head>
-          <title>${broadcastDetails.title}</title>
-          <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600;700&display=swap" rel="stylesheet">
-          <style>
-            body {
-              font-family: 'Amiri', serif;
-              padding: 40px;
-              max-width: 800px;
-              margin: 0 auto;
-              color: #000;
-              background: #fff;
-            }
-            h1 {
-              font-family: 'Cairo', sans-serif;
-              text-align: center;
-              color: #000;
-              border-bottom: 2px solid #ddd;
-              padding-bottom: 15px;
-              margin-bottom: 30px;
-              font-size: 28px;
-            }
-            h3 {
-              font-family: 'Cairo', sans-serif;
-              color: #333;
-              margin-bottom: 8px;
-              font-size: 20px;
-              border-bottom: 1px solid #eee;
-              padding-bottom: 5px;
-            }
-            p {
-              white-space: pre-wrap;
-              line-height: 1.9;
-              color: #111;
-              margin: 0;
-              font-size: 18px;
-            }
-            .section {
-              margin-bottom: 25px;
-              page-break-inside: avoid;
-            }
-            .print-footer {
-              margin-top: 60px;
-              padding-top: 12px;
-              border-top: 1px solid #eee;
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: space-between;
-              font-family: 'Cairo', sans-serif;
-              page-break-inside: avoid;
-            }
-            .footer-text {
-              margin: 0;
-              font-size: 11px;
-              color: #777;
-              font-weight: 600;
-            }
-            .qr-container img {
-              width: 50px;
-              height: 50px;
-              object-fit: contain;
-              display: block;
-              border-radius: 4px;
-            }
-            .qr-placeholder {
-              width: 48px;
-              height: 48px;
-              border: 1px dashed #ccc;
-              border-radius: 6px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 9px;
-              color: #aaa;
-              background-color: #fafafa;
-            }
-            @media print {
-              body { padding: 0; }
-              @page { margin: 1.5cm; }
-            }
-          </style>
-        </head>
-        <body>
-          <h1>${broadcastDetails.title}</h1>
-          ${contentHtml}
-          <div class="print-footer">
-            <p class="footer-text">منصة MusiTeacher تتمنى لكم يوماً موفقاً بإذن الله</p>
-            <div class="qr-container">
-              <img src="/qrcode.png" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" alt="QR Code" />
-              <div class="qr-placeholder" style="display:none;">QR Code</div>
-            </div>
-          </div>
-          <script>
-            window.onload = () => {
-              setTimeout(() => { window.print(); }, 800);
-            };
-          </script>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
   };
 
   return (
@@ -225,7 +88,7 @@ export default function SchoolBroadcastsPage() {
         {/* أزرار العودة والتنقل */}
         <div className="flex items-center justify-between gap-4 pb-2">
           <Link
-            href="/dashboard/tools"
+            href="/tools"
             className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-pink-300 bg-white/5 border border-pink-500/30 rounded-xl backdrop-blur-md hover:bg-pink-500/10 hover:border-pink-400 hover:text-pink-200 transition-all duration-300 shadow-[0_0_15px_rgba(244,114,182,0.15)] group"
           >
             <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,25 +176,46 @@ export default function SchoolBroadcastsPage() {
           {broadcastDetails && !isLoading && (
             <div className="space-y-6 relative z-10">
               
-              {/* شريط الإجراءات: العنوان فقط */}
+              {/* شريط الإجراءات: العنوان + أزرار النسخ والتحميل */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
                 <div className="flex items-center space-x-3 space-x-reverse">
                   <div className="w-3.5 h-3.5 bg-pink-400 rounded-full animate-pulse shadow-[0_0_12px_rgba(244,114,182,0.8)]"></div>
-                  <h3 className={`text-2xl font-bold text-pink-300 ${cairo.className}`}>{broadcastDetails.title}</h3>
+                  <h3 className="text-2xl font-bold text-pink-300">{broadcastDetails.title}</h3>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleCopy}
+                    className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/15 hover:bg-white/10 text-gray-200 rounded-xl text-sm font-medium transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <span>{copied ? "تم النسخ!" : "نسخ النص"}</span>
+                  </button>
+
+                  <a
+                    href={broadcastDetails.pdfUrl}
+                    download
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white rounded-xl text-sm font-semibold shadow-[0_0_20px_rgba(244,114,182,0.4)] hover:shadow-[0_0_25px_rgba(244,114,182,0.6)] transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>تحميل الإذاعة PDF</span>
+                  </a>
                 </div>
               </div>
 
               {/* كود عرض السطور مع الآلة الكاتبة ومؤشر النيون الوردي */}
-              <div className={`text-xl md:text-2xl leading-loose text-gray-200 tracking-wide space-y-5 pt-2 ${amiri.className}`}>
+              <div className="text-lg md:text-xl leading-relaxed text-gray-200 font-medium tracking-wide space-y-4 pt-2">
                 {displayedText.split("\n").map((line, idx, arr) => {
                   const isLastLine = idx === arr.length - 1;
-                  const cursorNode = isLastLine && !isTypingFinished ? (
+                  const cursorNode = isLastLine ? (
                     <span className="inline-block w-2.5 h-6 bg-gradient-to-b from-pink-300 to-rose-500 mx-1 animate-pulse align-middle rounded-sm shadow-[0_0_10px_rgba(244,114,182,0.8)]"></span>
                   ) : null;
 
                   return (
-                    <div key={idx} className="bg-black/20 p-5 rounded-xl border border-white/5 hover:border-pink-500/20 transition-all shadow-sm">
-                      <span className="text-gray-100 [unicode-bidi:isolate] leading-loose" dir="rtl">
+                    <div key={idx} className="bg-black/20 p-4 rounded-xl border border-white/5 hover:border-pink-500/20 transition-all">
+                      <span className="text-gray-200 [unicode-bidi:isolate]" dir="rtl">
                         {line}
                       </span>
                       {cursorNode}
@@ -339,27 +223,6 @@ export default function SchoolBroadcastsPage() {
                   );
                 })}
               </div>
-
-              {/* أزرار النسخ والطباعة تظهر فقط بعد انتهاء الكتابة وفي أسفل الإذاعة مباشرة */}
-              {isTypingFinished && (
-                <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 mt-4 border-t border-white/10 ${cairo.className}`}>
-                  <button
-                    onClick={handleCopy}
-                    className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 bg-white/5 border border-white/15 hover:bg-white/10 hover:border-white/30 text-gray-200 rounded-xl text-base font-semibold transition-all shadow-lg"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                    <span>{copied ? "تم النسخ بنجاح!" : "نسخ النص"}</span>
-                  </button>
-
-                  <button
-                    onClick={handlePrint}
-                    className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white rounded-xl text-base font-bold shadow-[0_0_20px_rgba(244,114,182,0.4)] hover:shadow-[0_0_30px_rgba(244,114,182,0.6)] transition-all transform hover:-translate-y-0.5"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                    <span>طباعة / حفظ PDF</span>
-                  </button>
-                </div>
-              )}
 
             </div>
           )}

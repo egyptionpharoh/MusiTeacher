@@ -1,10 +1,10 @@
 import { MongoClient } from 'mongodb';
 
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/musiteacher';
-
-if (!process.env.MONGODB_URI && process.env.NODE_ENV === 'production') {
-  console.warn('تحذير: MONGODB_URI غير معرف في بيئة الإنتاج');
+if (!process.env.MONGODB_URI) {
+  throw new Error('يرجى إضافة MONGODB_URI في ملف .env.local');
 }
+
+const uri = process.env.MONGODB_URI;
 let client;
 let clientPromise;
 
@@ -20,4 +20,3 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 export default clientPromise;
-// تحديث إجباري لحل مشكلة البناء في Vercel

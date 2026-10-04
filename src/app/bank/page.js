@@ -1,10 +1,8 @@
 'use client';
 import { useState } from 'react';
-import { Send, Eye, X, Info, BookOpen, Loader2, Lock } from 'lucide-react';
+import { Send, Eye, X, Info, BookOpen, Loader2 } from 'lucide-react';
 import AppHeader from '@/components/AppHeader'; 
 import { useTheme } from '@/context/ThemeContext';
-import { useAuth } from '@/context/AuthContext';
-import PricingModal from '@/components/PricingModal';
 
 const semesterOneData = {
   "الصف الأول": ["النشيد الوطني", "العلامة الإيقاعية النوار والسكتة المقابلة لها", "الحدة والغلظة - السرعة والبطء", "اللعبة الشعبية (حبوه موه تدوري)", "المدرج الموسيقي ومفتاح صول", "تطبيقات على المدرج الموسيقي"],
@@ -61,7 +59,6 @@ const syllabusData = {
 };
 
 export default function BankPage() {
-  const { user, isSubscribed } = useAuth();
   const [semester, setSemester] = useState('');
   const [grade, setGrade] = useState('');
   const [lessonTitle, setLessonTitle] = useState('');
@@ -72,8 +69,6 @@ export default function BankPage() {
   // حالات جديدة لجلب وعرض الدرس من الـ JSON
   const [isLoading, setIsLoading] = useState(false);
   const [lessonData, setLessonData] = useState(null);
-  // حالة فتح وإغلاق نافذة باقات الاشتراك
-  const [isPricingOpen, setIsPricingOpen] = useState(false);
 
   const availableGrades = semester ? Object.keys(syllabusData[semester] || {}) : [];
   const availableLessons = (semester && grade) ? syllabusData[semester][grade] : [];
@@ -231,52 +226,18 @@ export default function BankPage() {
       setCustomAlert({ type: 'warning', title: 'خطوة مفقودة!', message: 'يرجى اختيار الصف والدرس.' });
       return;
     }
-
-    // 🚨 === [Police Patch: جدار الحماية لتسجيل الدخول والاشتراك] === 🚨
     
-    // 1. التحقق من تسجيل الدخول
-    if (!user) {
-      setCustomAlert({
-        type: 'warning',
-        title: 'تنبيه تسجيل الدخول',
-        message: 'عذراً، يرجى تسجيل الدخول أولاً لتتمكن من توليد التحضيرات.'
-      });
-      return; // حظر إكمال العملية
-    }
-    
-    // 2. التحقق من اشتراك المعلم في الباقة المدفوعة
-    if (!isSubscribed) {
-      setCustomAlert({
-        type: 'warning',
-        title: 'تنبيه الاشتراك 👑',
-        message: 'ميزة توليد التحضيرات بالذكاء الاصطناعي حصرية لمشتركي MusiTeacher Pro.\nيرجى الترقية للاستفادة من الميزة كاملة.'
-      });
-      setIsPricingOpen(true); // فتح نافذة باقات الاشتراك فوراً
-      return; // حظر التوليد واستدعاء السيرفر نهائياً
-    }
-    
-    // ==========================================================
-
     setCustomAlert({ type: 'info', title: 'جاري توليد التحضير...', message: 'يرجى الانتظار، النظام يقوم بمعالجة البيانات...' });
     setIsLoading(true);
     setShowLesson(false);
-
-    // ... (باقي كود الدالة كما هو بدون تغيير بدءاً من const startTime = Date.now(); ) ...
 
     // إضافة زمن تحميل لا يقل عن 2.5 ثانية ليشعر المستخدم بواقعية العمل في الخلفية
     const startTime = Date.now();
 
     try {
-      // 🚨 POLICE PATCH: استخراج توكن فايربيز الحقيقي والآمن 🚨
-      // استخدمنا user.getIdToken(true) لضمان جلب أحدث توكن من فايربيز وتجنب الكاش
-      const userToken = user ? await user.getIdToken(true) : ''; 
-
       const res = await fetch('/api/bank/get-lesson', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userToken}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         // نرسل الهوية الفعلية "تحضير" للـ API
         body: JSON.stringify({ semester, grade, title: lessonTitle, contentType: 'preparation' })
       });
@@ -310,16 +271,7 @@ export default function BankPage() {
 
       {/* قسم العنوان والترحيب - الهوية البصرية الفاخرة (Premium SaaS Vibe) */}
       <div className="text-center mt-32 md:mt-40 mb-12 w-full max-w-4xl px-4 flex flex-col items-center z-10 relative">
-        {/* زر ترقية الحساب واستعراض الباقات (يظهر فقط لمن ليس لديه اشتراك فعال أو صلاحية أدمن) */}
-        {!isSubscribed && (
-          <button
-            onClick={() => setIsPricingOpen(true)}
-            className="mb-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500/20 via-red-500/20 to-rose-500/20 border border-red-500/40 text-red-500 dark:text-red-400 font-bold text-sm shadow-lg hover:scale-105 transition-all duration-300"
-          >
-            <span>👑</span>
-            <span>ترقية الحساب واستعراض الباقات</span>
-          </button>
-        )}
+        
         {/* التدرج اللوني الأحمر النيون مع مساحة سفلية لمنع حجب النقاط وظل فاتح للعزل البصري */}
         <h1 className="text-6xl md:text-7xl font-black mb-8 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-red-600 to-rose-500 pb-4 leading-[1.2] drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_0_15px_rgba(0,0,0,0.8)]">
           مصنع التحضيرات المتطورة
@@ -339,14 +291,14 @@ export default function BankPage() {
       </div>
 
       {customAlert && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md bg-stone-900/95 dark:bg-[#0f172a]/95 backdrop-blur-xl border border-red-500/40 text-white p-5 rounded-2xl flex items-start gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.6)] animate-fade-in">
-          <Info size={26} className="text-red-400 mt-0.5 flex-shrink-0 animate-pulse" />
-          <div className="flex-1">
-            {customAlert.title && <h3 className="font-bold text-base mb-1 text-red-300 font-cairo">{customAlert.title}</h3>}
-            <p className="text-stone-200 text-sm leading-relaxed whitespace-pre-line font-medium">{customAlert.message}</p>
+        <div className="w-full max-w-3xl mb-6 bg-blue-50 dark:bg-[#0f2027] border border-blue-200 dark:border-cyan-500/50 text-stone-800 dark:text-white px-6 py-4 rounded-xl flex items-start gap-4 animate-fade-in shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.1)]">
+          <Info size={28} className="text-blue-600 dark:text-cyan-400 mt-1 flex-shrink-0" />
+          <div>
+            <h3 className="font-bold text-xl mb-1 text-blue-900 dark:text-cyan-300">{customAlert.title}</h3>
+            <p className="text-stone-600 dark:text-gray-300 leading-relaxed">{customAlert.message}</p>
           </div>
-          <button onClick={() => setCustomAlert(null)} className="text-stone-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
-            <X size={20} />
+          <button onClick={() => setCustomAlert(null)} className="mr-auto text-stone-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors">
+            <X size={24} />
           </button>
         </div>
       )}
@@ -414,27 +366,6 @@ export default function BankPage() {
       {showLesson && lessonData && (
         <button 
           onClick={() => {
-            // 1. التحقق من تسجيل الدخول
-            if (!user) {
-              setCustomAlert({
-                type: 'warning',
-                title: 'تنبيه تسجيل الدخول',
-                message: 'عذراً، يرجى تسجيل الدخول أولاً لاستخدام هذه الميزة.'
-              });
-              return;
-            }
-            
-            // 2. التحقق من اشتراك المعلم في الباقة المدفوعة (Pro)
-            if (!isSubscribed) {
-              setCustomAlert({
-                type: 'warning',
-                title: 'تنبيه الاشتراك 👑',
-                message: 'ميزة النقل المباشر إلى منصة نور حصرية لمشتركي MusiTeacher Pro.\nيرجى الترقية للاستفادة من الميزة.'
-              });
-              setIsPricingOpen(true); // فتح نافذة باقات الاشتراك فوراً
-              return; // حظر التصدير وإيقاف تنفيذ الكود نهائياً
-            }
-
             if (lessonData && lessonData.core) {
               const core = lessonData.core;
               const screenshots = lessonData.metadata?.lessonScreenshots || [];
@@ -468,24 +399,14 @@ export default function BankPage() {
               document.dispatchEvent(new CustomEvent('MusiTeacher_ExportToNoor', { detail: payload }));
               
               const prepStatus = payload.preparation ? "✅ جاهزة ومحسنة" : "❌ فارغة";
-              setCustomAlert({
-                type: 'success',
-                title: 'تم نقل التحضير بنجاح 🪄',
-                message: `حالة البيانات: ${prepStatus}\n\nافتح منصة نور واضغط على أيقونة الإضافة ليتم الحقن السريع.`
-              });
+              alert(`تم توليد التحضير بسرعة البرق ونقله للإضافة بنجاح 🪄\n\nحالة البيانات: ${prepStatus}\n\nافتح منصة نور واضغط على أيقونة الإضافة ليتم الحقن السريع.`);
             }
           }}
           className="fixed bottom-10 left-10 z-50 group flex items-center gap-3 px-8 py-4 rounded-full font-cairo font-black text-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-[0_10px_30px_-5px_rgba(37,99,235,0.4)] dark:shadow-[0_10px_30px_-5px_rgba(59,130,246,0.3)] border border-blue-400/30 dark:border-indigo-500/30 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_-5px_rgba(37,99,235,0.6)] dark:hover:shadow-[0_15px_40px_-5px_rgba(59,130,246,0.5)] active:translate-y-0 overflow-hidden"
         >
           <span className="absolute top-0 -inset-full h-full w-1/2 z-0 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine" />
-          {user ? (
-            <Send size={24} className="relative z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" /> 
-          ) : (
-            <Lock size={24} className="relative z-10 text-red-200" />
-          )}
-          <span className="relative z-10 tracking-wide">
-            {!user ? 'إرسال التحضير إلى منصة نور (يتطلب تسجيل دخول)' : (!isSubscribed ? 'إرسال التحضير إلى منصة نور (يتطلب الترقية 👑)' : 'إرسال التحضير إلى منصة نور')}
-          </span>
+          <Send size={24} className="relative z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" /> 
+          <span className="relative z-10 tracking-wide">إرسال التحضير إلى منصة نور</span>
         </button>
       )}
       {/* تنبيه الإضافة (Chrome Extension Alert) */}
@@ -508,13 +429,6 @@ export default function BankPage() {
           </div>
         </div>
       )}
-
-      {/* نافذة باقات الاشتراك والترقية */}
-      <PricingModal 
-        isOpen={isPricingOpen} 
-        onClose={() => setIsPricingOpen(false)} 
-        user={user} 
-      />
     </div>
   );
 }

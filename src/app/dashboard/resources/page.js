@@ -1,15 +1,12 @@
-'use client';
-import AppHeader from '../../../components/AppHeader';import Link from 'next/link';
+import AppHeader from '../../../components/AppHeader';
+import Link from 'next/link';
 import { gamesConfig } from '../../../lib/gamesConfig';
-import { useAuth } from '@/context/AuthContext';
-import { Lock } from 'lucide-react';
 
 export default function ResourcesPage() {
-  const { isSubscribed } = useAuth();
-
   return (
     <div 
-      className="min-h-screen relative overflow-hidden transition-all duration-1000 z-0 text-slate-800 dark:text-white"      style={{
+      className="min-h-screen relative overflow-hidden transition-all duration-1000 z-0 text-slate-800 dark:text-white"
+      style={{
         background: 'radial-gradient(ellipse at top, var(--bg-from), var(--bg-via), var(--bg-to))'
       }}
     >
@@ -53,13 +50,6 @@ export default function ResourcesPage() {
               
               {/* شريط الإضاءة العلوي الجذاب */}
               <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-cyan-400 dark:from-cyan-500 dark:via-blue-600 dark:to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_2px_15px_rgba(34,211,238,0.5)] z-20"></div>
-
-              {/* قفل للمشتركين فقط */}
-              {!isSubscribed && (
-                <div className="absolute top-4 left-4 bg-gray-900/80 backdrop-blur p-2 rounded-full border border-yellow-500/50 shadow-lg z-30 flex items-center justify-center">
-                  <Lock size={18} className="text-yellow-400" />
-                </div>
-              )}
 
               {/* حاوية الأيقونة */}
               <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center bg-blue-50/80 dark:bg-slate-800/80 rounded-2xl group-hover:scale-105 transition-transform duration-500 border border-blue-100 dark:border-slate-700 shadow-sm dark:shadow-inner">
