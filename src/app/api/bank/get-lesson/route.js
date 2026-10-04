@@ -12,6 +12,11 @@ async function connectDB() {
 
 export async function POST(request) {
   try {
+    // 🚨 جدار أمان إضافي: التأكد من جاهزية فايربيز أدمن 🚨
+    if (!adminAuth) {
+      return NextResponse.json({ error: 'إعدادات الاتصال بفايربيز غير مكتملة في السيرفر' }, { status: 500 });
+    }
+
     // 🚨 1. الجدار الأمني الأول: استخراج التوكن من الهيدر 🚨
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -19,7 +24,7 @@ export async function POST(request) {
     }
     const token = authHeader.split(' ')[1];
 
-    // 🚨 2. الجدار الأمني الثاني: فك تشفير التوكن والتأكد من صحته عبر سيرفرات فايربيز 🚨
+    // 🚨 2. الجدار الأمني الثاني: فك تشفير التوكن والتأكد من صحته عبر فايربيز 🚨
     let decodedToken;
     try {
       decodedToken = await adminAuth.verifyIdToken(token);
@@ -28,7 +33,7 @@ export async function POST(request) {
     }
     const uid = decodedToken.uid;
 
-    // 🚨 3. الجدار الأمني الثالث: التحقق من وجود حساب المستخدم وحالة اشتراكه في MongoDB 🚨
+    // 🚨 3. الجدار الأمني الثالث: التحقق من وجود الحساب وحالة الاشتراك في MongoDB 🚨
     await connectDB();
     const user = await User.findOne({ uid });
 
@@ -49,9 +54,8 @@ export async function POST(request) {
     const { semester, grade, title, contentType } = body;
 
     // TODO: ضع هنا كود استخراج الدرس الخاص بك من قاعدة البيانات بناءً على الـ body
-    // ... 
     
-    // مثال للإرجاع الناجح (استبدل البيانات الفيك ببيانات الدرس الحقيقية الخاصة بك)
+    // مثال للإرجاع الناجح
     const lessonData = {
        title: title,
        content: "محتوى الدرس هنا..."
