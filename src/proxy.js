@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export function middleware(request) {
+export function proxy(request) {
   const { pathname } = request.nextUrl;
 
   // 1. حماية مسارات الـ API الحساسة (مثل الأدمين والبنك)
