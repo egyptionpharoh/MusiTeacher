@@ -208,10 +208,13 @@ export default function HomePage() {
         requestHeaders['Authorization'] = `Bearer ${idToken}`;
       }
 
+      // جلب الـ uid الخاص بالمستخدم الحالي من Firebase Auth إن وجد
+      const currentUid = auth.currentUser ? auth.currentUser.uid : null;
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: requestHeaders,
-        body: JSON.stringify({ message: userMessage, history: messages }),
+        body: JSON.stringify({ message: userMessage, history: messages, uid: currentUid }),
       });
 
       const data = await response.json();
