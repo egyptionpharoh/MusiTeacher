@@ -14,6 +14,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <head>
+        {/* 🚨 Police Patch: تدمير ذاتي للنسخ المحفوظة محلياً (Save Page As) 🚨 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (window.location.protocol === 'file:') {
+                document.documentElement.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:red;font-family:sans-serif;font-size:24px;font-weight:bold;text-align:center;padding:20px;">🚫 تم تدمير المحتوى. هذه النسخة غير قانونية ولا يمكن تصفحها محلياً خارج منصة MusiTeacher.</div>';
+              }
+            `,
+          }}
+        />
+      </head>
       <body className="transition-colors duration-500">
         <AuthProvider>
           <ThemeProvider>

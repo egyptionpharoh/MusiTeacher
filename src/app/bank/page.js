@@ -267,9 +267,16 @@ export default function BankPage() {
     const startTime = Date.now();
 
     try {
+      // 🚨 POLICE PATCH: استخراج توكن فايربيز الحقيقي والآمن 🚨
+      // استخدمنا user.getIdToken(true) لضمان جلب أحدث توكن من فايربيز وتجنب الكاش
+      const userToken = user ? await user.getIdToken(true) : ''; 
+
       const res = await fetch('/api/bank/get-lesson', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        },
         // نرسل الهوية الفعلية "تحضير" للـ API
         body: JSON.stringify({ semester, grade, title: lessonTitle, contentType: 'preparation' })
       });
