@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { useStore } from './store/useStore';
 import './style.css';
 import LandingPage from './LandingPage';
 import toast, { Toaster } from 'react-hot-toast';
-
 const headerThemes = [
   { value: 'blue', label: 'الهيدر الأزرق الملكي ' },
   { value: 'navy', label: 'الهيدر الوردي' }, 
