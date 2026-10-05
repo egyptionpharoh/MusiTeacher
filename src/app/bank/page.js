@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { Send, Eye, X, Info, BookOpen, Loader2 } from 'lucide-react';
+import { Send, Eye, X, Info, BookOpen, Loader2, Lock } from 'lucide-react';
 import AppHeader from '@/components/AppHeader'; 
 import { useTheme } from '@/context/ThemeContext';
-
+import { useAuth } from '@/context/AuthContext';
+import PricingModal from '@/components/PricingModal.jsx';
 const semesterOneData = {
   "الصف الأول": ["النشيد الوطني", "العلامة الإيقاعية النوار والسكتة المقابلة لها", "الحدة والغلظة - السرعة والبطء", "اللعبة الشعبية (حبوه موه تدوري)", "المدرج الموسيقي ومفتاح صول", "تطبيقات على المدرج الموسيقي"],
   "الصف الثاني": ["النشيد الوطني", "سلم (دو) الكبير وإشارات اليد الدالة على الأثر النفسي", "تدريبات صوتية وغنائية", "العلامة الإيقاعية البلانش والسكتة المقابلة لها", "نشيد (أقسمت أحبك يا وطني)", "الشدة والخفوت"],
@@ -59,12 +60,14 @@ const syllabusData = {
 };
 
 export default function BankPage() {
-  const [semester, setSemester] = useState('');
-  const [grade, setGrade] = useState('');
+  const { user, isSubscribed } = useAuth();
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+  const [semester, setSemester] = useState('');  const [grade, setGrade] = useState('');
   const [lessonTitle, setLessonTitle] = useState('');
   const [showLesson, setShowLesson] = useState(false);
   const [showExtensionAlert, setShowExtensionAlert] = useState(false);
   const [customAlert, setCustomAlert] = useState(null);
+  const [showLoginToast, setShowLoginToast] = useState(false); // إضافة حالة التوست الجديد
   
   // حالات جديدة لجلب وعرض الدرس من الـ JSON
   const [isLoading, setIsLoading] = useState(false);
@@ -226,6 +229,28 @@ export default function BankPage() {
       setCustomAlert({ type: 'warning', title: 'خطوة مفقودة!', message: 'يرجى اختيار الصف والدرس.' });
       return;
     }
+
+    // --- حماية التوليد (التحقق من الاشتراك الفعال + استثناء للأدمن) ---
+    const isAdmin = user && user.email === 'egyptionpharoh5@gmail.com';
+    
+    if (!user) {
+      // إظهار التوست المتحرك الجذاب للمستخدم غير المسجل
+      setShowLoginToast(true);
+      // إخفاء التوست تلقائياً بعد 4.5 ثوانٍ
+      setTimeout(() => setShowLoginToast(false), 4500);
+      return;
+    }
+
+    if (!isSubscribed && !isAdmin) {
+      setCustomAlert({
+        type: 'warning',
+        title: 'تنبيه الاشتراك 👑',
+        message: 'ميزة توليد التحضير حصرية لمشتركي MusiTeacher Pro.\nيرجى الترقية للاستفادة من الميزة.'
+      });
+      setIsPricingOpen(true);
+      return;
+    }
+    // --- نهاية حماية التوليد ---
     
     setCustomAlert({ type: 'info', title: 'جاري توليد التحضير...', message: 'يرجى الانتظار، النظام يقوم بمعالجة البيانات...' });
     setIsLoading(true);
@@ -298,9 +323,42 @@ export default function BankPage() {
         </div>
       </div>
 
+      {/* التوست الجديد الخاص بتنبيه تسجيل الدخول - يظهر فقط لغير المسجلين */}
+      {showLoginToast && (
+        <>
+          <style>{`
+            @keyframes shake-toast {
+              0%, 100% { transform: translateX(-50%); }
+              20% { transform: translateX(calc(-50% - 10px)) rotate(-1deg); }
+              40% { transform: translateX(calc(-50% + 10px)) rotate(1deg); }
+              60% { transform: translateX(calc(-50% - 10px)) rotate(-1deg); }
+              80% { transform: translateX(calc(-50% + 10px)) rotate(1deg); }
+            }
+            .toast-shake-animation {
+              animation: shake-toast 0.5s ease-in-out forwards;
+            }
+          `}</style>
+          <div className="fixed top-32 left-1/2 transform -translate-x-1/2 z-[100] toast-shake-animation transition-all duration-300 w-[90%] max-w-md">
+            <div className="bg-gradient-to-r from-red-600 to-rose-600 text-white px-5 py-4 rounded-2xl shadow-[0_15px_40px_-10px_rgba(225,29,72,0.6)] border border-red-400/40 flex items-start gap-4 backdrop-blur-md">
+              <div className="bg-white/20 p-2.5 rounded-full flex-shrink-0 shadow-inner mt-1">
+                <Lock size={22} className="text-white drop-shadow-md" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-black text-lg mb-1.5 drop-shadow-sm font-cairo tracking-wide">عذراً، الإجراء مرفوض 🔒</h4>
+                <p className="text-sm text-red-50 leading-relaxed font-medium">
+                  لا يمكنك توليد التحضير الآن! يرجى التوجه إلى <span className="font-bold bg-white/25 px-2 py-0.5 rounded shadow-sm mx-1">الإعدادات</span> من الصفحة الرئيسية وتسجيل الدخول أولاً.
+                </p>
+              </div>
+              <button onClick={() => setShowLoginToast(false)} className="text-white/70 hover:text-white transition-colors p-1.5 bg-black/10 hover:bg-black/20 rounded-full flex-shrink-0">
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
       {customAlert && (
-        <div className="w-full max-w-3xl mb-6 bg-blue-50 dark:bg-[#0f2027] border border-blue-200 dark:border-cyan-500/50 text-stone-800 dark:text-white px-6 py-4 rounded-xl flex items-start gap-4 animate-fade-in shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.1)]">
-          <Info size={28} className="text-blue-600 dark:text-cyan-400 mt-1 flex-shrink-0" />
+        <div className="w-full max-w-3xl mb-6 bg-blue-50 dark:bg-[#0f2027] border border-blue-200 dark:border-cyan-500/50 text-stone-800 dark:text-white px-6 py-4 rounded-xl flex items-start gap-4 animate-fade-in shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.1)]">          <Info size={28} className="text-blue-600 dark:text-cyan-400 mt-1 flex-shrink-0" />
           <div>
             <h3 className="font-bold text-xl mb-1 text-blue-900 dark:text-cyan-300">{customAlert.title}</h3>
             <p className="text-stone-600 dark:text-gray-300 leading-relaxed">{customAlert.message}</p>
@@ -374,9 +432,16 @@ export default function BankPage() {
       {showLesson && lessonData && (
         <button 
           onClick={() => {
+            // --- حماية زر نور (التحقق من الاشتراك الفعال + استثناء للأدمن) ---
+            const isAdmin = user && user.email === 'egyptionpharoh5@gmail.com';
+            if (!isSubscribed && !isAdmin) {
+              setIsPricingOpen(true);
+              return;
+            }
+            // --- نهاية الحماية ---
+
             if (lessonData && lessonData.core) {
-              const core = lessonData.core;
-              const screenshots = lessonData.metadata?.lessonScreenshots || [];
+              const core = lessonData.core;              const screenshots = lessonData.metadata?.lessonScreenshots || [];
 
               const payload = {
                 preparation: renderContentWithImages((core.introduction || "").replace(/\n/g, '<br>'), screenshots),
@@ -437,6 +502,12 @@ export default function BankPage() {
           </div>
         </div>
       )}
+
+      {/* نافذة الترقية والاشتراكات */}
+      <PricingModal 
+        isOpen={isPricingOpen} 
+        onClose={() => setIsPricingOpen(false)} 
+      />
     </div>
   );
 }
