@@ -173,6 +173,7 @@ export default function SummariesPage() {
   const [lessonTitle, setLessonTitle] = useState('');
   const [lessonData, setLessonData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAuthToast, setShowAuthToast] = useState(false); // 🔥 Toast state للمستخدم غير المسجل
 
   // تحديث الخيارات
   const availableGrades = Object.keys(syllabusData[semester] || {});
@@ -200,19 +201,37 @@ export default function SummariesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ semester, grade, title: lessonTitle, contentType: 'summary' })
       });
+      
+      // 🔥 1. التقاط حالة الرفض لغير المسجلين (عن طريق كود 401)
+      if (res.status === 401) {
+        setIsLoading(false);
+        setShowAuthToast(true);
+        setTimeout(() => setShowAuthToast(false), 5000);
+        return; // بنوقف التنفيذ هنا عشان ما يكملش ويدخل في منطق الـ Premium
+      }
+
       const data = await res.json();
       
+      // 🔥 2. التقاط رسالة الرفض لغير المسجلين (لو راجعة جوا الـ data.message)
+      if (data && !data.success && data.message && (data.message.includes('تسجيل الدخول') || data.message.includes('غير مسجل'))) {
+        setIsLoading(false);
+        setShowAuthToast(true);
+        setTimeout(() => setShowAuthToast(false), 5000);
+        return;
+      }
+
+      // 🚀 هنا النظام القديم بيكمل زي ما هو بدون أي تغيير للمشتركين أو غير المشتركين (Premium)
       await new Promise((resolve) => setTimeout(resolve, 4500));
 
       if (data && data.success) {
-        // نستخرج البيانات الأساسية
         const coreData = data.data?.core || data.data;
-        // نستخرج الصور من الـ metadata كما هو الحال في بنك التحضيرات
         const extractedScreenshots = data.data?.metadata?.lessonScreenshots || data.data?.screenshots || [];
-        
-        // ندمج الصور مع البيانات الأساسية عشان دالة العرض تقدر تقرأها
         setLessonData({ ...coreData, screenshots: extractedScreenshots }); 
       } else {
+        // عرض أي رسايل تانية بتاعت الترقية لو موجودة في نظامك
+        if (data && data.message && typeof window !== 'undefined' && !data.message.includes('تسجيل الدخول')) {
+            // السلوك القديم محفوظ هنا لأي رسائل أخرى كـ Premium
+        }
         setLessonData(null);
       }
     } catch (error) {
@@ -222,10 +241,37 @@ export default function SummariesPage() {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-slate-950 p-4 md:p-8 relative selection:bg-emerald-500/30 text-stone-900 dark:text-white transition-all duration-500 font-cairo dir-rtl">
       
+      {/* 🔥 نظام Toast الأنيق والمهتز للمستخدم غير المسجل */}
+      <style>{`
+        @keyframes shake-toast {
+          0%, 100% { transform: translate(-50%, 0) rotate(0deg); }
+          20% { transform: translate(calc(-50% - 8px), 0) rotate(-2deg); }
+          40% { transform: translate(calc(-50% + 8px), 0) rotate(2deg); }
+          60% { transform: translate(calc(-50% - 8px), 0) rotate(-2deg); }
+          80% { transform: translate(calc(-50% + 8px), 0) rotate(2deg); }
+        }
+        .animate-shake-toast {
+          animation: shake-toast 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+      `}</style>
+      
+      {showAuthToast && (
+        <div className="fixed top-8 left-1/2 z-[9999] animate-shake-toast px-6 py-5 bg-slate-900/95 border-2 border-rose-500/50 rounded-2xl shadow-[0_15px_40px_rgba(244,63,94,0.3)] backdrop-blur-xl flex items-center gap-4 w-[90%] md:w-auto max-w-lg select-none">
+          <div className="bg-rose-500/20 p-3 rounded-full flex-shrink-0 border border-rose-500/30">
+            <span className="text-2xl block drop-shadow-md">🔒</span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-rose-400 font-black text-lg md:text-xl">عذراً، لا يمكنك التوليد الآن!</span>
+            <span className="text-slate-300 text-sm md:text-base leading-relaxed font-medium">
+              يرجى الدخول إلى <strong className="text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded border border-emerald-400/20">"الإعدادات"</strong> من الصفحة الرئيسية وتسجيل الدخول أولاً.
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* الهيدر العلوي لو موجود */}
       <AppHeader />
 
