@@ -235,9 +235,17 @@ export default function BankPage() {
     const startTime = Date.now();
 
     try {
+      // جلب مستخدم Firebase الحالي وسحب التوكن الخاص به لاجتياز الميدلوير
+      const { auth } = await import('@/lib/firebase');
+      const currentUser = auth.currentUser;
+      const token = currentUser ? await currentUser.getIdToken() : '';
+
       const res = await fetch('/api/bank/get-lesson', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // تمرير التوكن للميدلوير ليسمح بالعبور
+        },
         // نرسل الهوية الفعلية "تحضير" للـ API
         body: JSON.stringify({ semester, grade, title: lessonTitle, contentType: 'preparation' })
       });

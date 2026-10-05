@@ -43,8 +43,8 @@ export async function POST(request) {
         // ممتاز! وجدنا حسابه القديم (الذي قد يحتوي على اشتراك مفعل).
         // سنقوم بتحديث رقم uid الخاص به ليتطابق مع تسجيل دخوله الحالي لمنع ضياع الباقة
         existingUserByEmail.uid = uid;
-        existingUserByEmail.displayName = displayName || existingUserByEmail.displayName;
-        existingUserByEmail.photoURL = photoURL || existingUserByEmail.photoURL;
+        // نمرر الاسم إلى حقل username الإجباري في الداتابيز
+        existingUserByEmail.username = displayName || existingUserByEmail.username || 'معلم موسيقى';
         
         if (isAdminEmail) {
           existingUserByEmail.role = 'admin';
@@ -57,8 +57,7 @@ export async function POST(request) {
         user = await User.create({
           uid,
           email: email.toLowerCase().trim(), // توحيد حالة الأحرف لتفادي أخطاء التفعيل مستقبلاً
-          displayName: displayName || '',
-          photoURL: photoURL || '',
+          username: displayName || email.split('@')[0], // تغذية حقل username الإجباري لتفادي إيرور 500
           role: isAdminEmail ? 'admin' : 'teacher',
           isSubscribed: false,
           subscriptionEndDate: null,
@@ -66,8 +65,7 @@ export async function POST(request) {
       }
     } else {
       // المستخدم موجود وتم العثور عليه برقم uid، نحدث بياناته الأساسية
-      user.displayName = displayName || user.displayName;
-      user.photoURL = photoURL || user.photoURL;
+      user.username = displayName || user.username || 'معلم موسيقى';
       if (isAdminEmail) {
         user.role = 'admin';
       }

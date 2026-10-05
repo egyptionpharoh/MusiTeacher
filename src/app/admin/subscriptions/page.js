@@ -33,11 +33,17 @@ export default function AdminSubscriptions() {
 
     setIsActivating(true);
     try {
+      // الحصول على التوكن الخاص بك كمدير من Firebase لاجتياز الميدلوير
+      const token = await user.getIdToken();
+      
       // إرسال طلب التفعيل إلى الـ API السري الذي أنشأناه في المرحلة السابقة
       // 🚀 تم تصحيح المسار ليتطابق مع مجلد route.js الفعلي
       const res = await fetch('/api/admin/subscriptions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // تمرير التوكن للحارس (الميدلوير) ليسمح بالعبور
+        },
         body: JSON.stringify({
           adminUid: user.uid, // الرقم السري الخاص بك لإثبات هويتك كمدير
           targetEmail: email, // إيميل المعلم الذي قام بالدفع
