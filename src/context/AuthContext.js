@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+      // 🚨 تم إزالة setUser من هنا لمنع حالة السباق وتأخير إعلان دخول المستخدم حتى تجهز بيانات اشتراكه
       
       if (currentUser) {
         try {
@@ -69,23 +69,28 @@ export const AuthProvider = ({ children }) => {
                 isSubscribed: isValidSubscription,
                 endDate: endDate
               });
+              setUser(currentUser); // 🛡️ الآن نخبر المنصة بدخول المستخدم وهو يحمل درع الاشتراك
             } else {
               setIsSubscribed(false);
               setSubscriptionData(null);
+              setUser(currentUser);
             }
           } else {
             setIsSubscribed(false);
             setSubscriptionData(null);
+            setUser(currentUser);
           }
         } catch (error) {
           console.error("خطأ في جلب بيانات الاشتراك من MongoDB:", error);
           setIsSubscribed(false);
           setSubscriptionData(null);
+          setUser(currentUser);
         }
       } else {
         setIsSubscribed(false);
         setSubscriptionData(null);
         setIsAdmin(false);
+        setUser(null); // 🛡️ تفريغ المستخدم عند تسجيل الخروج
       }
       
       setLoading(false);

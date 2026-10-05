@@ -46,8 +46,11 @@ export async function POST(request) {
         // نمرر الاسم إلى حقل username الإجباري في الداتابيز
         existingUserByEmail.username = displayName || existingUserByEmail.username || 'معلم موسيقى';
         
+        // 🛡️ تنظيف الـ role القديم لتجنب تعطل Mongoose وضمان التزامن
         if (isAdminEmail) {
           existingUserByEmail.role = 'admin';
+        } else if (existingUserByEmail.role !== 'admin' && existingUserByEmail.role !== 'user') {
+          existingUserByEmail.role = 'user';
         }
         
         await existingUserByEmail.save();
@@ -58,7 +61,7 @@ export async function POST(request) {
           uid,
           email: email.toLowerCase().trim(), // توحيد حالة الأحرف لتفادي أخطاء التفعيل مستقبلاً
           username: displayName || email.split('@')[0], // تغذية حقل username الإجباري لتفادي إيرور 500
-          role: isAdminEmail ? 'admin' : 'teacher',
+          role: isAdminEmail ? 'admin' : 'user', // 🛡️ مطابقة الـ Schema تماماً لمنع الخطأ 500
           isSubscribed: false,
           subscriptionEndDate: null,
         });
@@ -66,9 +69,14 @@ export async function POST(request) {
     } else {
       // المستخدم موجود وتم العثور عليه برقم uid، نحدث بياناته الأساسية
       user.username = displayName || user.username || 'معلم موسيقى';
+      
+      // 🛡️ الجدار الواقي: تنظيف الـ role القديم لتجنب تعطل Mongoose وضمان التزامن للواجهة
       if (isAdminEmail) {
         user.role = 'admin';
+      } else if (user.role !== 'admin' && user.role !== 'user') {
+        user.role = 'user'; // تحويل أي قيمة قديمة مثل teacher إلى user
       }
+      
       await user.save();
     }
 
