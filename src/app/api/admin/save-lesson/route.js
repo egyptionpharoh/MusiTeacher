@@ -132,28 +132,19 @@ export async function POST(req) {
 
     // 3. (تم إيقاف دوال معالجة النصوص لأن البيانات أصبحت JSON مبرمج ونظيف)
 
-    // 4. تجميع الدرس وحفظه كملف JSON في الخلفية (تكتيك Fire and Forget)
+    // 4. تجميع الدرس وحفظه كملف JSON بشكل متزامن وآمن
     const finalLessonData = { metadata, core, precomputed_ai };
     const typeSuffix = metadata.contentType === 'summary' ? 'summary' : 'preparation';
     const jsonFileName = `${safeTitle}-${typeSuffix}.json`;
     const jsonFilePath = path.join(jsonDir, jsonFileName);
     
-    // الدالة الخلفية: تقوم بإنشاء الفولدرات وحفظ الملف بعيداً عن استجابة المتصفح
-    const saveToDisk = async () => {
-      try {
-        await fs.mkdir(imagesDir, { recursive: true });
-        await fs.mkdir(jsonDir, { recursive: true });
-        await fs.writeFile(jsonFilePath, JSON.stringify(finalLessonData, null, 2), 'utf8');
-        console.log("✅ تم حفظ الدرس فعلياً على السيرفر بصمت!");
-      } catch (err) {
-        console.error("❌ خطأ في الحفظ بالخلفية:", err);
-      }
-    };
+    // الحفظ المباشر مع الانتظار (await) لضمان عدم كراش الـ Next.js Context
+    await fs.mkdir(imagesDir, { recursive: true });
+    await fs.mkdir(jsonDir, { recursive: true });
+    await fs.writeFile(jsonFilePath, JSON.stringify(finalLessonData, null, 2), 'utf8');
 
-    saveToDisk(); // نشغلها دون أن ننتظرها (بدون await)
-
-    // نرسل الرد للمتصفح فوراً قبل أن يقوم السيرفر بأي رد فعل تجاه الملفات الجديدة
-    return NextResponse.json({ success: true, message: 'تسلم إيدك يا ملك.. تم الحفظ بنجاح 🚀!' });  } catch (error) {
+    return NextResponse.json({ success: true, message: 'تسلم إيدك يا ملك.. تم الحفظ بنجاح 🚀!' });
+  } catch (error) {
     console.error("Error saving lesson:", error);
     return NextResponse.json({ success: false, error: 'حصل خطأ أثناء حفظ الدرس.' }, { status: 500 });
   }
