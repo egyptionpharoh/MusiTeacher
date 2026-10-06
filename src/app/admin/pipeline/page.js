@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import AppHeader from '@/components/AppHeader';
 import { CheckCircle, XCircle } from 'lucide-react';
 
@@ -98,6 +99,7 @@ const syllabusData = {
 
 export default function SmartContentEditor() {
   const router = useRouter();
+  const { user } = useAuth();
   const [metadata, setMetadata] = useState({ semester: '', grade: '', title: '' });
   const [contentType, setContentType] = useState('preparation'); // 'preparation' أو 'summary'
 
@@ -204,9 +206,15 @@ export default function SmartContentEditor() {
         precomputed_ai: {}
       };
 
+      // جلب التوكن الخاص بك لإجتياز بوابة الحماية (proxy_3.js)
+      const token = user ? await user.getIdToken() : '';
+
       const res = await fetch('/api/admin/save-lesson', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(lessonPayload)
       });
 

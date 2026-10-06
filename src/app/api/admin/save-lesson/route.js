@@ -1,6 +1,16 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import mongoose from 'mongoose';
+import User from '@/models/User';
+import { adminAuth } from '@/lib/firebase-Admin'; // ⚠️ عدل هذا المسار إذا كان ملف firebase-Admin في مكان مختلف
+
+// دالة للاتصال بقاعدة البيانات لضمان الاتصال قبل فحص الصلاحيات
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return;
+  if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is missing in .env');
+  await mongoose.connect(process.env.MONGODB_URI);
+};
 
 // أداة صغيرة لتحويل الأسماء العربي لإنجليزي عشان مسارات الفولدرات
 const gradeMap = {
@@ -12,6 +22,31 @@ const gradeMap = {
 
 export async function POST(req) {
   try {
+    // --- 🛡️ بداية الجدار الأمني 🛡️ ---
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ success: false, error: 'غير مصرح: التوكن مفقود.' }, { status: 401 });
+    }
+    
+    const token = authHeader.split('Bearer ')[1];
+    let decodedToken;
+    
+    try {
+      // التحقق الفعلي من صحة التوكن لاستخراج هوية المستخدم الموثوقة (Authentication)
+      decodedToken = await adminAuth.verifyIdToken(token);
+    } catch (error) {
+      return NextResponse.json({ success: false, error: 'غير مصرح: التوكن غير صالح أو منتهي الصلاحية.' }, { status: 401 });
+    }
+
+    // الاتصال بـ MongoDB والتأكد من أن المستخدم يمتلك صلاحية المدير (Authorization)
+    await connectDB();
+    const userInDB = await User.findOne({ uid: decodedToken.uid });
+
+    if (!userInDB || userInDB.role !== 'admin') {
+      return NextResponse.json({ success: false, error: 'ممنوع: لا تملك صلاحية المدير لإضافة الدروس.' }, { status: 403 });
+    }
+    // --- 🛡️ نهاية الجدار الأمني 🛡️ ---
+
     const data = await req.json();
     const { metadata, core, precomputed_ai } = data;
 
