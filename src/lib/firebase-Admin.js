@@ -1,30 +1,42 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
-const apps = getApps();
+let adminAuth = null;
 
-if (!apps || apps.length === 0) {
-  const projectId = process.env.FIREBASE_PROJECT_ID;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+try {
+  const apps = getApps();
+  let app;
 
-  if (privateKey) {
-    // تنظيف المفتاح من علامات التنصيص الزائدة والمسافات وتحويل الأسطر بشكل دقيق
-    privateKey = privateKey
-      .trim()
-      .replace(/^["']|["']$/g, '')
-      .replace(/\\n/g, '\n');
+  if (!apps || apps.length === 0) {
+    const projectId = process.env.FIREBASE_PROJECT_ID;
+    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+    let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+    if (privateKey) {
+      privateKey = privateKey
+        .trim()
+        .replace(/^["']|["']$/g, '')
+        .replace(/\\n/g, '\n');
+    }
+
+    if (projectId && clientEmail && privateKey) {
+      app = initializeApp({
+        credential: cert({
+          projectId,
+          clientEmail,
+          privateKey,
+        }),
+      });
+    }
+  } else {
+    app = apps[0];
   }
 
-  if (projectId && clientEmail && privateKey) {
-    initializeApp({
-      credential: cert({
-        projectId,
-        clientEmail,
-        privateKey,
-      }),
-    });
+  if (app) {
+    adminAuth = getAuth(app);
   }
+} catch (error) {
+  console.error('Firebase Admin Initialization Error:', error);
 }
 
-export const adminAuth = (getApps() && getApps().length > 0) ? getAuth() : null;
+export { adminAuth };
