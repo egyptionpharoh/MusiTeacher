@@ -218,7 +218,21 @@ export default function SmartContentEditor() {
         body: JSON.stringify(lessonPayload)
       });
 
-      const result = await res.json();
+      // 1. قراءة الرد كنص خام أولاً لاصطياد المشكلة
+      const rawText = await res.text(); 
+      
+      let result;
+      try {
+        // 2. محاولة تحويل النص إلى JSON
+        result = JSON.parse(rawText);
+      } catch (err) {
+        // 3. في حال فشل التحويل، نطبع النص الخام لمعرفة الخطأ الحقيقي القادم من السيرفر
+        console.error("🔥 خطأ: السيرفر لم يرجع JSON صالح. الرد الخام هو:", rawText);
+        showToastMessage("حدث خطأ في استجابة الخادم! راجع الـ Console لمعرفة السبب.", "error");
+        setIsSaving(false);
+        return;
+      }
+
       if (result.success) {
         showToastMessage('تسلم إيدك يا ملك.. تم حفظ الدرس والصور في البنك بنجاح 🚀', 'success');
         proceduresRef.current.innerHTML = '';
