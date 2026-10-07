@@ -7,6 +7,8 @@ import {
   Layers, FileText, Award, LayoutTemplate
 } from 'lucide-react';
 import AppHeader from '@/components/AppHeader';
+import { useAuth } from '@/context/AuthContext';
+import PricingModal from '@/components/PricingModal.jsx';
 
 // 1. الداتا الحقيقية للمنهج
 const semesterOneData = {
@@ -166,6 +168,9 @@ const parseSummaryContent = (summaryText) => {
 
 export default function SummariesPage() {
   const router = useRouter();
+  
+  // الإضافة دي هي اللي كانت ناقصة عشان الكود يشوف الـ user
+  const { user } = useAuth();
 
   // States
   const [semester, setSemester] = useState('الفصل الدراسي الأول');
@@ -194,11 +199,30 @@ export default function SummariesPage() {
   const handleGenerateLesson = async () => {
     if (!semester || !grade || !lessonTitle) return;
 
+    // 🔥 1. حماية استباقية: لو المستخدم مش مسجل دخول، نوقف الطلب ونظهر التوست
+    if (!user) {
+      setShowAuthToast(true);
+      setTimeout(() => setShowAuthToast(false), 5000);
+      return;
+    }
+
     setIsLoading(true);
     try {
+      // 🔥 2. جلب التوكن الخاص بالمستخدم للعبور من حماية الميدلوير
+      let token = '';
+      if (user && typeof user.getIdToken === 'function') {
+        token = await user.getIdToken(); // إذا كنت تستخدم Firebase
+      } else {
+        token = localStorage.getItem('token') || user?.token || ''; // للأنظمة المخصصة
+      }
+
+      // 🔥 3. إرسال الطلب مع إضافة التوكن في الـ Headers
       const res = await fetch('/api/bank/get-lesson', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify({ semester, grade, title: lessonTitle, contentType: 'summary' })
       });
       
@@ -463,21 +487,22 @@ export default function SummariesPage() {
                           <BookOpen size={3} className="text-teal-400" />
                           كلمات النشيد
                         </h3>
-                        <div className="flex flex-col gap-2 md:gap-2.5 dir-rtl">
+                        <div className="flex flex-col gap-1.5 md:gap-2 dir-rtl max-w-5xl mx-auto w-full">
                           {parsedSummary.lyrics.map((item, idx) => (
-                            <div key={idx} className="bg-slate-800/40 dark:bg-slate-800/50 border border-slate-700/50 rounded-xl p-2.5 md:py-3 md:px-6 flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6 shadow-inner">
+                            <div key={idx} className="bg-slate-800/60 dark:bg-slate-800/70 border border-slate-500/40 rounded-xl py-3 px-4 md:py-4 md:px-8 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 shadow-lg hover:bg-slate-700/60 transition-colors">
                               {item.firstSide && item.secondSide ? (
                                 <>
-                                  {/* الشطر الأول بخط Amiri */}
-                                  <span className="text-white font-bold text-xl md:text-3xl flex-1 text-center md:text-left leading-relaxed font-['Amiri',serif] drop-shadow-md">
-  {item.secondSide}
-</span>
-                                  <span className="text-white font-bold text-xl md:text-3xl flex-1 text-center md:text-right leading-relaxed font-['Amiri',serif] drop-shadow-md">
+                                  {/* الشطر الأول - محاذاة للداخل وتكبير الخط */}
+                                  <span className="text-white font-bold text-2xl md:text-4xl w-full md:w-1/2 text-center md:text-left leading-relaxed font-['Amiri',serif] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">
   {item.firstSide}
+</span>
+                                  {/* الشطر الثاني - محاذاة للداخل وتكبير الخط */}
+                                  <span className="text-white font-bold text-2xl md:text-4xl w-full md:w-1/2 text-center md:text-right leading-relaxed font-['Amiri',serif] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">
+  {item.secondSide}
 </span>
                                 </>
                               ) : (
-                                <span className="text-slate-100 dark:text-slate-100 font-bold text-xl md:text-2xl w-full text-center font-['Amiri',serif]">
+                                <span className="text-slate-50 font-bold text-2xl md:text-4xl w-full text-center font-['Amiri',serif] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                                   {item.fullLine}
                                 </span>
                               )}
