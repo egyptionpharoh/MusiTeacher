@@ -17,7 +17,7 @@ export default function TeacherToolsPage() {
 { id: 'music-factory', name: 'مصنع الألحان (AI)', desc: 'توليد الألحان والأناشيد بذكاء', icon: <Music size={32} />, color: 'from-fuchsia-500 via-rose-500 to-orange-500', path: 'https://music-factory-ai-1.onrender.com/', isExternal: true },    
 { id: 'summaries', name: 'مصنع ملخصات الدروس', desc: 'توليد ملخصات وتقويمات ذكية فورية', icon: <BookCopy size={32} />, color: 'from-emerald-400 via-teal-500 to-cyan-500', path: '/dashboard/tools/summaries' },
     { id: 'covers', name: 'بنك أغلفة السجلات', desc: 'أغلفة وورد قابلة للتعديل', icon: <FileText size={32} />, color: 'from-violet-400 via-purple-500 to-fuchsia-500', path: '/dashboard/tools/covers' },
-    { id: 'radio', name: 'معرض الإذاعات المدرسية', desc: 'مواضيع إذاعية جاهزة (PDF)', icon: <Mic size={32} />, color: 'from-pink-400 via-rose-500 to-red-500', path: '/dashboard/tools/radio' },
+    { id: 'radio', name: ' مولِّد الإذاعات المدرسية', desc: 'توليد متميز بالذكاء الاصطناعي', icon: <Mic size={32} />, color: 'from-pink-400 via-rose-500 to-red-500', path: '/dashboard/tools/radio' },
     { id: 'workshops', name: 'مشاغل الإنماء المهني', desc: 'عروض باوربوينت لبرامج الإنماء', icon: <Presentation size={32} />, color: 'from-sky-400 via-indigo-500 to-purple-600', path: '/dashboard/tools/workshops' },
     { id: 'plans', name: 'الخطط الفصلية', desc: 'تحميل خطط جميع الصفوف', icon: <CalendarDays size={32} />, color: 'from-blue-400 via-indigo-400 to-violet-500', path: '/dashboard/tools/plans' },
     { id: 'guides', name: 'أدلة المعلم', desc: 'مكتبة أدلة المعلم الرسمية', icon: <BookOpen size={32} />, color: 'from-teal-400 via-emerald-500 to-green-600', path: '/dashboard/tools/guides' },
