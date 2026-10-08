@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "title": "النشيد الوطني - النوتة المجمعة",
+    "description": "النوتة الموسيقية المجمعة للنشيد الوطني.",
+    "category": "النشيد الوطني",
+    "type": "pdf",
+    "fileUrl": "/files/anthem/- النوتة الموسيقية مجمعة للنشيد الوطني.pdf",
+    "thumbnailUrl": "#"
+  },
+  {
+    "id": "2",
+    "title": "النشيد الوطني - الطبلة الكبيرة",
+    "description": "موسيقى النشيد الوطني بمصاحبة خط إيقاع الطبلة الكبيرة.",
+    "category": "النشيد الوطني",
+    "type": "pdf",
+    "fileUrl": "/files/anthem/1- موسيقى النشيد الوطني بمصاحبة الطبلة الكبيرة.pdf",
+    "thumbnailUrl": "#"
+  },
+  {
+    "id": "3",
+    "title": "إيتاع الطبل الكبير - ملصق",
+    "description": "ملصق بصري ملون لإيقاع الطبلة الكبيرة للنشيد الوطني.",
+    "category": "النشيد الوطني",
+    "type": "pdf",
+    "fileUrl": "/files/anthem/2- ملصق الطبلة الكبيرة بالألوانby hussein elmalek .pdf",
+    "thumbnailUrl": "#"
+  },
+  {
+    "id": "4",
+    "title": "نوتات المارشات والأناشيد",
+    "description": "يحتوي على نوتات: بلاد العز، يا حي يا قيوم، وحماة الحق.",
+    "category": "مارشات",
+    "type": "pdf",
+    "fileUrl": "/files/anthem/مارشات.pdf",
+    "thumbnailUrl": "#"
+  },
+  {
+    "id": "5",
+    "title": "نشيد تزهو بك الأعوام",
+    "description": "ملف وورد لنشيد تزهو بك الأعوام.",
+    "category": "أناشيد",
+    "type": "word",
+    "fileUrl": "/files/anthem/نشيد تزهو بك الاعوام.docx",
+    "thumbnailUrl": "#"
+  }
+]
