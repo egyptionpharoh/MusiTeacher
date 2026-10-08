@@ -44,7 +44,7 @@ export default function PricingModal({ isOpen, onClose, user }) {
       `📌 الباقة: ${selectedPlan.name}\n` +
       `💰 القيمة: ${selectedPlan.price}\n` +
       `🆔 المعرف: ${userId}\n\n` +
-      `وقد قمت بتحويل قيمة الاشتراك، وسأرفق إيصال الدفع مع هذه الرسالة.`
+      `ارجو مشاركتي فى منصتكم  ميوزي تيتشر و أود الاشتراك فى تطوير هذه المنصة.`
     );
 
     // تم تغيير النطاق إلى api.whatsapp.com لحل مشكلة DNS_PROBE_FINISHED_NXDOMAIN
@@ -76,46 +76,45 @@ export default function PricingModal({ isOpen, onClose, user }) {
                 <span>انضم إلى المعلمين المتميزين</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-black font-cairo mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white via-stone-100 to-stone-300">
-                ترقية الحساب إلى MusiTeacher Pro
+                إنضم الآن إلى أسرة منصة MusiTeacher 
               </h2>
               <p className="text-stone-400 text-base md:text-lg max-w-xl mx-auto">
-                احصل على إمكانية تصدير التحضيرات المباشر لمنصة نور بنقرة زر، بالإضافة إلى فتح جميع الألعاب والأدوات التعليمية الذكية.
+                الآن يمكنك على تصدير تحضيرك الصفي لمنصة نور فى أقل من ثانية بنقرة زر واحدة، بالإضافة إلى فتح جميع الألعاب والأدوات التعليمية الذكية.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-              {/* باقة الفصل الدراسي */}
+              {/*  استمتع بفصل دراسي مميز */}
               <div className="relative rounded-2xl bg-white/5 border border-white/10 p-6 flex flex-col justify-between hover:border-red-500/40 transition-all duration-300 group">
                 <div>
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-bold text-white flex items-center gap-2">
                       <Zap className="text-amber-400" size={20} />
-                      باقة الفصل الدراسي
+                      استمتع بفصل دراسي مميز
                     </h3>
                   </div>
-                  <p className="text-stone-400 text-sm mb-6">مناسبة لتغطية فصل دراسي كامل بسهولة.</p>
-                  
+                  <p className="text-stone-400 text-sm mb-6">توفير ألعاب ممتعة و أدوات تعليميةجذابة  لمدة فصل دراسي كامل.</p>
                   <div className="mb-6">
                     <span className="text-4xl font-black text-white">15</span>
-                    <span className="text-stone-400 mr-2 text-lg">ريال عماني / فصل</span>
+                    <span className="text-stone-400 mr-2 text-lg">أداة سحرية / طوال الفصل</span>
                   </div>
 
                   <ul className="space-y-3 text-sm text-stone-300 mb-8">
                     <li className="flex items-center gap-2">
                       <Check size={18} className="text-emerald-400 flex-shrink-0" />
-                      <span>تصدير مباشر للتحضير إلى منصة نور</span>
+                      <span>توليد مباشر للتحضير بهدف الاستفادة من ىلية التحضير</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check size={18} className="text-emerald-400 flex-shrink-0" />
-                      <span>توليد تحضيرات ذكية غير محدودة</span>
+                      <span>إمكانية تصدير التحضير إلى منصة نور مباشرة</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check size={18} className="text-emerald-400 flex-shrink-0" />
-                      <span>وصول كامل لقسم الألعاب التعليمية</span>
+                      <span>باقة متنوعة من أجمل الألعاب التعليمية</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check size={18} className="text-emerald-400 flex-shrink-0" />
-                      <span>دعم فني وتحديثات مستمرة</span>
+                      <span>أدوات حيه تعمل بالذكاء الاصطناعي</span>
                     </li>
                   </ul>
                 </div>
@@ -124,56 +123,56 @@ export default function PricingModal({ isOpen, onClose, user }) {
                   onClick={() => handleSelectPlan('باقة الفصل الدراسي', '15 ر.ع')}
                   className="w-full py-3.5 px-6 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition-all flex items-center justify-center gap-2 group-hover:bg-red-600 group-hover:text-white"
                 >
-                  <span>اختيار باقة الفصل الدراسي</span>
+                  <span>انطلق الآن</span>
                 </button>
               </div>
 
-              {/* الباقة السنوية */}
+              {/*استمتع بعام دراسي متألق */}
               <div className="relative rounded-2xl bg-gradient-to-b from-red-950/40 via-stone-900/60 to-[#0f172a] border-2 border-red-500/60 p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(239,68,68,0.2)]">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs px-4 py-1 rounded-full shadow-md flex items-center gap-1">
                   <Sparkles size={14} />
-                  <span>الأكثر شعبية وقيمة</span>
+                  <span>الأكثر شعبية واختياراً</span>
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-4 mt-2">
                     <h3 className="text-xl font-bold text-white flex items-center gap-2">
                       <Crown className="text-red-400" size={20} />
-                      الباقة السنوية الشاملة
+                      استمتع بعام دراسي متألق
                     </h3>
                   </div>
                   <p className="text-stone-400 text-sm mb-6">تغطي العام الدراسي الكلي مع توفير مميز.</p>
                   
                   <div className="mb-6">
                     <span className="text-4xl font-black text-white">25</span>
-                    <span className="text-stone-400 mr-2 text-lg">ريال عماني / سنة</span>
+                    <span className="text-stone-400 mr-2 text-lg">أداة سحرية ولعبة مميزة / خلال عام دراسي كامل</span>
                   </div>
 
                   <ul className="space-y-3 text-sm text-stone-200 mb-8">
                     <li className="flex items-center gap-2">
                       <Check size={18} className="text-emerald-400 flex-shrink-0" />
-                      <span className="font-semibold text-white">جميع ميزات باقة الفصل الدراسي</span>
+                      <span className="font-semibold text-white">عام دراسي كامل من التألق والإبداع</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check size={18} className="text-emerald-400 flex-shrink-0" />
-                      <span>توفير أكثر من 15% مقارنة بالاشتراك الفصلي</span>
+                      <span>سرعة فائقة فى توليد التحضير المقترح</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check size={18} className="text-emerald-400 flex-shrink-0" />
-                      <span>أولوية قصوى في معالجة التحضيرات السريعة</span>
+                      <span>معلم مساعد ذكي يلبي كامل احتياجات المعلمين</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Check size={18} className="text-emerald-400 flex-shrink-0" />
-                      <span>دعم مخصص وتحديثات حصرية</span>
+                      <span>ألعاب ساحرة وأدوات تعليمية لا تنقطع طوال </span>
                     </li>
                   </ul>
                 </div>
 
                 <button
-                  onClick={() => handleSelectPlan('الباقة السنوية الشاملة', '25 ر.ع')}
+                  onClick={() => handleSelectPlan('استمتع ب 25 تجربة خيالية فى عالم الموسيقى')}
                   className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold transition-all shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  <span>اختيار الباقة السنوية</span>
+                  <span>انطلق الآن</span>
                 </button>
               </div>
             </div>
@@ -181,10 +180,10 @@ export default function PricingModal({ isOpen, onClose, user }) {
             <div className="mt-6 pt-4 border-t border-white/10 flex flex-col md:flex-row items-center justify-between text-xs text-stone-400 gap-3">
               <div className="flex items-center gap-2">
                 <ShieldCheck size={18} className="text-emerald-400" />
-                <span>يتم تفعيل الاشتراك بعد التحقق من إيصال التحويل البنكي.</span>
+                <span>يمكنك الآن دعم المنصة والحصول على كل أدواتها والعابها المتميزة للمساهمة فى التطوير القادم.</span>
               </div>
               <button onClick={handleClose} className="hover:underline text-stone-300">
-                إغلاق ومتابعة المعاينة المجانية
+                إغلاق والرجوع لمتابعة المعاينة 
               </button>
             </div>
           </>
@@ -196,28 +195,27 @@ export default function PricingModal({ isOpen, onClose, user }) {
               className="flex items-center gap-2 text-stone-400 hover:text-white mb-6 transition-colors"
             >
               <ArrowRight size={20} />
-              <span>العودة لاختيار الباقات</span>
+              <span>العودة لدعم المنصة</span>
             </button>
 
             <div className="text-center mb-8">
               <h2 className="text-2xl md:text-3xl font-black font-cairo mb-3 text-white">
-                بيانات التحويل الدفع
+                بيانات التحويل لدعم المنصة
               </h2>
               <p className="text-stone-300 text-lg">
                 لقد اخترت <strong className="text-red-400 font-bold">{selectedPlan.name}</strong> بقيمة <strong className="text-white bg-white/10 px-2 py-1 rounded">{selectedPlan.price}</strong>.
               </p>
               <p className="text-stone-400 mt-2 text-sm">
-                يرجى تحويل المبلغ للحساب أدناه، ثم إرسال وصل الدفع عبر الواتساب ليتم تفعيل حسابك مباشرة.
+               يمكنك دعم المنصة للمساهمة فى تطويرها للوصول إلى أكبر قدر من الأدوات والألعاب التعليمية وكل ما يهم المعلم
               </p>
             </div>
-
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 max-w-2xl mx-auto">
               <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
                 <Landmark className="text-red-500" size={28} />
                 <h3 className="text-2xl font-bold text-white">بنك مسقط (Bank Muscat)</h3>
               </div>
 
-              {/* رقم الحساب */}
+              {/* رقم الحساب فى حالة الرغبة فى دعم المنصة */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-black/40 p-4 rounded-xl border border-white/5 mb-4 gap-4">
                 <div>
                   <p className="text-stone-400 text-sm mb-1">رقم الحساب:</p>
@@ -261,11 +259,10 @@ export default function PricingModal({ isOpen, onClose, user }) {
                 className="w-full py-4 px-6 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-lg transition-all shadow-[0_6px_0_rgb(153,27,27)] hover:shadow-[0_2px_0_rgb(153,27,27)] hover:translate-y-[4px] flex items-center justify-center gap-3"
               >
                 <MessageCircle size={24} />
-                <span>اضغط لإرسال الوصل وتفعيل الاشتراك</span>
+                <span>اضغط للتواصل وطلب الإنضمام</span>
               </button>
               <p className="text-center text-stone-500 text-xs mt-6">
-                ملاحظة: النقر على الزر لا يفعّل الاشتراك تلقائياً. التفعيل يتم بعد التحقق من إيصال الدفع.
-              </p>
+                نتمنى ان تيسر المنصة على جميع المعلمين والمعلمات مهامهم و أعمالهم اليومية.              </p>
             </div>
           </div>
         )}
