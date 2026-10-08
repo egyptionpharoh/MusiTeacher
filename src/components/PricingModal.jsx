@@ -41,7 +41,7 @@ export default function PricingModal({ isOpen, onClose, user }) {
       `السلام عليكم، أرغب في تفعيل اشتراك MusiTeacher 🎵\n\n` +
       `👤 الاسم: ${userName}\n` +
       `📧 البريد: ${userEmail}\n` +
-      `📌 الباقة: ${selectedPlan.name}\n` +
+      `📌 المميزات المطلوبة: ${selectedPlan.name}\n` +
       `💰 القيمة: ${selectedPlan.price}\n` +
       `🆔 المعرف: ${userId}\n\n` +
       `ارجو مشاركتي فى منصتكم  ميوزي تيتشر و أود الاشتراك فى تطوير هذه المنصة.`
