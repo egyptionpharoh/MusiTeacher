@@ -191,6 +191,20 @@ export default function HomePage() {
     e.preventDefault();
     if (!inputText.trim() || isTyping) return;
 
+    // الإضافة الجديدة: التحقق من تسجيل الدخول قبل إرسال أي طلب للـ API
+    if (!isLoggedIn) {
+      setMessages(prev => [
+        ...prev, 
+        { text: "🔒 عذراً، يرجى تسجيل الدخول أولاً من زر الإعدادات بالأعلى للتمكن من استخدام المعلم الذكي.", isUser: false }
+      ]);
+      // تفعيل التوست والاهتزاز لتنبيه المستخدم بشكل أفضل
+      if (typeof triggerLockFeedback === 'function') {
+        triggerLockFeedback('يرجى تسجيل الدخول أولاً للمحادثة');
+      }
+      setInputText('');
+      return;
+    }
+
     const userMessage = inputText.trim();
     setMessages(prev => [...prev, { text: userMessage, isUser: true }]);
     setInputText('');
@@ -214,7 +228,12 @@ export default function HomePage() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: requestHeaders,
-        body: JSON.stringify({ message: userMessage, history: messages, uid: currentUid }),
+        body: JSON.stringify({ 
+          message: userMessage, 
+          history: messages, 
+          uid: currentUid, 
+          userEmail: auth.currentUser?.email || email 
+        }),
       });
 
       const data = await response.json();

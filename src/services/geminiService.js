@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 export async function askSmartTeacher(userMessage, userData) {
   try {
     // التحقق من حالة الاشتراك
-    if (!userData || userData.status !== 'active') {
+    if (!userData || (!userData.isSubscribed && userData.role !== 'admin')) {
         return "أهلاً بك يا أستاذي! أنا هنا لدعم المشتركين في منصة MusiTeacher فقط، هل يمكنك تسجيل الدخول للبدء؟";
     }
 
@@ -16,12 +16,28 @@ export async function askSmartTeacher(userMessage, userData) {
 تعتمد المنصة على سرعة ودقة توليد التحضير بالذكاء الاصطناعي دون أي تدخل بشري.
 مهمتك الأساسية: أجب دائماً باللغة العربية بأسلوب احترافي، عملي، ومختصر، والتزم التزاماً تاماً بهذه المعلومات عند سؤالك عن هويتك، أو عن المنصة، أو عن المبرمج الذي صنعك.
 (تحذير صارم جداً: المنصة مخصصة لدعم المعلمين فقط ولا تخدم الطلبة بأي شكل من الأشكال. يُمنع منعاً باتاً ذكر "الطلبة" أو "ربط المعلمين بالطلاب" أو "إدارة الحصص" عند تعريفك للمنصة، التزم فقط بالأدوات المذكورة أعلاه).`;
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash", // أو gemini-1.5-flash لو واجهت مشكلة
-      systemInstruction: systemInstruction 
-    });
     const prompt = `${teacherPrompt} \n\n ${userMessage}`;    
-    const result = await model.generateContent(prompt);
+    let result;
+
+    try {
+      // المحاولة الأولى: نطلب الموديل الأحدث (البطل الأساسي)
+      const primaryModel = genAI.getGenerativeModel({ 
+        model: "gemini-3.8-flash", 
+        systemInstruction: systemInstruction 
+      });
+      result = await primaryModel.generateContent(prompt);
+      
+    } catch (primaryError) {
+      console.log("⚠️ السيرفر مشغول (3.8-flash)، جاري التحويل فوراً لخطة الطوارئ (2.5-flash)...");
+      
+      // المحاولة الثانية: الموديل البديل والمستقر (المنقذ)
+      const fallbackModel = genAI.getGenerativeModel({ 
+        model: "gemini-2.5-flash", 
+        systemInstruction: systemInstruction 
+      });
+      result = await fallbackModel.generateContent(prompt);
+    }
+
     return result.response.text();
     
   } catch (error) {
