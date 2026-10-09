@@ -180,6 +180,150 @@ export default function SummariesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showAuthToast, setShowAuthToast] = useState(false); // 🔥 Toast state للمستخدم غير المسجل
 
+  // === حالات التعديل والطباعة ===
+  const [isEditing, setIsEditing] = useState(false);
+  const [editSummary, setEditSummary] = useState("");
+  const [editAssessment, setEditAssessment] = useState("");
+
+  // دوال التحكم في التعديل
+  const handleEditClick = () => {
+    setEditSummary(lessonData?.summary || "");
+    setEditAssessment(lessonData?.assessment || "");
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = () => {
+    setLessonData({
+      ...lessonData,
+      summary: editSummary,
+      assessment: editAssessment
+    });
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
+  // === دالة الطباعة المخصصة ===
+  const handlePrint = () => {
+    if (!lessonData) return;
+    
+    const printWindow = window.open('', '_blank');
+    const summaryRaw = lessonData.summary || 'لا يوجد ملخص متاح';
+    const parsedSummary = parseSummaryContent(summaryRaw);
+    
+    let contentHtml = '';
+    if (!parsedSummary.parsed) {
+      contentHtml = `<div class="section"><h3>📌 موضوع الدرس</h3><div class="content-body">${renderContentWithImages(summaryRaw.replace(/\n/g, '<br>'), lessonData.screenshots || [])}</div></div>`;
+    } else {
+      let overviewHtml = parsedSummary.overview ? `<div class="section"><h3>📌 موضوع الدرس</h3><div class="content-body">${renderContentWithImages(parsedSummary.overview.replace(/\n/g, '<br>'), lessonData.screenshots || [])}</div></div>` : '';
+      
+      let lyricsHtml = '';
+      if (parsedSummary.lyrics && parsedSummary.lyrics.length > 0) {
+        lyricsHtml = `<div class="section"><h3>📖 كلمات النشيد</h3>` + 
+          parsedSummary.lyrics.map(item => {
+            if (item.firstSide && item.secondSide) {
+              return `<p style="text-align: center; font-weight: bold; font-size: 22px;">${item.firstSide} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${item.secondSide}</p>`;
+            }
+            return `<p style="text-align: center; font-weight: bold; font-size: 22px;">${item.fullLine}</p>`;
+          }).join('') + `</div>`;
+      }
+      
+      let meaningsHtml = '';
+      if (parsedSummary.meanings && parsedSummary.meanings.length > 0) {
+        meaningsHtml = `<div class="section"><h3>✨ معاني الكلمات</h3><table style="width: 100%; border-collapse: collapse; margin-top: 15px; border: 1px solid #ccc;">` +
+          `<thead><tr style="background-color: #f9f9f9;"><th style="border: 1px solid #ccc; padding: 10px; width: 30%;">المفردة / الكلمة</th><th style="border: 1px solid #ccc; padding: 10px;">المعنى والشرح</th></tr></thead><tbody>` +
+          parsedSummary.meanings.map(m => `<tr><td style="border: 1px solid #ccc; padding: 10px; font-weight: bold; text-align: center;">${m.word}</td><td style="border: 1px solid #ccc; padding: 10px;">${m.meaning}</td></tr>`).join('') +
+          `</tbody></table></div>`;
+      }
+      
+      contentHtml = overviewHtml + lyricsHtml + meaningsHtml;
+    }
+    
+    const assessmentHtml = `<div class="section" style="margin-top: 30px;"><h3>🏅 التقويم الختامي</h3><div class="content-body">${renderContentWithImages((lessonData.assessment || 'لا يوجد تقويم متاح').replace(/\n/g, '<br>'), lessonData.screenshots || [])}</div></div>`;
+
+    printWindow.document.write(`
+      <html dir="rtl" lang="ar">
+        <head>
+          <title>${lessonTitle} - ${grade}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@600;700&display=swap" rel="stylesheet">
+          <style>
+            /* إجبار المتصفح على طباعة الألوان والخلفيات بدقة */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            body { font-family: 'Amiri', serif; padding: 0; margin: 0; color: #1e293b; background: #fff; }
+            @page { margin: 1cm; } 
+            
+            /* إطار احترافي، ألوان متناسقة، وخلفية موسيقية شفافة جداً */
+            .page-container { 
+              border: 3px solid #0d9488; 
+              border-radius: 15px;
+              padding: 15px; 
+              position: relative;
+              background-color: #f8fafc;
+              background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="0.8" opacity="0.1"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>');
+              background-repeat: space;
+              box-shadow: inset 0 0 0 4px #ccfbf1;
+            }
+
+            .modern-banner { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #1e3a8a, #3b82f6, #1e40af); color: white; padding: 20px 25px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.3); border: 2px solid #60a5fa; position: relative; overflow: hidden; page-break-inside: avoid; }
+            .modern-banner::before { content: '♫ ♪'; position: absolute; top: -5px; right: 15px; font-size: 60px; color: rgba(255, 255, 255, 0.08); transform: rotate(15deg); pointer-events: none; }
+            .modern-banner::after { content: '𝄞'; position: absolute; bottom: -15px; left: 20px; font-size: 80px; color: rgba(255, 255, 255, 0.08); transform: rotate(-10deg); pointer-events: none; }
+            .banner-side { font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700; line-height: 1.6; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); z-index: 1; }
+            .banner-center { text-align: center; z-index: 1; flex: 1; padding: 0 15px; }
+            .banner-center h1 { font-family: 'Cairo', sans-serif; color: #ffffff; margin: 0; font-size: 26px; font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); }
+            .banner-center h2 { font-family: 'Cairo', sans-serif; color: #bfdbfe; margin: 0 auto 10px auto; font-size: 15px; font-weight: 700; background: rgba(0, 0, 0, 0.25); display: inline-block; padding: 5px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }            h3 { font-family: 'Cairo', sans-serif; color: #0f766e; margin-bottom: 10px; font-size: 18px; border-bottom: 2px solid #99f6e4; padding-bottom: 5px; page-break-after: avoid; display: flex; align-items: center; gap: 8px; }
+            
+            .content-body { white-space: pre-wrap; line-height: 1.6; color: #334155; font-size: 18px; font-weight: 500; }
+            p { margin: 0 0 8px 0; }
+            
+            /* إزالة منع الانقسام للسماح بانسياب النص طبيعياً بين الصفحات ومنع الفراغات */
+            .section { margin-bottom: 15px; background: #ffffff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+            
+            img { max-width: 100%; max-height: 300px; object-fit: contain; border-radius: 10px; margin: 10px auto; border: 2px solid #e2e8f0; display: block; page-break-inside: avoid; }
+            
+            /* الفوتر الآن يظهر كعنصر مستقل أسفل الإطار تماماً */
+            .print-footer { margin-top: 30px; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; font-family: 'Cairo', sans-serif; background: transparent; page-break-inside: avoid; }
+            .footer-text { margin: 0; font-size: 12px; color: #0f766e; font-weight: 700; }
+            .qr-container img { width: 45px; height: 45px; object-fit: contain; border: none; margin: 0; }          </style>        </head>
+        <body>
+          <div class="page-container">
+            <div class="modern-banner">
+              <div class="banner-side" style="text-align: right;">
+                سلطنة عُمان<br>
+                وزارة التعليم
+              </div>
+              <div class="banner-center">
+                <h2>${grade} - ${semester}</h2>
+                <h1>${lessonTitle}</h1>
+              </div>
+              <div class="banner-side" style="text-align: left;">
+                ملخص درس اليوم<br>
+                المادة الموسيقية
+              </div>
+            </div>
+            
+            ${contentHtml}
+            ${assessmentHtml}
+          </div>
+          
+          <div class="print-footer">
+            <p class="footer-text">مع أطيب الأمنيات بالتوفيق #MusiTeacher</p>
+            <div class="qr-container">
+              <img src="/qrcode.png" onerror="this.style.display='none';" alt="" />
+            </div>
+          </div>
+
+          <script>
+            window.onload = () => { setTimeout(() => { window.print(); }, 800); };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+  // ==========================
   // تحديث الخيارات
   const availableGrades = Object.keys(syllabusData[semester] || {});
   const availableLessons = (semester && grade) ? syllabusData[semester][grade] : [];
@@ -432,11 +576,54 @@ export default function SummariesPage() {
               </h2>
             </div>
 
-            {/* تفاصيل الملخص للسبورة */}
+            {/* تفاصيل الملخص للسبورة أو واجهة التعديل */}
             <div className="flex flex-col gap-4">
               
-              {/* كارت ملخص الدرس المقسّم بصرّيًا */}
-              {(() => {
+              {isEditing ? (
+                /* واجهة التعديل */
+                <div className="space-y-6">
+                  <div className="bg-slate-900/90 border border-emerald-500/50 rounded-2xl p-6 shadow-lg">
+                    <label className="text-emerald-400 font-bold text-lg mb-2 block">موضوع الدرس (أو الملخص):</label>
+                    <textarea
+                      value={editSummary}
+                      onChange={(e) => setEditSummary(e.target.value)}
+                      className="w-full h-64 bg-slate-800/80 border border-slate-700 hover:border-emerald-500/50 rounded-xl p-4 text-white text-lg leading-loose focus:outline-none focus:border-emerald-400 focus:shadow-[0_0_15px_rgba(52,211,153,0.2)] transition-all resize-y font-['Amiri',serif]"
+                      dir="rtl"
+                    />
+                  </div>
+                  
+                  <div className="bg-slate-900/90 border border-cyan-500/50 rounded-2xl p-6 shadow-lg">
+                    <label className="text-cyan-400 font-bold text-lg mb-2 block">التقويم الختامي:</label>
+                    <textarea
+                      value={editAssessment}
+                      onChange={(e) => setEditAssessment(e.target.value)}
+                      className="w-full h-40 bg-slate-800/80 border border-slate-700 hover:border-cyan-500/50 rounded-xl p-4 text-white text-lg leading-loose focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all resize-y font-['Amiri',serif]"
+                      dir="rtl"
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 border-t border-white/10">
+                    <button
+                      onClick={handleSaveEdit}
+                      className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-base font-bold shadow-[0_0_15px_rgba(5,150,105,0.3)] transition-all transform hover:-translate-y-0.5"
+                    >
+                      <Sparkles size={20} />
+                      <span>حفظ التعديل</span>
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-base font-bold shadow-lg transition-all"
+                    >
+                      <span className="font-sans">✕</span>
+                      <span>إلغاء</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* واجهة العرض الطبيعية */
+                <>
+                  {/* كارت ملخص الدرس المقسّم بصرّيًا */}
+                  {(() => {
                 const summaryRaw = lessonData.summary || 'لا يوجد ملخص متاح';
                 const parsedSummary = parseSummaryContent(summaryRaw);
 
@@ -566,8 +753,28 @@ export default function SummariesPage() {
                 />
               </div>
 
+              {/* أزرار التعديل والطباعة */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 mt-4 border-t border-white/10 print:hidden font-cairo">
+                <button
+                  onClick={handleEditClick}
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600/40 text-blue-300 rounded-xl text-base font-bold transition-all shadow-lg"
+                >
+                  <LayoutTemplate size={20} />
+                  <span>تعديل الملخص</span>
+                </button>
+
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-xl text-base font-bold shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] transition-all transform hover:-translate-y-0.5"
+                >
+                  <FileText size={20} />
+                  <span>طباعة / حفظ PDF</span>
+                </button>
               </div>
 
+              </>
+              )}
+            </div>
           </div>
         )}
 
