@@ -73,6 +73,71 @@ export default function BankPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [lessonData, setLessonData] = useState(null);
 
+  // حالات التعديل المخصص لأجزاء التحضير
+  const [isEditingSection, setIsEditingSection] = useState(false);
+  const [selectedEditKey, setSelectedEditKey] = useState('');
+  const [editContent, setEditContent] = useState('');
+
+  const sectionOptions = [
+    { label: 'اختر الجزء الذي تريد تعديله...', key: '' },
+    { label: 'الاستراتيجيات', key: 'strategies' },
+    { label: 'المصادر التعليمية', key: 'resources' },
+    { label: 'المفاهيم', key: 'concepts' },
+    { label: 'التهيئة / التمهيد / التعلم القبلي', key: 'introduction' },
+    { label: 'إجراءات سير الدرس / الأنشطة التدريسية', key: 'procedures' },
+    { label: 'التقويم التكويني', key: 'formativeAssessment' },
+    { label: 'التقويم الختامي', key: 'summativeAssessment' }
+  ];
+
+  const handleSelectSectionToEdit = (key) => {
+    setSelectedEditKey(key);
+    if (!key || !lessonData || !lessonData.core) {
+      setEditContent('');
+      return;
+    }
+    const core = lessonData.core;
+    let text = '';
+    
+    // تحويل البيانات حسب نوعها لتناسب محرر النصوص البسيط
+    if (['introduction', 'formativeAssessment', 'summativeAssessment'].includes(key)) {
+      text = core[key] || '';
+    } else if (['strategies', 'resources'].includes(key)) {
+      text = (core[key] || []).join('\n');
+    } else if (key === 'concepts') {
+      text = (core[key] || []).map(c => typeof c === 'object' && c !== null ? (c.concept || c.name || c.term || c.title || Object.values(c).join(' - ')) : c).join('\n');
+    } else if (key === 'procedures') {
+      text = (core[key] || []).map(p => {
+        let pText = p.actionText || '';
+        if (p.subSteps && p.subSteps.length > 0) {
+          pText += '\n' + p.subSteps.map(s => typeof s === 'object' && s !== null ? (s.actionText || '') : s).join('\n');
+        }
+        return pText;
+      }).join('\n\n');
+    }
+    setEditContent(text);
+  };
+
+  const handleSaveEditedSection = () => {
+    if (!selectedEditKey || !lessonData) return;
+    const core = { ...lessonData.core };
+    const text = editContent.trim();
+
+    // إعادة تخزين البيانات بنفس هيكلها المتوافق مع المنصة
+    if (['introduction', 'formativeAssessment', 'summativeAssessment'].includes(selectedEditKey)) {
+      core[selectedEditKey] = text;
+    } else if (['strategies', 'resources', 'concepts'].includes(selectedEditKey)) {
+      core[selectedEditKey] = text.split('\n').filter(item => item.trim() !== '');
+    } else if (selectedEditKey === 'procedures') {
+      core[selectedEditKey] = [{ stepIndex: 1, actionText: text, assignedStrategy: '', subSteps: [] }];
+    }
+
+    setLessonData({ ...lessonData, core });
+    setCustomAlert({ type: 'success', title: 'تم حفظ التعديل', message: 'تم تحديث الجزء المختار بنجاح. سيتم إرسال النسخة الجديدة إلى منصة نور.' });
+    setTimeout(() => setCustomAlert(null), 3000);
+    setIsEditingSection(false);
+    setSelectedEditKey('');
+    setEditContent('');
+  };
   const availableGrades = semester ? Object.keys(syllabusData[semester] || {}) : [];
   const availableLessons = (semester && grade) ? syllabusData[semester][grade] : [];
 
@@ -413,8 +478,18 @@ export default function BankPage() {
 
       {/* منطقة عرض التحضير الذكي */}
       {showLesson && lessonData && (
-        <div className="lesson-container-wrapper w-full max-w-5xl mt-12 animate-fade-in relative">
-          <div className="lesson-overlay" onContextMenu={(e) => e.preventDefault()} />
+        <div className="w-full max-w-5xl mt-8 flex justify-center z-20 relative animate-fade-in">
+          <button 
+            onClick={() => setIsEditingSection(true)}
+            className="bg-stone-800 hover:bg-stone-700 dark:bg-[#1e293b] dark:hover:bg-[#334155] text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-3 shadow-lg hover:shadow-xl transition-all border border-stone-700 dark:border-slate-700 hover:-translate-y-1"
+          >
+            <span className="text-xl">✏️</span> تعديل أجزاء التحضير
+          </button>
+        </div>
+      )}
+
+      {showLesson && lessonData && (
+        <div className="lesson-container-wrapper w-full max-w-5xl mt-6 animate-fade-in relative">          <div className="lesson-overlay" onContextMenu={(e) => e.preventDefault()} />
           <div className="mb-12 text-center">
             <h2 className="text-4xl font-black text-stone-900 dark:text-white mb-6 font-cairo tracking-tight">
               {lessonData.metadata.title}
@@ -503,9 +578,61 @@ export default function BankPage() {
         </div>
       )}
 
+      {/* نافذة تعديل أجزاء التحضير */}
+      {isEditingSection && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
+          <div className="bg-white dark:bg-[#0f172a] w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-stone-200 dark:border-white/10 flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 dark:border-white/5 bg-stone-50 dark:bg-[#1e293b]/50">
+              <h3 className="font-bold text-xl text-stone-800 dark:text-white flex items-center gap-2 font-cairo">
+                <span>✏️</span> تعديل أجزاء التحضير
+              </h3>
+              <button onClick={() => { setIsEditingSection(false); setSelectedEditKey(''); }} className="text-stone-400 hover:text-red-500 transition-colors p-2 bg-stone-200 dark:bg-slate-800 rounded-full">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto flex-1">
+              <label className="block font-bold text-stone-700 dark:text-slate-300 mb-2">اختر الجزء الذي تريد تعديله:</label>
+              <select 
+                value={selectedEditKey} 
+                onChange={(e) => handleSelectSectionToEdit(e.target.value)}
+                className="w-full bg-white dark:bg-[#111827] border border-stone-200 dark:border-white/10 rounded-xl px-4 py-3 mb-6 focus:ring-2 focus:ring-blue-500 outline-none text-stone-800 dark:text-white"
+              >
+                {sectionOptions.map(opt => (
+                  <option key={opt.key} value={opt.key}>{opt.label}</option>
+                ))}
+              </select>
+
+              {selectedEditKey && (
+                <div className="animate-fade-in">
+                  <div className="mb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-sm text-stone-500 dark:text-slate-400">
+                    <span>محتوى القسم (تجنب حذف علامات [صورة_X] للحفاظ على الصور):</span>
+                    {selectedEditKey === 'procedures' && <span className="text-blue-600 dark:text-cyan-400 font-bold bg-blue-50 dark:bg-cyan-900/30 px-2 py-1 rounded">ملاحظة: تُحفظ الخطوات مدمجة للتنسيق.</span>}
+                  </div>
+                  <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    className="w-full h-64 bg-stone-50 dark:bg-[#111827] border border-stone-200 dark:border-white/10 rounded-xl p-5 focus:ring-2 focus:ring-blue-500 outline-none resize-none text-stone-800 dark:text-white leading-relaxed text-lg"
+                    placeholder="اكتب المحتوى أو عدّله هنا..."
+                  />
+                </div>
+              )}
+            </div>
+            {selectedEditKey && (
+              <div className="p-6 border-t border-stone-100 dark:border-white/5 bg-stone-50 dark:bg-[#1e293b]/50 flex justify-end">
+                <button 
+                  onClick={handleSaveEditedSection}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                >
+                  💾 حفظ التعديل
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* نافذة الترقية والاشتراكات */}
-      <PricingModal 
-        isOpen={isPricingOpen} 
+      <PricingModal        isOpen={isPricingOpen} 
         onClose={() => setIsPricingOpen(false)} 
       />
     </div>
