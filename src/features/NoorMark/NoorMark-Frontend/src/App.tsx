@@ -18,6 +18,11 @@ const headerThemes = [
 
 export default function App() {
   const { settings, setSettings, setStudentsData, studentsData, reportMode, setReportMode } = useStore();
+
+  const handleUpdateStudentName = (id: number, newName: string) => {
+    const updated = studentsData.map((s: any) => s.id === id ? { ...s, name: newName } : s);
+    setStudentsData(updated);
+  };
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [headerTheme, setHeaderTheme] = useState("blue");
@@ -41,36 +46,63 @@ export default function App() {
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
 
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { range: 8, defval: "" });
-
-        const firstRowKeys = Object.keys(jsonData[0] || {});
-        const isMusicFile = firstRowKeys.some(key => key.includes('الشفوي') || key.includes('العزف'));
+        const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
         
-        if (jsonData.length === 0 || !isMusicFile) {
+        let headerRowIndex = -1;
+        for (let i = 0; i < rawData.length; i++) {
+          const row = rawData[i];
+          if (Array.isArray(row) && row.some(cell => typeof cell === 'string' && cell.includes('اسم الطالب'))) {
+            headerRowIndex = i;
+            break;
+          }
+        }
+
+        if (headerRowIndex === -1) {
+            setErrorMessage("عفواً، هذا الملف لا يبدو كملف درجات مهارات موسيقية صالح من منصة نور.");
+            setIsLoading(false);
+            return;
+        }
+
+        const headers = rawData[headerRowIndex];
+        const isMusicFile = headers.some(h => typeof h === 'string' && (h.includes('الشفوي') || h.includes('العزف') || h.includes('الصولفيج')));
+
+        if (!isMusicFile) {
             setErrorMessage("عفواً، هذا الملف لا يبدو كملف درجات مهارات موسيقية صالح من منصة نور.");
             setIsLoading(false);
             return;
         }
 
         const students: any[] = [];
+        let studentCounter = 1;
 
-        jsonData.forEach((row: any, index: number) => {
-          const name = row['اسم الطالب'];
-          const totalScore = row['المجموع'];
+        for (let i = headerRowIndex + 1; i < rawData.length; i++) {
+          const row = rawData[i];
+          if (!Array.isArray(row)) continue;
 
-          if (name) {
+          const rowObj = {};
+          headers.forEach((header, colIdx) => {
+            if (header) {
+              rowObj[header] = row[colIdx] !== undefined ? row[colIdx] : "";
+            }
+          });
+
+          const nameKey = Object.keys(rowObj).find(k => k.includes('اسم الطالب'));
+          const name = nameKey ? rowObj[nameKey] : "";
+
+          if (name && String(name).trim() !== "") {
+            const totalScoreKey = Object.keys(rowObj).find(k => k.includes('المجموع'));
+            const totalScore = totalScoreKey ? rowObj[totalScoreKey] : '0';
+
             const studentObj: any = {
-              id: index + 1,
-              name: name,
+              id: studentCounter++,
+              name: String(name).trim(),
               score: totalScore || '0',
             };
 
             if (reportMode === 'detailed') {
-              const keys = Object.keys(row);
-              
               const getScore = (keyword: string) => {
-                const key = keys.find(k => k.includes(keyword));
-                return key ? row[key] : '0';
+                const foundKey = Object.keys(rowObj).find(k => k.includes(keyword));
+                return foundKey ? rowObj[foundKey] : '0';
               };
 
               studentObj.oral = getScore('الشفوي');
@@ -82,12 +114,31 @@ export default function App() {
 
             students.push(studentObj);
           }
-        });
+        }
 
         setStudentsData(students);
-        
-        if (jsonData.length > 0 && jsonData[0]['الصف']) {
-           setSettings({ className: jsonData[0]['الصف'] });
+
+        // استخراج اسم الصف إن وجد في الصفوف السابقة أو ضمن البيانات
+        let classNameFound = "";
+        for (let i = 0; i < headerRowIndex; i++) {
+          const row = rawData[i];
+          if (Array.isArray(row)) {
+            const foundClassCell = row.find(c => typeof c === 'string' && (c.includes('السادس') || c.includes('السابع') || c.includes('الثامن') || c.includes('التاسع') || c.includes('العاشر') || c.includes('الصف')));
+            if (foundClassCell && foundClassCell !== 'الصف') {
+              classNameFound = foundClassCell;
+            }
+          }
+        }
+        if (!classNameFound && students.length > 0) {
+          // جرب البحث في عمود الصف ضمن البيانات
+          const firstValidRow = rawData[headerRowIndex + 1];
+          const classColIdx = headers.findIndex(h => typeof h === 'string' && h.includes('الصف'));
+          if (classColIdx !== -1 && firstValidRow[classColIdx]) {
+            classNameFound = firstValidRow[classColIdx];
+          }
+        }
+        if (classNameFound) {
+            setSettings({ className: classNameFound });
         }
 
         toast.success('تم استخراج الدرجات بنجاح  🎉');
@@ -158,20 +209,20 @@ export default function App() {
               <input type="file" accept=".xlsx,.xls" onChange={handleFileUpload} disabled={isLoading} style={{ display: 'none' }} />
           </label>
           
-          <input type="text" placeholder="اسم المادة" value={settings.subject} onChange={(e) => setSettings({ subject: e.target.value })} />
-          <input type="text" placeholder="الصف" value={settings.className} onChange={(e) => setSettings({ className: e.target.value })} />
-          
-          <select value={settings.term} onChange={(e) => setSettings({ term: e.target.value })}>
-              <option value="الأول">الفصل الدراسي الأول</option>
-              <option value="الثاني">الفصل الدراسي الثاني</option>
-          </select>
-          
-          <input type="text" placeholder="العام الدراسي" value={settings.year} onChange={(e) => setSettings({ year: e.target.value })} />
-          <input type="text" placeholder="اسم المعلم /ة" value={settings.teacher} onChange={(e) => setSettings({ teacher: e.target.value })} />
-          <input type="text" placeholder="اسم مدير المدرسة /ة" value={settings.principal} onChange={(e) => setSettings({ principal: e.target.value })} />
-          <select onChange={(e) => setHeaderTheme(e.target.value)} value={headerTheme}>
-              {headerThemes.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
-          </select>
+          <input type="text" placeholder="اسم المادة" value={settings.subject} onChange={(e) => setSettings({ subject: e.target.value })} style={{ color: '#111827', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '4px' }} />
+         <input type="text" placeholder="الصف" value={settings.className} onChange={(e) => setSettings({ className: e.target.value })} style={{ color: '#111827', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '4px' }} />
+         
+         <select value={settings.term} onChange={(e) => setSettings({ term: e.target.value })} style={{ color: '#111827', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '4px' }}>
+             <option value="الأول">الفصل الدراسي الأول</option>
+             <option value="الثاني">الفصل الدراسي الثاني</option>
+         </select>
+         
+         <input type="text" placeholder="العام الدراسي" value={settings.year} onChange={(e) => setSettings({ year: e.target.value })} style={{ color: '#111827', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '4px' }} />
+         <input type="text" placeholder="اسم المعلم /ة" value={settings.teacher} onChange={(e) => setSettings({ teacher: e.target.value })} style={{ color: '#111827', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '4px' }} />
+         <input type="text" placeholder="اسم مدير المدرسة /ة" value={settings.principal} onChange={(e) => setSettings({ principal: e.target.value })} style={{ color: '#111827', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '4px' }} />
+         <select onChange={(e) => setHeaderTheme(e.target.value)} value={headerTheme} style={{ color: '#111827', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '4px' }}>
+             {headerThemes.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+         </select>
           
           <button onClick={() => window.print()}>طباعة كـ PDF احترافي</button>
           <button 
@@ -211,7 +262,26 @@ export default function App() {
                   {studentsData.map((student: any) => (
                       <tr key={student.id}>
                           <td>{student.id}</td>
-                          <td style={{ textAlign: 'right', paddingRight: '10px' }}>{student.name}</td>
+                          <td style={{ textAlign: 'right', paddingRight: '10px' }}>
+                            <input
+                              type="text"
+                              value={student.name}
+                              onChange={(e) => handleUpdateStudentName(student.id, e.target.value)}
+                              className="student-name-input"
+                              style={{
+                                width: '100%',
+                                border: 'none',
+                                background: 'transparent',
+                                fontFamily: 'inherit',
+                                fontSize: 'inherit',
+                                fontWeight: 'inherit',
+                                color: 'inherit',
+                                textAlign: 'right',
+                                outline: 'none',
+                                padding: '2px 0'
+                              }}
+                            />
+                          </td>
                           {reportMode === 'detailed' && (
                               <>
                                   <td>{String(student.oral || '0').split('/')[0]}</td>
