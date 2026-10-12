@@ -204,7 +204,7 @@ export default function App() {
                 سجل درجات تفصيلي
               </button>
           </div>
-          <label className="custom-file-upload">
+          <label className="custom-file-upload" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '8px 16px', backgroundColor: '#226597', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {isLoading ? "⏳ جارٍ المعالجة..." : uploadedFileName ? `📄 ${uploadedFileName}` : "📂 اختر ملف الإكسيل"}
               <input type="file" accept=".xlsx,.xls" onChange={handleFileUpload} disabled={isLoading} style={{ display: 'none' }} />
           </label>
