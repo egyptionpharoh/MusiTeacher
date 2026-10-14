@@ -386,6 +386,22 @@ export default function BankPage() {
             </p>
           </div>
         </div>
+
+        {/* إخلاء المسؤولية القانوني والتربوي (Legal & Educational Disclaimer) */}
+        <div className="mt-8 w-full max-w-4xl bg-stone-900/40 dark:bg-black/40 border border-stone-200/10 dark:border-white/10 rounded-2xl p-6 backdrop-blur-md shadow-lg flex items-start gap-4 transition-all duration-300 hover:bg-stone-900/60 text-right">
+          <Info size={28} className="text-amber-500 mt-1 flex-shrink-0 drop-shadow-md" />
+          <div className="flex flex-col gap-3">
+            <p className="text-sm md:text-base text-stone-300 dark:text-stone-300 font-medium leading-relaxed">
+              <span className="font-bold text-amber-500 ml-1">إخلاء مسؤولية قانوني:</span> 
+              المادة العلمية والتربوية هي حق أصيل لوزارة التربية والتعليم بسلطنة عُمان. المنصة تقدم أداة تقنية (SaaS) لأتمتة وتسهيل نقل البيانات. الاشتراك المدفوع هو نظير البنية التحتية والبرمجيات المساعدة وليس بيعاً للمحتوى المنهجي.
+            </p>
+            <p className="text-sm md:text-base text-stone-300 dark:text-stone-300 font-medium leading-relaxed border-t border-white/10 pt-3">
+              <span className="font-bold text-emerald-400 ml-1">تنويه تربوي:</span>
+              الاستراتيجيات والأنشطة المقترحة هي اجتهادات استرشادية لا تُلزم أحداً. يمتلك المعلم الحق والصلاحية الكاملة في تعديل التحضير بالكامل ليناسب طلابه قبل نقله لمنصة نور. هدفنا الأسمى هو تخفيف الأعباء الروتينية عن كاهل المعلمين، ليتفرغوا لرسالتهم الأهم في خدمة أبنائنا الطلبة والطالبات بالسلطنة.
+            </p>
+          </div>
+        </div>
+
       </div>
 
       {/* التوست الجديد الخاص بتنبيه تسجيل الدخول - يظهر فقط لغير المسجلين */}
