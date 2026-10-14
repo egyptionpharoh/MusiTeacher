@@ -1193,29 +1193,6 @@ function updateCustomButtonText() {
             }
         });
     }
-
-    /* --- وسائل الحماية الإضافية المطبقة (Police Patch Enhanced) --- */
-    // 1. تعطيل قائمة النقر بزر الفأرة الأيمن
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-    });
-
-    // 2. تعطيل اختصارات الحفظ، وعرض المصدر، والطباعة (S, U, P, I, J)
-    document.addEventListener('keydown', function(e) {
-        const forbiddenKeys = ['s', 'S', 'u', 'U', 'p', 'P', 'i', 'I', 'j', 'J'];
-        if ((e.ctrlKey || e.metaKey) && forbiddenKeys.includes(e.key)) {
-            e.preventDefault();
-            return false;
-        }
-        if (e.key === 'F12') {
-            e.preventDefault();
-            return false;
-        }
-    });
-
-    // 3. تعطيل التحديد النصي غير المرغوب فيه عبر JavaScript لجميع العناصر ما عدا حقل الاسم
-    document.addEventListener('selectstart', function(e) {
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-            e.preventDefault();
-        }
-    });
+</script>
+</body>
+</html>
