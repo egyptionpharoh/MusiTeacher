@@ -567,7 +567,7 @@ export default function HomePage() {
           onClick={(e) => {
             if (!isLoggedIn) {
               e.preventDefault();
-              triggerLockFeedback('🔒 يرجى تسجيل الدخول أولاً للوصول إلى المعلم المساعد.');
+              triggerLockFeedback('🔒 يرجى تسجيل الدخول أولاً للوصول إلى موَّلِد العروض التقديمية.');
             } else {
               window.location.href = '/factory';
             }
@@ -589,14 +589,16 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* أيقونة شارة تقييد الوصول العلوية (Badge) */}
-          <div className="absolute top-4 left-4 z-20" title="يتطلب تسجيل الدخول">
-            <div className={`p-1.5 rounded-lg border backdrop-blur-md flex items-center justify-center transition-all shadow-sm ${
-              isDark ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-amber-50 border-amber-200 text-amber-600'
-            }`}>
-              <Lock size={14} />
+          {/* أيقونة شارة تقييد الوصول العلوية (Badge) - تختفي تلقائياً عند تسجيل الدخول */}
+          {!isLoggedIn && (
+            <div className="absolute top-4 left-4 z-20" title="يتطلب تسجيل الدخول">
+              <div className={`p-1.5 rounded-lg border backdrop-blur-md flex items-center justify-center transition-all shadow-sm ${
+                isDark ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-amber-50 border-amber-200 text-amber-600'
+              }`}>
+                <Lock size={14} />
+              </div>
             </div>
-          </div>
+          )}
 
           <div className={isDark ? "block" : "flex justify-between items-start mb-5"}>
             <div className={isDark ? "" : "w-12 h-12 rounded-xl bg-gradient-to-b from-orange-50/50 to-orange-100/50 border border-orange-100/50 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm"}>
@@ -609,8 +611,8 @@ export default function HomePage() {
             )}
           </div>
           
-          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-orange-600'}`}>المعلم المساعد</h2>
-          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>المساعد الذكي لإلهام المعلمين أدوات إبداعية جديدة لكل درس بالذكاء الاصطناعي.</p>
+          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-orange-600'}`}>موَّلِد العروض التقديمية</h2>
+          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>لتوليد باوربوينت احترافي لكل درس بالذكاء الاصطناعي بضغطة زر واحدة.</p>
         </div>
 
         <Link href="/dashboard/guide" className={`group relative block w-full h-full z-10 overflow-hidden rounded-2xl transition-all duration-300 ease-out transform pointer-events-auto
@@ -630,7 +632,7 @@ export default function HomePage() {
           </div>
           
           <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-green-700'}`}>الأدوات والألعاب التعليمية</h2>
-          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}> كنوز تعليمية لا غنى عنها لاي معلم فنون/مهارات موسيقية.</p>
+          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}> كنوز تعليمية لا غنى عنها لأي معلم فنون/مهارات موسيقية.</p>
         </Link>
       </div>
 
