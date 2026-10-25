@@ -13,17 +13,12 @@ export default function TeacherToolsPage() {
 
   // استخدام تدرجات لونية ثلاثية الأبعاد (3-Stop Gradients) لإضاءة مذهلة
   const toolsList = [
-    { id: 'noormark', name: 'أداة NoorMark', desc: 'لإعداد كشوف التقويم المستمر', icon: <FileSpreadsheet size={32} />, color: 'from-cyan-400 via-blue-500 to-indigo-600', path: '/dashboard/tools/noormark', isExternal: false },
 { id: 'music-factory', name: 'مصنع الألحان (AI)', desc: 'توليد الألحان والأناشيد بذكاء', icon: <Music size={32} />, color: 'from-fuchsia-500 via-rose-500 to-orange-500', path: 'https://music-factory-ai-1.onrender.com/', isExternal: true },    
-{ id: 'summaries', name: 'مصنع ملخصات الدروس', desc: 'توليد ملخصات وتقويمات ذكية فورية', icon: <BookCopy size={32} />, color: 'from-emerald-400 via-teal-500 to-cyan-500', path: '/dashboard/tools/summaries' },
     { id: 'covers', name: 'بنك أغلفة السجلات', desc: 'أغلفة وورد قابلة للتعديل', icon: <FileText size={32} />, color: 'from-violet-400 via-purple-500 to-fuchsia-500', path: '/dashboard/tools/covers' },
     { id: 'radio', name: ' مولِّد الإذاعات المدرسية', desc: 'توليد متميز بالذكاء الاصطناعي', icon: <Mic size={32} />, color: 'from-pink-400 via-rose-500 to-red-500', path: '/dashboard/tools/radio' },
     { id: 'workshops', name: 'مشاغل الإنماء المهني', desc: 'عروض باوربوينت لبرامج الإنماء', icon: <Presentation size={32} />, color: 'from-sky-400 via-indigo-500 to-purple-600', path: '/dashboard/tools/workshops' },
     { id: 'plans', name: 'الخطط الفصلية', desc: 'تحميل خطط جميع الصفوف', icon: <CalendarDays size={32} />, color: 'from-blue-400 via-indigo-400 to-violet-500', path: '/dashboard/tools/plans' },
-    { id: 'guides', name: 'أدلة المعلم', desc: 'مكتبة أدلة المعلم الرسمية', icon: <BookOpen size={32} />, color: 'from-teal-400 via-emerald-500 to-green-600', path: '/dashboard/tools/guides' },
-    { id: 'grading-forms', name: 'استمارات رصد الدرجات', desc: 'قوالب جاهزة للرصد اليدوي', icon: <ClipboardList size={32} />, color: 'from-cyan-300 via-sky-500 to-blue-600', path: '/dashboard/tools/grading-forms' },
     { id: 'anthem', name: 'نوتات النشيد والمارشات', desc: 'نوتات الانصراف والطابور', icon: <Music size={32} />, color: 'from-rose-400 via-red-500 to-orange-600', path: '/dashboard/tools/anthem' },
-    { id: 'performance', name: 'استمارات متابعة الطلبة', desc: 'لمتابعة الأداء اليومي', icon: <FileSpreadsheet size={32} />, color: 'from-amber-300 via-orange-500 to-red-500', path: '/dashboard/tools/performance' },
     { id: 'initiatives', name: 'مبادرات تعليمية', desc: 'مبادرات مقترحة جاهزة للتنفيذ', icon: <Star size={32} />, color: 'from-yellow-300 via-amber-400 to-orange-500', path: '/dashboard/tools/initiatives' },
   ];
 

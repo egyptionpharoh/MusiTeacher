@@ -28,46 +28,19 @@ export default function GuidePage() {
       </div>
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        {/* كارت شرح نور مارك */}
-        <div className="bg-[#111827] p-8 rounded-2xl border border-gray-700 hover:border-blue-500 transition-all shadow-xl hover:shadow-[0_0_25px_rgba(59,130,246,0.2)]">
-          <div className="bg-blue-900/50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border border-blue-500/50">
-            <Wand2 size={32} className="text-blue-400 drop-shadow-md" />
-          </div>
-          <h2 className="text-2xl font-bold mb-3 text-blue-300">نظام NoorMark</h2>
-          <p className="text-gray-300 leading-relaxed mb-6 font-medium">
-            أداة الأتمتة السحرية لرصد الدرجات. كل ما عليك فعله هو رفع ملف الإكسيل الخاص بدرجات الطلاب، وسيقوم النظام بتجهيزها وإرسالها بضغطة زر واحدة إلى البوابة التعليمية.
-          </p>
-          <ul className="text-sm text-gray-400 space-y-3 font-semibold">
-            <li className="flex items-center gap-2"><span className="w-2 h-2 bg-blue-500 rounded-full"></span> يدعم ملفات Excel الرسمية</li>
-            <li className="flex items-center gap-2"><span className="w-2 h-2 bg-blue-500 rounded-full"></span> رصد دقيق بدون أخطاء يدوية</li>
-          </ul>
-        </div>
 
-        {/* كارت شرح التحضيرات */}
-        <div className="bg-[#111827] p-8 rounded-2xl border border-gray-700 hover:border-red-500 transition-all shadow-xl hover:shadow-[0_0_25px_rgba(239,68,68,0.2)]">
-          <div className="bg-red-900/50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border border-red-500/50">
-            <BookOpen size={32} className="text-red-400 drop-shadow-md" />
+        {/* كارت تنويه: المنصة قيد التحديث */}
+        <div className="bg-[#111827] p-8 rounded-2xl border border-amber-500/40 shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.2)] transition-all md:col-span-2 text-center">
+          <div className="bg-amber-900/40 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border border-amber-500/50 mx-auto">
+            <Star size={32} className="text-amber-400 drop-shadow-md" />
           </div>
-          <h2 className="text-2xl font-bold mb-3 text-red-300">التحضيرات المتطورة</h2>
-          <p className="text-gray-300 leading-relaxed mb-6 font-medium">
-            بنك شامل لدروس المهارات الموسيقية. اختر الصف والدرس، وستجد التحضير جاهزاً (المفاهيم، الإجراءات، التقويم) لإدراجه فوراً في خطتك.
+          <h2 className="text-2xl font-bold mb-3 text-amber-300">المنصة قيد التحديث</h2>
+          <p className="text-gray-300 leading-relaxed font-medium text-lg mb-4">
+            نعمل حاليًا على تطوير أدوات المنصة وألعابها التعليمية. للاطلاع على أحدث المستجدات يُرجى التواصل مع المطور عبر البريد الإلكتروني:
           </p>
-          <ul className="text-sm text-gray-400 space-y-3 font-semibold">
-            <li className="flex items-center gap-2"><span className="w-2 h-2 bg-red-500 rounded-full"></span> متوافق مع المناهج المعتمدة</li>
-            <li className="flex items-center gap-2"><span className="w-2 h-2 bg-red-500 rounded-full"></span> إدراج مباشر بنقرة واحدة</li>
-          </ul>
-        </div>
-
-        {/* كارت شرح مصنع الموسيقى */}
-        <div className="bg-[#111827] p-8 rounded-2xl border border-gray-700 hover:border-orange-500 transition-all shadow-xl hover:shadow-[0_0_25px_rgba(249,115,22,0.2)] md:col-span-2">
-          <div className="bg-orange-900/50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 border border-orange-500/50">
-            <Star size={32} className="text-orange-400 drop-shadow-md" />
-          </div>
-          <h2 className="text-2xl font-bold mb-3 text-orange-300">مصنع التحضيرات (الذكاء الاصطناعي)</h2>
-          <p className="text-gray-300 leading-relaxed font-medium text-lg">
-            المساعد الذكي (Smart Maestro) الخاص بك. استخدم هذه الأداة لتوليد مقطوعات موسيقية، وأفكار إبداعية للدروس، أو حتى إيقاعات مخصصة تناسب أنشطتك الصفية باستخدام تقنيات الذكاء الاصطناعي المتطورة.
-          </p>
+          <a href="mailto:hussien.elmalek@gmail.com" dir="ltr" className="inline-block text-amber-300 font-bold underline underline-offset-4 hover:opacity-80">
+            hussien.elmalek@gmail.com
+          </a>
         </div>
 
       </div>
