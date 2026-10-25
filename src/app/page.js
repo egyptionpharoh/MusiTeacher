@@ -316,7 +316,7 @@ export default function HomePage() {
       {/* نافذة الإعدادات (Modal) */}
       {isSettingsOpen && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm transition-opacity">
-          <div className={`relative w-full max-w-5xl h-[85vh] flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl border 
+          <div className={`relative w-full max-w-20xl h-[85vh] flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-2xl border 
             ${isDark ? 'bg-[#0A1628] border-white/10' : 'bg-white border-gray-200'}`}>
             
             {/* زر الإغلاق */}
@@ -378,7 +378,7 @@ export default function HomePage() {
                         type="email" 
                         value={email} 
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="مثال: hussien.elmalek@gmail.com" 
+                        placeholder="مثال: h.elmalek2026@gmail.com" 
                         className={`w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder:text-gray-400 placeholder:opacity-60 ${isDark ? 'bg-[#0A1628] border-gray-700 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} 
                       />
                     </div>
@@ -483,11 +483,11 @@ export default function HomePage() {
                   <div className="space-y-4">
                     <details className={`p-4 rounded-xl border cursor-pointer ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200 shadow-sm'}`}>
                       <summary className="font-bold outline-none">عن منصة MusiTeacher</summary>
-                      <p className="mt-3 text-sm opacity-80 leading-relaxed">منصة متكاملة صُممت خصيصاً لتسهيل المهام اليومية لمعلمي المهارات الموسيقية، وتشمل أدوات ذكية لتوليد التحضيرات ورصد الدرجات.</p>
+                      <p className="mt-3 text-sm opacity-80 leading-relaxed">منصة لمعلمي المهارات الموسيقية، تضم ألعابًا تعليمية تفاعلية وأدوات مساعدة للمعلم.</p>
                     </details>
                     <details className={`p-4 rounded-xl border cursor-pointer ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200 shadow-sm'}`}>
                       <summary className="font-bold outline-none">سياسة الخصوصية والاستخدام</summary>
-                      <p className="mt-3 text-sm opacity-80 leading-relaxed">تتم معالجة كافة خطط الدروس والبيانات بشكل محلي وآمن لضمان سرية معلومات المعلمين والطلاب.</p>
+                      <p className="mt-3 text-sm opacity-80 leading-relaxed">عند إنشاء حساب، يُحفظ اسمك وبريدك الإلكتروني لدى خدمتي Firebase وMongoDB لتشغيل تسجيل الدخول. وعند استخدام «المعلم الذكي» تُرسَل رسائلك إلى خدمة نموذج ذكاء اصطناعي لتوليد الرد. يُرجى عدم إدخال أي بيانات شخصية للمعلم او للطلبة او للمدرسة في المحادثة.</p>
                     </details>
                     <details className={`p-4 rounded-xl border cursor-pointer ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200 shadow-sm'}`}>
                       <summary className="font-bold outline-none">الإبلاغ عن مشكلة / اقتراح</summary>
@@ -502,9 +502,47 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* 📢 شريط تنويه متحرك: تحديثات المنصة */}
+      <style>{`
+        @keyframes mtNoticeSlide {
+          from { left: 0; transform: translateX(-100%); }
+          to { left: 100%; transform: translateX(0); }
+        }
+        .mt-notice-track {
+          position: absolute;
+          top: 50%;
+          margin-top: -0.75rem;
+          white-space: nowrap;
+          animation: mtNoticeSlide 40s linear infinite;
+        }
+        .mt-notice-bar:hover .mt-notice-track {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mt-notice-track {
+            position: static;
+            margin-top: 0;
+            white-space: normal;
+            animation: none;
+            text-align: center;
+          }
+        }
+      `}</style>
+      <div
+        className={`mt-notice-bar relative z-10 w-full max-w-5xl h-23 mb-10 overflow-hidden rounded-full border backdrop-blur-md flex items-center
+          ${isDark ? 'bg-amber-500/10 border-amber-400/30 text-amber-200' : 'bg-amber-50 border-amber-300 text-amber-900'}`}
+        role="status"
+        aria-live="polite"
+      >
+        <div className="mt-notice-track px-6 text-sm md:text-base font-bold leading-6">
+          🔧 تنويه: تخضع المنصة حاليًا لتحديثات وتطويرات، للاطلاع على أحدث المستجدات يُرجى التواصل مع المطور مباشرة .:{' '}
+<a href="tel:+96879886716" className="underline underline-offset-4 hover:opacity-80" dir="ltr">            نسعد بتواصلكم
+          </a>
+        </div>
+      </div>
+
       {/* قسم العنوان والترحيب (الصفحة الرئيسية) */}
-      <Link href="/" className="group z-10 text-center mb-16 animate-in slide-in-from-bottom-8 duration-700 mt-12 md:mt-0 flex flex-col items-center">
-        {/* الشعار */}
+      <Link href="/" className="group z-10 text-center mb-16 animate-in slide-in-from-bottom-8 duration-700 mt-12 md:mt-0 flex flex-col items-center">        {/* الشعار */}
         <div className="relative p-6 mb-4 rounded-3xl transition-all duration-500 group-hover:bg-white/5 group-hover:shadow-[0_0_40px_rgba(56,189,248,0.3)]">
           <Image 
             src="/logo.png" 
@@ -542,79 +580,7 @@ export default function HomePage() {
       </Link>
 
       {/* شبكة الكروت (الأدوات) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 z-10 w-full max-w-6xl">
-        <Link href="/bank" className={`group relative overflow-hidden rounded-2xl transition-all duration-300 ease-out cursor-pointer block transform
-          ${isDark 
-            ? 'p-8 duration-500 hover:-translate-y-3 bg-[#111827]/60 backdrop-blur-md border border-blue-500/20 hover:border-blue-400/60 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]' 
-            : 'p-6 hover:-translate-y-2 hover:scale-[1.05] bg-white border border-gray-200/60 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.12)] hover:border-blue-400'}`}>
-          
-          <div className={isDark ? "block" : "flex justify-between items-start mb-5"}>
-            <div className={isDark ? "" : "w-12 h-12 rounded-xl bg-gradient-to-b from-blue-50/50 to-blue-100/50 border border-blue-100/50 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm"}>
-              <BookOpen size={isDark ? 48 : 22} className={`transition-colors ${isDark ? 'mb-6 drop-shadow-md text-blue-400' : 'text-blue-600'}`} />
-            </div>
-            {!isDark && (
-              <div className="w-8 h-8 rounded-full bg-gray-50/50 flex items-center justify-center opacity-0 translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
-                <ArrowUpLeft size={16} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
-              </div>
-            )}
-          </div>
-          
-          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-blue-700'}`}>مصنع التحضيرات</h2>
-          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>توليد تحضيرات الدروس (نصوص وصور) بسرعة البرق بالذكاء الاصطناعي بدقة عالية.</p>
-        </Link>
-
-        <div 
-          onClick={(e) => {
-            if (!isLoggedIn) {
-              e.preventDefault();
-              triggerLockFeedback('🔒 يرجى تسجيل الدخول أولاً للوصول إلى موَّلِد العروض التقديمية.');
-            } else {
-              window.location.href = '/factory';
-            }
-          }}
-          className={`group relative overflow-hidden rounded-2xl transition-all duration-300 ease-out transform cursor-pointer select-none
-          ${isShaking ? 'animate-card-shake' : ''}
-          ${isDark 
-            ? 'p-8 duration-500 hover:-translate-y-3 bg-[#111827]/60 backdrop-blur-md border border-orange-500/20 hover:border-orange-400/60 hover:shadow-[0_0_30px_rgba(249,115,22,0.2)]' 
-            : 'p-6 hover:-translate-y-2 hover:scale-[1.05] bg-white border border-gray-200/60 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.12)] hover:border-orange-400'}`}
-        >
-          {/* التوست المنبثق من داخل الكارت نفسه */}
-          {toastMessage && (
-            <div className="absolute inset-0 z-30 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
-              <div className={`px-4 py-2.5 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-2 text-center shadow-2xl ${
-                isDark ? 'bg-amber-950/90 border-amber-500/50 text-amber-200' : 'bg-amber-50 border-amber-300 text-amber-900'
-              }`}>
-                {toastMessage}
-              </div>
-            </div>
-          )}
-
-          {/* أيقونة شارة تقييد الوصول العلوية (Badge) - تختفي تلقائياً عند تسجيل الدخول */}
-          {!isLoggedIn && (
-            <div className="absolute top-4 left-4 z-20" title="يتطلب تسجيل الدخول">
-              <div className={`p-1.5 rounded-lg border backdrop-blur-md flex items-center justify-center transition-all shadow-sm ${
-                isDark ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-amber-50 border-amber-200 text-amber-600'
-              }`}>
-                <Lock size={14} />
-              </div>
-            </div>
-          )}
-
-          <div className={isDark ? "block" : "flex justify-between items-start mb-5"}>
-            <div className={isDark ? "" : "w-12 h-12 rounded-xl bg-gradient-to-b from-orange-50/50 to-orange-100/50 border border-orange-100/50 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm"}>
-              <Wand2 size={isDark ? 48 : 22} className={`transition-colors ${isDark ? 'mb-6 drop-shadow-md text-orange-400' : 'text-orange-500'}`} />
-            </div>
-            {!isDark && (
-              <div className="w-8 h-8 rounded-full bg-gray-50/50 flex items-center justify-center opacity-0 translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
-                <ArrowUpLeft size={16} className="text-gray-400 group-hover:text-orange-500 transition-colors" />
-              </div>
-            )}
-          </div>
-          
-          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-orange-600'}`}>موَّلِد العروض التقديمية</h2>
-          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>لتوليد باوربوينت احترافي لكل درس بالذكاء الاصطناعي بضغطة زر واحدة.</p>
-        </div>
-
+      <div className="grid grid-cols-1 gap-8 z-10 w-full max-w-md">
         <Link href="/dashboard/guide" className={`group relative block w-full h-full z-10 overflow-hidden rounded-2xl transition-all duration-300 ease-out transform pointer-events-auto
           ${isDark 
             ? 'p-8 duration-500 hover:-translate-y-3 bg-[#111827]/60 backdrop-blur-md border border-green-500/20 hover:border-green-400/60 hover:shadow-[0_0_30px_rgba(34,197,94,0.2)]' 

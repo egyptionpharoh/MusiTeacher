@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 
 const NoorMarkModule = dynamic(
-  () => import('@/features/NoorMark/NoorMarkWrapper'),
+  () => import('@/features/noormark/NoorMarkWrapper'),
   { ssr: false }
 );
 
