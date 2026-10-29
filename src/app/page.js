@@ -172,8 +172,7 @@ export default function HomePage() {
   // إعدادات الشات بوت
   const [messages, setMessages] = useState([
     {
-      text: "مرحباً بك في منصة MusiTeacher 🎵. يسعدني أن أكون مساعدك الرقمي في إعداد التحضيرات التعليمية وتنظيم أعمالك اليومية. أخبرني بما تحتاج إليه وسأساعدك خطوة بخطوة.",
-      isUser: false
+      text: "مرحباً بك في منصة MusiTeacher 🎵. يسعدني أن أكون مساعدك الرقمي في إقتراح ألعابك و أدواتك التعليمية المناسبة وتنظيم أعمالك اليومية. أخبرني بما تحتاج إليه وسأساعدك خطوة بخطوة.. يُرجى فقط تجنب إدخال أي بيانات شخصية، أو بيانات خاصة بطلابك ومدرستك.",      isUser: false
     }
   ]);
   const [inputText, setInputText] = useState('');
@@ -491,7 +490,7 @@ export default function HomePage() {
                     </details>
                     <details className={`p-4 rounded-xl border cursor-pointer ${isDark ? 'bg-white/5 border-white/10' : 'bg-white border-gray-200 shadow-sm'}`}>
                       <summary className="font-bold outline-none">الإبلاغ عن مشكلة / اقتراح</summary>
-                      <p className="mt-3 text-sm opacity-80 leading-relaxed">نسعد بتواصلكم عبر البريد الإلكتروني: hussien.elmalek@gmail.com لتطوير المنصة للأفضل.</p>
+                      <p className="mt-3 text-sm opacity-80 leading-relaxed">نسعد باقتراحاتكم عبر البريد الإلكتروني: hussien.elmalek@gmail.com لتطوير المنصة للأفضل.</p>
                     </details>
                   </div>
                 </div>
@@ -535,8 +534,7 @@ export default function HomePage() {
         aria-live="polite"
       >
         <div className="mt-notice-track px-6 text-sm md:text-base font-bold leading-6">
-          🔧 تنويه: تخضع المنصة حاليًا لتحديثات وتطويرات، للاطلاع على أحدث المستجدات يُرجى التواصل مع المطور مباشرة .:{' '}
-<a href="tel:+96879886716" className="underline underline-offset-4 hover:opacity-80" dir="ltr">            نسعد بتواصلكم
+🎵 أهلاً وسهلاً بكم فى منصة MusiTeacher المنصة المتخصصة فى تصميم الأدوات و الألعاب التفاعلية التي تناسب معلمي ومعلمات الفنون/ المهارات الموسيقية فى العالم العربي.<a href="tel:+96879886716" className="underline underline-offset-4 hover:opacity-80" dir="ltr">            نسعد باقتراحاتكم
           </a>
         </div>
       </div>
@@ -598,7 +596,7 @@ export default function HomePage() {
           </div>
           
           <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-green-700'}`}>الأدوات والألعاب التعليمية</h2>
-          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}> كنوز تعليمية لا غنى عنها لأي معلم فنون/مهارات موسيقية.</p>
+          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}> اضغط و اكتشف الكنوز التعليمية التي لا غنى عنها لأي معلم فنون/مهارات موسيقية.</p>
         </Link>
       </div>
 
