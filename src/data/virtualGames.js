@@ -8,12 +8,13 @@
 //    title       اسم اللعبة (عربي)
 //    description وصف مختصر
 //    category    أحد مفاتيح GAME_CATEGORIES
+//    listInLab   false = لا تظهر في شبكة المختبر (لها بطاقة في مكان آخر) مع بقاء الحماية نفسها
 //    grade       المرحلة/الصف المستهدف (نص) أو null = كل المراحل
 //    status      'available' متاحة | 'soon' قيد التطوير (للمدير فقط) | 'unavailable' غير متاحة
 //    entry       ملف التشغيل داخل المجلد (الافتراضي index.html)
 //    cover       مسار صورة الغلاف داخل public (غير حساسة) أو null
 //    tags        كلمات مفتاحية للبحث
-//    settings    إعدادات خاصة: { threeD: true|false, needsAudio: true|false, markCorner: 'top-left'|'top-right'|'bottom-left'|'bottom-right'|'none', allowDownloads: true (للألعاب التي فيها زر تصدير صورة) }
+//    settings    إعدادات خاصة: { threeD: true|false, needsAudio: true|false, markCorner: 'top-left'|'top-right'|'bottom-left'|'bottom-right'|'none', allowDownloads: true (للألعاب التي فيها زر تصدير/تنزيل), allowPrint: true (للألعاب التي فيها طباعة تعليمية) }
 // =====================================================================
 
 export const GAME_CATEGORIES = {
@@ -21,6 +22,7 @@ export const GAME_CATEGORIES = {
   keys: { label: 'آلات المفاتيح', icon: '🎹' },
   percussion: { label: 'الآلات الإيقاعية', icon: '🥁' },
   scales: { label: 'السلالم والمقامات', icon: '🎼' },
+  notation: { label: 'التدوين والقراءة', icon: '📝' },
 };
 
 export const VIRTUAL_GAMES = [
@@ -150,6 +152,18 @@ export const VIRTUAL_GAMES = [
     tags: ['أورج', 'بيانو', 'مقامات', 'ربع تون'],
     settings: { threeD: false, needsAudio: true, markCorner: 'bottom-left' },
   },
+  {
+    // تُعرض بطاقتها في «عالم الألعاب الموسيقية» (src/lib/gamesConfig.js عبر labId) وليس في شبكة المختبر ثلاثي الأبعاد،
+    // لكنها تُشغَّل بنفس الحماية: جلسة موقّعة + /play/melodic-dictation/ من مجلد private-games.
+    id: 'melodic-dictation',
+    title: 'مسابقة التدوين والإملاء اللحني',
+    description: 'تدوين النغمات على المدرج وقراءتها صولفائيًا وإيقاعيًا (إيمي باري)، مع إملاء لحني بمستويات وتمارين مستندة إلى أدلة المعلم، وحفظ النوتات واستيرادها.',
+    category: 'notation', grade: null, status: 'available', entry: 'index.html',
+    cover: null, listInLab: false,
+    tags: ['تدوين', 'إملاء لحني', 'قراءة صولفائية', 'قراءة إيقاعية', 'مدرج', 'إيمي باري'],
+    // allowDownloads: تصدير ملف النوتة ‎.musinote.json‎ · allowPrint: طباعة النوتة للمعلم
+    settings: { threeD: false, needsAudio: true, markCorner: 'bottom-left', allowDownloads: true, allowPrint: true },
+  },
 ];
 
 // ---------- دوال مساعدة (تُستعمل في الخادم والواجهة) ----------
@@ -171,5 +185,6 @@ export function publicGameInfo(g) {
     grade: g.grade || null, status: g.status, cover: g.cover || null, tags: g.tags || [],
     threeD: !!(g.settings && g.settings.threeD),
     allowDownloads: !!(g.settings && g.settings.allowDownloads),
+    listInLab: g.listInLab !== false,
   };
 }

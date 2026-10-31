@@ -46,7 +46,7 @@ export default function ResourcesPage() {
         {/* شبكة الألعاب التعليمية */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
           {gamesConfig.map((game) => (
-            <Link href={`/dashboard/resources/${game.id}`} key={game.id} 
+            <Link href={game.labId ? `/dashboard/resources/lab/${game.labId}` : `/dashboard/resources/${game.id}`} key={game.id} prefetch={false} 
                   /* تم استبدال border-slate بـ border-white/10 في الوضع الليلي للحصول على جودة Glassmorphism احترافية نقية */
               className="relative bg-white/95 dark:bg-[#0A192F]/95 backdrop-blur-2xl border border-white/80 dark:border-white/10 rounded-[2rem] p-8 transition-all duration-500 shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_10px_40px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_35px_rgba(34,211,238,0.2)] dark:hover:shadow-[0_15px_40px_rgba(34,211,238,0.15)] hover:-translate-y-2 hover:border-cyan-300 dark:hover:border-cyan-400/50 group overflow-hidden flex flex-col h-full">
               

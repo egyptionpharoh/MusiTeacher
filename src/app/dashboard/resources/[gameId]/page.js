@@ -1,15 +1,25 @@
 'use client';
-import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { gamesConfig } from '../../../../lib/gamesConfig';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 export default function GamePlayerPage() {
   const params = useParams();
+  const router = useRouter();
   const game = gamesConfig.find(g => g.id === params.gameId);
+
+  // الألعاب المحمية (labId) تُفتح عبر مشغّل الجلسات الموقّعة؛ أي رابط قديم يُحوَّل إليه
+  useEffect(() => {
+    if (game && game.labId) router.replace(`/dashboard/resources/lab/${game.labId}`);
+  }, [game, router]);
 
   if (!game) {
     return <div className="text-white text-center mt-20 text-2xl">عفواً، هذه اللعبة غير موجودة!</div>;
+  }
+  if (game.labId) {
+    return <div className="text-white text-center mt-20 text-xl">جارٍ فتح اللعبة…</div>;
   }
 
   return (

@@ -57,9 +57,13 @@ export function injectHtml(html, game) {
     ? `#mt-ip-mark{position:fixed;${CORNER[corner] || CORNER['top-left']};z-index:2147483000;font:600 10px/1.2 Tajawal,Arial,sans-serif;color:#fff;background:rgba(0,0,0,.38);padding:3px 8px;border-radius:999px;pointer-events:none;user-select:none;direction:ltr;letter-spacing:.2px}`
     : '';
   const markHtml = markCss ? `<div id="mt-ip-mark" aria-hidden="true">${MARK}</div>` : '';
-  const head = `<meta name="robots" content="noindex,nofollow,noarchive"><style>${markCss}@media print{html{display:none!important}}img{-webkit-user-drag:none}</style>` +
+  // allowPrint: لألعاب الطباعة فيها وظيفة تعليمية (طباعة النوتة). الافتراضي منع الطباعة كما في بقية الألعاب.
+  const allowPrint = !!(game.settings && game.settings.allowPrint);
+  const printCss = allowPrint ? '' : '@media print{html{display:none!important}}';
+  const blocked = allowPrint ? "k==='s'||k==='u'" : "k==='s'||k==='p'||k==='u'";
+  const head = `<meta name="robots" content="noindex,nofollow,noarchive"><style>${markCss}${printCss}img{-webkit-user-drag:none}</style>` +
     `<script>(function(){var b=function(e){e.preventDefault()};addEventListener('contextmenu',b);addEventListener('dragstart',b);` +
-    `addEventListener('keydown',function(e){var k=(e.key||'').toLowerCase();if((e.ctrlKey||e.metaKey)&&(k==='s'||k==='p'||k==='u'))e.preventDefault();});})();</script>`;
+    `addEventListener('keydown',function(e){var k=(e.key||'').toLowerCase();if((e.ctrlKey||e.metaKey)&&(${blocked}))e.preventDefault();});})();</script>`;
   let out = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (m) => m + head) : head + html;
   if (markHtml) out = /<\/body>/i.test(out) ? out.replace(/<\/body>/i, markHtml + '</body>') : out + markHtml;
   return out;
@@ -68,7 +72,7 @@ export function injectHtml(html, game) {
 export const htmlCache = new Map();
 
 export async function readHtml(info, game) {
-  const key = info.file + ':' + info.mtimeMs + ':' + (game.settings && game.settings.markCorner);
+  const key = info.file + ':' + info.mtimeMs + ':' + (game.settings && game.settings.markCorner) + ':' + !!(game.settings && game.settings.allowPrint);
   let v = htmlCache.get(key);
   if (!v) {
     const raw = await fs.promises.readFile(info.file, 'utf8');

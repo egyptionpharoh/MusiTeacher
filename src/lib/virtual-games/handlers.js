@@ -18,7 +18,15 @@ const isProd = () => process.env.NODE_ENV === 'production';
 /** POST /api/virtual-games/session  { gameId }  + Authorization: Bearer <Firebase ID token> */
 export function makeSessionHandler(deps) {
   const limit = makeLimiter(30, 10 * 60 * 1000);
+  // أي استثناء غير متوقع يعود JSON واضحًا (لا صفحة HTML)، ويُسجَّل في سجلات الخادم (Vercel Logs)
   return async function POST(request) {
+    try { return await handle(request); }
+    catch (e) {
+      console.error('[virtual-games/session] unexpected error:', e && e.message ? e.message : e);
+      return json({ ok: false, error: 'server-error' }, 500);
+    }
+  };
+  async function handle(request) {
     if (!sameOrigin(request)) return json({ ok: false, error: 'origin' }, 403);
     let body;
     try { body = await request.json(); } catch { return json({ ok: false, error: 'bad-request' }, 400); }
@@ -31,13 +39,20 @@ export function makeSessionHandler(deps) {
     const token = bearerOf(request);
     if (!token) return json({ ok: false, error: 'unauthenticated' }, 401);
     let decoded;
-    try { decoded = await deps.verifyIdToken(token); } catch { return json({ ok: false, error: 'unauthenticated' }, 401); }
+    try { decoded = await deps.verifyIdToken(token); }
+    catch (e) {
+      const m = e && e.message;
+      if (m === 'no-project-id') return json({ ok: false, error: 'server-not-configured' }, 503);
+      if (m && m.startsWith('jwks')) { console.error('[virtual-games/session] cannot fetch Google keys:', m); return json({ ok: false, error: 'server-error' }, 502); }
+      return json({ ok: false, error: 'unauthenticated' }, 401);
+    }
     if (!decoded || !decoded.uid) return json({ ok: false, error: 'unauthenticated' }, 401);
 
     if (!limit(decoded.uid)) return json({ ok: false, error: 'rate-limited' }, 429);
 
     let user;
-    try { user = await deps.findUser(decoded.uid); } catch { return json({ ok: false, error: 'server-error' }, 500); }
+    try { user = await deps.findUser(decoded.uid); }
+    catch (e) { console.error('[virtual-games/session] database error:', e && e.message); return json({ ok: false, error: 'db-error' }, 500); }
     const ent = entitlementOf(user);
     if (!ent.ok) return json({ ok: false, error: 'forbidden' }, 403);
     if (game.status === 'unavailable' || (game.status === 'soon' && !ent.admin)) return json({ ok: false, error: 'unavailable' }, 403);
@@ -46,6 +61,23 @@ export function makeSessionHandler(deps) {
     const value = signSession({ g: game.id, u: decoded.uid, exp }, secret);
     return json({ ok: true, playUrl: `/play/${game.id}/${game.entry || 'index.html'}`, expiresIn: SESSION_TTL_SEC },
       200, { 'Set-Cookie': buildSetCookie(game.id, value, { secure: isProd() }) });
+  }
+}
+
+/** GET /api/virtual-games/health — فحص تهيئة الخادم دون كشف أي سر (قيم نعم/لا فقط). */
+export function makeHealthHandler(deps) {
+  return async function GET() {
+    const checks = {
+      sessionSecret: !!(deps.secret ? deps.secret() : getSecret()),
+      firebaseProjectId: !!(deps.projectId ? deps.projectId() : (process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID)),
+      mongodbUri: !!process.env.MONGODB_URI,
+      gamesFolder: false, googleKeys: 'unknown', database: 'unknown',
+    };
+    try { const fs = await import('node:fs'); checks.gamesFolder = fs.existsSync(deps.root || gamesRoot()); } catch { checks.gamesFolder = false; }
+    try { if (deps.checkKeys) { await deps.checkKeys(); checks.googleKeys = 'ok'; } } catch { checks.googleKeys = 'fail'; }
+    try { if (deps.connectDB) { await deps.connectDB(); checks.database = 'ok'; } } catch { checks.database = 'fail'; }
+    const ok = checks.sessionSecret && checks.firebaseProjectId && checks.mongodbUri && checks.gamesFolder && checks.googleKeys !== 'fail' && checks.database !== 'fail';
+    return json({ ok, checks });
   };
 }
 

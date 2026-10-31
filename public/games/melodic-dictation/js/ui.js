@@ -1,1 +1,1 @@
-// لم يعد هذا الملف مستخدمًا: نُقلت وظائفه إلى js/app.js. النسخة الأصلية في _backup_melodic_dictation_20261031، ويمكن حذف هذا الملف.
+/* نُقلت اللعبة إلى private-games/melodic-dictation — هذا الملف فارغ عمدًا ويجب حذف المجلد public/games/melodic-dictation */

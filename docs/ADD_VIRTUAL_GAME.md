@@ -7,19 +7,29 @@
 ```js
 {
   id: 'my-game', title: 'اسم اللعبة', description: 'وصف قصير',
-  category: 'strings',            // strings | keys | percussion | scales
+  category: 'strings',            // strings | keys | percussion | scales | notation
   grade: 'الصف الرابع',            // أو null
   status: 'available',            // available | soon (للمدير فقط) | unavailable (مخفية)
   entry: 'index.html', cover: '/lab-covers/my-game.jpg', tags: ['كلمة'],
-  settings: { threeD: true, needsAudio: true, markCorner: 'bottom-left', allowDownloads: false },
+  listInLab: true,                // false = لا تظهر في شبكة المختبر (تُفتح من بطاقتها في «الألعاب الموسيقية» فقط)
+  settings: { threeD: true, needsAudio: true, markCorner: 'bottom-left', allowDownloads: false, allowPrint: false },
 }
 ```
+- `allowDownloads: true` يسمح للعبة بتنزيل ملفات (مثل «تصدير ملف» النوتة).
+- `allowPrint: true` لا يُخفي الصفحة عند الطباعة ولا يمنع Ctrl+P (للألعاب التي فيها زر «طباعة» مقصود).
+- لعبة تظهر كبطاقة في «الألعاب الموسيقية» (`src/lib/gamesConfig.js`) وتُخدم محميًة: أعطها `labId: '<game-id>'` بدل `path`،
+  فتفتح البطاقة `/dashboard/resources/lab/<game-id>`، ويُحوَّل الرابط القديم `/dashboard/resources/<id>` إليها تلقائيًا.
+  مثال: `melodic-dictation` (مسابقة التدوين والإملاء اللحني).
 4. لا شيء آخر: البطاقة وصفحة التشغيل والحماية تعمل تلقائيًا. لتصنيف جديد أضفه في `GAME_CATEGORIES`.
 
 ## ملاحظات
 - المكتبات الخارجية (CDN) يجب أن تكون مسموحة بالرابط؛ الأفضل وضع نسخة محلية داخل مجلد اللعبة.
 - متغير البيئة `GAME_SESSION_SECRET` (نص عشوائي طويل) يُنصح بضبطه في الإنتاج؛ وإلا يُشتق من `FIREBASE_PRIVATE_KEY`.
-- الاختبار: `node --test tests/virtual-games.test.mjs`.
+- التحقق من هوية المستخدم لا يستعمل `firebase-admin` (كان يُسقط المسار على Vercel): `src/lib/virtual-games/firebase-token.js`
+  يتحقق من توقيع رمز Firebase بمفاتيح Google العامة. يحتاج `FIREBASE_PROJECT_ID` أو `NEXT_PUBLIC_FIREBASE_PROJECT_ID`، و`MONGODB_URI`.
+- فحص الإعداد في الإنتاج: افتح `/api/virtual-games/health` — يعرض نعم/لا لكل متطلب (السر، معرف المشروع، قاعدة البيانات،
+  مجلد الألعاب، مفاتيح Google) دون كشف أي قيمة.
+- الاختبار: `node --test tests/virtual-games.test.mjs tests/firebase-token.test.mjs`.
 
 ---
 

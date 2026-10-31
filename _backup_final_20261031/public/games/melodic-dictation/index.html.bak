@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مسابقة التدوين والإملاء اللحني — MusiTeacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20261031c">
+<link rel="stylesheet" href="css/score.css?v=20261031c">
+</head>
+<body>
+
+<!-- ======================= شاشة البداية ======================= -->
+<div id="splash">
+  <div class="splash-glow"></div>
+  <div class="splash-card">
+    <div class="splash-icons"><span>𝄞</span><span>🎹</span></div>
+    <h1>مسابقة التدوين والإملاء اللحني</h1>
+    <p class="splash-sub">دوِّن النغمات على المدرج، واقرأها صولفائيًا وإيقاعيًا، واحفظ ألحانك</p>
+    <input id="playerName" class="name-input" type="text" maxlength="30" placeholder="اسم الطالب / الفريق (اختياري)" autocomplete="off">
+    <button id="btnStart" class="btn-start">ابدأ ⚡</button>
+    <p class="splash-note">مصممة للحاسوب والسبورة الذكية</p>
+  </div>
+</div>
+
+<!-- ======================= التطبيق ======================= -->
+<div id="app" hidden>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🎼</span>
+      <div>
+        <div class="brand-title">التدوين والإملاء اللحني</div>
+        <div class="brand-sub">MusiTeacher</div>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist" aria-label="نوع النشاط">
+      <button class="tab" role="tab" data-mode="compose">✍️ التأليف والتدوين</button>
+      <button class="tab" role="tab" data-mode="dictation">🎧 الإملاء اللحني</button>
+      <button class="tab" role="tab" data-mode="reading">📖 القراءة والتدريب</button>
+    </nav>
+
+    <div class="player">
+      <span class="chip" title="الطالب">👤 <b id="pName">زائر</b></span>
+      <span class="chip" title="نقاط الخبرة">⭐ <b id="pXp">0</b></span>
+      <span class="chip" title="إجابات كاملة">✅ <b id="pOk">0</b></span>
+      <button class="icon-btn" id="btnSettings" title="الإعدادات">⚙️</button>
+      <button class="icon-btn" id="btnHelp" title="طريقة الاستخدام">❔</button>
+      <button class="icon-btn" id="btnFull" title="ملء الشاشة">⛶</button>
+    </div>
+  </header>
+
+  <!-- اختيار طريقة القراءة -->
+  <section class="readbar">
+    <div class="seg seg-read" role="radiogroup" aria-label="طريقة القراءة">
+      <button data-read="solfege" class="seg-btn" role="radio">🎼 القراءة الصولفائية <small>أسماء النغمات ومواضعها</small></button>
+      <button data-read="rhythm" class="seg-btn" role="radio">🥁 القراءة الإيقاعية <small>الأزمنة بطريقة إيمي باري</small></button>
+    </div>
+    <div class="read-opts">
+      <label class="switch" id="swLabelsWrap"><input type="checkbox" id="swLabels"><span></span> <b id="swLabelsText">إظهار أسماء النغمات</b></label>
+      <div class="seg seg-small" id="solfegeStyle" title="طريقة الصولفيج عند التشغيل">
+        <button data-style="sung" class="seg-btn">الصولفيج الغنائي <small>مع اللحن</small></button>
+        <button data-style="spoken" class="seg-btn">الصولفيج القرائي <small>مع المترونوم فقط</small></button>
+      </div>
+      <label class="switch" id="swLineWrap" hidden><input type="checkbox" id="swLine"><span></span> <b>عرض إيقاعي على خط واحد</b></label>
+    </div>
+  </section>
+
+  <!-- لوحات الأنشطة -->
+  <section class="panel" data-panel="compose">
+    <div class="row">
+      <label class="field grow">
+        <span>اسم النوتة</span>
+        <input id="scoreTitle" type="text" maxlength="60" placeholder="مثال: لحني الأول">
+      </label>
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btnSave">💾 حفظ</button>
+        <button class="btn" id="btnLibrary">📂 نوتاتي</button>
+        <button class="btn" id="btnExport">⬇️ تصدير ملف</button>
+        <button class="btn" id="btnImport">⬆️ استيراد ملف</button>
+        <button class="btn" id="btnNew">📄 جديدة</button>
+        <button class="btn" id="btnScoreSettings">🎚️ السلم والميزان</button>
+        <button class="btn" id="btnPrint" title="طباعة النوتة">🖨️</button>
+      </div>
+    </div>
+    <div class="save-state" id="saveState"></div>
+  </section>
+
+  <section class="panel" data-panel="dictation" hidden>
+    <div class="row wrap">
+      <label class="field"><span>المستوى</span><select id="dLevel"></select></label>
+      <label class="field"><span>السلم</span><select id="dKey"></select></label>
+      <label class="field"><span>الميزان</span><select id="dBeats"><option value="2">2/4</option><option value="3">3/4</option><option value="4" selected>4/4</option></select></label>
+      <label class="field"><span>عدد الموازير</span><select id="dMeasures"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>8</option></select></label>
+      <label class="field"><span>المصدر</span><select id="dSource"></select></label>
+      <button class="btn btn-primary btn-lg" id="btnNewDict">🎧 إملاء جديد</button>
+    </div>
+    <div class="row wrap dict-actions" id="dictActions" hidden>
+      <button class="btn btn-play" id="btnListen">▶️ استمع للإملاء</button>
+      <span class="listen-count" title="عدد مرات الاستماع">🔁 <b id="listenCount">0</b></span>
+      <select id="dPart" title="ما الذي يُسمع"></select>
+      <button class="btn" id="btnTonic">🎵 نغمة القرار</button>
+      <button class="btn btn-check" id="btnCheck">✔️ تحقق من إجابتي</button>
+      <button class="btn" id="btnSolution">👁️ أظهر الحل</button>
+      <button class="btn" id="btnRetry">↺ امسح وأعد المحاولة</button>
+      <button class="btn" id="btnDictToCompose" title="نقل الإملاء إلى التأليف للتدريب عليه">✍️ افتح في التأليف</button>
+    </div>
+    <p class="hint-line" id="dictHint">اختر المستوى ثم اضغط «إملاء جديد». في القراءة الصولفائية تُكتب النغمات وأزمنتها، وفي القراءة الإيقاعية يُكتب الإيقاع فقط.</p>
+  </section>
+
+  <section class="panel" data-panel="reading" hidden>
+    <div class="row wrap">
+      <label class="field grow"><span>النوتة</span><select id="rPiece"></select></label>
+      <button class="btn btn-play btn-lg" id="btnReadPlay">▶️ ابدأ القراءة</button>
+      <button class="btn btn-check" id="btnQuiz">🎯 اختبر نفسك</button>
+      <button class="btn" id="btnReadEdit">✍️ افتحها في التأليف</button>
+    </div>
+    <p class="hint-line" id="readSource"></p>
+  </section>
+
+  <!-- أدوات التدوين -->
+  <section class="toolbar" id="toolbar">
+    <div class="tool-group">
+      <span class="tg-title">القيمة الزمنية</span>
+      <div class="tools" id="durTools"></div>
+    </div>
+    <div class="tool-group">
+      <span class="tg-title">النوع</span>
+      <div class="tools">
+        <button class="tool" id="tNote" data-kind="note" title="نغمة (N)">♩<small>نغمة</small></button>
+        <button class="tool" id="tRest" data-kind="rest" title="سكتة (R)">𝄽<small>سكتة</small></button>
+      </div>
+    </div>
+    <div class="tool-group">
+      <span class="tg-title">إضافات</span>
+      <div class="tools">
+        <button class="tool" id="tDot" title="بوانتيه — نقطة زمنية (.)">•<small>بوانتيه</small></button>
+        <button class="tool" id="tTie" title="رباط زمني مع النغمة التالية (T)">⁀<small>رباط</small></button>
+      </div>
+    </div>
+    <div class="tool-group" id="accGroup">
+      <span class="tg-title">التحويل</span>
+      <div class="tools">
+        <button class="tool acc" data-acc="1" title="دييز">♯<small>دييز</small></button>
+        <button class="tool acc" data-acc="-1" title="بيمول">♭<small>بيمول</small></button>
+        <button class="tool acc" data-acc="0" title="بيكار">♮<small>بيكار</small></button>
+      </div>
+    </div>
+    <div class="tool-group">
+      <span class="tg-title">تحرير</span>
+      <div class="tools">
+        <button class="tool" id="tUndo" title="تراجع (Ctrl+Z)">↶<small>تراجع</small></button>
+        <button class="tool" id="tRedo" title="إعادة (Ctrl+Y)">↷<small>إعادة</small></button>
+        <button class="tool" id="tDel" title="حذف العلامة المحددة أو الأخيرة (Delete)">⌫<small>حذف</small></button>
+        <button class="tool" id="tMarks" title="علامات الإعادة والقفز للمازورة">𝄇<small>إعادات</small></button>
+        <button class="tool danger" id="tClear" title="تفريغ المدرج">🧹<small>تفريغ</small></button>
+      </div>
+    </div>
+    <div class="sel-badge" id="selBadge" hidden></div>
+  </section>
+
+  <!-- المدرج -->
+  <main class="staff-card" id="staffCard">
+    <div class="staff-head">
+      <div class="staff-title" id="staffTitle"></div>
+      <div class="staff-meta" id="staffMeta"></div>
+      <div class="zoom" title="تكبير المدرج للعرض على السبورة">
+        <button class="zbtn" id="zoomOut" aria-label="تصغير المدرج">−</button>
+        <span id="zoomVal">100٪</span>
+        <button class="zbtn" id="zoomIn" aria-label="تكبير المدرج">+</button>
+      </div>
+    </div>
+    <div class="unpitched-bar" id="unpitchedBar" hidden>
+      <span id="unpitchedText"></span>
+      <button class="btn btn-primary" id="btnFillPitches">حدّد مواضعها الآن</button>
+    </div>
+    <div class="staff-wrap">
+      <div id="staff" class="staff-host"></div>
+      <div class="coach" id="coach" hidden>
+        <div class="coach-step"><b>1</b> اختر القيمة الزمنية من الأدوات (نوار مثلًا)</div>
+        <div class="coach-step"><b>2</b> انقر على <u>خط</u> أو <u>مسافة</u> — ستظهر النغمة واسمها قبل أن ترفع إصبعك</div>
+        <div class="coach-step"><b>3</b> اضغط ▶️ تشغيل لتسمع ما كتبت، و💾 حفظ للاحتفاظ به</div>
+      </div>
+    </div>
+    <div class="status-line" id="status" aria-live="polite"></div>
+    <div id="solutionWrap" hidden>
+      <div class="solution-title">✅ الحل الصحيح</div>
+      <div id="solution" class="staff-host"></div>
+    </div>
+  </main>
+
+  <!-- لوحة الاختبار -->
+  <section class="quiz" id="quizPanel" hidden>
+    <div class="quiz-q" id="quizQ"></div>
+    <div class="quiz-answers" id="quizAnswers"></div>
+    <div class="quiz-score" id="quizScore"></div>
+    <button class="btn" id="btnQuizStop">إنهاء الاختبار</button>
+  </section>
+
+  <!-- التشغيل -->
+  <section class="transport">
+    <button class="btn btn-play btn-lg" id="btnPlay">▶️ تشغيل</button>
+    <button class="tbtn" id="btnLoop" title="تكرار">🔁</button>
+    <label class="switch"><input type="checkbox" id="swMetro"><span></span> <b>المترونوم</b></label>
+    <label class="tempo">♩ = <input type="range" id="tempo" min="40" max="160" step="1"> <b id="tempoVal">80</b></label>
+    <label class="vol">🔊 <input type="range" id="volume" min="0" max="1" step="0.01"></label>
+  </section>
+
+  <section id="feedback" class="feedback" hidden></section>
+</div>
+
+<!-- ======================= النوافذ ======================= -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <button class="modal-x" data-close>✕</button>
+    <h2 id="modalTitle"></h2>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<div class="confetti" id="confetti"></div>
+<input type="file" id="fileInput" accept=".json,.musinote,application/json" hidden>
+
+<script src="js/glyphs.js?v=20261031c"></script>
+<script src="js/theory.js?v=20261031c"></script>
+<script src="js/score.js?v=20261031c"></script>
+<script src="js/exercises.js?v=20261031c"></script>
+<script src="js/renderer.js?v=20261031c"></script>
+<script src="js/audio.js?v=20261031c"></script>
+<script src="js/storage.js?v=20261031c"></script>
+<script src="js/app.js?v=20261031c"></script>
+</body>
+</html>

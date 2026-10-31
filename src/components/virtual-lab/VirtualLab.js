@@ -42,7 +42,7 @@ function GameCard({ game, isAdmin }) {
 
 export default function VirtualLab() {
   const { isAdmin } = useAuth();
-  const games = useMemo(() => VIRTUAL_GAMES.filter((g) => g.status !== 'unavailable').map(publicGameInfo), []);
+  const games = useMemo(() => VIRTUAL_GAMES.filter((g) => g.status !== 'unavailable' && g.listInLab !== false).map(publicGameInfo), []);
   const [cat, setCat] = useState('all');
   const [q, setQ] = useState('');
 
