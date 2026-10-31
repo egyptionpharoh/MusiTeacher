@@ -5,7 +5,7 @@ import ChatInput from './ChatInput';
 export default function SmartTeacher() {
   // التعديل هنا: وضعنا مصفوفة سليمة بدلاً من [...]
   const [messages, setMessages] = useState([
-    { id: 1, type: 'ai', text: 'أهلاً يا أستاذي! أنا مساعدك الذكي لدروس الموسيقى، اسألني عن أي تحضير.' }
+    { id: 1, type: 'ai', text: 'أهلاً يا أستاذي فى منصتك المفضلة MusiTeacher.' }
   ]);
 
   const handleSendMessage = async (text) => {
