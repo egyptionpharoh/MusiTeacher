@@ -1,6 +1,7 @@
 import AppHeader from '../../../components/AppHeader';
 import Link from 'next/link';
 import { gamesConfig } from '../../../lib/gamesConfig';
+import VirtualLab from '../../../components/virtual-lab/VirtualLab';
 
 export default function ResourcesPage() {
   return (
@@ -37,6 +38,7 @@ export default function ResourcesPage() {
           <p className="hidden md:block text-lg text-blue-50/90 font-medium mt-4 transition-colors duration-300 group-hover:text-white drop-shadow-sm dark:text-gray-300/90 dark:group-hover:text-cyan-50">
             اكتشف واستمتع بمجموعة من الألعاب التفاعلية المصممة لتنمية مهارات طلابك الموسيقية.
           </p>
+          <a href="#virtual-lab" className="inline-block mt-5 px-5 py-2 rounded-full bg-white/20 dark:bg-white/10 border border-white/30 text-white text-sm font-bold hover:bg-white/30 transition">🧪 مختبر الألعاب الافتراضية ثلاثية الأبعاد ↓</a>
           <div className="w-24 h-1 bg-gradient-to-r from-transparent via-cyan-300 to-transparent dark:via-cyan-400 mx-auto mt-8 rounded-full opacity-70 transition-all duration-700 ease-out group-hover:w-48 group-hover:opacity-100 shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
         </div>
         
@@ -87,6 +89,11 @@ export default function ResourcesPage() {
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* مختبر الألعاب الافتراضية (ثلاثية الأبعاد) — قسم مستقل ومحمي من جهة الخادم */}
+        <div className="w-full mt-24">
+          <VirtualLab />
         </div>
       </div>
     </div>

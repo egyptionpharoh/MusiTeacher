@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MusiTeacher - العود الافتراضي</title>
+    <style>
+        :root {
+            --bg: #17120e;
+            --panel: #261d16;
+            --panel-2: #1f1813;
+            --text: #f3ece3;
+            --muted: #b9ab9b;
+            --accent: #d9a35b;
+            --accent-hover: #e8b978;
+            --active: #ffcf5a;
+            --tonic: #ffc23d;
+            --maqam: #7fd1b9;
+            --desc: #b8a6ff;
+            --good: #4caf50;
+            --near: #f2c94c;
+            --off: #e5533d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(ellipse at top, #2a1f17 0%, var(--bg) 60%);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 18px 14px 26px;
+        }
+
+        header { text-align: center; margin-bottom: 12px; }
+        header h1 { color: var(--accent); font-size: clamp(1.25rem, 3.6vw, 2rem); margin-bottom: 4px; }
+        header p { color: #d3c5b5; font-size: 0.95rem; }
+
+        button {
+            background-color: var(--accent);
+            color: #1a120b;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: var(--accent-hover); }
+        button:disabled { opacity: 0.45; cursor: not-allowed; }
+        button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible {
+            outline: 2px solid var(--active);
+            outline-offset: 2px;
+        }
+
+        .controls {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .seg {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background-color: var(--panel);
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .seg-title { color: var(--muted); font-size: 0.85rem; padding: 0 6px; }
+        .seg-btn {
+            background-color: transparent;
+            color: var(--text);
+            font-weight: normal;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+        .seg-btn:not([aria-pressed="true"]):hover { background-color: rgba(217, 163, 91, 0.18); }
+        .seg-btn[aria-pressed="true"] { background-color: var(--accent); color: #1a120b; font-weight: bold; }
+
+        .field {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: var(--panel);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .field label { color: var(--muted); }
+
+        select {
+            background: #120d09;
+            color: var(--text);
+            border: 1px solid #5a4636;
+            border-radius: 6px;
+            padding: 6px 8px;
+            font-size: 0.92rem;
+        }
+
+        .small-btn { padding: 7px 12px; font-size: 0.85rem; }
+        .ghost-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+        .ghost-btn:hover { background: rgba(217,163,91,0.15); }
+
+        details.more {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--panel-2);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.25);
+        }
+        details.more > summary {
+            cursor: pointer;
+            padding: 10px 14px;
+            color: var(--accent);
+            font-weight: bold;
+            list-style-position: inside;
+        }
+        .more-body { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 4px 12px 14px; }
+        .check { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .check input { width: 18px; height: 18px; accent-color: var(--accent); }
+        .hint { color: #a89887; font-size: 0.8rem; }
+
+        .info-panel {
+            background-color: var(--panel);
+            padding: 10px 16px;
+            border-radius: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 26px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            text-align: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1100px;
+        }
+        .info-box { display: flex; flex-direction: column; min-width: 80px; }
+        .info-label { font-size: 0.8rem; color: var(--muted); }
+        .info-value { font-size: 1.4rem; font-weight: bold; color: var(--accent); min-height: 32px; transition: color 0.2s; }
+        .info-sub { font-size: 0.8rem; color: #cbbcac; min-height: 1.1em; }
+        .info-panel.is-idle .info-value { color: #8a7d70; }
+        .ltr { direction: ltr; unicode-bidi: isolate; }
+
+        .cents-box { min-width: 150px; }
+        .cents-box.hidden { display: none; }
+        .cents-meter {
+            position: relative;
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 4px;
+            background: linear-gradient(90deg, var(--off) 0%, var(--near) 30%, var(--good) 45%, var(--good) 55%, var(--near) 70%, var(--off) 100%);
+            direction: ltr;
+        }
+        .cents-needle {
+            position: absolute; top: -4px; width: 4px; height: 18px;
+            background: #fff; border-radius: 2px; left: 50%;
+            transform: translateX(-50%); box-shadow: 0 0 3px rgba(0,0,0,0.7);
+            transition: left 0.06s linear;
+        }
+        .cents-value.good { color: var(--good); }
+        .cents-value.near { color: var(--near); }
+        .cents-value.off { color: var(--off); }
+
+        .rotate-hint {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            background: #3a2a1c;
+            border: 1px solid var(--accent);
+            color: #f3e2cf;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+        }
+        @media (max-width: 760px) and (orientation: portrait) {
+            .rotate-hint:not(.dismissed) { display: flex; }
+        }
+
+        /* ---------- حاوية العود ---------- */
+        #oud-wrap { width: 100%; max-width: 1100px; position: relative; }
+        #oud-container {
+            width: 100%;
+            aspect-ratio: var(--vb-ratio, 1.786);
+            background: radial-gradient(ellipse at 60% 45%, #3b2a1d 0%, #20160f 55%, #120c08 100%);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 26px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.04);
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+        #oud-container svg { width: 100%; height: 100%; display: block; }
+
+        .toast {
+            position: absolute; top: 10px; left: 50%;
+            transform: translate(-50%, -8px);
+            background: rgba(15,10,6,0.9); color: #fff;
+            padding: 7px 14px; border-radius: 18px; font-size: 0.9rem;
+            pointer-events: none; opacity: 0; transition: opacity 0.2s, transform 0.2s;
+            max-width: 90%; text-align: center; z-index: 5;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+        .legend {
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 10px;
+            color: #d0c2b2;
+            font-size: 0.86rem;
+            line-height: 1.75;
+            text-align: center;
+        }
+        .legend .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; margin: 0 3px; }
+
+        /* ---------- عناصر الرسم ---------- */
+        .hit-area { fill: transparent; cursor: pointer; }
+        .string { fill: none; stroke-linecap: round; pointer-events: none; }
+        .string-shadow { fill: none; stroke: rgba(0,0,0,0.55); pointer-events: none; filter: url(#soft-blur); }
+        .string-winding { fill: none; pointer-events: none; }
+        .string-halo { stroke: none; opacity: 0.32; pointer-events: none; }
+
+        .pos-dot { pointer-events: none; fill: rgba(255,255,255,0.10); stroke: rgba(255,255,255,0.28); stroke-width: 0.9; }
+        .pos-dot.quarter { fill: rgba(255,255,255,0.18); stroke: none; }
+        .pos-dot.maqam { fill: rgba(127, 209, 185, 0.22); stroke: var(--maqam); stroke-width: 1.2; }
+        .pos-dot.desc { fill: rgba(184, 166, 255, 0.12); stroke: var(--desc); stroke-width: 1.1; stroke-dasharray: 2 1.6; }
+        .pos-dot.tonic { fill: rgba(255, 194, 61, 0.30); stroke: var(--tonic); stroke-width: 1.7; }
+        .pos-dot.open-dot { fill: rgba(217,163,91,0.30); stroke: var(--accent); stroke-width: 1.3; }
+
+        .pos-label {
+            fill: #fff;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: central;
+            pointer-events: none;
+            paint-order: stroke;
+            stroke: rgba(12, 8, 5, 0.9);
+            stroke-width: 2.3px;
+            stroke-linejoin: round;
+            direction: ltr;
+            unicode-bidi: isolate;
+        }
+        .pos-label.ar { direction: rtl; font-family: Tahoma, 'Segoe UI', sans-serif; }
+        #oud-container[data-labels="keys"] .pos-label { fill: var(--active); font-family: Consolas, 'Courier New', monospace; }
+
+        .play-indicator { opacity: 0; pointer-events: none; transition: opacity 0.18s ease-out; }
+        .play-indicator.on { opacity: 1; transition: opacity 0.04s ease-in; }
+        .play-dot { fill: var(--active); stroke: #7a4a00; stroke-width: 1.2; }
+        .play-indicator.good .play-dot { stroke: var(--good); stroke-width: 2.4; }
+        .play-indicator.near .play-dot { stroke: #c79a00; stroke-width: 2.4; }
+        .play-indicator.off .play-dot { stroke: var(--off); stroke-width: 2.4; }
+        .play-name { fill: #1a1209; font-weight: bold; text-anchor: middle; dominant-baseline: central; direction: ltr; unicode-bidi: isolate; }
+        .play-name.ar { direction: rtl; font-family: Tahoma, 'Segoe UI', sans-serif; }
+
+        /* الريشة: تظهر لحظة النقر في منطقة العزف فوق الوجه */
+        .risha { pointer-events: none; opacity: 0; transition: opacity 0.25s ease-out; }
+        .risha.on { opacity: 0.95; transition: opacity 0.02s; }
+
+        .flash-ring { fill: none; stroke-width: 3; opacity: 0; pointer-events: none; }
+        .flash-ring.show-good { stroke: var(--good); animation: flash 1.4s ease-out; }
+        .flash-ring.show-reveal { stroke: #ff9800; animation: flash 2.2s ease-out; }
+        @keyframes flash { 0% { opacity: 0; } 12% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
+
+        .zone-label { fill: rgba(255, 236, 205, 0.55); font-size: 11px; text-anchor: middle; pointer-events: none; }
+
+        /* ---------- لوحة التمارين ---------- */
+        .ear-panel {
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 16px;
+            background: var(--panel);
+            border-radius: 10px;
+            padding: 12px 14px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .ear-panel h2 { font-size: 1.05rem; color: var(--accent); margin-bottom: 8px; }
+        .ear-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .ear-msg { margin-top: 10px; min-height: 1.5em; font-size: 0.98rem; }
+        .ear-msg.good { color: #8fdc92; }
+        .ear-msg.bad { color: #ff9f8f; }
+        .ear-score { margin-inline-start: auto; color: var(--muted); font-size: 0.9rem; }
+
+        footer { margin-top: 18px; color: #8f8173; font-size: 0.78rem; text-align: center; line-height: 1.6; max-width: 1100px; }
+
+        #start-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.78);
+            display: flex; flex-direction: column; gap: 12px;
+            justify-content: center; align-items: center;
+            z-index: 1000; text-align: center; padding: 20px;
+        }
+        #start-overlay p { color: #ddd; font-size: 0.9rem; }
+        #start-overlay.hidden { display: none; }
+
+        @media (max-height: 560px) and (orientation: landscape) {
+            body { padding: 8px 10px 16px; }
+            header { margin-bottom: 6px; }
+            header h1 { font-size: 1.1rem; margin-bottom: 0; }
+            header p { display: none; }
+            #oud-wrap { order: 1; }
+            .info-panel { order: 2; margin: 8px 0; padding: 6px 10px; gap: 4px 18px; }
+            .info-value { font-size: 1.05rem; min-height: 22px; }
+            .info-sub { font-size: 0.72rem; }
+            .legend { order: 3; }
+            .controls { order: 4; margin-top: 8px; }
+            details.more { order: 5; }
+            .ear-panel { order: 6; }
+            footer { order: 7; }
+        }
+        @media (max-width: 560px) {
+            body { padding: 12px 8px 20px; }
+            .seg-title { display: none; }
+            .seg-btn { padding: 7px 9px; font-size: 0.82rem; }
+            .info-panel { padding: 8px; gap: 6px 14px; }
+            .info-value { font-size: 1.15rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-overlay">
+        <button id="start-btn" type="button">اضغط للدخول إلى عالم العود الافتراضي</button>
+        <p>يمكنك أيضًا البدء مباشرة بلمس الأوتار أو الضغط على مفتاح نغمة.</p>
+    </div>
+
+    <header>
+        <h1>MusiTeacher - العود الافتراضي</h1>
+        <p>عود عربي تعليمي بستة أوتار مزدوجة وأرباع التون والمقامات</p>
+    </header>
+
+    <div class="controls">
+        <div class="field">
+            <label for="maqam-select">المقام:</label>
+            <select id="maqam-select"></select>
+            <button type="button" class="small-btn ghost-btn" id="maqam-play-btn">استمع للمقام</button>
+        </div>
+        <div class="seg" role="group" aria-label="أسماء النغمات" data-setting="labels">
+            <span class="seg-title">الأسماء:</span>
+            <button type="button" class="seg-btn" data-value="arabic">عربية</button>
+            <button type="button" class="seg-btn" data-value="solfege">دو ري مي</button>
+            <button type="button" class="seg-btn" data-value="latin">الحروف</button>
+            <button type="button" class="seg-btn" data-value="keys">المفاتيح</button>
+            <button type="button" class="seg-btn" data-value="none">إخفاء</button>
+        </div>
+        <div class="seg" role="group" aria-label="العلامات الإرشادية" data-setting="marks">
+            <span class="seg-title">العلامات:</span>
+            <button type="button" class="seg-btn" data-value="maqam">نغمات المقام</button>
+            <button type="button" class="seg-btn" data-value="full">دليل كامل</button>
+            <button type="button" class="seg-btn" data-value="none">بدون</button>
+        </div>
+        <div class="seg" role="group" aria-label="مواضع الأصابع" data-setting="snap">
+            <span class="seg-title">الأصابع:</span>
+            <button type="button" class="seg-btn" data-value="maqam">على نغمات المقام</button>
+            <button type="button" class="seg-btn" data-value="quarter">كل الأرباع</button>
+            <button type="button" class="seg-btn" data-value="free">حر</button>
+        </div>
+        <div class="seg" role="group" aria-label="قوة الريشة" data-setting="dyn">
+            <span class="seg-title">الريشة:</span>
+            <button type="button" class="seg-btn" data-value="p">هادئة</button>
+            <button type="button" class="seg-btn" data-value="mf">متوسطة</button>
+            <button type="button" class="seg-btn" data-value="f">قوية</button>
+        </div>
+    </div>
+
+    <details class="more" id="more-options">
+        <summary>خيارات إضافية: الضبط، الرنين، العرض</summary>
+        <div class="more-body">
+            <div class="field">
+                <label for="tuning-select">ضبط الأوتار:</label>
+                <select id="tuning-select"></select>
+            </div>
+            <div class="field">
+                <label class="check"><input type="checkbox" id="damp-check"> كتم الوتر عند رفع الإصبع</label>
+            </div>
+            <div class="field">
+                <label class="check"><input type="checkbox" id="tremolo-check"> ريشة متكررة (رَشّ) أثناء الضغط</label>
+            </div>
+            <div class="seg" role="group" aria-label="العرض" data-setting="view">
+                <span class="seg-title">العرض:</span>
+                <button type="button" class="seg-btn" data-value="full">العود كاملًا</button>
+                <button type="button" class="seg-btn" data-value="neck">الزند مكبّرًا</button>
+            </div>
+        </div>
+    </details>
+
+    <div class="info-panel is-idle">
+        <div class="info-box">
+            <span class="info-label">الوتر</span>
+            <span class="info-value" id="ui-course">-</span>
+            <span class="info-sub" id="ui-course-sub"></span>
+        </div>
+        <div class="info-box">
+            <span class="info-label" id="ui-note-label">النغمة</span>
+            <span class="info-value" id="ui-note">-</span>
+            <span class="info-sub" id="ui-note-sub"></span>
+        </div>
+        <div class="info-box">
+            <span class="info-label">البُعد عن الوتر المطلق</span>
+            <span class="info-value" id="ui-interval">-</span>
+            <span class="info-sub" id="ui-interval-sub"></span>
+        </div>
+        <div class="info-box">
+            <span class="info-label">التردد</span>
+            <span class="info-value ltr" id="ui-freq">-</span>
+        </div>
+        <div class="info-box cents-box hidden" id="cents-box">
+            <span class="info-label" id="cents-label">دقة التنغيم</span>
+            <span class="info-value cents-value" id="ui-cents">-</span>
+            <div class="cents-meter" aria-hidden="true"><div class="cents-needle" id="cents-needle"></div></div>
+        </div>
+    </div>
+
+    <div class="rotate-hint" id="rotate-hint">
+        <span>لتجربة أفضل على الهاتف: أدِر الجهاز أفقيًا، أو اختر «الزند مكبّرًا» من الخيارات الإضافية.</span>
+        <button type="button" class="small-btn ghost-btn" id="rotate-hint-close">حسنًا</button>
+    </div>
+
+    <div id="oud-wrap">
+        <div id="oud-container" role="application" aria-label="عود افتراضي: اضغط على الأوتار فوق الزند أو انقرها فوق وجه العود، أو استخدم لوحة المفاتيح"></div>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <section class="ear-panel" aria-labelledby="ear-title">
+        <h2 id="ear-title">تمرين السمع: اسمع النغمة ثم اعزفها على العود</h2>
+        <div class="ear-row">
+            <label for="ear-level" class="hint">المستوى:</label>
+            <select id="ear-level">
+                <option value="open">الأوتار المطلقة</option>
+                <option value="maqam1">نغمات المقام (الديوان الأساسي)</option>
+                <option value="maqamAll">نغمات المقام (كل المواضع)</option>
+            </select>
+            <button type="button" class="small-btn" id="ear-start">ابدأ / نغمة جديدة</button>
+            <button type="button" class="small-btn ghost-btn" id="ear-replay" disabled>أعد الاستماع</button>
+            <button type="button" class="small-btn ghost-btn" id="ear-reveal" disabled>أظهر الإجابة</button>
+            <button type="button" class="small-btn ghost-btn" id="ear-stop" disabled>إنهاء</button>
+            <span class="ear-score" id="ear-score">صحيح: 0 من 0</span>
+        </div>
+        <div class="ear-msg" id="ear-msg" role="status" aria-live="polite">اضغط «ابدأ» لتسمع نغمة، ثم اعزفها على أي وتر.</div>
+    </section>
+
+        <footer>
+        الصوت: نمذجة فيزيائية مولَّدة بالكامل داخل الأداة (وتر منقور بخوارزمية Karplus–Strong + رنين جسم العود)، وليست تسجيلًا لعود حقيقي؛ لا توجد عينات خارجية في هذه اللعبة.
+        <br>MusiTeacher — بوابة MusiTeacher الذكية
+        <br>© 2026 MusiTeacher. جميع الحقوق محفوظة لتصميم هذه الأداة وبرمجتها وواجهتها التعليمية. لا يجوز 
+نسخها أو إعادة نشرها أو بيعها دون إذن كتابي مسبق- تمت البرمجة بواسطة: حسين محمد سيد عبدالعال الشهير بـ "حسين الملك".
+    </footer>
+
+    <script src="./_shared/mt-focus-svg.js" defer></script>
+    <script>
+    'use strict';
+
+    // =====================================================================
+    // 0. أدوات عامة والإعدادات
+    // =====================================================================
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+    // الطبقة بوحدة "ربع التون": q = 2 × رقم MIDI  (q فردي = ربع تون)
+    const qToFreq = (q) => 440 * Math.pow(2, (q / 2 - 69) / 12);
+
+    const DEFAULTS = {
+        labels: 'arabic',     // arabic | solfege | latin | keys | none
+        marks: 'maqam',       // maqam | full | none
+        snap: 'maqam',        // maqam | quarter | free
+        dyn: 'mf',            // p | mf | f
+        maqam: 'rast',
+        tuning: 'C',
+        view: null,           // full | neck  (null = حسب الشاشة)
+        damp: false,
+        tremolo: false
+    };
+    const SETTINGS_KEY = 'musiteacher-oud-settings-v1';
+    const settings = Object.assign({}, DEFAULTS);
+    try {
+        const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null');
+        if (saved && typeof saved === 'object') Object.keys(DEFAULTS).forEach(k => { if (k in saved) settings[k] = saved[k]; });
+    } catch (e) { /* التخزين غير متاح */ }
+    function saveSettings() {
+        const s = Object.assign({}, settings);
+        if (ear.active && ear.savedLabels !== null) s.labels = ear.savedLabels;
+        try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) { /* تجاهل */ }
+    }
+
+    // =====================================================================
+    // 1. النظرية الموسيقية: كتابة النغمات، الأسماء العربية، المقامات
+    // =====================================================================
+    const LETTER_PC = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+    const SOLFEGE = { C: 'دو', D: 'ري', E: 'مي', F: 'فا', G: 'صول', A: 'لا', B: 'سي' };
+    // التحويلات بوحدة ربع التون: -2 بيمول، -1 نصف بيمول، +1 نصف دييز، +2 دييز
+    const ACC_SYM = { '-2': '♭', '-1': '½♭', '0': '', '1': '½♯', '2': '♯' };
+    const ACC_WORD = { '-2': 'بيمول', '-1': 'نصف بيمول', '0': '', '1': 'نصف دييز', '2': 'دييز' };
+    const ACC_CODE = { b: -2, d: -1, t: 1, '#': 2 };
+
+    // "Ed3" = مي نصف بيمول في الأوكتاف 3 (d = نصف بيمول، b = بيمول، # = دييز، t = نصف دييز)
+    function parseNote(str) {
+        const m = /^([A-G])([bdt#]?)(-?\d)$/.exec(str);
+        const letter = m[1], acc = m[2] ? ACC_CODE[m[2]] : 0, octave = parseInt(m[3], 10);
+        const q = 2 * (12 * (octave + 1) + LETTER_PC[letter]) + acc;
+        return { letter, acc, octave, q };
+    }
+
+    // الأسماء العربية التقليدية للنغمات (بالطبقة الفعلية للعود: الراست = C3 = دو)
+    const ARABIC_NAMES_BASE = {
+        G2: 'يكاه', A2: 'عشيران', Bb2: 'عجم عشيران', Bd2: 'عراق',
+        C3: 'راست', D3: 'دوكاه', Eb3: 'كرد', Ed3: 'سيكاه', E3: 'بوسليك', F3: 'جهاركاه',
+        'F#3': 'حجاز', G3: 'نوى', 'G#3': 'حصار', A3: 'حسيني', Bb3: 'عجم', Bd3: 'أوج',
+        C4: 'كردان', 'C#4': 'شهناز', D4: 'محير', Ed4: 'بزرك', F4: 'ماهوران'
+    };
+    const ARABIC_BY_Q = new Map();
+    Object.entries(ARABIC_NAMES_BASE).forEach(([n, ar]) => ARABIC_BY_Q.set(parseNote(n).q, ar));
+    // الاسم العربي لأي طبقة: مباشرة، أو "قرار" (أوكتاف أدنى) أو "جواب" (أوكتاف أعلى) لاسم معروف
+    function arabicName(q) {
+        if (ARABIC_BY_Q.has(q)) return { main: ARABIC_BY_Q.get(q), prefix: '' };
+        if (ARABIC_BY_Q.has(q + 24)) return { main: ARABIC_BY_Q.get(q + 24), prefix: 'قرار' };
+        if (ARABIC_BY_Q.has(q - 24)) return { main: ARABIC_BY_Q.get(q - 24), prefix: 'جواب' };
+        return null;
+    }
+
+    // المقامات (التقريب الشائع بربع تون متساوٍ = 50 سنت). desc = نغمات تختلف في الهبوط
+    const MAQAMAT = [
+        { id: 'rast',     ar: 'راست',   tonicAr: 'على الراست (دو)', notes: ['C3','D3','Ed3','F3','G3','A3','Bd3'], desc: { Bd3: 'Bb3' },
+          info: 'جنس راست على الراست + جنس راست على النوى؛ يُعزف الأوج (سي½♭) صعودًا والعجم (سي♭) غالبًا في الهبوط.' },
+        { id: 'bayati',   ar: 'بياتي',  tonicAr: 'على الدوكاه (ري)', notes: ['D3','Ed3','F3','G3','A3','Bb3','C4'], desc: {},
+          info: 'جنس بياتي على الدوكاه + جنس نهاوند على النوى.' },
+        { id: 'sikah',    ar: 'سيكاه',  tonicAr: 'على السيكاه (مي½♭)', notes: ['Ed3','F3','G3','A3','Bd3','C4','D4'], desc: {},
+          info: 'جنس سيكاه على السيكاه + جنس راست على النوى.' },
+        { id: 'hijaz',    ar: 'حجاز',   tonicAr: 'على الدوكاه (ري)', notes: ['D3','Eb3','F#3','G3','A3','Bb3','C4'], desc: {},
+          info: 'جنس حجاز على الدوكاه (بُعد تون ونصف بين الثانية والثالثة) + جنس نهاوند على النوى.' },
+        { id: 'nahawand', ar: 'نهاوند', tonicAr: 'على الراست (دو)', notes: ['C3','D3','Eb3','F3','G3','Ab3','B3'], desc: { B3: 'Bb3' },
+          info: 'جنس نهاوند على الراست + جنس حجاز على النوى صعودًا، وجنس كرد (سي♭) غالبًا في الهبوط.' },
+        { id: 'ajam',     ar: 'عجم',    tonicAr: 'على عجم عشيران (سي♭)', notes: ['Bb2','C3','D3','Eb3','F3','G3','A3'], desc: {},
+          info: 'جنس عجم على عجم عشيران + جنس عجم على الجهاركاه.' },
+        { id: 'kurd',     ar: 'كرد',    tonicAr: 'على الدوكاه (ري)', notes: ['D3','Eb3','F3','G3','A3','Bb3','C4'], desc: {},
+          info: 'جنس كرد على الدوكاه + جنس نهاوند على النوى.' },
+        { id: 'saba',     ar: 'صبا',    tonicAr: 'على الدوكاه (ري)', notes: ['D3','Ed3','F3','Gb3','A3','Bb3','C4','Db4'], desc: {}, noOctave: true,
+          info: 'جنس صبا على الدوكاه + جنس حجاز على الجهاركاه؛ لا يتكرر الصبا عند الديوان (الثامنة ري♭).' },
+        { id: 'chromatic', ar: 'السلم اللوني', tonicAr: '(كل أنصاف التون)', notes: ['C3','C#3','D3','Eb3','E3','F3','F#3','G3','G#3','A3','Bb3','B3'], desc: {},
+          info: 'كل أنصاف التون دون مقام محدد، للتدرب على المواضع.' }
+    ];
+    MAQAMAT.forEach(m => {
+        m.parsed = m.notes.map(parseNote);
+        m.tonicQ = m.parsed[0].q;
+        m.spell = new Map();          // pcQ -> {letter, acc}
+        m.parsed.forEach(p => m.spell.set(((p.q % 24) + 24) % 24, { letter: p.letter, acc: p.acc }));
+        m.descParsed = Object.entries(m.desc).map(([from, to]) => ({ from: parseNote(from), to: parseNote(to) }));
+        m.descSpell = new Map();
+        m.descParsed.forEach(d => m.descSpell.set(((d.to.q % 24) + 24) % 24, { letter: d.to.letter, acc: d.to.acc }));
+        m.pcs = new Set(m.spell.keys());
+        m.descPcs = new Set(m.descSpell.keys());
+        m.prefersFlats = m.parsed.some(p => p.acc < 0);
+    });
+    const currentMaqam = () => MAQAMAT.find(m => m.id === settings.maqam) || MAQAMAT[0];
+    const pcOf = (q) => ((q % 24) + 24) % 24;
+
+    // كتابة أي طبقة: بحسب المقام إن كانت من نغماته، وإلا بقاعدة ثابتة
+    const SHARP_SEMI = [['C',0],['C',2],['D',0],['D',2],['E',0],['F',0],['F',2],['G',0],['G',2],['A',0],['A',2],['B',0]];
+    const FLAT_SEMI  = [['C',0],['D',-2],['D',0],['E',-2],['E',0],['F',0],['G',-2],['G',0],['A',-2],['A',0],['B',-2],['B',0]];
+    function spell(q) {
+        const pc = pcOf(q);
+        const mq = currentMaqam();
+        let sp = mq.spell.get(pc) || mq.descSpell.get(pc);
+        if (!sp) {
+            if (pc % 2 === 0) {
+                const [l, a] = (mq.prefersFlats ? FLAT_SEMI : SHARP_SEMI)[pc / 2];
+                sp = { letter: l, acc: a };
+            } else {
+                // ربع تون: نصف بيمول من النغمة الطبيعية الأعلى، أو نصف دييز من الأدنى
+                const up = SHARP_SEMI[((pc + 1) / 2) % 12];
+                if (up[1] === 0) sp = { letter: up[0], acc: -1 };
+                else sp = { letter: SHARP_SEMI[(pc - 1) / 2][0], acc: 1 };
+            }
+        }
+        const naturalQ = q - sp.acc;
+        return { letter: sp.letter, acc: sp.acc, octave: Math.floor(naturalQ / 24) - 1, q };
+    }
+    const latinName = (sp) => sp.letter + ACC_SYM[String(sp.acc)];
+    const solfegeShort = (sp) => SOLFEGE[sp.letter] + ACC_SYM[String(sp.acc)];
+    const solfegeLong = (sp) => SOLFEGE[sp.letter] + (sp.acc ? ' ' + ACC_WORD[String(sp.acc)] : '');
+    function arabicFull(q) {
+        const a = arabicName(q);
+        return a ? (a.prefix ? a.prefix + ' ' + a.main : a.main) : null;
+    }
+
+    // اسم البُعد بوحدة ربع التون عن الوتر المطلق
+    const INTERVAL_NAMES = {
+        0: 'مطلق (بلا إصبع)', 1: 'ربع تون', 2: 'نصف تون', 3: 'ثلاثة أرباع التون', 4: 'تون كامل',
+        5: 'تون وربع', 6: 'تون ونصف', 7: 'تون وثلاثة أرباع', 8: 'تونان', 9: 'تونان وربع',
+        10: 'رابعة تامة (تونان ونصف)', 11: 'تونان وثلاثة أرباع', 12: 'ثلاثة تونات', 13: 'ثلاثة تونات وربع',
+        14: 'خامسة تامة', 15: 'خامسة وربع', 16: 'سادسة صغيرة', 17: 'سادسة متوسطة', 18: 'سادسة كبيرة',
+        19: 'سادسة كبيرة وربع', 20: 'سابعة صغيرة', 21: 'سابعة متوسطة', 22: 'سابعة كبيرة', 23: 'سابعة كبيرة وربع',
+        24: 'ديوان كامل (أوكتاف)'
+    };
+
+    // =====================================================================
+    // 2. الأوتار والضبط
+    // =====================================================================
+    // من أعلى الرسم إلى أسفله = من الأغلظ إلى الأحد (كما يرى العازف عوده وهو يحمله)
+    const TUNINGS = {
+        C: { ar: 'عربي شائع: دو فا لا ري صول دو (C2 F2 A2 D3 G3 C4)', notes: ['C2','F2','A2','D3','G3','C4'] },
+        D: { ar: 'عربي: ري صول لا ري صول دو (D2 G2 A2 D3 G3 C4)', notes: ['D2','G2','A2','D3','G3','C4'] }
+    };
+    const COURSE_COUNT = 6;
+    const MAX_SEMIS = 12;           // من الوتر المطلق حتى الديوان على كل وتر
+    let courses = [];
+    function buildCourses() {
+        const t = TUNINGS[settings.tuning] || TUNINGS.C;
+        courses = t.notes.map((n, i) => {
+            const p = parseNote(n);
+            return {
+                index: i, note: n, q: p.q, openFreq: qToFreq(p.q),
+                double: i > 0,                              // الوتر الأغلظ مفرد (البم)، والبقية أزواج
+                nylon: i >= 4,                              // الوتران الأحدّان من النايلون، والبقية ملفوفة
+                ar: arabicFull(p.q) || n
+            };
+        });
+    }
+
+    // =====================================================================
+    // 3. محرك الصوت: نمذجة فيزيائية لوتر منقور بالريشة + جسم العود
+    // =====================================================================
+    function seededRandom(seed) {
+        let s = seed >>> 0;
+        return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+    }
+    function holdParam(param, t) {
+        if (typeof param.cancelAndHoldAtTime === 'function') {
+            try { param.cancelAndHoldAtTime(t); return; } catch (e) { /* البديل */ }
+        }
+        const v = param.value;
+        param.cancelScheduledValues(t);
+        param.setValueAtTime(v, t);
+    }
+
+    const DYN = {
+        p:  { amp: 0.42, hard: 0.30, click: 0.010 },
+        mf: { amp: 0.68, hard: 0.55, click: 0.018 },
+        f:  { amp: 1.00, hard: 0.80, click: 0.030 }
+    };
+
+    // وتر واحد بخوارزمية Karplus-Strong الموسّعة: خط تأخير بطول الدورة + فلتر فقد يخمد التوافقيات العالية أسرع
+    // + تمرير كلي لضبط الطبقة بدقة كسرية (ضروري لأرباع التون) + موضع النقر بالريشة (مرشح مشط).
+    function renderString(out, start, freq, sr, p, rnd) {
+        const w = 2 * Math.PI * freq / sr;
+        const S = p.S;                                        // معامل فلتر الفقد (أكبر = أغمق وأسرع خمودًا للحدّة)
+        const re = (1 - S) + S * Math.cos(w), im = -S * Math.sin(w);
+        const magH = Math.hypot(re, im);
+        const tauH = -Math.atan2(im, re) / w;                 // تأخير الطور للفلتر عند التردد الأساسي
+        const d = sr / freq - tauH;
+        const N = Math.floor(d - 0.5);
+        const frac = d - N;                                   // بين 0.5 و1.5 لثبات مرشح التمرير الكلي
+        const C = (1 - frac) / (1 + frac);
+        const rho = Math.pow(10, -3 / (p.t60 * freq)) / magH; // فقد لكل دورة يحقق زمن الخمود المطلوب
+        const len = out.length - start;
+
+        // الإثارة: ضجيج مُنعَّم (صلابة الريشة) ثم مشط موضع النقر
+        const ex = new Float32Array(N);
+        let lp = 0;
+        const a = 0.15 + 0.8 * p.hard;
+        for (let i = 0; i < N; i++) { lp += a * ((rnd() * 2 - 1) - lp); ex[i] = lp; }
+        const P = Math.max(1, Math.round(p.pick * N));
+        const ex2 = new Float32Array(N);
+        for (let i = 0; i < N; i++) ex2[i] = ex[i] - (i >= P ? ex[i - P] : 0);
+        let mean = 0;
+        for (let i = 0; i < N; i++) mean += ex2[i];
+        mean /= N;
+        let rms = 0;
+        for (let i = 0; i < N; i++) { ex2[i] -= mean; rms += ex2[i] * ex2[i]; }
+        rms = Math.sqrt(rms / N) || 1;
+        const g = p.amp / rms;
+
+        const y = new Float32Array(len);
+        let lpPrevIn = 0, apPrevIn = 0, apPrevOut = 0;
+        for (let n = 0; n < len; n++) {
+            const v = n >= N ? y[n - N] : 0;
+            const lpOut = (1 - S) * v + S * lpPrevIn;
+            lpPrevIn = v;
+            const apOut = C * lpOut + apPrevIn - C * apPrevOut;
+            apPrevIn = lpOut;
+            apPrevOut = apOut;
+            y[n] = (n < N ? ex2[n] * g : 0) + rho * apOut;
+        }
+        // إزالة المركّبة المستمرة ثم الإضافة إلى المخرج
+        let xPrev = 0, yPrev = 0;
+        for (let n = 0; n < len; n++) {
+            const yy = y[n] - xPrev + 0.995 * yPrev;
+            xPrev = y[n];
+            yPrev = yy;
+            out[start + n] += yy;
+        }
+    }
+
+    class OudAudio {
+        constructor(ctx) {
+            this.ctx = ctx;
+            this.sr = ctx.sampleRate;
+            this.voices = [];
+            this.rnd = Math.random;
+
+            // المخرج: ضاغط خفيف + غرفة صغيرة
+            this.out = ctx.createGain();
+            this.out.gain.value = 1.15;
+            const limiter = ctx.createDynamicsCompressor();
+            limiter.threshold.value = -10;
+            limiter.knee.value = 8;
+            limiter.ratio.value = 6;
+            limiter.attack.value = 0.003;
+            limiter.release.value = 0.2;
+            this.out.connect(limiter);
+            const dry = ctx.createGain(); dry.gain.value = 0.92;
+            const wet = ctx.createGain(); wet.gain.value = 0.16;
+            const room = ctx.createConvolver();
+            room.buffer = this.makeRoom(1.1, 3.2);
+            limiter.connect(dry); limiter.connect(room); room.connect(wet);
+            dry.connect(ctx.destination); wet.connect(ctx.destination);
+
+            // جسم العود: رنين الهواء (~150 هرتز) والخشب (~220 هرتز) وعشرات الرنينات الأعلى
+            this.strings = ctx.createGain();
+            this.strings.gain.value = 1.0;
+            const direct = ctx.createGain(); direct.gain.value = 0.5;
+            const body = ctx.createConvolver();
+            body.normalize = false;
+            body.buffer = this.makeBody();
+            const bodyGain = ctx.createGain(); bodyGain.gain.value = 1.0;
+            const warm = ctx.createBiquadFilter();       // الأوتار الحيوانية/النايلون: حدّة أقل من الجيتار المعدني
+            warm.type = 'highshelf';
+            warm.frequency.value = 4500;
+            warm.gain.value = -5;
+            this.strings.connect(direct);
+            this.strings.connect(body);
+            body.connect(bodyGain);
+            direct.connect(warm);
+            bodyGain.connect(warm);
+            warm.connect(this.out);
+        }
+
+        makeRoom(seconds, decay) {
+            const len = Math.floor(this.sr * seconds);
+            const ir = this.ctx.createBuffer(2, len, this.sr);
+            const rnd = seededRandom(5);
+            for (let ch = 0; ch < 2; ch++) {
+                const d = ir.getChannelData(ch);
+                for (let i = 0; i < len; i++) d[i] = (rnd() * 2 - 1) * Math.pow(1 - i / len, decay);
+            }
+            return ir;
+        }
+
+        makeBody() {
+            const sr = this.sr;
+            const len = Math.floor(sr * 0.16);
+            const ir = this.ctx.createBuffer(1, len, sr);
+            const d = ir.getChannelData(0);
+            const rnd = seededRandom(1977);
+            const modes = [{ f: 150, q: 9, a: 1.0 }, { f: 222, q: 12, a: 0.85 }, { f: 296, q: 14, a: 0.5 }];
+            for (let k = 0; k < 42; k++) {
+                const f = 340 * Math.pow(5200 / 340, (k + rnd() * 0.9) / 42);
+                modes.push({ f, q: 12 + rnd() * 24, a: (0.25 + rnd() * 0.5) / Math.pow(f / 340, 0.55) });
+            }
+            modes.forEach((m, i) => {
+                const tau = m.q / (Math.PI * m.f);
+                const ph = rnd() * Math.PI * 2;
+                const sign = i % 3 === 1 ? -1 : 1;
+                for (let n = 0; n < len; n++) {
+                    const t = n / sr;
+                    d[n] += sign * m.a * Math.exp(-t / tau) * Math.sin(2 * Math.PI * m.f * t + ph);
+                }
+            });
+            let peak = 0;
+            for (let n = 0; n < len; n++) peak = Math.max(peak, Math.abs(d[n]));
+            for (let n = 0; n < len; n++) d[n] *= 0.055 / peak;
+            return ir;
+        }
+
+        // يولّد صوت نقرة على وتر (مفرد أو مزدوج) ويعيده كمخزن صوتي
+        makePluck(freq, course, open, dynKey) {
+            const sr = this.sr;
+            const dyn = DYN[dynKey];
+            const rnd = this.rnd;
+            // زمن الخمود: الأوتار الغليظة الملفوفة أطول رنينًا، والنغمة المضغوطة بالإصبع (عود بلا دساتين) أقصر وأدفأ
+            const baseT60 = [3.6, 3.3, 3.0, 2.7, 2.2, 1.9][course.index] || 2.4;
+            const t60 = open ? baseT60 : baseT60 * 0.58;
+            const S = (course.nylon ? 0.34 : 0.22) + (open ? 0 : 0.07) + (1 - dyn.hard) * 0.08;
+            const dur = Math.min(5, t60 * 1.15 + 0.2);
+            const len = Math.ceil(dur * sr);
+            const out = new Float32Array(len);
+            const pick = 0.2 + rnd() * 0.05;              // النقر قرب الشمسية: صوت دافئ متوازن
+            const common = { t60, S, hard: dyn.hard, amp: 1 };
+            renderString(out, 0, freq * Math.pow(2, (course.double ? -0.9 : 0) / 1200), sr, Object.assign({}, common, { pick }), rnd);
+            if (course.double) {
+                // الوتر الثاني في الزوج: يُضرب بعد جزء من الملّي ثانية، وانحراف ضبط طفيف يعطي "تموّج" الأوتار المزدوجة
+                const lag = Math.floor((0.0012 + rnd() * 0.0025) * sr);
+                const det = 0.8 + rnd() * 1.4;
+                renderString(out, lag, freq * Math.pow(2, det / 1200), sr, Object.assign({}, common, { pick: pick + 0.015, amp: 0.85 }), rnd);
+            }
+            // صوت احتكاك الريشة بالوتر (لحظة قصيرة جدًا)
+            const clickLen = Math.floor(0.004 * sr);
+            let bp1 = 0, bp2 = 0;
+            for (let i = 0; i < clickLen; i++) {
+                const e = Math.sin(Math.PI * i / clickLen);
+                bp1 += 0.45 * ((rnd() * 2 - 1) - bp1);
+                bp2 += 0.45 * (bp1 - bp2);
+                out[i] += (bp1 - bp2) * dyn.click * 12 * e;
+            }
+            // تطبيع بطاقة بداية النغمة (لا بالقمة) حتى تتساوى الأوتار في الإحساس بالعلو، ثم قوة الريشة
+            let peak = 0, e = 0;
+            const e0 = Math.floor(0.006 * sr), e1 = Math.min(len, Math.floor(0.16 * sr));
+            for (let i = 0; i < len; i++) peak = Math.max(peak, Math.abs(out[i]));
+            for (let i = e0; i < e1; i++) e += out[i] * out[i];
+            const rms = Math.sqrt(e / Math.max(1, e1 - e0)) || 1;
+            const lowBoost = 1 + 0.12 * (5 - course.index) / 5;  // الأوتار الغليظة أعلى قليلًا بفضل رنين الجسم
+            // معايرة مقيسة لكل وتر بعد رنين الجسم (الوتر الأحدّ يقع على رنينات الجسم فيبدو أعلى)
+            const trim = [1, 1, 1, 1, 0.9, 0.55][course.index] || 1;
+            let gain = (0.15 * dyn.amp * lowBoost * trim) / rms;
+            if (peak * gain > 0.9) gain = 0.9 / peak;
+            const fade = Math.floor(0.05 * sr);
+            for (let i = 0; i < len; i++) {
+                let v = out[i] * gain;
+                if (i > len - fade) v *= (len - i) / fade;
+                out[i] = v;
+            }
+            const buf = this.ctx.createBuffer(1, len, sr);
+            if (buf.copyToChannel) buf.copyToChannel(out, 0); else buf.getChannelData(0).set(out);
+            return { buf, t60 };
+        }
+
+        // نقر وتر: يحل محل الرنين السابق على الوتر نفسه بتلاشٍ قصير جدًا (بلا طقطقة)
+        pluck(idx, course, freq, open, dynKey, when) {
+            const t = Math.max(this.ctx.currentTime, when || 0);
+            this.cut(idx, t, 0.006);
+            const { buf, t60 } = this.makePluck(freq, course, open, dynKey);
+            const src = this.ctx.createBufferSource();
+            src.buffer = buf;
+            const g = this.ctx.createGain();
+            g.gain.setValueAtTime(1, t);
+            let node = g;
+            if (this.ctx.createStereoPanner) {
+                const pan = this.ctx.createStereoPanner();
+                pan.pan.value = (course.index - 2.5) * 0.07;
+                g.connect(pan);
+                node = pan;
+            }
+            src.connect(g);
+            node.connect(this.strings);
+            src.start(t);
+            src.stop(t + buf.duration + 0.05);
+            const v = { src, g, freq0: freq, t0: t, t60, active: true, id: (this.serial = (this.serial || 0) + 1) };
+            this.voices[idx] = v;
+            return v;
+        }
+
+        // تغيير الطبقة أثناء الرنين: انزلاق الإصبع على الزند (بلا دساتين) أو رفع إصبع فوق آخر
+        glide(idx, freq, when) {
+            const v = this.voices[idx];
+            if (!v || !v.active) return false;
+            const t = Math.max(this.ctx.currentTime, when || 0);
+            v.src.playbackRate.setTargetAtTime(freq / v.freq0, t, 0.012);
+            return true;
+        }
+
+        // كتم الوتر (رفع الإصبع مع لمس الوتر)
+        damp(idx, when, tau) {
+            const v = this.voices[idx];
+            if (!v || !v.active) return;
+            const t = Math.max(this.ctx.currentTime, when || 0);
+            v.active = false;
+            holdParam(v.g.gain, t);
+            v.g.gain.setTargetAtTime(0, t, tau || 0.06);
+            try { v.src.stop(t + 0.6); } catch (e) { /* موقوف */ }
+        }
+
+        cut(idx, t, tau) {
+            const v = this.voices[idx];
+            if (!v) return;
+            v.active = false;
+            holdParam(v.g.gain, t);
+            v.g.gain.setTargetAtTime(0, t, tau);
+            try { v.src.stop(t + 0.08); } catch (e) { /* موقوف */ }
+        }
+
+        isRinging(idx) {
+            const v = this.voices[idx];
+            return !!(v && v.active && this.ctx.currentTime < v.t0 + v.t60 * 1.1);
+        }
+
+        dampAll() { for (let i = 0; i < this.voices.length; i++) this.damp(i, 0, 0.05); }
+    }
+
+    let audioCtx = null;
+    let engine = null;
+    const PREVIEW = 6;   // صوت مستقل لتمرين السمع
+
+    function ensureAudio() {
+        try {
+            if (navigator.audioSession && navigator.audioSession.type !== 'playback') navigator.audioSession.type = 'playback';
+        } catch (e) { /* غير مدعوم */ }
+        if (!audioCtx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return false;
+            try { audioCtx = new AC({ latencyHint: 'interactive' }); } catch (e) { audioCtx = new AC(); }
+            engine = new OudAudio(audioCtx);
+        }
+        if (audioCtx.state === 'suspended' || audioCtx.state === 'interrupted') audioCtx.resume().catch(() => {});
+        hideOverlay();
+        return true;
+    }
+
+    // =====================================================================
+    // 4. رسم العود (SVG)
+    // =====================================================================
+    const container = document.getElementById('oud-container');
+    const NUT_X = 130, BRIDGE_X = 830, SCALE = BRIDGE_X - NUT_X, CY = 280;
+    const FB_END = 522;             // نهاية لوحة الأصابع فوق الوجه
+    const JOINT_X = 362;            // اتصال الرقبة بالجسم (عند الخامسة تقريبًا: الرقبة ثلث طول الوتر)
+    const PLUCK_X = 712;            // مكان النقر المعتاد بين الشمسية والفرس
+    const nToX = (n) => NUT_X + SCALE * (1 - Math.pow(2, -n / 12));
+    const xToN = (x) => x <= NUT_X ? 0 : -12 * Math.log2(Math.max(1e-6, 1 - (x - NUT_X) / SCALE));
+    const courseGap = (x) => 15.5 + clamp((x - NUT_X) / SCALE, 0, 1.2) * 5.5;
+    const courseY = (c, x) => CY + (c - 2.5) * courseGap(Math.max(x, NUT_X));
+    const pairHalf = (x) => 1.9 + clamp((x - NUT_X) / SCALE, 0, 1) * 1.5;
+    const fbTop = (x) => courseY(0, x) - courseGap(x) * 0.95;
+    const fbBottom = (x) => courseY(5, x) + courseGap(x) * 0.95;
+
+    const VIEWS = {
+        full: { x: 0, y: 0, w: 1000, h: 560 },
+        neck: { x: 4, y: 188, w: 562, h: 184 }      // الزند مكبّرًا (الوضع الأول وما بعده)
+    };
+
+    let svgRoot = null;
+    let dotsLayer, labelsLayer, stringsLayer, indicatorLayer, rishaEl, flashRing;
+    const stringViews = [];
+    const playIndicators = [];
+    let positionNodes = [];   // positionNodes[c] = Map(nQuarter -> {dot, label, x, y, r})
+
+    function el(name, attrs, parent) {
+        const e = document.createElementNS(svgNS, name);
+        if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+        if (parent) parent.appendChild(e);
+        return e;
+    }
+
+    // مسار جسم العود (الكمثري): نصف علوي بمنحنيات ثم انعكاسه بتماثل تام حول محور الأوتار
+    function bodyPath(s) {
+        const k = s || 1, cx = 660;
+        const P = (x, y) => [cx + (x - cx) * k, CY + (y - CY) * k];
+        const top = [
+            [P(352, 236)],
+            [P(418, 214), P(468, 118), P(592, 86)],
+            [P(696, 58), P(846, 52), P(918, 122)],
+            [P(968, 170), P(976, 242), P(976, 280)]
+        ];
+        const f = (p) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
+        const m = (p) => [p[0], 2 * CY - p[1]];
+        let d = `M ${f(top[0][0])}`;
+        for (let i = 1; i < top.length; i++) d += ` C ${f(top[i][0])}, ${f(top[i][1])}, ${f(top[i][2])}`;
+        for (let i = top.length - 1; i >= 1; i--) {
+            const prevEnd = i - 1 === 0 ? top[0][0] : top[i - 1][2];
+            d += ` C ${f(m(top[i][1]))}, ${f(m(top[i][0]))}, ${f(m(prevEnd))}`;
+        }
+        return d + ' Z';
+    }
+
+    function buildOud() {
+        const svg = el('svg', { viewBox: '0 0 1000 560', 'aria-hidden': 'true' });
+        svgRoot = svg;
+        const defs = el('defs', null, svg);
+        defs.innerHTML = `
+            <radialGradient id="face-grad" cx="0.55" cy="0.5" r="0.62">
+                <stop offset="0%" stop-color="#f0d29c"/>
+                <stop offset="55%" stop-color="#e2b977"/>
+                <stop offset="88%" stop-color="#c7914f"/>
+                <stop offset="100%" stop-color="#9c6630"/>
+            </radialGradient>
+            <linearGradient id="bowl-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b1e0e"/><stop offset="50%" stop-color="#6a3a1c"/><stop offset="100%" stop-color="#2c160a"/>
+            </linearGradient>
+            <linearGradient id="fb-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1b120c"/><stop offset="50%" stop-color="#3a2618"/><stop offset="100%" stop-color="#160e09"/>
+            </linearGradient>
+            <linearGradient id="neck-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4a2914"/><stop offset="50%" stop-color="#7a4a26"/><stop offset="100%" stop-color="#3e2210"/>
+            </linearGradient>
+            <linearGradient id="pegbox-grad" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0%" stop-color="#5a3219"/><stop offset="100%" stop-color="#2a170b"/>
+            </linearGradient>
+            <linearGradient id="guard-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#3d2416"/><stop offset="100%" stop-color="#1c110a"/>
+            </linearGradient>
+            <filter id="soft-blur" filterUnits="userSpaceOnUse" x="-20" y="0" width="1040" height="560"><feGaussianBlur stdDeviation="1.1"/></filter>
+            <filter id="drop" x="-10%" y="-10%" width="120%" height="130%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="6"/><feOffset dy="7"/>
+                <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+                <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>`;
+
+        // --- صندوق المفاتيح (البنجق) منحنٍ إلى الخلف، وفيه 11 مفتاحًا ---
+        const pb = el('g', { class: 'pegbox' }, svg);
+        el('path', { d: `M ${NUT_X} ${CY - 54} L 22 ${CY - 24} Q 6 ${CY + 6} 22 ${CY + 38} L ${NUT_X} ${CY + 54} Z`, fill: 'url(#pegbox-grad)', stroke: '#1d0f06', 'stroke-width': 2, filter: 'url(#drop)' }, pb);
+        el('path', { d: `M ${NUT_X - 6} ${CY - 38} L 30 ${CY - 12} L 30 ${CY + 24} L ${NUT_X - 6} ${CY + 38} Z`, fill: '#140a05' }, pb);
+        const pegXs = [];
+        for (let i = 0; i < 6; i++) pegXs.push({ x: 112 - i * 16, side: -1 });
+        for (let i = 0; i < 5; i++) pegXs.push({ x: 104 - i * 16, side: 1 });
+        pegXs.forEach(p => {
+            const yEdge = p.side < 0 ? CY - 54 + (NUT_X - p.x) * 0.28 : CY + 54 - (NUT_X - p.x) * 0.15;
+            el('rect', { x: p.x - 3, y: p.side < 0 ? yEdge - 22 : yEdge, width: 6, height: 22, rx: 2, fill: '#2b170b' }, pb);
+            el('ellipse', { cx: p.x, cy: p.side < 0 ? yEdge - 25 : yEdge + 25, rx: 6.5, ry: 8, fill: '#4a2a14', stroke: '#1c0e06', 'stroke-width': 1.2 }, pb);
+        });
+        // الأوتار داخل صندوق المفاتيح تتجه إلى مفاتيحها
+        const pegStrings = el('g', { opacity: 0.7 }, pb);
+
+        // --- الظهر المحدب يظهر حافةً داكنة حول الوجه ---
+        el('path', { d: bodyPath(1.022), fill: 'url(#bowl-grad)', filter: 'url(#drop)' }, svg);
+        // --- الرقبة ---
+        el('path', { d: `M ${NUT_X} ${fbTop(NUT_X) - 3} L ${JOINT_X + 6} ${fbTop(JOINT_X) - 6} L ${JOINT_X + 6} ${fbBottom(JOINT_X) + 6} L ${NUT_X} ${fbBottom(NUT_X) + 3} Z`, fill: 'url(#neck-grad)' }, svg);
+        // --- الوجه الخشبي (خشب التنوب) مع عروق الخشب على امتداد الآلة ---
+        el('path', { d: bodyPath(1), fill: 'url(#face-grad)', stroke: '#3a1d0c', 'stroke-width': 5 }, svg);
+        const grain = el('g', { opacity: 0.16, 'clip-path': 'url(#face-clip)' }, svg);
+        const clip = el('clipPath', { id: 'face-clip' }, defs);
+        el('path', { d: bodyPath(1) }, clip);
+        const rg = seededRandom(3);
+        for (let y = 70; y <= 490; y += 6 + rg() * 5) {
+            el('line', { x1: 340, y1: y.toFixed(1), x2: 990, y2: (y + rg() * 3 - 1.5).toFixed(1), stroke: '#7a4a1e', 'stroke-width': (0.4 + rg() * 0.8).toFixed(2) }, grain);
+        }
+        el('path', { d: bodyPath(0.965), fill: 'none', stroke: '#2a1408', 'stroke-width': 1.6, opacity: 0.8 }, svg);
+        el('path', { d: bodyPath(0.955), fill: 'none', stroke: '#f6deb0', 'stroke-width': 0.8, opacity: 0.7 }, svg);
+
+        // --- الشمسية الكبيرة: زخرفة هندسية فوق فتحة الصوت ---
+        drawRosette(svg, 630, CY, 52, 12);
+        // --- الشمسيتان الصغيرتان ---
+        drawRosette(svg, 772, CY - 132, 20, 8);
+        drawRosette(svg, 772, CY + 132, 20, 8);
+
+        // --- واقية الريشة (قطعة خشب داكنة تحت الأوتار حيث تضرب الريشة) ---
+        el('path', { d: `M 688 ${CY} C 700 ${CY - 40}, 770 ${CY - 52}, 806 ${CY - 30} C 822 ${CY - 14}, 822 ${CY + 14}, 806 ${CY + 30} C 770 ${CY + 52}, 700 ${CY + 40}, 688 ${CY} Z`,
+            fill: 'url(#guard-grad)', stroke: '#c79a5c', 'stroke-width': 0.8, opacity: 0.88 }, svg);
+
+        // --- لوحة الأصابع (الزند): ملساء بلا دساتين، تمتد فوق الوجه وتنتهي بطرف مقوّس ---
+        el('path', {
+            d: `M ${NUT_X} ${fbTop(NUT_X).toFixed(1)} L ${FB_END} ${fbTop(FB_END).toFixed(1)} Q ${FB_END + 30} ${CY} ${FB_END} ${fbBottom(FB_END).toFixed(1)} L ${NUT_X} ${fbBottom(NUT_X).toFixed(1)} Z`,
+            fill: 'url(#fb-grad)', stroke: '#0c0704', 'stroke-width': 1.2, filter: 'url(#drop)'
+        }, svg);
+
+        // --- الفرس: يثبّت الأوتار على الوجه، بطرفين منحنيين ---
+        const bt = CY - 76, bb = CY + 76;
+        el('path', { d: `M ${BRIDGE_X - 6} ${bt} Q ${BRIDGE_X - 16} ${bt - 14} ${BRIDGE_X - 2} ${bt - 20} L ${BRIDGE_X + 10} ${bt - 6} L ${BRIDGE_X + 10} ${bb + 6} L ${BRIDGE_X - 2} ${bb + 20} Q ${BRIDGE_X - 16} ${bb + 14} ${BRIDGE_X - 6} ${bb} Z`,
+            fill: '#3a2213', stroke: '#160b05', 'stroke-width': 1.2, filter: 'url(#drop)' }, svg);
+        el('rect', { x: BRIDGE_X - 2, y: bt, width: 4, height: bb - bt, rx: 1.5, fill: '#e8dcc0', opacity: 0.85 }, svg);
+
+        // --- الأنف (العتبة) ---
+        el('rect', { x: NUT_X - 5, y: fbTop(NUT_X) - 1, width: 5, height: fbBottom(NUT_X) - fbTop(NUT_X) + 2, rx: 1.5, fill: '#e9dfc7', stroke: '#9b8f78', 'stroke-width': 0.6 }, svg);
+
+        el('text', { x: PLUCK_X, y: CY + 96, class: 'zone-label' }, svg).textContent = 'منطقة الريشة: انقر الأوتار هنا';
+
+        dotsLayer = el('g', { class: 'dots-layer' }, svg);
+        stringsLayer = el('g', { class: 'strings-layer' }, svg);
+        labelsLayer = el('g', { class: 'labels-layer' }, svg);
+        indicatorLayer = el('g', { class: 'indicator-layer' }, svg);
+
+        // الأوتار: من صندوق المفاتيح إلى الفرس
+        courses.forEach((c, i) => {
+            createStringView(i, c);
+            const pegTargets = c.double ? [i * 2 - 1, i * 2] : [0];
+            const yNut = courseY(i, NUT_X);
+            pegTargets.forEach((pi, k) => {
+                const peg = pegXs[pi];
+                if (!peg) return;
+                const yy = c.double ? yNut + (k === 0 ? -pairHalf(NUT_X) : pairHalf(NUT_X)) : yNut;
+                el('line', { x1: NUT_X - 5, y1: yy.toFixed(1), x2: peg.x, y2: (peg.side < 0 ? CY - 20 : CY + 20).toFixed(1), stroke: c.nylon ? '#efe4cc' : '#c9c2b4', 'stroke-width': 0.8 }, pegStrings);
+            });
+            createPlayIndicator(i);
+        });
+
+        rishaEl = el('path', { class: 'risha', d: 'M 0 -2 C 10 -5, 34 -5, 44 0 C 34 5, 10 5, 0 2 Z', fill: '#f2e3c2', stroke: '#8a6a3a', 'stroke-width': 1 }, indicatorLayer);
+        flashRing = el('circle', { class: 'flash-ring', r: 10, cx: -50, cy: -50 }, indicatorLayer);
+        el('rect', { x: -40, y: -40, width: 1080, height: 640, class: 'hit-area' }, svg);
+
+        container.innerHTML = '';
+        container.appendChild(svg);
+        buildPositionNodes();
+    }
+
+    function drawRosette(svg, cx, cy, r, petals) {
+        const g = el('g', { class: 'rosette' }, svg);
+        el('circle', { cx, cy, r: r + 5, fill: 'none', stroke: '#5b3416', 'stroke-width': 3 }, g);
+        el('circle', { cx, cy, r: r + 2.2, fill: 'none', stroke: '#f3dcac', 'stroke-width': 1, 'stroke-dasharray': '2 2' }, g);
+        el('circle', { cx, cy, r, fill: '#140a05' }, g);
+        const lattice = el('g', { stroke: '#c79a5c', 'stroke-width': Math.max(0.8, r / 30), fill: 'none' }, g);
+        // نجمة هندسية: مضلعان نجميان + دوائر متداخلة
+        const star = (n, rad, skip, rot) => {
+            let d = '';
+            for (let i = 0; i <= n; i++) {
+                const k = (i * skip) % n;
+                const a = rot + k * 2 * Math.PI / n;
+                d += (i === 0 ? 'M ' : ' L ') + (cx + rad * Math.cos(a)).toFixed(2) + ' ' + (cy + rad * Math.sin(a)).toFixed(2);
+            }
+            return d;
+        };
+        el('path', { d: star(petals, r * 0.96, Math.floor(petals / 2) - 1, 0) }, lattice);
+        el('path', { d: star(petals, r * 0.96, Math.floor(petals / 2) - 1, Math.PI / petals) }, lattice);
+        el('circle', { cx, cy, r: r * 0.42 }, lattice);
+        el('circle', { cx, cy, r: r * 0.22 }, lattice);
+        for (let i = 0; i < petals; i++) {
+            const a = i * 2 * Math.PI / petals;
+            el('circle', { cx: (cx + r * 0.64 * Math.cos(a)).toFixed(2), cy: (cy + r * 0.64 * Math.sin(a)).toFixed(2), r: (r * 0.2).toFixed(2) }, lattice);
+        }
+    }
+
+    // ---------- رسم الأوتار واهتزازها ----------
+    function createStringView(i, c) {
+        const g = el('g', { class: 'course' }, stringsLayer);
+        const n = c.double ? 2 : 1;
+        const wid = [2.6, 2.2, 1.9, 1.6, 1.3, 1.1][i];
+        const color = c.nylon ? '#f1e6cf' : (i <= 1 ? '#c9b48e' : '#cfc8b8');
+        const parts = [];
+        for (let k = 0; k < n; k++) {
+            const shadow = el('path', { class: 'string-shadow', 'stroke-width': wid * 1.3 }, g);
+            const halo = el('path', { class: 'string-halo', fill: color }, g);
+            const body = el('path', { class: 'string', stroke: color, 'stroke-width': wid }, g);
+            let wind = null;
+            if (!c.nylon) wind = el('path', { class: 'string-winding', stroke: 'rgba(60,45,30,0.35)', 'stroke-width': wid, 'stroke-dasharray': '0.6 0.9' }, g);
+            const shine = el('path', { class: 'string', stroke: 'rgba(255,255,255,0.65)', 'stroke-width': Math.max(0.4, wid * 0.3), transform: `translate(0, ${(-wid * 0.25).toFixed(2)})` }, g);
+            parts.push({ shadow, halo, body, wind, shine, side: n === 1 ? 0 : (k === 0 ? -1 : 1) });
+        }
+        const view = { i, parts, wid, stopX: NUT_X, level: 0, decay: 1, phase: Math.random() * 6.28 };
+        stringViews[i] = view;
+        drawString(view, 0);
+    }
+
+    function stringLineY(view, side, x) {
+        return courseY(view.i, x) + side * pairHalf(Math.max(x, NUT_X));
+    }
+
+    function drawString(view, time) {
+        const xf = Math.max(view.stopX, NUT_X);
+        const env = view.level * (4.2 - view.i * 0.45);
+        const SAMPLES = 36;
+        const pt = (x, y) => ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+        view.parts.forEach((p, k) => {
+            const swing = Math.sin(view.phase + k * 1.7 + time * 2 * Math.PI * (9 + view.i)) * 0.85;
+            const y0 = stringLineY(view, p.side, NUT_X - 5);
+            let line = `M ${NUT_X - 5} ${y0.toFixed(2)}` + pt(xf, stringLineY(view, p.side, xf));
+            let shadow = `M ${NUT_X - 5} ${(y0 + 1.4).toFixed(2)}` + pt(xf, stringLineY(view, p.side, xf) + (xf > NUT_X + 1 ? 0.3 : 1.6));
+            let upper = '';
+            const lower = [];
+            for (let s = 1; s <= SAMPLES; s++) {
+                const x = xf + (BRIDGE_X - xf) * s / SAMPLES;
+                const mode = Math.sin(Math.PI * (x - xf) / (BRIDGE_X - xf));
+                const y = stringLineY(view, p.side, x);
+                const h = 1.6 + 3.8 * (x - NUT_X) / SCALE;              // ارتفاع الوتر عن الوجه: يزيد نحو الفرس
+                line += pt(x, y + env * mode * swing);
+                shadow += pt(x, y + h + env * mode * swing * 0.5);
+                if (env > 0.05) {
+                    const half = env * mode + view.wid / 2;
+                    upper += pt(x, y - half);
+                    lower.unshift(pt(x, y + half));
+                }
+            }
+            p.body.setAttribute('d', line);
+            p.shine.setAttribute('d', line);
+            if (p.wind) p.wind.setAttribute('d', line);
+            p.shadow.setAttribute('d', shadow);
+            if (env > 0.05) {
+                const yf = stringLineY(view, p.side, xf);
+                p.halo.setAttribute('d', `M ${xf.toFixed(2)} ${(yf - view.wid / 2).toFixed(2)}` + upper + lower.join('') + pt(xf, yf + view.wid / 2) + ' Z');
+            } else p.halo.setAttribute('d', '');
+        });
+    }
+
+    let animRunning = false, lastFrame = 0;
+    function vibrate(i, stopX, t60) {
+        const v = stringViews[i];
+        v.stopX = stopX;
+        v.level = 1;
+        v.decay = t60 || 2;
+        runAnim();
+    }
+    function moveFinger(i, stopX) {
+        const v = stringViews[i];
+        v.stopX = stopX;
+        if (v.level === 0) drawString(v, performance.now() / 1000);
+        runAnim();
+    }
+    function dampVisual(i) {
+        const v = stringViews[i];
+        v.decay = Math.min(v.decay, 0.25);
+        runAnim();
+    }
+    function runAnim() {
+        if (animRunning) return;
+        animRunning = true;
+        lastFrame = performance.now();
+        requestAnimationFrame(frame);
+    }
+    function frame(now) {
+        const dt = Math.min(0.05, (now - lastFrame) / 1000);
+        lastFrame = now;
+        let moving = false;
+        stringViews.forEach(v => {
+            if (v.level > 0) {
+                v.level *= Math.exp(-dt * 6.9 / v.decay);       // يتناقص الاهتزاز المرئي مع تناقص الصوت
+                if (v.level < 0.02) {
+                    v.level = 0;
+                    if (!holders[v.i].length) v.stopX = NUT_X;
+                }
+                drawString(v, now / 1000);
+                if (v.level > 0) moving = true;
+            }
+        });
+        if (moving) requestAnimationFrame(frame);
+        else animRunning = false;
+    }
+
+    // ---------- مؤشر النغمة والريشة ----------
+    function createPlayIndicator(i) {
+        const g = el('g', { class: 'play-indicator' }, indicatorLayer);
+        const dot = el('rect', { class: 'play-dot', x: -9, y: -9, width: 18, height: 18, rx: 9 }, g);
+        const name = el('text', { class: 'play-name', x: 0, y: 0.6 }, g);
+        playIndicators[i] = { g, dot, name, timer: null };
+    }
+
+    function setTextLines(t, lines, x, fs) {
+        while (t.firstChild) t.removeChild(t.firstChild);
+        if (lines.length <= 1) { t.textContent = lines[0] || ''; return; }
+        lines.forEach((line, k) => {
+            const ts = document.createElementNS(svgNS, 'tspan');
+            ts.setAttribute('x', x);
+            ts.setAttribute('dy', k === 0 ? `${-0.5 * fs}` : `${1.0 * fs}`);
+            ts.textContent = line;
+            t.appendChild(ts);
+        });
+    }
+    function fitFont(r, lines, ar) {
+        const longest = Math.max(1, ...lines.map(l => [...l].length));
+        let f = r * (longest <= 1 ? 1.25 : longest === 2 ? 1.0 : longest === 3 ? 0.8 : longest === 4 ? 0.66 : 0.56);
+        if (ar) f *= 1.08;
+        if (lines.length > 1) f *= 0.74;
+        return clamp(f, 4, 12);
+    }
+    const dotRadius = (x) => Math.min(9.5, courseGap(x) * 0.47);
+
+    function showIndicator(i, nSemis, state, autoHideMs) {
+        const ind = playIndicators[i];
+        const x = nToX(nSemis);
+        const y = courseY(i, x);
+        const gap = courseGap(x);
+        const lab = indicatorLabel(i, nSemis);
+        const text = lab.lines.join(' ');
+        const fs = clamp(gap * (lab.ar ? 0.66 : 0.7), 7, 13);
+        ind.g.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)})`);
+        ind.name.classList.toggle('ar', lab.ar);
+        ind.name.style.fontSize = fs.toFixed(1) + 'px';
+        ind.name.textContent = text;
+        // شارة بعرض الاسم: تبقى النغمة المعزوفة مقروءة حتى لو كانت الأسماء مخفية
+        let w = 0;
+        try { w = ind.name.getComputedTextLength(); } catch (e) { /* غير متاح */ }
+        if (!w) w = [...text].length * fs * 0.58;
+        const h = fs * 1.55;
+        const bw = Math.max(h, w + fs * 0.9);
+        ind.dot.setAttribute('x', (-bw / 2).toFixed(2));
+        ind.dot.setAttribute('y', (-h / 2).toFixed(2));
+        ind.dot.setAttribute('width', bw.toFixed(2));
+        ind.dot.setAttribute('height', h.toFixed(2));
+        ind.dot.setAttribute('rx', (h / 2).toFixed(2));
+        ind.g.setAttribute('class', 'play-indicator on' + (state ? ' ' + state : ''));
+        clearTimeout(ind.timer);
+        if (autoHideMs) ind.timer = setTimeout(() => { if (!holders[i].length) hideIndicator(i); }, autoHideMs);
+    }
+    function hideIndicator(i) {
+        const ind = playIndicators[i];
+        clearTimeout(ind.timer);
+        ind.g.setAttribute('class', 'play-indicator');
+    }
+
+    let rishaTimer = null;
+    function showRisha(i) {
+        const y = courseY(i, PLUCK_X);
+        rishaEl.setAttribute('transform', `translate(${PLUCK_X - 10} ${(y + 3).toFixed(1)}) rotate(-28)`);
+        rishaEl.setAttribute('class', 'risha on');
+        clearTimeout(rishaTimer);
+        rishaTimer = setTimeout(() => rishaEl.setAttribute('class', 'risha'), 120);
+    }
+
+    function flashPosition(i, nQ, kind) {
+        const x = nToX(nQ / 2), y = courseY(i, x);
+        flashRing.setAttribute('cx', x.toFixed(2));
+        flashRing.setAttribute('cy', y.toFixed(2));
+        flashRing.setAttribute('r', (dotRadius(x) + 5).toFixed(2));
+        flashRing.setAttribute('class', 'flash-ring');
+        void flashRing.getBoundingClientRect();
+        flashRing.setAttribute('class', 'flash-ring ' + (kind === 'good' ? 'show-good' : 'show-reveal'));
+    }
+
+    // =====================================================================
+    // 5. علامات المواضع والأسماء على الزند
+    // =====================================================================
+    function buildPositionNodes() {
+        dotsLayer.innerHTML = '';
+        labelsLayer.innerHTML = '';
+        positionNodes = courses.map((c, i) => {
+            const map = new Map();
+            for (let nQ = 0; nQ <= MAX_SEMIS * 2; nQ++) {
+                const x = nToX(nQ / 2);
+                const y = courseY(i, x);
+                const dot = el('circle', { cx: x.toFixed(2), cy: y.toFixed(2), r: dotRadius(x).toFixed(2), class: 'pos-dot' }, dotsLayer);
+                const label = el('text', { x: x.toFixed(2), y: (y + 0.5).toFixed(2), class: 'pos-label' }, labelsLayer);
+                map.set(nQ, { dot, label, x, y, r: dotRadius(x), gap: courseGap(x) });
+            }
+            return map;
+        });
+    }
+
+    // اسم على الزند: حجم الخط بحسب المسافة بين الأوتار، و"قرار/جواب" سطر صغير فوق الاسم
+    function setPosLabel(t, lab, x, gap) {
+        while (t.firstChild) t.removeChild(t.firstChild);
+        t.classList.toggle('ar', lab.ar);
+        const main = lab.lines[lab.lines.length - 1];
+        const len = [...main].length;
+        let fs = gap * (lab.ar ? 0.6 : 0.64);
+        if (len > 4) fs *= 0.88;
+        if (len > 6) fs *= 0.86;
+        fs = clamp(fs, 5, 11);
+        t.style.fontSize = fs.toFixed(1) + 'px';
+        if (lab.lines.length === 1) { t.textContent = main; return; }
+        const pre = document.createElementNS(svgNS, 'tspan');
+        pre.setAttribute('x', x);
+        pre.setAttribute('dy', (-0.62 * fs).toFixed(2));
+        pre.style.fontSize = (fs * 0.62).toFixed(1) + 'px';
+        pre.textContent = lab.lines[0];
+        const mn = document.createElementNS(svgNS, 'tspan');
+        mn.setAttribute('x', x);
+        mn.setAttribute('dy', (0.86 * fs).toFixed(2));
+        mn.textContent = main;
+        t.appendChild(pre);
+        t.appendChild(mn);
+    }
+
+    function nameLines(q, mode) {
+        const sp = spell(q);
+        if (mode === 'arabic') {
+            const a = arabicName(q);
+            if (a && a.prefix) return { lines: [a.prefix, a.main], ar: true };
+            if (a && a.main.includes(' ')) { const k = a.main.indexOf(' '); return { lines: [a.main.slice(0, k), a.main.slice(k + 1)], ar: true }; }
+            if (a) return { lines: [a.main], ar: true };
+            return { lines: [solfegeShort(sp)], ar: true };
+        }
+        if (mode === 'solfege') return { lines: [solfegeShort(sp)], ar: true };
+        return { lines: [latinName(sp)], ar: false };
+    }
+
+    function indicatorLabel(i, nSemis) {
+        const nQ = Math.round(nSemis * 2);
+        const q = courses[i].q + nQ;
+        const mode = (settings.labels === 'keys' || settings.labels === 'none') ? 'latin' : settings.labels;
+        return nameLines(q, mode);
+    }
+
+    function applyMarks() {
+        container.dataset.labels = settings.labels;
+        const mq = currentMaqam();
+        courses.forEach((c, i) => {
+            positionNodes[i].forEach((node, nQ) => {
+                const q = c.q + nQ;
+                const pc = pcOf(q);
+                const inMaqam = mq.pcs.has(pc);
+                const descOnly = !inMaqam && mq.descPcs.has(pc);
+                const isTonic = pc === pcOf(mq.tonicQ);
+                let show = false;
+                const cls = ['pos-dot'];
+                if (nQ === 0) { show = true; cls.push('open-dot'); }
+                if (settings.marks === 'maqam') {
+                    if (inMaqam) { show = true; cls.push(isTonic ? 'tonic' : 'maqam'); }
+                    else if (descOnly) { show = true; cls.push('desc'); }
+                } else if (settings.marks === 'full') {
+                    show = true;
+                    if (nQ % 2 === 1) cls.push('quarter');
+                    if (inMaqam && nQ > 0) cls.push(isTonic ? 'tonic' : 'maqam');
+                }
+                node.dot.setAttribute('class', cls.join(' '));
+                node.dot.setAttribute('r', (cls.includes('quarter') && !inMaqam ? node.r * 0.42 : node.r).toFixed(2));
+                node.dot.style.display = show ? '' : 'none';
+                // الأسماء في الوضع الأول فقط (حتى الوتر التالي) كي لا تتكرر الطبقة نفسها على وترين؛ والوتر الأحدّ حتى الديوان
+                const nextQ = i < COURSE_COUNT - 1 ? courses[i + 1].q - c.q : Infinity;
+                const firstPos = nQ < nextQ;
+
+                // الأسماء: على العلامات الظاهرة (والأرباع غير المقامية بلا أسماء في الدليل الكامل حتى لا يزدحم الزند)
+                let lab = null;
+                if (settings.labels === 'keys') {
+                    const k = keyLabelAt.get(`${i}:${nQ}`);
+                    if (k) lab = { lines: [k.join('/')], ar: false };
+                } else if (settings.labels !== 'none' && show && firstPos && !descOnly &&
+                           !(settings.marks === 'full' && nQ % 2 === 1)) {
+                    lab = nameLines(q, settings.labels);
+                }
+                if (lab) {
+                    setPosLabel(node.label, lab, node.x.toFixed(2), node.gap);
+                    node.label.style.display = '';
+                } else node.label.style.display = 'none';
+            });
+        });
+        for (let i = 0; i < COURSE_COUNT; i++) if (holders[i].length) showIndicator(i, holders[i][holders[i].length - 1].n, indicatorState(holders[i][holders[i].length - 1].n, i));
+        updateLegend();
+    }
+
+    const legendEl = document.getElementById('legend');
+    function updateLegend() {
+        const mq = currentMaqam();
+        const parts = [];
+        const t = TUNINGS[settings.tuning];
+        parts.push(`الضبط: ${t.ar}. من أعلى الرسم إلى أسفله: من الوتر الأغلظ (البم المفرد) إلى الأحدّ، كما يرى العازف عوده.`);
+        parts.push(`مقام <b>${mq.ar}</b> ${mq.tonicAr}: ${mq.info}`);
+        if (settings.marks === 'maqam') {
+            parts.push('<span class="dot" style="background:var(--tonic)"></span>القرار ' +
+                '<span class="dot" style="background:var(--maqam)"></span>نغمات المقام ' +
+                (mq.descPcs.size ? '<span class="dot" style="border:1px dashed var(--desc)"></span>نغمة الهبوط ' : '') +
+                '— علامات تعليمية فقط؛ زند العود أملس بلا دساتين.');
+        } else if (settings.marks === 'full') {
+            parts.push('الدليل الكامل: النقاط الكبيرة أنصاف التون والصغيرة أرباع التون (تقريب 50 سنتًا؛ يختلف أداء العازفين قليلًا بحسب المقام والمدرسة).');
+        }
+        if (settings.labels === 'keys') parts.push('المفاتيح: الأرقام 1–6 الأوتار المطلقة، والصفوف Z ثم A ثم Q نغمات المقام من القرار في ثلاثة دواوين متتالية.');
+        if (settings.snap === 'free') parts.push('العزف الحر: موضع إصبعك يحدد الطبقة بدقة؛ حاول أن يصبح المؤشر أخضر عند نغمة المقام.');
+        legendEl.innerHTML = parts.join('<br>');
+    }
+
+    // =====================================================================
+    // 6. لوحة المفاتيح: الأرقام للأوتار المطلقة، والصفوف لنغمات المقام
+    // =====================================================================
+    const KEY_ROWS = [
+        ['KeyZ','KeyX','KeyC','KeyV','KeyB','KeyN','KeyM','Comma','Period','Slash'],
+        ['KeyA','KeyS','KeyD','KeyF','KeyG','KeyH','KeyJ','KeyK','KeyL','Semicolon'],
+        ['KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyU','KeyI','KeyO','KeyP']
+    ];
+    const OPEN_KEYS = ['Digit1','Digit2','Digit3','Digit4','Digit5','Digit6'];
+    let keyMap = new Map();           // code -> { course, nQ }
+    let keyLabelAt = new Map();       // "course:nQ" -> label
+    const codeToLabel = (code) => code.startsWith('Digit') ? code.slice(5) : code.startsWith('Key') ? code.slice(3) : ({ Semicolon: ';', Comma: ',', Period: '.', Slash: '/' }[code] || code);
+
+    // أنسب وتر لطبقة ما: أقل بُعد عن الوتر المطلق (الوضع الأول كما يعزف العوّاد)
+    function bestPosition(q) {
+        let best = null;
+        courses.forEach((c, i) => {
+            const nQ = q - c.q;
+            if (nQ >= 0 && nQ <= MAX_SEMIS * 2 && (!best || nQ < best.nQ)) best = { course: i, nQ };
+        });
+        return best;
+    }
+
+    // نغمات المقام صعودًا عبر الدواوين انطلاقًا من قرار معيّن
+    function maqamAscending(fromQ, count) {
+        const mq = currentMaqam();
+        const rel = mq.parsed.map(p => p.q - mq.tonicQ);
+        const out = [];
+        for (let k = 0; out.length < count; k++) {
+            const oct = Math.floor(k / rel.length), deg = k % rel.length;
+            out.push(fromQ + oct * 24 + rel[deg]);
+        }
+        return out;
+    }
+
+    function buildKeyMap() {
+        keyMap = new Map();
+        keyLabelAt = new Map();
+        const addLabel = (pos, code) => {
+            const key = `${pos.course}:${pos.nQ}`;
+            const list = keyLabelAt.get(key) || [];
+            if (list.length < 2) list.push(codeToLabel(code));
+            keyLabelAt.set(key, list);
+        };
+        OPEN_KEYS.forEach((code, i) => { keyMap.set(code, { course: i, nQ: 0 }); addLabel({ course: i, nQ: 0 }, code); });
+        const mq = currentMaqam();
+        // ترتيب العرض: الصف الأوسط (الديوان الأساسي) أولًا، ثم الأعلى، ثم الأدنى
+        [1, 2, 0].forEach(r => {
+            const row = KEY_ROWS[r];
+            const notes = maqamAscending(mq.tonicQ + (r - 1) * 24, row.length);
+            row.forEach((code, k) => {
+                const pos = bestPosition(notes[k]);
+                if (!pos) return;
+                keyMap.set(code, pos);
+                addLabel(pos, code);
+            });
+        });
+    }
+
+    // =====================================================================
+    // 7. الأصابع على الأوتار: من يضغط على أي وتر، ونقر الأوتار
+    // =====================================================================
+    // holders[i] = الأصابع/المفاتيح على الوتر بترتيب الضغط، وآخرها يحدد الطبقة (رفع إصبع فوق آخر = سحب بلا نقر)
+    let holders = Array.from({ length: COURSE_COUNT }, () => []);
+    let lastInfoCourse = null;
+    const tremoloTimers = [];
+
+    function stopTremolo(i) { clearInterval(tremoloTimers[i]); tremoloTimers[i] = null; }
+    function startTremolo(i) {
+        stopTremolo(i);
+        if (!settings.tremolo) return;
+        tremoloTimers[i] = setInterval(() => {
+            const top = holders[i][holders[i].length - 1];
+            if (!top) { stopTremolo(i); return; }
+            pluckCourse(i, top.n, true);
+        }, 85);
+    }
+
+    function indicatorState(n, i) {
+        if (settings.snap !== 'free') return '';
+        const dev = deviationCents(courses[i].q + n * 2);
+        const c = Math.abs(dev.cents);
+        return c <= 10 ? 'good' : c <= 25 ? 'near' : 'off';
+    }
+
+    // ينقر الوتر بالطبقة n (أنصاف تون عن المطلق)
+    function pluckCourse(i, n, quiet) {
+        if (!engine) return;
+        const c = courses[i];
+        const open = n < 0.05;
+        const freq = c.openFreq * Math.pow(2, n / 12);
+        const v = engine.pluck(i, c, freq, open, settings.dyn);
+        vibrate(i, nToX(n), v.t60);
+        showRisha(i);
+        if (!quiet) { lastInfoCourse = i; updateInfo(i, n); }
+    }
+
+    function pressHolder(id, i, n, src) {
+        if (src !== 'demo') stopDemo();
+        removeHolder(id);
+        holders[i].push({ id, n, src });
+        showIndicator(i, n, indicatorState(n, i));
+        pluckCourse(i, n);
+        startTremolo(i);
+    }
+
+    function removeHolder(id) {
+        for (let i = 0; i < COURSE_COUNT; i++) {
+            const k = holders[i].findIndex(h => h.id === id);
+            if (k !== -1) { const h = holders[i][k]; holders[i].splice(k, 1); return { i, h, wasTop: k === holders[i].length }; }
+        }
+        return null;
+    }
+
+    function findHolder(id) {
+        for (let i = 0; i < COURSE_COUNT; i++) {
+            const h = holders[i].find(x => x.id === id);
+            if (h) return { i, h };
+        }
+        return null;
+    }
+
+    // تحريك إصبع: على الوتر نفسه = انزلاق (الوتر يرن بطبقة جديدة)، وإلى وتر آخر = نقر الوتر الجديد
+    function moveHolder(id, i, n) {
+        const f = findHolder(id);
+        if (!f) return;
+        if (f.i === i) {
+            if (f.h.n === n) return;
+            f.h.n = n;
+            const isTop = holders[i][holders[i].length - 1] === f.h;
+            if (!isTop) return;
+            if (engine && engine.glide(i, courses[i].openFreq * Math.pow(2, n / 12))) moveFinger(i, nToX(n));
+            else moveFinger(i, nToX(n));
+            showIndicator(i, n, indicatorState(n, i));
+            lastInfoCourse = i;
+            updateInfo(i, n);
+        } else {
+            releaseHolder(id, true);
+            pressHolder(id, i, n, f.h.src);
+        }
+    }
+
+    function releaseHolder(id, moving) {
+        const r = removeHolder(id);
+        if (!r) return null;
+        const i = r.i;
+        const rest = holders[i];
+        if (rest.length) {
+            if (r.wasTop) {
+                // رفع الإصبع الأعلى والأدنى ما زال ضاغطًا: تنتقل الطبقة إليه دون نقر (سحب الإصبع)
+                const n = rest[rest.length - 1].n;
+                if (engine) engine.glide(i, courses[i].openFreq * Math.pow(2, n / 12));
+                moveFinger(i, nToX(n));
+                showIndicator(i, n, indicatorState(n, i));
+                updateInfo(i, n);
+            }
+        } else {
+            stopTremolo(i);
+            hideIndicator(i);
+            if (settings.damp || moving) {
+                if (engine) engine.damp(i, 0, moving ? 0.03 : 0.06);
+                dampVisual(i);
+            }
+            if (!holders.some(h => h.length)) setIdle();
+        }
+        return r;
+    }
+
+    function releaseAll() {
+        for (let i = 0; i < COURSE_COUNT; i++) { holders[i].length = 0; stopTremolo(i); hideIndicator(i); }
+        Object.keys(heldKeys).forEach(k => delete heldKeys[k]);
+        activePointers.clear();
+        if (engine) engine.dampAll();
+        stringViews.forEach((v, i) => dampVisual(i));
+        setIdle();
+    }
+
+    // =====================================================================
+    // 8. لوحة المعلومات
+    // =====================================================================
+    const infoPanel = document.querySelector('.info-panel');
+    const ui = {
+        course: document.getElementById('ui-course'), courseSub: document.getElementById('ui-course-sub'),
+        note: document.getElementById('ui-note'), noteSub: document.getElementById('ui-note-sub'), noteLabel: document.getElementById('ui-note-label'),
+        interval: document.getElementById('ui-interval'), intervalSub: document.getElementById('ui-interval-sub'),
+        freq: document.getElementById('ui-freq'), cents: document.getElementById('ui-cents'),
+        centsBox: document.getElementById('cents-box'), centsLabel: document.getElementById('cents-label'), needle: document.getElementById('cents-needle')
+    };
+
+    // أقرب نغمة مرجعية: نغمة المقام (أو ربع التون) الأقرب إلى الطبقة
+    function deviationCents(qFloat) {
+        const mq = currentMaqam();
+        let best = null;
+        for (let k = Math.floor(qFloat) - 4; k <= Math.ceil(qFloat) + 4; k++) {
+            const pc = pcOf(k);
+            const ok = settings.snap === 'free' ? (mq.pcs.has(pc) || mq.descPcs.has(pc)) : true;
+            if (!ok) continue;
+            if (!best || Math.abs(qFloat - k) < Math.abs(qFloat - best)) best = k;
+        }
+        if (best === null) best = Math.round(qFloat);
+        return { target: best, cents: Math.round((qFloat - best) * 50) };
+    }
+
+    function updateInfo(i, n) {
+        const c = courses[i];
+        const qF = c.q + n * 2;
+        const dev = deviationCents(qF);
+        const q = settings.snap === 'free' ? dev.target : Math.round(qF);
+        const sp = spell(q);
+        infoPanel.classList.remove('is-idle');
+        ui.noteLabel.textContent = 'النغمة';
+        ui.course.textContent = c.ar;
+        ui.courseSub.textContent = `${solfegeLong(spell(c.q))} (${latinName(spell(c.q))}) — ${c.double ? 'وتر مزدوج' : 'وتر مفرد (البم)'}`;
+        const ar = arabicFull(q);
+        const sol = solfegeLong(sp), lat = latinName(sp);
+        if (settings.labels === 'latin') { ui.note.textContent = lat; ui.note.style.direction = 'ltr'; ui.noteSub.textContent = (ar ? ar + ' — ' : '') + sol; }
+        else if (settings.labels === 'solfege') { ui.note.textContent = sol; ui.note.style.direction = 'rtl'; ui.noteSub.textContent = (ar ? ar + ' — ' : '') + lat; }
+        else { ui.note.textContent = ar || sol; ui.note.style.direction = 'rtl'; ui.noteSub.textContent = (ar ? sol + ' — ' : '') + lat; }
+        const nQ = Math.round(n * 2);
+        ui.interval.textContent = nQ === 0 ? 'مطلق' : String(+(nQ / 4).toFixed(2)) + ' تون';
+        ui.intervalSub.textContent = INTERVAL_NAMES[nQ] || '';
+        const freq = c.openFreq * Math.pow(2, n / 12);
+        ui.freq.textContent = (settings.snap === 'free' ? freq.toFixed(1) : Math.round(freq)) + ' Hz';
+        ui.centsBox.classList.toggle('hidden', settings.snap !== 'free');
+        if (settings.snap === 'free') {
+            ui.centsLabel.textContent = 'دقة التنغيم (عن ' + (arabicFull(dev.target) || solfegeShort(spell(dev.target))) + ')';
+            ui.cents.textContent = (dev.cents > 0 ? '+' : '') + dev.cents + ' سنت';
+            const ac = Math.abs(dev.cents);
+            ui.cents.className = 'info-value cents-value ' + (ac <= 10 ? 'good' : ac <= 25 ? 'near' : 'off');
+            ui.needle.style.left = clamp(50 + dev.cents * 2, 0, 100) + '%';
+        }
+    }
+
+    function setIdle() {
+        if (ui.note.textContent !== '-') {
+            infoPanel.classList.add('is-idle');
+            ui.noteLabel.textContent = 'آخر نغمة';
+        }
+    }
+
+    // =====================================================================
+    // 9. اللمس والفأرة: الضغط على الزند = إصبع + نقرة، والنقر فوق الوجه = ريشة
+    // =====================================================================
+    const activePointers = new Map();   // pointerId -> { zone, course, nQ, n }
+
+    function clientToSvg(e) {
+        const ctm = svgRoot.getScreenCTM();
+        if (!ctm) return null;
+        const pt = svgRoot.createSVGPoint();
+        pt.x = e.clientX; pt.y = e.clientY;
+        return pt.matrixTransform(ctm.inverse());
+    }
+
+    function hitCourse(x, y, current) {
+        const gx = clamp(x, NUT_X - 30, BRIDGE_X);
+        const gap = courseGap(gx);
+        let best = null, bestD = Infinity;
+        for (let i = 0; i < COURSE_COUNT; i++) {
+            const d = Math.abs(y - courseY(i, gx));
+            if (d < bestD) { bestD = d; best = i; }
+        }
+        if (bestD > gap * 1.1) return null;
+        if (current !== null && current !== undefined && best !== current && Math.abs(y - courseY(current, gx)) < gap * 0.62) return current;
+        return best;
+    }
+
+    // الموضع على الوتر: نغمات المقام، أو كل الأرباع، أو حر
+    function hitPosition(i, x, currentNQ) {
+        const nF = clamp(xToN(x), 0, MAX_SEMIS);
+        if (settings.snap === 'free') return { nQ: null, n: x <= NUT_X + 1 ? 0 : nF };
+        const mq = currentMaqam();
+        let best = null, bestD = Infinity;
+        for (let nQ = 0; nQ <= MAX_SEMIS * 2; nQ++) {
+            if (settings.snap === 'maqam' && nQ > 0) {
+                const pc = pcOf(courses[i].q + nQ);
+                if (!mq.pcs.has(pc) && !mq.descPcs.has(pc)) continue;
+            }
+            const d = Math.abs(x - nToX(nQ / 2));
+            if (d < bestD) { bestD = d; best = nQ; }
+        }
+        if (currentNQ !== null && currentNQ !== undefined && best !== currentNQ) {
+            const dc = Math.abs(x - nToX(currentNQ / 2));
+            if (dc - bestD < 2.5) best = currentNQ;      // تثبيت بسيط عند الحدود
+        }
+        return { nQ: best, n: best / 2 };
+    }
+
+    const inFingerboard = (x) => x < FB_END + 18;
+    const inPluckZone = (x) => x >= FB_END + 18 && x <= BRIDGE_X + 12;
+
+    function onPointerDown(e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        ensureAudio();
+        const p = clientToSvg(e);
+        if (!p) return;
+        const i = hitCourse(p.x, p.y, null);
+        if (i === null || p.x < 0 || p.x > BRIDGE_X + 12) return;
+        e.preventDefault();
+        try { svgRoot.setPointerCapture(e.pointerId); } catch (err) { /* قديم */ }
+        if (inFingerboard(p.x)) {
+            const pos = hitPosition(i, p.x, null);
+            activePointers.set(e.pointerId, { zone: 'board', course: i, nQ: pos.nQ, n: pos.n });
+            pressHolder('p:' + e.pointerId, i, pos.n, 'pointer');
+            if (settings.snap !== 'free') earCheck(i, pos.n);
+        } else if (inPluckZone(p.x)) {
+            activePointers.set(e.pointerId, { zone: 'pluck', course: i });
+            pluckFromBody(i);
+        }
+    }
+
+    // النقر فوق الوجه: ريشة على الوتر بطبقته الحالية (إصبع ضاغط أو مطلق)
+    function pluckFromBody(i) {
+        const top = holders[i][holders[i].length - 1];
+        const n = top ? top.n : 0;
+        pluckCourse(i, n);
+        showIndicator(i, n, indicatorState(n, i), top ? 0 : 650);
+        if (!top) earCheck(i, 0);
+    }
+
+    function onPointerMove(e) {
+        const info = activePointers.get(e.pointerId);
+        if (!info) return;
+        e.preventDefault();
+        const evs = typeof e.getCoalescedEvents === 'function' ? e.getCoalescedEvents() : null;
+        const last = evs && evs.length ? evs[evs.length - 1] : e;
+        const p = clientToSvg(last);
+        if (!p) return;
+        if (info.zone === 'pluck') {
+            // سحب الريشة عبر الأوتار = نقر كل وتر تعبره (ضربة جماعية)
+            const i = hitCourse(p.x, p.y, info.course);
+            if (i !== null && i !== info.course) {
+                const step = i > info.course ? 1 : -1;
+                for (let k = info.course + step; k !== i + step; k += step) pluckFromBody(k);
+                info.course = i;
+            }
+            return;
+        }
+        const i = hitCourse(p.x, p.y, info.course);
+        if (i === null) return;
+        const pos = hitPosition(i, Math.min(p.x, FB_END + 17), i === info.course ? info.nQ : null);
+        if (i === info.course && pos.n === info.n) return;
+        info.course = i; info.nQ = pos.nQ; info.n = pos.n;
+        moveHolder('p:' + e.pointerId, i, pos.n);
+    }
+
+    function onPointerEnd(e) {
+        const info = activePointers.get(e.pointerId);
+        if (!info) return;
+        activePointers.delete(e.pointerId);
+        if (info.zone === 'board') {
+            const r = releaseHolder('p:' + e.pointerId);
+            if (r && settings.snap === 'free' && e.type === 'pointerup') earCheck(r.i, r.h.n);
+        }
+    }
+
+    function attachPointers() {
+        svgRoot.addEventListener('pointerdown', onPointerDown);
+        svgRoot.addEventListener('pointermove', onPointerMove);
+        svgRoot.addEventListener('pointerup', onPointerEnd);
+        svgRoot.addEventListener('pointercancel', onPointerEnd);
+        svgRoot.addEventListener('lostpointercapture', onPointerEnd);
+        container.addEventListener('contextmenu', e => e.preventDefault());
+    }
+
+    // =====================================================================
+    // 10. أحداث لوحة المفاتيح
+    // =====================================================================
+    const TEXT_INPUT_TYPES = ['text', 'search', 'email', 'number', 'password', 'url', 'tel', 'date', 'time'];
+    function isTypingTarget(t) {
+        if (!t) return false;
+        if (t.tagName === 'INPUT') return TEXT_INPUT_TYPES.includes((t.type || 'text').toLowerCase());
+        return t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable;
+    }
+    const heldKeys = {};
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        if (isTypingTarget(e.target)) return;
+        if (e.repeat) { if (heldKeys[e.code]) e.preventDefault(); return; }
+        const hit = keyMap.get(e.code);
+        if (!hit) return;
+        e.preventDefault();
+        if (heldKeys[e.code]) return;
+        ensureAudio();
+        heldKeys[e.code] = hit;
+        pressHolder('k:' + e.code, hit.course, hit.nQ / 2, 'key');
+        earCheck(hit.course, hit.nQ / 2);
+    });
+    document.addEventListener('keyup', (e) => {
+        if (!heldKeys[e.code]) return;
+        e.preventDefault();
+        delete heldKeys[e.code];
+        releaseHolder('k:' + e.code);
+    });
+    window.addEventListener('blur', releaseAll);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { releaseAll(); stopDemo(); } });
+
+    // =====================================================================
+    // 11. رسائل، عرض، تلميح التدوير
+    // =====================================================================
+    const toastEl = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+    }
+    const rotateHint = document.getElementById('rotate-hint');
+    document.getElementById('rotate-hint-close').addEventListener('click', () => {
+        rotateHint.classList.add('dismissed');
+        try { sessionStorage.setItem('oud-rotate-hint', '1'); } catch (e) { /* تجاهل */ }
+    });
+    try { if (sessionStorage.getItem('oud-rotate-hint')) rotateHint.classList.add('dismissed'); } catch (e) { /* تجاهل */ }
+
+    const supportsAspect = window.CSS && CSS.supports && CSS.supports('aspect-ratio', '1 / 1');
+    function currentView() {
+        if (settings.view === 'full' || settings.view === 'neck') return settings.view;
+        const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        return (window.innerWidth < 700 || (coarse && window.innerHeight < 560)) ? 'neck' : 'full';
+    }
+    function applyView() {
+        const v = VIEWS[currentView()];
+        svgRoot.setAttribute('viewBox', `${v.x} ${v.y} ${v.w} ${v.h}`);
+        container.style.setProperty('--vb-ratio', (v.w / v.h).toFixed(4));
+        if (!supportsAspect) container.style.height = (container.clientWidth * v.h / v.w) + 'px';
+        updateSegButtons();
+    }
+    window.addEventListener('resize', () => { if (!settings.view || !supportsAspect) applyView(); });
+
+    // =====================================================================
+    // 12. الاستماع للمقام صعودًا وهبوطًا
+    // =====================================================================
+    let demoToken = 0, demoRunning = false;
+    const maqamPlayBtn = document.getElementById('maqam-play-btn');
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    function maqamDemoSequence() {
+        const mq = currentMaqam();
+        const up = mq.parsed.map(p => p.q);
+        if (!mq.noOctave) up.push(mq.tonicQ + 24);
+        let down = up.slice(0, -1).reverse();
+        down = down.map(q => {                       // نغمات الهبوط المختلفة (مثل العجم في الراست)
+            const d = mq.descParsed.find(x => x.from.q === q);
+            return d ? d.to.q : q;
+        });
+        if (mq.noOctave) down = up.slice(0, -1).reverse();
+        return up.concat(down).map(bestPosition).filter(Boolean);
+    }
+
+    async function playMaqamDemo() {
+        if (demoRunning) { stopDemo(); return; }
+        ensureAudio();
+        const token = ++demoToken;
+        demoRunning = true;
+        maqamPlayBtn.textContent = 'إيقاف';
+        const seq = maqamDemoSequence();
+        for (let k = 0; k < seq.length; k++) {
+            if (token !== demoToken) return;
+            const { course, nQ } = seq[k];
+            releaseHolder('demo');
+            pressHolder('demo', course, nQ / 2, 'demo');
+            await sleep(k === seq.length - 1 ? 1100 : 480);
+        }
+        if (token === demoToken) stopDemo();
+    }
+    function stopDemo() {
+        if (!demoRunning) return;
+        demoToken++;
+        demoRunning = false;
+        maqamPlayBtn.textContent = 'استمع للمقام';
+        releaseHolder('demo');
+    }
+
+    // =====================================================================
+    // 13. تمرين السمع
+    // =====================================================================
+    const ear = { active: false, waiting: false, target: null, score: 0, total: 0, tries: 0, lastQ: null, savedLabels: null, timer: null };
+    const earUI = {
+        level: document.getElementById('ear-level'), start: document.getElementById('ear-start'),
+        replay: document.getElementById('ear-replay'), reveal: document.getElementById('ear-reveal'),
+        stop: document.getElementById('ear-stop'), msg: document.getElementById('ear-msg'), score: document.getElementById('ear-score')
+    };
+
+    function earCandidates(level) {
+        const mq = currentMaqam();
+        if (level === 'open') return courses.map((c, i) => ({ q: c.q, course: i, nQ: 0 }));
+        const set = new Map();
+        if (level === 'maqam1') {
+            const qs = mq.parsed.map(p => p.q);
+            if (!mq.noOctave) qs.push(mq.tonicQ + 24);
+            qs.forEach(q => { const p = bestPosition(q); if (p) set.set(q, { q, ...p }); });
+        } else {
+            courses.forEach((c, i) => {
+                for (let nQ = 0; nQ <= MAX_SEMIS * 2; nQ++) {
+                    const q = c.q + nQ;
+                    if (!mq.pcs.has(pcOf(q))) continue;
+                    const p = bestPosition(q);
+                    if (p) set.set(q, { q, ...p });
+                }
+            });
+        }
+        return [...set.values()];
+    }
+    const earMsg = (t, cls) => { earUI.msg.textContent = t; earUI.msg.className = 'ear-msg' + (cls ? ' ' + cls : ''); };
+    const earScore = () => { earUI.score.textContent = `صحيح: ${ear.score} من ${ear.total}`; };
+
+    function earPlay() {
+        if (!ear.target || !engine) return;
+        const c = courses[ear.target.course];
+        const t = audioCtx.currentTime + 0.05;
+        engine.pluck(PREVIEW, c, qToFreq(ear.target.q), ear.target.nQ === 0, 'mf', t);
+        engine.damp(PREVIEW, t + 1.6, 0.15);
+    }
+    function earDescribe(tg) {
+        const sp = spell(tg.q);
+        const ar = arabicFull(tg.q);
+        const where = tg.nQ === 0 ? `الوتر المطلق ${courses[tg.course].ar}` : `على وتر ${courses[tg.course].ar}، بُعد ${INTERVAL_NAMES[tg.nQ]}`;
+        return `${ar ? ar + ' — ' : ''}${solfegeLong(sp)} (${latinName(sp)}) — ${where}`;
+    }
+    function earNext() {
+        clearTimeout(ear.timer);
+        ensureAudio();
+        if (!ear.active) {
+            ear.active = true;
+            ear.savedLabels = settings.labels;
+            if (settings.labels !== 'none') { settings.labels = 'none'; applyMarks(); updateSegButtons(); }
+        }
+        const cands = earCandidates(earUI.level.value).filter(c => c.q !== ear.lastQ);
+        ear.target = cands[Math.floor(Math.random() * cands.length)];
+        ear.lastQ = ear.target.q;
+        ear.tries = 0;
+        ear.waiting = true;
+        [earUI.replay, earUI.reveal, earUI.stop].forEach(b => { b.disabled = false; });
+        earMsg('استمع جيدًا… ثم اعزف النغمة نفسها على أي وتر. (أُخفيت الأسماء أثناء التمرين)');
+        earPlay();
+    }
+    function earCheck(i, n) {
+        if (!ear.active || !ear.waiting || !ear.target) return;
+        const playedQ = courses[i].q + n * 2;
+        if (Math.abs(playedQ - ear.target.q) < 0.4) {
+            ear.score++; ear.total++; ear.waiting = false; earScore();
+            earMsg('أحسنت! ' + earDescribe(ear.target), 'good');
+            flashPosition(ear.target.course, ear.target.nQ, 'good');
+            ear.timer = setTimeout(() => { if (ear.active) earNext(); }, 1900);
+        } else {
+            ear.tries++;
+            const q = Math.round(playedQ);
+            const sp = spell(q);
+            const dir = playedQ < ear.target.q ? 'النغمة المطلوبة أعلى' : 'النغمة المطلوبة أخفض';
+            if (ear.tries >= 3) earReveal();
+            else earMsg(`عزفتَ ${arabicFull(q) || solfegeLong(sp)} (${latinName(sp)}). ${dir} — حاول مرة أخرى.`, 'bad');
+        }
+    }
+    function earReveal() {
+        if (!ear.target) return;
+        if (ear.waiting) { ear.total++; earScore(); }
+        ear.waiting = false;
+        earMsg('الإجابة: ' + earDescribe(ear.target) + '. استمع إليها ثم جرّب نغمة جديدة.');
+        flashPosition(ear.target.course, ear.target.nQ, 'reveal');
+        earPlay();
+    }
+    function earStop() {
+        clearTimeout(ear.timer);
+        ear.active = false; ear.waiting = false; ear.target = null;
+        if (ear.savedLabels !== null) { settings.labels = ear.savedLabels; ear.savedLabels = null; applyMarks(); updateSegButtons(); }
+        [earUI.replay, earUI.reveal, earUI.stop].forEach(b => { b.disabled = true; });
+        earMsg(`انتهى التمرين. نتيجتك: ${ear.score} من ${ear.total}. اضغط «ابدأ» للعب مرة أخرى.`);
+    }
+    earUI.start.addEventListener('click', earNext);
+    earUI.replay.addEventListener('click', () => { ensureAudio(); earPlay(); });
+    earUI.reveal.addEventListener('click', earReveal);
+    earUI.stop.addEventListener('click', earStop);
+
+    // =====================================================================
+    // 14. أدوات التحكم
+    // =====================================================================
+    function updateSegButtons() {
+        document.querySelectorAll('.seg[data-setting]').forEach(group => {
+            const key = group.dataset.setting;
+            const value = key === 'view' ? currentView() : settings[key];
+            group.querySelectorAll('.seg-btn').forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.value === value ? 'true' : 'false'));
+        });
+    }
+    function onSettingChanged(key) {
+        if (key === 'labels') { if (ear.active) ear.savedLabels = settings.labels; applyMarks(); }
+        else if (key === 'marks') applyMarks();
+        else if (key === 'snap') { releaseAll(); applyMarks(); }
+        else if (key === 'view') applyView();
+    }
+    document.querySelectorAll('.seg[data-setting]').forEach(group => {
+        const key = group.dataset.setting;
+        group.querySelectorAll('.seg-btn').forEach(btn => btn.addEventListener('click', () => {
+            settings[key] = btn.dataset.value;
+            saveSettings();
+            updateSegButtons();
+            onSettingChanged(key);
+        }));
+    });
+
+    const maqamSelect = document.getElementById('maqam-select');
+    MAQAMAT.forEach(m => maqamSelect.appendChild(new Option(`${m.ar} ${m.tonicAr}`, m.id)));
+    maqamSelect.value = currentMaqam().id;
+    maqamSelect.addEventListener('change', () => {
+        settings.maqam = maqamSelect.value;
+        saveSettings();
+        stopDemo();
+        releaseAll();
+        buildKeyMap();
+        applyMarks();
+        maqamSelect.blur();
+    });
+    maqamPlayBtn.addEventListener('click', playMaqamDemo);
+
+    const tuningSelect = document.getElementById('tuning-select');
+    Object.entries(TUNINGS).forEach(([k, t]) => tuningSelect.appendChild(new Option(t.ar, k)));
+    tuningSelect.value = settings.tuning in TUNINGS ? settings.tuning : 'C';
+    tuningSelect.addEventListener('change', () => {
+        settings.tuning = tuningSelect.value;
+        saveSettings();
+        releaseAll();
+        rebuildInstrument();
+        tuningSelect.blur();
+    });
+    earUI.level.addEventListener('change', () => earUI.level.blur());
+
+    const dampCheck = document.getElementById('damp-check');
+    const tremoloCheck = document.getElementById('tremolo-check');
+    dampCheck.checked = !!settings.damp;
+    tremoloCheck.checked = !!settings.tremolo;
+    dampCheck.addEventListener('change', () => { settings.damp = dampCheck.checked; saveSettings(); });
+    tremoloCheck.addEventListener('change', () => { settings.tremolo = tremoloCheck.checked; saveSettings(); if (!settings.tremolo) tremoloTimers.forEach((t, i) => stopTremolo(i)); });
+
+    // =====================================================================
+    // 15. البدء
+    // =====================================================================
+    const overlay = document.getElementById('start-overlay');
+    function hideOverlay() { overlay.classList.add('hidden'); }
+    document.getElementById('start-btn').addEventListener('click', ensureAudio);
+    overlay.addEventListener('pointerdown', (e) => { if (e.target === overlay) ensureAudio(); });
+    const unlock = () => { if (audioCtx && audioCtx.state !== 'running') audioCtx.resume().catch(() => {}); };
+    document.addEventListener('touchend', unlock, { passive: true });
+    document.addEventListener('click', unlock);
+
+    function rebuildInstrument() {
+        buildCourses();
+        buildOud();
+        attachPointers();
+        buildKeyMap();
+        applyView();
+        applyMarks();
+    }
+    rebuildInstrument();
+    updateSegButtons();
+
+    // واجهة اختبار داخلية
+    window.__oud = {
+        settings, get holders() { return holders; }, get courses() { return courses; }, get engine() { return engine; }, get audioCtx() { return audioCtx; },
+        OudAudio, nToX, courseY, keyMap: () => keyMap, spell, arabicFull, maqamDemoSequence, ear, MAQAMAT, qToFreq, parseNote,
+        clientPoint(i, n, xOverride) {
+            const x = xOverride !== undefined ? xOverride : nToX(n);
+            const pt = svgRoot.createSVGPoint();
+            pt.x = x; pt.y = courseY(i, x);
+            const p = pt.matrixTransform(svgRoot.getScreenCTM());
+            return { x: p.x, y: p.y };
+        }
+    };
+    </script>
+</body>
+</html>

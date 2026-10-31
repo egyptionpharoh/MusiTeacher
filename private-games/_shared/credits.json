@@ -1,0 +1,16 @@
+{
+  "note": "سجل مصادر وتراخيص العينات الصوتية. عند إضافة مجموعة عينات جديدة أضف سطرها هنا وفي AUDIO_CREDITS.md.",
+  "sets": {
+    "violin":     { "label": "Violin (Solo, Arco Vibrato)", "source": "Versilian Studios — VSCO 2 Community Edition", "url": "https://github.com/sgossner/VSCO-2-CE", "license": "CC0 1.0", "attributionRequired": false, "via": "nbrosowsky/tonejs-instruments (sample-source-info: VSO2)" },
+    "xylophone":  { "label": "Xylophone", "source": "Versilian Studios — VSCO 2 Community Edition", "url": "https://github.com/sgossner/VSCO-2-CE", "license": "CC0 1.0", "attributionRequired": false, "via": "nbrosowsky/tonejs-instruments (sample-source-info: VSO2)" },
+    "salamander": { "label": "Salamander Grand Piano V3 (Yamaha C5)", "source": "Alexander Holm", "url": "https://archive.org/details/SalamanderGrandPianoV3", "license": "CC BY 3.0", "attributionRequired": true, "via": "Tonejs/audio (salamander/README: CC-by 3.0)" },
+    "accordion":  { "label": "Accordion (GM)", "source": "FluidR3_GM soundfont — Frank Wen", "url": "https://github.com/gleitz/midi-js-soundfonts", "license": "CC BY 3.0 (US)", "attributionRequired": true, "via": "gleitz/midi-js-soundfonts FluidR3_GM (README: CC BY 3.0)" }
+  },
+  "gamesWithOwnAudio": {
+    "oriental-organ-piano": "عينات مضمّنة في الملف: VCSL (Steinway B) و VSCO 2 CE — كلاهما CC0 (مدوَّن داخل اللعبة)",
+    "virtual-violin": "عينات مضمّنة: VSCO 2 CE (كمان منفرد) — CC0 (مدوَّن داخل اللعبة)",
+    "violinist-3d": "VSCO 2 CE (كمان منفرد) — CC0؛ انظر violinist-3d/public/audio/violin/AUDIO-LICENSE.txt",
+    "virtual-oud / virtual-qanun / oud-maqamat": "نمذجة فيزيائية مولَّدة برمجيًا (Karplus–Strong)، لا عينات خارجية",
+    "oud-3d / qanun-3d / guitar-3d": "نماذج تعليمية بلا صوت"
+  }
+}

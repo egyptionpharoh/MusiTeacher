@@ -1,0 +1,7 @@
+عينات الكمان في هذا المجلد
+===========================
+المصدر: Versilian Studios — VSCO 2 Community Edition (Solo Violin, Arco Vibrato)
+        https://github.com/sgossner/VSCO-2-CE
+الترخيص: Creative Commons CC0 1.0 Universal (ملكية عامة؛ لا يشترط ذكر المصدر)
+المعالجة: نُسخت العينات عبر مستودع tonejs-instruments (nbrosowsky)، ثم قُصّت إلى نحو 2.8 ثانية، وحُوِّلت إلى أحادية mp3،
+          وأُنتجت لكل نصف نغمة من أقرب عينة أصلية بإزاحة طبقة لا تتجاوز ±1.5 نصف نغمة (وأكثر قليلًا في أعلى المدى).

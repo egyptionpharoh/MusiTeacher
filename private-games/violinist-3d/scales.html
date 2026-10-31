@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سُلّم صول الكبير على الكمان - MusiTeacher</title>
+<meta name="description" content="لعبة تعليمية ثلاثية الأبعاد تربط النوتة على المدرج برقم الإصبع وموضعه على زند الكمان: سلم صول الكبير في الوضع الأول.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#0e0b09; --bg1:#231b15; --ink:#f4ede3; --muted:#b9ab9b; --gold:#e8b34f; --gold-2:#f7d68f; --gold-d:#9a6a1f;
+  --paper:#f7f0e3; --paper-2:#efe4cf; --paper-ink:#2a2018;
+  --glass:rgba(26,20,15,.72); --line:rgba(214,166,98,.22); --line-strong:rgba(232,179,79,.55);
+  --radius:20px; --gap:clamp(10px,1.2vw,18px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Tajawal','Segoe UI',Tahoma,'Noto Sans Arabic',sans-serif;color:var(--ink);overflow:hidden;
+  background:
+    radial-gradient(60% 55% at 50% 62%,rgba(150,92,38,.28) 0%,rgba(0,0,0,0) 70%),
+    radial-gradient(120% 90% at 50% 0%,#3a2e25 0%,#1b1511 48%,var(--bg0) 100%);
+  -webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;
+}
+/* نقش هندسي عُماني خافت (نجمة ثمانية) */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23e8b34f' stroke-width='1'%3E%3Crect x='22' y='22' width='28' height='28'/%3E%3Crect x='22' y='22' width='28' height='28' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='5'/%3E%3C/g%3E%3C/svg%3E");}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--gold-2);outline-offset:3px}
+button:disabled{opacity:.35;cursor:default}
+
+.app{position:relative;height:100%;display:grid;grid-template-rows:auto auto 1fr auto;gap:var(--gap);
+  padding:var(--gap) clamp(12px,1.6vw,28px) calc(var(--gap) + env(safe-area-inset-bottom))}
+
+/* ---------- الترويسة ---------- */
+.top{display:flex;align-items:center;gap:16px;min-height:52px}
+.brand{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:800;letter-spacing:.03em;color:var(--gold);
+  background:rgba(232,179,79,.1);border:1px solid var(--line);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.brand i{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.titles h1{font-size:clamp(1.3rem,2.2vw,2rem);font-weight:800;line-height:1.15}
+.titles h1 b{color:var(--gold-2);font-weight:800}
+.titles p{color:var(--muted);font-size:clamp(.85rem,1vw,1rem);margin-top:2px}
+.top .spacer{flex:1}
+.trio{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:.95rem}
+.trio span{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.trio svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:1.8}
+
+/* ---------- المدرج ---------- */
+.staff-card{position:relative;border-radius:var(--radius);padding:10px 14px;
+  background:linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%);
+  box-shadow:0 18px 40px -18px rgba(0,0,0,.75),inset 0 0 0 1px rgba(154,106,31,.25),inset 0 0 0 6px rgba(255,255,255,.35)}
+.staff-card::after{content:"";position:absolute;inset:6px;border-radius:calc(var(--radius) - 6px);border:1px solid rgba(154,106,31,.28);pointer-events:none}
+.staff-viewport{position:relative;height:clamp(150px,23vh,250px);overflow:hidden;direction:ltr}
+.staff-viewport::before,.staff-viewport::after{content:"";position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none;opacity:0;transition:opacity .3s}
+.staff-viewport::before{left:0;background:linear-gradient(90deg,var(--paper),rgba(247,240,227,0))}
+.staff-viewport::after{right:0;background:linear-gradient(270deg,var(--paper-2),rgba(239,228,207,0))}
+.staff-viewport.can-scroll-l::before,.staff-viewport.can-scroll-r::after{opacity:1}
+.staff-svg{display:block;height:100%;width:auto;margin-inline:auto;transition:transform .6s cubic-bezier(.22,.8,.26,1)}
+.st-line{stroke:#3b2f24;stroke-width:1.3}
+.st-bar{stroke:#3b2f24;stroke-width:1.5}
+.st-glyph{fill:var(--paper-ink)}
+.st-time{font:900 26px 'Times New Roman','DejaVu Serif',Georgia,serif;fill:var(--paper-ink)}
+.st-head{fill:var(--paper-ink);transition:fill .3s}
+.st-stem{stroke:var(--paper-ink);stroke-width:1.7;transition:stroke .3s}
+.st-ledger line{stroke:#3b2f24;stroke-width:1.4}
+.st-note{transition:opacity .4s}
+.st-note.is-past{opacity:.5}
+.st-note.is-current .st-head{fill:#6a3f06}
+.st-note.is-current .st-stem{stroke:#6a3f06}
+.st-finger{font:800 19px 'Tajawal',Arial,sans-serif;fill:#7a5a33;transition:fill .3s,opacity .3s}
+.st-finger.is-current{fill:#2a1805}
+.no-fingers .st-finger{opacity:0}
+.no-fingers .st-hi circle{opacity:0}
+.st-hi{transition:transform .45s cubic-bezier(.22,.8,.26,1);opacity:0}
+.st-hit{cursor:pointer}
+
+/* ---------- المسرح ثلاثي الأبعاد ---------- */
+.stage{position:relative;min-height:0;border-radius:calc(var(--radius) + 4px);overflow:hidden;
+  background:radial-gradient(90% 120% at 45% 50%,#2b1f16 0%,#160f0b 60%,#0b0806 100%);
+  box-shadow:inset 0 0 0 1px var(--line),inset 0 0 80px rgba(0,0,0,.7),0 24px 50px -24px rgba(0,0,0,.9)}
+#fb{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#fb:active{cursor:grabbing}
+
+.note-card{position:absolute;inset-inline-start:clamp(12px,1.4vw,24px);top:50%;transform:translateY(-50%);
+  width:clamp(250px,23vw,380px);padding:clamp(14px,1.4vw,22px) clamp(16px,1.6vw,26px);
+  background:var(--glass);border:1px solid var(--line);border-radius:var(--radius);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 20px 50px -20px rgba(0,0,0,.8);
+  max-height:calc(100% - 24px);overflow:auto;scrollbar-width:thin}
+.note-card::before{content:"";position:absolute;inset-inline:22px;top:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.nc-kicker{font-size:.9rem;color:var(--muted);font-weight:500}
+.nc-name-row{display:flex;align-items:baseline;gap:14px;margin:2px 0 6px}
+.nc-name{font-size:clamp(3rem,min(7.2vw,12vh),8.2rem);font-weight:800;line-height:1;color:#fff7ea;
+  text-shadow:0 0 34px rgba(232,179,79,.35),0 4px 18px rgba(0,0,0,.6)}
+.nc-name{white-space:nowrap}
+.nc-name .acc{font-size:.36em;color:var(--gold-2);margin-inline-start:.18em;vertical-align:.9em;text-shadow:none}
+.nc-latin{font:700 clamp(1.1rem,1.6vw,1.6rem) 'Segoe UI',Arial,sans-serif;color:var(--gold);direction:ltr}
+.nc-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-weight:700;font-size:clamp(.95rem,1.1vw,1.1rem)}
+.chip.string{background:rgba(232,179,79,.16);color:var(--gold-2);border:1px solid var(--line-strong)}
+.chip.finger{background:linear-gradient(180deg,#f6d27a,#d39a35);color:#2a1805}
+.chip.finger.is-open{background:transparent;color:var(--gold-2);border:2px solid var(--gold)}
+.nc-hint{font-size:clamp(.92rem,1.05vw,1.08rem);line-height:1.65;color:#e5d9c8;min-height:3.3em}
+.nc-hint p+p{margin-top:4px;color:var(--muted)}
+.nc-count{margin-top:10px;font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+.note-card.bump .nc-name{animation:pop .5s cubic-bezier(.2,.9,.3,1.3)}
+.note-card.bump .nc-chips,.note-card.bump .nc-hint{animation:fadeUp .45s ease both}
+@keyframes pop{0%{opacity:0;transform:translateY(14px) scale(.9)}100%{opacity:1;transform:none}}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
+
+.legend{position:absolute;inset-inline-end:16px;bottom:12px;display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-end;
+  font-size:.88rem;color:#d9ccb9;background:rgba(14,10,7,.6);border:1px solid var(--line);padding:7px 12px;border-radius:999px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{width:16px;height:16px;border-radius:50%;display:inline-block}
+.lg.a{background:radial-gradient(circle at 35% 30%,#fff1c4,#f4c75e 45%,#b97a1e);box-shadow:0 0 0 2px #6b420c inset}
+.lg.h{background:#f6eee0;box-shadow:0 0 0 2px #a87a3c inset}
+.lg.n{border:2px dashed #f0c260}
+.lg.o{border:3px solid #f4c75e}
+.view-btn{position:absolute;inset-inline-end:14px;top:12px;font-size:.85rem;color:#d9ccb9;background:rgba(14,10,7,.6);
+  border:1px solid var(--line);padding:6px 12px;border-radius:999px}
+.view-btn:hover{border-color:var(--line-strong);color:var(--gold-2)}
+.drag-hint{position:absolute;inset-inline-end:16px;top:50px;font-size:.78rem;color:var(--muted);opacity:.8}
+
+/* ---------- لوحة التحكم ---------- */
+.dock{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:clamp(12px,2vw,28px);
+  background:var(--glass);border:1px solid var(--line);border-radius:var(--radius);padding:10px clamp(12px,1.5vw,20px);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.grp{display:flex;flex-direction:column;gap:6px}
+.grp-label{font-size:.8rem;color:var(--muted);font-weight:500;padding-inline-start:4px}
+.seg{display:inline-flex;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg button{padding:9px clamp(10px,1.2vw,18px);border-radius:10px;font-weight:700;font-size:clamp(.92rem,1vw,1.05rem);color:#d9ccb9;white-space:nowrap;transition:background .2s,color .2s}
+.seg button:hover{color:var(--gold-2)}
+.seg button[aria-pressed="true"]{background:linear-gradient(180deg,#f3cd74,#cf9533);color:#2a1805;box-shadow:0 4px 14px -4px rgba(232,179,79,.6)}
+.muted{opacity:.4;pointer-events:none}
+
+.transport{display:flex;align-items:center;gap:clamp(10px,1.4vw,20px);direction:ltr;justify-content:center;min-width:0}
+.tbtn{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.82rem;color:#d9ccb9;font-weight:700}
+.tbtn .ic{width:clamp(52px,4.2vw,66px);height:clamp(52px,4.2vw,66px);border-radius:50%;display:grid;place-items:center;
+  border:2px solid var(--line-strong);background:rgba(232,179,79,.08);transition:transform .15s,background .2s}
+.tbtn.primary .ic{background:linear-gradient(180deg,#f6d27a,#cf9533);border-color:#fbe3a6;box-shadow:0 8px 22px -8px rgba(232,179,79,.8)}
+.tbtn.primary .ic svg{stroke:#2a1805}
+.tbtn:not(:disabled):hover .ic{transform:translateY(-2px)}
+.tbtn:not(:disabled):active .ic{transform:scale(.95)}
+.tbtn svg{width:26px;height:26px;stroke:var(--gold-2);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#progress{display:flex;align-items:center;gap:clamp(4px,.55vw,9px);flex-wrap:nowrap;min-width:0;overflow:hidden;padding:6px 2px}
+.dot{flex:0 0 auto;width:clamp(14px,1.25vw,22px);height:clamp(14px,1.25vw,22px);border-radius:50%;
+  background:rgba(255,255,255,.08);border:2px solid rgba(232,179,79,.35);transition:transform .25s,background .25s}
+.dot.turn{margin-left:clamp(8px,1vw,16px)}
+.dot.done{background:rgba(232,179,79,.45);border-color:rgba(232,179,79,.6)}
+.dot.on{background:var(--gold);border-color:#fff0c2;transform:scale(1.35);box-shadow:0 0 14px rgba(232,179,79,.8)}
+
+/* ---------- التحميل ---------- */
+#loader{position:fixed;inset:0;display:grid;place-items:center;background:var(--bg0);z-index:50;transition:opacity .6s}
+#loader.gone{opacity:0;pointer-events:none}
+#loader .box{text-align:center;color:var(--muted)}
+#loader .ring{width:54px;height:54px;border-radius:50%;border:3px solid rgba(232,179,79,.2);border-top-color:var(--gold);margin:0 auto 14px;animation:spin 1s linear infinite}
+#loader.error .ring{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* شاشات أصغر */
+@media (max-width:1100px){ .trio{display:none} }
+@media (max-height:820px){
+  .nc-hint{font-size:.9rem;line-height:1.5;min-height:0}
+  .nc-count{margin-top:6px;padding-top:6px}
+  .staff-viewport{height:clamp(130px,22vh,200px)}
+  .drag-hint{display:none}
+}
+@media (max-width:860px){
+  body{overflow:auto}
+  .app{height:auto;min-height:100%;grid-template-rows:auto auto minmax(420px,60vh) auto}
+  .note-card{top:auto;bottom:56px;transform:none;width:auto;inset-inline:12px}
+  .nc-name{font-size:3.2rem}
+  .dock{grid-template-columns:1fr}
+  .legend{inset-inline:12px;justify-content:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><i></i>MusiTeacher</div>
+    <div class="titles">
+      <h1>سُلّم <b>صول</b> الكبير</h1>
+      <p>الكمان · الوضع الأول · مفتاح صول</p>
+    </div>
+    <div class="spacer"></div>
+    <div class="trio" aria-hidden="true">
+      <span><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>اقرأ النوتة</span>
+      <span><svg viewBox="0 0 24 24"><path d="M12 3v12"/><circle cx="12" cy="18" r="3"/><path d="M8 7h8"/></svg>اعرف الإصبع</span>
+      <span><svg viewBox="0 0 24 24"><path d="M3 12h18M3 7h18M3 17h18"/></svg>جِد الموضع</span>
+    </div>
+  </header>
+
+  <section class="staff-card" aria-label="المدرج الموسيقي">
+    <div class="staff-viewport" id="staffViewport"></div>
+  </section>
+
+  <section class="stage" aria-label="زند الكمان ثلاثي الأبعاد">
+    <canvas id="fb" tabindex="-1"></canvas>
+    <aside class="note-card" id="noteCard" aria-live="polite">
+      <div class="nc-kicker">النغمة الحالية</div>
+      <div class="nc-name-row"><div class="nc-name" id="ncName">صول</div><div class="nc-latin" id="ncLatin">G3</div></div>
+      <div class="nc-chips"><span class="chip string" id="ncString">وتر صول</span><span class="chip finger" id="ncFinger">وتر مفتوح</span></div>
+      <div class="nc-hint" id="ncHint"></div>
+      <div class="nc-count" id="ncCount"></div>
+    </aside>
+    <button class="view-btn" id="resetView" type="button">إعادة زاوية النظر</button>
+    <div class="drag-hint">اسحب لتدوير الزند · العجلة للتكبير</div>
+    <div class="legend" aria-hidden="true">
+      <span><i class="lg a"></i>الإصبع العازف</span>
+      <span><i class="lg o"></i>وتر مفتوح</span>
+      <span><i class="lg h"></i>إصبع ثابت</span>
+      <span><i class="lg n"></i>الإصبع التالي</span>
+    </div>
+  </section>
+
+  <footer class="dock">
+    <div class="grp">
+      <span class="grp-label">الاتجاه</span>
+      <div class="seg" id="dirSeg" role="group" aria-label="اتجاه السلم">
+        <button type="button" data-v="up" aria-pressed="false">صعود</button>
+        <button type="button" data-v="down" aria-pressed="false">نزول</button>
+        <button type="button" data-v="full" aria-pressed="true">السلم كاملًا</button>
+      </div>
+    </div>
+    <div class="transport">
+      <button class="tbtn" id="prev" type="button" aria-label="النغمة السابقة">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span>السابقة
+      </button>
+      <div id="progress" aria-label="التقدم في السلم"></div>
+      <button class="tbtn primary" id="next" type="button" aria-label="النغمة التالية">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>التالية
+      </button>
+    </div>
+    <div class="grp" id="dOpt">
+      <span class="grp-label">«ري» في النزول</span>
+      <div class="seg" id="dSeg" role="group" aria-label="طريقة عزف ري في النزول">
+        <button type="button" data-v="fourth" aria-pressed="true">الإصبع 4</button>
+        <button type="button" data-v="open" aria-pressed="false">وتر مفتوح</button>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div id="loader"><div class="box"><div class="ring"></div><div id="loaderText">جارٍ تجهيز الكمان…</div></div></div>
+
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+<script type="module" src="./src/scales/app.js"></script>
+<noscript><div style="position:fixed;inset:0;display:grid;place-items:center">تحتاج اللعبة إلى تفعيل JavaScript.</div></noscript>
+</body>
+</html>
