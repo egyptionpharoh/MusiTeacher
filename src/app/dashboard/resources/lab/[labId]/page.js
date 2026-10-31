@@ -127,7 +127,7 @@ export default function LabPlayerPage() {
         {state === 'ready' && (
           <>
             <iframe ref={frameRef} className="vlp-frame" src={src} title={game.title} sandbox={sandbox}
-              allow="autoplay; fullscreen; pointer-lock; accelerometer; gyroscope" referrerPolicy="same-origin" />
+              allow="autoplay; fullscreen; pointer-lock; accelerometer; gyroscope; midi" referrerPolicy="same-origin" />
             <div className="vlp-wm" aria-hidden="true"><div>
               {Array.from({ length: 80 }).map((_, i) => <span key={i}>{who ? `${who} · ` : ''}MusiTeacher</span>)}
             </div></div>

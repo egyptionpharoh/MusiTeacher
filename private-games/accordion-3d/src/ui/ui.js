@@ -13,7 +13,7 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 export const VIEWS = {
   default: { ar: 'الزاوية الافتراضية', th: 0.55, ph: 1.28, d: 1.9, t: [0, 0.88, 0.2] },
   front: { ar: 'من الأمام', th: 0.0, ph: 1.32, d: 1.7, t: [0, 0.86, 0.22] },
-  keys: { ar: 'لوحة المفاتيح (اليمنى)', th: -1.2, ph: 1.15, d: 0.95, t: [-0.17, 0.78, 0.3] },
+  keys: { ar: 'لوحة المفاتيح (اليمنى)', th: -0.62, ph: 1.22, d: 0.85, t: [-0.19, 0.8, 0.38] },
   bass: { ar: 'أزرار الباص (اليسرى)', th: 1.25, ph: 1.15, d: 0.95, t: [0.22, 0.78, 0.28] },
   bellows: { ar: 'المنفاخ', th: 0.25, ph: 1.3, d: 1.15, t: [0.06, 0.8, 0.36] },
   top: { ar: 'من أعلى', th: 0.3, ph: 0.45, d: 1.5, t: [0, 0.8, 0.28] },
@@ -182,7 +182,7 @@ export function buildUI(ctx) {
     S.names = on;
     if (on && !labels) {
       labels = new THREE.Group();
-      for (const k of Object.values(acc.keys)) { const s = makeLabel(noteName(k.midi), k.black ? 0.008 : 0.0105); s.position.set(-k.thick / 2 - 0.012, 0, k.black ? 0.0 : 0.034); k.pivot.add(s); labels.add(s); k.label = s; }
+      for (const k of Object.values(acc.keys)) { const s = makeLabel(noteName(k.midi), k.black ? 0.008 : 0.0105); s.position.set(-k.thick / 2 - 0.012, 0, k.black ? 0.0 : -k.len / 2 + 0.014); k.pivot.add(s); labels.add(s); k.label = s; }
       for (const b of Object.values(acc.buttons)) { const s = makeLabel(b.data.label, 0.0085); s.position.set(0.016, 0, 0); b.pivot.add(s); labels.add(s); b.label = s; }
     }
     for (const o of [...Object.values(acc.keys), ...Object.values(acc.buttons)]) if (o.label) o.label.visible = on;

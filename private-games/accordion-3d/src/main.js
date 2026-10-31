@@ -87,7 +87,7 @@ function tick(dt, draw = true) { applyCam(1 - Math.pow(0.0005, dt)); if (life) l
 renderer.setAnimationLoop((now) => { const dt = Math.min(0.05, (now - prev) / 1000); prev = now; tick(dt); });
 
 window.accordionViewer = {
-  THREE, scene, camera, rig, player, acc, cam, get life() { return life; },
+  THREE, scene, camera, renderer, rig, player, acc, cam, get life() { return life; },
   look(th, ph, d, t) { Object.assign(cam.goal, { th, ph, d }); if (t) cam.goal.t.set(...t); applyCam(1); cam.cur.th = cam.goal.th; },
   hands(R, L, w) { player.pose({ w: w ?? acc.getWidth(), R: R || player.rightState, L: L || player.leftState }); },
   tick, perf, audio, ui, qa: () => player.qa, pen: () => player.penetration(),

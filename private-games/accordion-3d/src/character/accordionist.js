@@ -17,14 +17,17 @@ const QP = (k, d) => { const q = new URLSearchParams(location.search).get(k); re
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
 // ثوابت قابلة للضبط عبر الرابط أثناء المعايرة (لا تؤثر في الاستعمال العادي)
-const RF = QP('rf', [0.0, -0.2, 1.0]);        // اتجاه أصابع اليد اليمنى (إحداثيات الآلة)
+const RF = QP('rf', [0.0, -0.2, 1.0]);        // اتجاه أصابع اليد اليمنى (إحداثيات لوحة المفاتيح: +z من مقدّمات البيض نحو السود)
 const LF = QP('lf', [0.0, -0.1, 1.0]);          // اتجاه أصابع اليد اليسرى
 const RPOLE = QP('rpole', [-0.75, 0.35, -0.2]);
 const LPOLE_ARM = QP('lepole', [0.75, -0.35, -0.3]);
-const R_ARCH = QP('rarch', [0.40, 0.64]);       // (أمام، نحو الراحة) كسور من طول الإصبع لموضع الطرف بالنسبة لجذر الإصبع
+const R_ARCH = QP('rarch', [0.46, 0.50]);       // (أمام، نحو الراحة) كسور من طول الإصبع لموضع الطرف بالنسبة لجذر الإصبع
 const L_ARCH = QP('larch', [0.46, 0.66]);
 const PAD = QP('pad', [0.0088])[0];             // سُمك لحم الطرف: الهدف يوضع فوق السطح بهذا المقدار
 const HAND_POLE = QP('hpole', [0, 1, 0.6]);
+const HOVER_Z = QP('hz', [0.028])[0];
+const HAND_ROLL = QP('hroll', [20])[0];
+const BLACK_ZONE = 0.004 + 0.090 - 0.054 - 0.012;   // بداية المفاتيح السوداء على طول اللوحة ناقص هامش لحم الطرف         // درجات: ميل الكف نحو جهة الخنصر           // موضع الأطراف الخاملة على طول المفاتيح البيضاء (من مقدّمتها)
 
 export class Accordionist extends SeatedPlayer {
   constructor(rig, config, accordion) { super(rig, config); this.acc = accordion; }
@@ -71,6 +74,9 @@ export class Accordionist extends SeatedPlayer {
   // صندوق الباص يميل مع المروحة: نقاطه واتجاهاته تُحوَّل من إطاره هو
   WL(p) { return this.acc.leftBox.localToWorld(new THREE.Vector3(p[0], p[1], p[2])); }
   WdL(d) { return v3(d).applyQuaternion(this.acc.leftBox.getWorldQuaternion(new THREE.Quaternion())); }
+  // إطار لوحة المفاتيح (مائل على شطفة الصندوق الأيمن): x خارج السطح سالبًا، y الارتفاع، z من مقدّمات البيض (جهة المعصم) نحو السود
+  WK(p) { return this.acc.kb.localToWorld(new THREE.Vector3(p[0], p[1], p[2])); }
+  WdK(d) { return v3(d).applyQuaternion(this.acc.kb.getWorldQuaternion(new THREE.Quaternion())); }
 
   // قياسات الجذع الحقيقية (من رؤوس الجسم والملابس المرتبطة بعظام الجذع فقط، فلا تدخل الذراعان)
   torsoVerts() {
@@ -111,46 +117,84 @@ export class Accordionist extends SeatedPlayer {
   }
 
   // سطح المفتاح الخارجي (يتبع ضغط المفتاح لأنه محسوب من شبكته الفعلية)
-  keySurface(k, zoff, extra = 0) { return k.mesh.localToWorld(new THREE.Vector3(-k.thick / 2 - PAD - extra, 0, zoff)); }
+  keySurface(k, extra = 0) { return k.mesh.localToWorld(new THREE.Vector3(-k.thick / 2 - PAD - extra, 0, k.touchZ)); }
   buttonSurface(b) { return b.mesh.localToWorld(new THREE.Vector3(0.00625 + PAD, 0, 0)); }
 
   // ---------- يد يمنى ----------
   // state: { base: موضع الإبهام (رقم عشري على المفاتيح البيضاء 0..19), digits: { d: {keyId, amt} } , hover: ارتفاع الأصابع الخاملة }
   solveRight(st) {
     const rig = this.rig, hm = this.hand.R, acc = this.acc, side = -1;
+    // كل شيء في إطار لوحة المفاتيح kb: الأصابع تمتد على طول المفاتيح من مقدّمات البيض (حيث المعصم خارج الحافة الخلفية الخارجية)
+    // نحو السود، وظهر اليد للخارج (−x). لذا يصل الإصبع إلى المفتاح الأسود بالتمدد للأمام بعيدًا عن جسم العازفة.
     const fl = V.norm(RF), nloc = [1, 0, 0];
-    const f = ar(this.Wd(fl)), n = ar(this.Wd(nloc));
+    const f = ar(this.WdK(fl)), n = ar(this.WdK(nloc));
     // إطار اليد: y أصابع، z ظهر اليد = -n، x = y × z
-    const yv = V.norm(f), zv = V.norm(V.mul(n, -1)), xv = V.cross(yv, zv);
-    const fr0 = Frame([0, 0, 0], xv, yv, zv);
+    const yv = V.norm(f), zv0 = V.norm(V.mul(n, -1)), xv0 = V.cross(yv, zv0);
+    // دوران خفيف للكف حول محور الأصابع: جهة الخنصر أقرب إلى المفاتيح (كيد عازف البيانو المرتخية)، فيبلغ الخنصر القصير مفاتيحه
+    // يزداد الميل حين يضغط الخنصر، ويقل حين يضغط الإبهام (اليد تميل نحو الإصبع العامل)
+    const amtOf = (d) => (st.digits[d] ? clamp(st.digits[d].amt ?? 0, 0, 1) * (1 - clamp(st.digits[d].lift ?? 0, 0, 1)) : 0);
+    const roll = (HAND_ROLL + 9 * amtOf(4) + 4 * amtOf(3) - 9 * amtOf(0)) * Math.PI / 180, cr = Math.cos(roll), sr = Math.sin(roll);
+    const xv = V.norm(V.sub(V.mul(xv0, cr), V.mul(zv0, sr))), zv = V.norm(V.add(V.mul(zv0, cr), V.mul(xv0, sr)));
     const kw = DIM.KEY_W;
     const slotY = (s) => (DIM.H - WHITE_COUNT * kw) / 2 + (WHITE_COUNT - s - 0.5) * kw;
     const tgt = [];                                  // أهداف الأصابع (0 إبهام .. 4 خنصر) بالإحداثيات المحلية للآلة ثم العالم
     const hover = (d) => {
       const sl = clamp(st.base + d, 0, WHITE_COUNT - 1);
       const lift = 0.0095 + 0.0035 * Math.abs(d - 2) * 0.5;
-      return this.W([-DIM.WR - 0.009 - 0.012 - lift, slotY(sl), 0.115 - (d === 0 ? 0.012 : d === 3 ? 0.010 : d === 4 ? 0.017 : 0)]);     // الخنصر والبنصر المرتخيان أقرب للراحة فيتكوّران بدل أن يمتدا
+      // فوق المفاتيح البيضاء قرب مقدّماتها (z صغير)؛ الإبهام والبنصر والخنصر المرتخية أقرب للراحة فتتكوّر بدل أن تمتد
+      const zz = HOVER_Z + shiftZ - (d === 0 ? 0.010 : d === 3 ? 0.010 : d === 4 ? 0.020 : 0);
+      const top = zz > BLACK_ZONE ? -0.010 - 0.022 : -0.010 - 0.012;      // فوق منطقة السود: تحوم الأطراف فوق سطح الأسود الأعلى
+      return this.WK([top - lift, slotY(sl), zz]);
     };
-    for (let d = 0; d < 5; d++) {
-      const pr = st.digits[d], h = hover(d);
-      if (pr && acc.keys[pr.keyId]) {
-        const k = acc.keys[pr.keyId], tp = this.keySurface(k, k.black ? 0.0 : 0.022, d === 0 ? 0.0035 : 0);
-        tgt.push(pr.lift > 0 ? tp.lerp(h, clamp(pr.lift, 0, 1)) : tp);
-      } else tgt.push(h);
-    }
+    let shiftZ = 0;                                  // تقدّم اليد على طول المفاتيح (نحو السود) — يُحسب أدناه من الأصابع الضاغطة
+    const build = () => {
+      tgt.length = 0;
+      for (let d = 0; d < 5; d++) {
+        const pr = st.digits[d], h = hover(d);
+        if (pr && acc.keys[pr.keyId]) {
+          const k = acc.keys[pr.keyId], tp = this.keySurface(k, d === 0 ? 0.0035 : 0);
+          tgt.push(pr.lift > 0 ? tp.lerp(h, clamp(pr.lift, 0, 1)) : tp);
+        } else tgt.push(h);
+      }
+    };
+    build();
     const anchor = hover(2);
     // موضع المعصم: نضع هدف الوسطى عند إحداثيات الكف المرغوبة
     const mid = hm.fingers[1], tot = mid.L[0] + mid.L[1] + mid.L[2], mx = mid.k[0] * side, my = mid.k[1];
     const T = ar(anchor);
-    const O = V.sub(V.sub(T, V.mul(xv, mx)), V.madd(V.mul(yv, my + R_ARCH[0] * tot), zv, -R_ARCH[1] * tot));
-    const fr = Frame(O, xv, yv, zv);
+    let O = V.sub(V.sub(T, V.mul(xv, mx)), V.madd(V.mul(yv, my + R_ARCH[0] * tot), zv, -R_ARCH[1] * tot));
+    // الكف تتبع الأصابع: إن لم يبلغ إصبعٌ هدفه (مفتاح أسود أبعد للأمام، أو ضغطة بالخنصر) تتقدّم اليد كلها نحوه بالقدر اللازم —
+    // كما يدفع العازف يده للأمام نحو المفاتيح السوداء — مع إبقاء الكف فوق سطح المفاتيح بمسافة آمنة.
+    const kbInv = this.acc.kb.matrixWorld.clone().invert(), kbM = this.acc.kb.matrixWorld;
+    const reachOf = (i) => {                          // i: 0 إبهام، 1..4 الأصابع
+      if (i === 0) { const th = hm.thumb; return { base: V.madd(V.madd(V.madd(O, xv, th.cmc[0] * side), yv, th.cmc[1]), zv, th.cmc[2]), lim: 0.9 * (th.L[0] + th.L[1] + th.L[2]) }; }
+      const fd = hm.fingers[i - 1], L = fd.L[0] + fd.L[1] + fd.L[2];
+      return { base: V.madd(V.madd(V.madd(O, xv, fd.k[0] * side), yv, fd.k[1]), zv, fd.k[2]), lim: 0.95 * L };
+    };
+    const O0 = O, dbg = [];
+    for (let it = 0; it < 8; it++) {
+      let worst = 0, mv = null, wi = -1;
+      for (let i = 0; i < 5; i++) {
+        if (!st.digits[i]) continue;                   // الأصابع الضاغطة وحدها تقود اليد؛ المرتخية تتبعها
+        const { base, lim } = reachOf(i), dv = V.sub(ar(tgt[i]), base), D = V.len(dv), ex = D - lim;
+        if (ex > worst) { worst = ex; mv = V.mul(dv, ex / D); wi = i; }
+      }
+      if (!mv || worst < 2e-4) break;
+      dbg.push([wi, +(worst * 1000).toFixed(1)]);
+      O = V.add(O, mv);
+      const q = new THREE.Vector3(...O).applyMatrix4(kbInv);           // سقف الاقتراب: المعصم لا يهبط تحت 30 مم فوق سطح البيض
+      if (q.x > -0.022 - 0.030) { q.x = -0.022 - 0.030; O = ar(q.applyMatrix4(kbM)); }
+    }
+    // الأصابع المرتخية تنتقل مع اليد على طول المفاتيح فلا تنطوي أكثر من اللازم
+    { const a = new THREE.Vector3(...O).applyMatrix4(kbInv), b = new THREE.Vector3(...O0).applyMatrix4(kbInv); shiftZ = a.z - b.z; if (Math.abs(shiftZ) > 1e-5) build(); }
+    const fr = Frame(O, xv, yv, zv); this.dbgR = dbg;
     const toL = (q) => { const d = V.sub(q, O); return [V.dot(d, xv), V.dot(d, yv), V.dot(d, zv)]; };
     this.handRFrame = fr;
     const fo = clamp((this.acc.getWidth() - 0.13) / 0.18, 0, 1);               // مع اتساع المنفاخ يبتعد المرفق الأيمن قليلًا للخارج/الخلف
     this.poseArm('R', fr, [RPOLE[0] - 0.4 * fo, RPOLE[1] + 0.25 * fo, RPOLE[2] - 0.75 * fo]);
     const chains = [];
     for (let i = 0; i < 4; i++) chains.push(fingerArch(hm.fingers[i], side, toL(ar(tgt[i + 1])), HAND_POLE, 0.7));
-    const thumb = thumbChain(hm.thumb, side, toL(ar(tgt[0])), V.norm([0.2, 0.2, -0.5]), [0, 0.6, 0.6]);
+    const thumb = thumbChain(hm.thumb, side, toL(ar(tgt[0])), V.norm([0.2, 0.2, -0.5]), [0, 0.6, 0.6]); this.lastThumbShort = thumb.short;
     poseFingers(rig, hm, fr, chains, thumb);
     this.rChains = chains; this.rTargets = tgt;
   }
@@ -194,7 +238,7 @@ export class Accordionist extends SeatedPlayer {
   }
 
   pose(s) {
-    this.acc.setWidth(s.w);
+    this.acc.setWidth(s.w, s.fan);
     this.acc.root.updateMatrixWorld(true);
     this.solveRight(s.R);
     this.solveLeft(s.L, this.acc.getWidth());
@@ -214,7 +258,7 @@ export class Accordionist extends SeatedPlayer {
       for (const bn of bones) for (const e of rig.verts([bn], 0.35)) {
         rig.vertexWorld(e.m, e.i, p); n++;
         let d = 0;
-        if (s === 'R') { acc.root.worldToLocal(p); d = this.keyPenetration(p); } else { acc.leftBox.worldToLocal(p); d = this.buttonPenetration(p); }
+        if (s === 'R') { acc.kb.worldToLocal(p); d = this.keyPenetration(p); } else { acc.leftBox.worldToLocal(p); d = this.buttonPenetration(p); }
         if (d > worst) { worst = d; where = [bn.name, ...[p.x, p.y, p.z].map((v) => +v.toFixed(3))]; }
       }
       out[s] = { maxMm: +(worst * 1000).toFixed(1), at: where, verts: n };
@@ -222,18 +266,15 @@ export class Accordionist extends SeatedPlayer {
     return out;
   }
 
-  // عمق دخول نقطة (إحداثيات الآلة المحلية) في أقرب مفتاح/لوحة — يراعي الضغط الحالي للمفتاح
+  // عمق دخول نقطة (إحداثيات لوحة المفاتيح kb) في أقرب مفتاح — يراعي الضغط الحالي للمفتاح
   keyPenetration(p) {
-    const acc = this.acc; if (p.y < 0 || p.y > DIM.H || p.z < 0.02 || p.z > 0.15) return 0;
-    const kw = DIM.KEY_W, y0 = (DIM.H - WHITE_COUNT * kw) / 2;
-    let best = null, bd = 1e9;
+    const acc = this.acc; if (p.y < 0 || p.y > DIM.H || p.z < 0 || p.z > DIM.KB_LEN) return 0;
+    let best = null;
     for (const k of Object.values(acc.keys)) {
-      const half = (k.black ? 0.0108 : kw - 0.0011) / 2, zlo = k.zc - k.len / 2, zhi = k.zc + k.len / 2;
-      if (Math.abs(p.y - k.y) <= half && p.z >= zlo && p.z <= zhi) { const surf = -DIM.WR + k.pivot.position.x - k.thick / 2, d = p.x - surf; if (d > 0 && d < k.thick + 0.004 && (best === null || k.black)) best = d; }
+      const half = k.wid / 2, zlo = k.zc - k.len / 2, zhi = k.zc + k.len / 2;
+      if (Math.abs(p.y - k.y) <= half && p.z >= zlo && p.z <= zhi) { const surf = k.pivot.position.x - k.thick / 2, d = p.x - surf; if (d > 0 && d < k.thick + 0.004 && (best === null || k.black)) best = d; }
     }
-    if (best !== null) return best;
-    const plateFace = -DIM.WR - 0.010;            // لوحة المفاتيح بين المفاتيح
-    return Math.max(0, p.x - plateFace) * 0;
+    return best ?? 0;
   }
   buttonPenetration(p) {
     const acc = this.acc; if (p.y < 0 || p.y > DIM.H || p.z < 0 || p.z > DIM.D) return 0;

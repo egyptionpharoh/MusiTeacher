@@ -3,6 +3,8 @@
 //  • اختيار الإصبع الأنسب (أقل حركة لليد) وانتقال اليد المنزلق على المفاتيح/الأزرار.
 //  • ضغط الأصابع بغلاف زمني (نزول ثم لمس ثم ضغط)، والمفتاح الفعلي ينزل فتلحقه الأصبع.
 //  • المنفاخ: سرعة تتبع الهواء المطلوب (عدد النغمات وقوتها)، يبدّل اتجاهه عند طرفيه أو عند الوقفات، بتنويع عشوائي ناعم.
+//    شكله (fan) يتبع اتجاه الحركة: فتح ← انفراج من الأعلى (V)، غلق ← انفراج من الأسفل (Λ). عند تبديل الاتجاه
+//    تدير اليد اليسرى صندوق الباص تدريجيًا (نابض) فيمرّ المنفاخ بالوضع المتوازي ثم ينعكس — لا قفزة.
 //  • الصوت يُقاد بسرعة المنفاخ (airflow) فيرتبط الصوت بحركته.
 // =====================================================================
 import { TREBLE, BASS, WHITE_COUNT, bassById } from '../instrument/accordion-data.js';
@@ -24,14 +26,14 @@ export class Performer {
     this.ls = { row: new Spring(0.6), z: new Spring(3), goalRow: 0.6, goalZ: 3 };
     this.rd = Array.from({ length: 5 }, () => null);        // أصابع اليد اليمنى
     this.ld = Array.from({ length: 3 }, () => null);        // أصابع اليد اليسرى
-    this.bel = { w: 0.2, v: 0, dir: 1, idle: 0, noise: 0, nph: Math.random() * 10, manual: null, flipped: 0, flipAt: 0.03, strokeK: 1 };
+    this.bel = { w: 0.2, v: 0, dir: 1, fan: 0.6, fanS: new Spring(0.6), idle: 0, noise: 0, nph: Math.random() * 10, manual: null, flipped: 0, flipAt: 0.03, strokeK: 1 };
     this.t = 0; this.lastEventT = -99; this.activeNotes = 0; this.lastVel = 0.7; this.onEvent = opts.onEvent || null;
     this.held = new Map();                                  // id -> {side, handle}
     this.stats = { presses: 0, flips: 0 };
   }
 
   // ---------- اختيار الإصبع ----------
-  chooseR(slot) {
+  chooseR(slot, black = false) {
     const held = this.rd.some((d) => d && d.amtGoal > 0);
     let bestD = -1, bestCost = 1e9, newBase = this.rs.goal;
     for (let d = 0; d < 5; d++) {
@@ -40,6 +42,8 @@ export class Performer {
       const err = Math.abs(base - (slot - d));
       let cost = err * 6 + (held ? Math.abs(slot - (this.rs.goal + d)) * 3 : Math.abs(base - this.rs.goal)) + (d === 1 || d === 2 ? 0 : 0.15);
       if (this.rd[d]) cost += 0.05;                         // إصبع ما زال يرتفع
+      if (black && d === 0) cost += 2.2;                    // الإبهام قصير ولا يُستعمل للأسود إلا اضطرارًا (كالبيانو)
+      if (black && d === 4) cost += 0.6;
       if (cost < bestCost) { bestCost = cost; bestD = d; newBase = base; }
     }
     if (bestD < 0) bestD = 0;
@@ -65,14 +69,14 @@ export class Performer {
   prepare(side, id) {
     if (this.held.has(id) || this.prep && this.prep.has(id)) return;
     (this.prep = this.prep || new Map());
-    if (side === 'R') { const k = keyMap[id]; if (!k) return; const d = this.chooseR(k.slot); this.rd[d] = { id, amt: 0, amtGoal: 0, lift: 1, liftGoal: 0 }; this.prep.set(id, d); }
+    if (side === 'R') { const k = keyMap[id]; if (!k) return; const d = this.chooseR(k.slot, k.black); this.rd[d] = { id, amt: 0, amtGoal: 0, lift: 1, liftGoal: 0 }; this.prep.set(id, d); }
     else { const b = bassById[id]; if (!b) return; const d = this.chooseL(b.row); this.ls.goalZ = b.col; this.ld[d] = { id, amt: 0, amtGoal: 0, lift: 1, liftGoal: 0 }; this.prep.set(id, d); }
   }
   press(side, id, vel = 0.75) {
     if (this.held.has(id)) return;
     let d;
     if (this.prep && this.prep.has(id)) { d = this.prep.get(id); this.prep.delete(id); }
-    else if (side === 'R') { const k = keyMap[id]; if (!k) return; d = this.chooseR(k.slot); this.rd[d] = { id, amt: 0, amtGoal: 1, lift: 1, liftGoal: 0 }; }
+    else if (side === 'R') { const k = keyMap[id]; if (!k) return; d = this.chooseR(k.slot, k.black); this.rd[d] = { id, amt: 0, amtGoal: 1, lift: 1, liftGoal: 0 }; }
     else { const b = bassById[id]; if (!b) return; d = this.chooseL(b.row); this.ls.goalZ = b.col; this.ld[d] = { id, amt: 0, amtGoal: 1, lift: 1, liftGoal: 0 }; }
     const arr = side === 'R' ? this.rd : this.ld, fin = arr[d]; fin.amtGoal = 1; fin.liftGoal = 0; fin.vel = vel;
     const notes = side === 'R' ? [keyMap[id].midi] : bassById[id].notes;
@@ -122,6 +126,11 @@ export class Performer {
     b.w = clamp(b.w + b.v * dt, W_MIN, W_MAX);
     if (b.w <= W_MIN + 1e-4 && b.v < 0) b.v = 0; if (b.w >= W_MAX - 1e-4 && b.v > 0) b.v = 0;
     const sp = Math.abs(b.v);
+    // اتجاه الانفراج: من اتجاه الحركة الفعلي، وعند السكون أو لحظة التبديل من الاتجاه المقصود (تسبق اليد الحركة قليلًا)
+    const dirEff = sp > 0.004 && Math.sign(b.v) === b.dir ? Math.sign(b.v) : (b.manual != null && Math.abs(b.manual) > 0.02 ? Math.sign(b.manual) : b.dir);
+    const k = clamp(sp / 0.03, 0, 1);
+    const fanGoal = dirEff > 0 ? 0.5 + 0.5 * k : -(0.5 + 0.35 * k);
+    b.fan = clamp(b.fanS.step(fanGoal, 9, dt), -1, 1);
     this.air = clamp(sp / 0.05, 0, 1);
     if (this.activeNotes > 0) this.air = Math.max(this.air, 0.2);        // لا يختفي الصوت تمامًا لحظة تبديل الاتجاه
   }
@@ -146,12 +155,12 @@ export class Performer {
     upd(this.ld, (id, v) => this.acc.setBassPress(id, v), 'bassId');
     // أُسقط من prep ما لم يُضغط منذ مدة
     if (this.prep) for (const [id, d] of this.prep) { const arr = keyMap[id] ? this.rd : this.ld; if (!arr[d]) this.prep.delete(id); }
-    this.p.pose({ w: this.bel.w, R: { base: this.rs.base.x, digits: dR }, L: { row: this.ls.row.x, z: this.ls.z.x, digits: dL } });
+    this.p.pose({ w: this.bel.w, fan: this.bel.fan, R: { base: this.rs.base.x, digits: dR }, L: { row: this.ls.row.x, z: this.ls.z.x, digits: dL } });
     if (this.audio) this.audio.setAir(this.air);
   }
 
   snapshot() {
-    return { w: +this.bel.w.toFixed(3), v: +this.bel.v.toFixed(4), dir: this.bel.dir, air: +(this.air || 0).toFixed(2), held: [...this.held.keys()], rBase: +this.rs.base.x.toFixed(2), flips: this.stats.flips,
+    return { w: +this.bel.w.toFixed(3), v: +this.bel.v.toFixed(4), dir: this.bel.dir, fan: +this.bel.fan.toFixed(2), air: +(this.air || 0).toFixed(2), held: [...this.held.keys()], rBase: +this.rs.base.x.toFixed(2), flips: this.stats.flips,
       fingers: this.rd.map((f, d) => f && { d, id: f.id, amt: +f.amt.toFixed(2), lift: +f.lift.toFixed(2) }).filter(Boolean) };
   }
 }

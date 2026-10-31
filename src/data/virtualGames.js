@@ -145,13 +145,15 @@ export const VIRTUAL_GAMES = [
   },
   {
     id: 'oriental-organ-piano',
-    title: 'الأورج الشرقي والبيانو الغربي (Oriental Maestro)',
-    description: 'أورج شرقي وبيانو غربي في أداة واحدة: اضغط أي مفتاح لترى اسم النغمة وترددها، مع نظام تسمية عربي ودعم المقامات الشرقية.',
-    category: 'keys', grade: 'الصف الرابع', status: 'available', entry: 'index.html',
+    title: 'Oriental Maestro — الأورج الشرقي والبيانو الغربي',
+    description: 'أورج افتراضي تعليمي بوضعين: بيانو غربي وأورج شرقي بأرباع التون والمقامات وأسماء الدرجات من كتاب المنهج، و20 صوتًا (عينات مسجلة ونمذجة فيزيائية)، وإيقاعات مصرية وعربية وخليجية وغربية، مع الطبقة والتقسيم والمؤثرات وأدوات تعليمية.',
+    category: 'keys', grade: null, status: 'available', entry: 'index.html',
     cover: '/lab-covers/oriental-organ-piano.jpg',
-    tags: ['أورج', 'بيانو', 'مقامات', 'ربع تون'],
-    settings: { threeD: false, needsAudio: true, markCorner: 'bottom-left' },
+    tags: ['أورج', 'بيانو', 'مقامات', 'ربع تون', 'إيقاعات', 'مقسوم', 'سيكاه', 'عود', 'قانون'],
+    // العلامة المائية أعلى اليمين حتى لا تغطي المفاتيح · midi: يسمح بتوصيل لوحة مفاتيح حقيقية (انظر صفحة المشغّل)
+    settings: { threeD: false, needsAudio: true, markCorner: 'top-right' },
   },
+
   {
     // تُعرض بطاقتها في «عالم الألعاب الموسيقية» (src/lib/gamesConfig.js عبر labId) وليس في شبكة المختبر ثلاثي الأبعاد،
     // لكنها تُشغَّل بنفس الحماية: جلسة موقّعة + /play/melodic-dictation/ من مجلد private-games.

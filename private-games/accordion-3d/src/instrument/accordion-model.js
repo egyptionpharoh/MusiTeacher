@@ -1,23 +1,36 @@
 // =====================================================================
 //  نموذج الأكورديون ثلاثي الأبعاد (إجرائي بالكامل — بلا ملفات نماذج خارجية، فلا حقوق نشر مرتبطة بالنموذج).
 //  التصميم مبني على الصور المرجعية (أكورديون بيانو أحمر لؤلؤي: شبك فضي مشقوق، مفاتيح تسجيل، منفاخ بحواف بيضاء، أزرار باص، أحزمة).
-//  إحداثيات الآلة المحلية: x = العرض (اليسار +x)، y = الأعلى، z = الأمام (الظهر z=0 على الصدر).
-//    صندوق اليمنى (المفاتيح): x ∈ [-WR, 0] ثابت مع جسم العازفة.
-//    المنفاخ: مروحي. مفصلته في الأسفل (على الفخذ): الطيّات تتقارب عند القاع وتتباعد في الأعلى كحرف V.
+//  إحداثيات الآلة المحلية: x = العرض (+x نحو يسار العازفة)، y = الأعلى، z = الأمام (الظهر z=0 على الصدر، z=D نحو المشاهد).
+//    صندوق اليمنى (المفاتيح): ثابت مع جسم العازفة. مقطعه الأفقي خماسي: واجهة أمامية (الشبك + مفاتيح التسجيل)
+//    ثم «شطفة» مائلة عند الركن الأمامي الخارجي تُثبَّت عليها لوحة المفاتيح، وجهها نحو الأمام والخارج بزاوية KB_ANG
+//    عن مستوى الواجهة (كما في الآلة الحقيقية: المفاتيح ظاهرة بوضوح للمشاهد المقابل، لا على جنب الصندوق).
+//    ترتيب المفاتيح على الشطفة: مقدّمات المفاتيح البيضاء عند الحافة الخلفية الخارجية (جهة جسم العازفة ومعصمها)،
+//    والمفاتيح السوداء عند الحافة الداخلية الأمامية (جهة الشبك والمشاهد). فالانتقال من الأبيض إلى الأسود = مدّ الأصابع
+//    إلى الأمام بعيدًا عن الجسم، كما في البيانو تمامًا (البيانو مُدار 90° فالنغمة الأخفض في الأعلى).
+//    المنفاخ: مروحي، وشكله يتبع اتجاه الحركة: عند الفتح ينفرج من الأعلى (V)، وعند الغلق ينعكس فينفرج من الأسفل (Λ)؛
+//    الانتقال بينهما دوران تدريجي لصندوق الباص تقوده اليد اليسرى (fan ∈ [-1, 1]).
 //    صندوق اليسرى (الباص): يدور حول زاويته السفلية الداخلية بزاوية الانفراج فيميل وجهه مع المنفاخ.
-//  المنفاخ هندسة واحدة تُحدَّث رؤوسها: عدد الطيّات ثابت، وعمق كل طيّة من طول اللوح الحقيقي (فيثاغورس) فلا تمطّط ولا تداخل.
+//  المنفاخ هندسة واحدة تُحدَّث رؤوسها: عدد الطيّات ثابت، كل حلقة تدور بنصيبها من زاوية الانفراج حول خط القاع،
+//  وعمق كل طيّة من طول اللوح الحقيقي (فيثاغورس) عند كل ارتفاع، فتتسع الطيّات حيث ينفرج المنفاخ وتنضغط حيث ينغلق.
 // =====================================================================
 import * as THREE from 'three';
 import { TREBLE, BASS, WHITE_COUNT } from './accordion-data.js';
 
+const KB_ANG0 = 32 * Math.PI / 180, KB_LEN0 = 0.100, WC0 = 0.094;
 export const DIM = {
-  H: 0.37, D: 0.17, WR: 0.125, WL: 0.105,
+  H: 0.37, D: 0.17, WC: WC0, KB_ANG: KB_ANG0, KB_LEN: KB_LEN0,
+  WR: WC0 + KB_LEN0 * Math.cos(KB_ANG0),               // العرض الكلي لصندوق اليمنى (مع لوحة المفاتيح)
+  KB_BZ: 0.17 - KB_LEN0 * Math.sin(KB_ANG0),          // عمق الحافة الخارجية للوحة المفاتيح (z)
+  WL: 0.105,
+  WKEY_LEN: 0.090, BKEY_LEN: 0.054,
   W_MIN: 0.09, W_MAX: 0.34,
   KEY_W: 0.0172,
   BASS_DY: 0.021, BASS_DZ: 0.0185,
   FOLDS: 15, PANEL: 0.040,
 };
-const { H, D, WR, WL } = DIM;
+const { H, D, WR, WL, WC } = DIM;
+const KB_BX = -WR, KB_BZ = DIM.KB_BZ;                 // الحافة الخارجية الخلفية للوحة المفاتيح (مقدّمات المفاتيح البيضاء)
 
 // ---------- أدوات هندسة ----------
 function rbox(dx, dy, dz, r = 0.002, seg = 2) {          // صندوق بحواف مستديرة (الأبعاد النهائية = dx,dy,dz بالضبط)
@@ -26,6 +39,25 @@ function rbox(dx, dy, dz, r = 0.002, seg = 2) {          // صندوق بحوا�
   const g = new THREE.ExtrudeGeometry(s, { depth: Math.max(1e-4, dx - 2 * r), bevelEnabled: true, bevelThickness: r, bevelSize: r, bevelSegments: seg, curveSegments: 1 });
   g.translate(0, 0, -(dx - 2 * r) / 2);
   g.rotateY(Math.PI / 2);
+  return g;
+}
+// منشور رأسي (ارتفاع H) من مضلّع محدّب في المستوى xz، بحواف مستديرة نصف قطرها r (الأبعاد النهائية = المضلّع بالضبط)
+function prismXZ(poly, h, r = 0.006) {
+  const n = poly.length, lines = [];
+  for (let i = 0; i < n; i++) {                                // إزاحة كل ضلع نحو الداخل بمقدار r (المضلّع بعكس عقارب الساعة في xz)
+    const a = poly[i], b = poly[(i + 1) % n], dx = b[0] - a[0], dz = b[1] - a[1], L = Math.hypot(dx, dz);
+    const nx = -dz / L, nz = dx / L;                           // العمودي الداخلي
+    lines.push([a[0] + nx * r, a[1] + nz * r, dx, dz]);
+  }
+  const ins = [];
+  for (let i = 0; i < n; i++) {
+    const [x1, z1, dx1, dz1] = lines[(i + n - 1) % n], [x2, z2, dx2, dz2] = lines[i];
+    const den = dx1 * dz2 - dz1 * dx2, t = ((x2 - x1) * dz2 - (z2 - z1) * dx2) / den;
+    ins.push([x1 + dx1 * t, z1 + dz1 * t]);
+  }
+  const s = new THREE.Shape(); ins.forEach(([x, z], i) => (i ? s.lineTo(x, -z) : s.moveTo(x, -z))); s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth: h - 2 * r, bevelEnabled: true, bevelThickness: r, bevelSize: r, bevelSegments: 3, curveSegments: 1 });
+  g.rotateX(-Math.PI / 2); g.translate(0, r, 0);
   return g;
 }
 function canvasTex(w, h, draw, repeat, srgb = true) {
@@ -135,28 +167,29 @@ export function buildAccordion(opts = {}) {
   // ---------- الصندوقان ----------
   const rightBox = new THREE.Group(), leftBox = new THREE.Group();
   root.add(rightBox, leftBox);
-  add(rightBox, new THREE.Mesh(rbox(WR, H, D, 0.007, 3), M.body), -WR / 2, H / 2, D / 2, 'rightbox');
+  // مقطع خماسي: ظهر، جانب داخلي (نحو المنفاخ)، واجهة أمامية، شطفة لوحة المفاتيح، جانب خارجي
+  add(rightBox, new THREE.Mesh(prismXZ([[0, 0], [0, D], [-WC, D], [KB_BX, KB_BZ], [KB_BX, 0]], H, 0.006), M.body), 0, 0, 0, 'rightbox');
   add(leftBox, new THREE.Mesh(rbox(WL, H, D, 0.007, 3), M.body), WL / 2, H / 2, D / 2, 'leftbox');
   // شريط تجميل أبيض عند طرف كل صندوق ناحية المنفاخ (كما في المرجع)
   for (const [box, x] of [[rightBox, -0.0035], [leftBox, 0.0035]]) add(box, new THREE.Mesh(rbox(0.007, H + 0.003, D + 0.003, 0.0018, 1), M.binding), x, H / 2, D / 2, 'baseplate');
 
   // ---------- الواجهة الأمامية: شرائح فضية + مفاتيح التسجيل + شعار ----------
-  const grW = WR - 0.026, grH = H - 0.04;
-  const gr = add(rightBox, new THREE.Mesh(new THREE.PlaneGeometry(grW, grH), M.slat), -WR / 2 + 0.006, H / 2 + 0.002, D + 0.0012, 'grille', false);
-  // مفاتيح التسجيل (Register): خمس كتل سوداء بينها بيضاء، بجانب لوحة المفاتيح عند الواجهة
+  const grL = -WC + 0.026, grR = -0.010, grW = grR - grL, grH = H - 0.04, grX = (grL + grR) / 2;
+  const gr = add(rightBox, new THREE.Mesh(new THREE.PlaneGeometry(grW, grH), M.slat), grX, H / 2 + 0.002, D + 0.0012, 'grille', false);
+  // مفاتيح التسجيل (Register): خمس كتل سوداء بينها بيضاء، على الواجهة بجوار الحافة الداخلية للوحة المفاتيح (بجانب المفاتيح السوداء)
   for (let i = 0; i < 5; i++) {
     const bl = new THREE.Mesh(rbox(0.014, 0.0105, 0.016, 0.0016, 1), i === 2 ? M.binding : M.ebony); bl.rotation.y = 0;
-    add(rightBox, bl, -WR + 0.0135, H * 0.58 + (i - 2) * 0.0128, D + 0.004, 'register');
-    const dot = new THREE.Mesh(new THREE.CylinderGeometry(0.0021, 0.0021, 0.0008, 12), M.chrome); dot.rotation.x = Math.PI / 2; dot.position.set(-WR + 0.0135, H * 0.58 + (i - 2) * 0.0128, D + 0.0123); rightBox.add(dot);
+    add(rightBox, bl, -WC + 0.0135, H * 0.58 + (i - 2) * 0.0128, D + 0.004, 'register');
+    const dot = new THREE.Mesh(new THREE.CylinderGeometry(0.0021, 0.0021, 0.0008, 12), M.chrome); dot.rotation.x = Math.PI / 2; dot.position.set(-WC + 0.0135, H * 0.58 + (i - 2) * 0.0128, D + 0.0123); rightBox.add(dot);
   }
   // شعار المنصة (لوحة سوداء بحروف ذهبية؛ لا علامة تجارية حقيقية)
   const logo = new THREE.Mesh(new THREE.PlaneGeometry(0.058, 0.0185), new THREE.MeshStandardMaterial({
     map: canvasTex(256, 80, (x, w, h) => { x.fillStyle = '#101013'; x.fillRect(0, 0, w, h); x.strokeStyle = '#c9a14a'; x.lineWidth = 3; x.strokeRect(3, 3, w - 6, h - 6); x.fillStyle = '#e8c26a'; x.font = '700 38px sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('MusiTeacher', w / 2, h / 2 + 2); }),
     roughness: 0.4, metalness: 0.3,
   }));
-  logo.position.set(-WR / 2 + 0.006, H * 0.905, D + 0.0028); rightBox.add(logo);
+  logo.position.set(grX, H * 0.905, D + 0.0028); rightBox.add(logo);
   // علاّقة الحزام العلوية وزر الحزام السفلي (معدن)
-  for (const [box, xs, zs] of [[rightBox, -WR * 0.5, D * 0.42], [leftBox, WL * 0.5, D * 0.42]]) {
+  for (const [box, xs, zs] of [[rightBox, -WC * 0.55, D * 0.42], [leftBox, WL * 0.5, D * 0.42]]) {
     const top = add(box, new THREE.Mesh(new THREE.TorusGeometry(0.0125, 0.0026, 8, 20), M.chrome), xs, H + 0.0105, zs, 'strapHook'); top.rotation.y = Math.PI / 2;
     const base = add(box, new THREE.Mesh(new THREE.CylinderGeometry(0.0075, 0.0075, 0.007, 16), M.chrome), xs, -0.0015, zs, 'strapHook');
   }
@@ -167,20 +200,28 @@ export function buildAccordion(opts = {}) {
   const wB = add(leftBox, new THREE.Mesh(new THREE.TorusGeometry(0.0085, 0.0021, 8, 18), M.chrome), WL + 0.003, 0.012, D * 0.4, 'wristAnchor'); wB.rotation.x = Math.PI / 2;
 
   // ---------- لوحة المفاتيح ----------
+  // إطار لوحة المفاتيح kb (محلي): x = عمودي على سطح اللوحة (السالب نحو الخارج، حيث أصابع العازفة)،
+  //   y = الارتفاع (النغمة الأخفض في الأعلى)، z = على طول المفتاح: z=0 عند مقدّمات المفاتيح البيضاء (الحافة الخارجية الخلفية،
+  //   جهة معصم العازفة وجسمها) ويزداد نحو الحافة الداخلية الأمامية (المفاتيح السوداء، جهة الشبك والمشاهد).
+  // دوران kb حول y بزاوية (90° − KB_ANG): المحور x_kb ← اتجاه داخل الصندوق، و z_kb ← (cos, 0, sin)·KB_ANG نحو الداخل والأمام.
   const keys = {};
-  const kb = new THREE.Group(); kb.position.set(-WR, 0, 0); rightBox.add(kb);
-  const plateH = WHITE_COUNT * DIM.KEY_W + 0.026;
-  add(kb, new THREE.Mesh(rbox(0.010, plateH, 0.128, 0.003, 1), M.plate), -0.005, H / 2, 0.088, 'keyboard');
-  add(kb, new THREE.Mesh(rbox(0.004, plateH + 0.008, 0.136, 0.0015, 1), M.body), -0.002, H / 2, 0.088, 'keyboard');
+  const kb = new THREE.Group(); kb.name = 'keyboard'; kb.position.set(KB_BX, 0, KB_BZ); kb.rotation.y = Math.PI / 2 - DIM.KB_ANG; rightBox.add(kb);
+  const plateH = WHITE_COUNT * DIM.KEY_W + 0.026, KL = DIM.KB_LEN;
+  add(kb, new THREE.Mesh(rbox(0.010, plateH, KL - 0.004, 0.003, 1), M.plate), -0.005, H / 2, KL / 2, 'keyboard');
+  add(kb, new THREE.Mesh(rbox(0.005, plateH + 0.008, KL + 0.004, 0.0015, 1), M.body), -0.0015, H / 2, KL / 2, 'keyboard');
+  add(kb, new THREE.Mesh(rbox(0.016, plateH + 0.008, 0.006, 0.002, 1), M.body), -0.008, H / 2, KL - 0.001, 'keyboard');      // حاجز داخلي خلف المفاتيح السوداء
   const y0 = (H - WHITE_COUNT * DIM.KEY_W) / 2;
-  const keyY = (slot) => y0 + (WHITE_COUNT - slot - 0.5) * DIM.KEY_W;      // الصوت الأخفض في الأعلى (عند الإبهام) — تقدير غير مؤكد
+  const keyY = (slot) => y0 + (WHITE_COUNT - slot - 0.5) * DIM.KEY_W;      // النغمة الأخفض في الأعلى (عند الإبهام)
+  const wFront = 0.004, wEnd = wFront + DIM.WKEY_LEN;                      // الأبيض: من الحافة الخارجية إلى الحاجز الداخلي
   for (const k of TREBLE) {
-    const black = k.black, len = black ? 0.060 : 0.108, thick = black ? 0.022 : 0.012, wid = black ? 0.0108 : DIM.KEY_W - 0.0011;
-    const zc = black ? 0.058 : 0.088;
+    const black = k.black, len = black ? DIM.BKEY_LEN : DIM.WKEY_LEN, thick = black ? 0.022 : 0.012, wid = black ? 0.0108 : DIM.KEY_W - 0.0011;
+    const zc = black ? wEnd - len / 2 : wFront + len / 2;                 // الأسود في الطرف الداخلي (البعيد عن العازفة) كالبيانو
     const m = tag(new THREE.Mesh(rbox(thick, wid, len, 0.0016, 1), black ? M.ebony : M.ivory), black ? 'blackkey' : 'whitekey', { keyId: k.id, midi: k.midi });
-    const pivot = new THREE.Group(); pivot.position.set(-thick / 2 - 0.009, keyY(k.slot), zc);
+    const pivot = new THREE.Group(); pivot.position.set(-thick / 2 - 0.010, keyY(k.slot), zc);
     m.castShadow = true; pivot.add(m); kb.add(pivot);
-    keys[k.id] = { id: k.id, midi: k.midi, black, mesh: m, pivot, rest: pivot.position.x, travel: 0.0062, base: black ? M.ebony : M.ivory, press: 0, zc, len, thick, y: keyY(k.slot) };
+    // تلامس الإصبع: الأبيض قرب مقدّمته (الجزء المكشوف أمام الأسود)، والأسود قرب طرفه الأقرب للعازفة
+    const touchZ = black ? -len / 2 + 0.016 : -len / 2 + 0.020;
+    keys[k.id] = { id: k.id, midi: k.midi, black, mesh: m, pivot, rest: pivot.position.x, travel: 0.0062, base: black ? M.ebony : M.ivory, press: 0, zc, len, thick, wid, y: keyY(k.slot), touchZ };
   }
 
   // ---------- أزرار الباص (على الطرف الأيسر للصندوق الأيسر، وجهها نحو +x) ----------
@@ -214,14 +255,18 @@ export function buildAccordion(opts = {}) {
   for (let j = 0; j < SEGS; j++) { const t = (j / SEGS) * Math.PI * 2, c = Math.cos(t), s = Math.sin(t), e = 7; sect.push([Math.sign(c) * Math.pow(Math.abs(c), 2 / e), Math.sign(s) * Math.pow(Math.abs(s), 2 / e)]); }
   const bellows = tag(new THREE.Mesh(bellGeo, M.bellows), 'bellows'); bellows.frustumCulled = false; bellows.castShadow = bellows.receiveShadow = true; root.add(bellows);
   const cBody = new THREE.Color(0x4a1119), cValley = new THREE.Color(0x14050a), cBind = new THREE.Color(0xeee6d2);
-  const state = { w: 0.2, tan: 0, gb: 0.15, gt: 0.25, theta: 0, lift: 0 };
+  const state = { w: 0.2, fan: 0.6, tan: 0, gb: 0.15, gt: 0.25, theta: 0, lift: 0 };
+  const G_MIN = 0.07;                                      // أصغر فتحة عند أي ارتفاع (الطيّات مضغوطة تمامًا)
 
-  // مفصلة المروحة: المنفاخ مفتوح كحرف V (أضيق عند القاع)؛ وعند الإغلاق يكاد يتوازى (بميل عكسي صغير: الأعلى يُغلق أولًا)
-  function fanFor(w) {
+  // شكل المروحة: w = الفتحة عند منتصف الارتفاع، fan ∈ [-1, 1] = اتجاه الانفراج ومقداره.
+  //   fan > 0 (فتح): القاع أضيق والأعلى أوسع (V).   fan < 0 (غلق): الأعلى يُغلق أولًا فيصبح القاع أوسع (Λ).
+  // أقصى ميل يزداد مع اتساع المنفاخ (المنفاخ شبه المغلق لا يستطيع الانفراج)، ولا تقل الفتحة عن G_MIN عند أي طرف.
+  function fanFor(w, fan) {
     const f = Math.min(1.05, Math.max(0, (w - 0.09) / 0.2));
-    const tan = Math.max(-0.045, 0.82 * (f - 0.1) / 0.9);
-    const gb = Math.max(0.07, w - (H / 2) * tan), gt = w + (H / 2) * tan;
-    return { f, tan, gb, gt };
+    const tmax = Math.max(0, 0.82 * (f - 0.1) / 0.9);
+    const lim = Math.max(0, (w - G_MIN) / (H / 2));
+    const tan = Math.max(-lim, Math.min(lim, fan * tmax));
+    return { f, tan, gb: w - (H / 2) * tan, gt: w + (H / 2) * tan };
   }
   // كل حلقة (R) × SEGS نقطة تُحسب مرة واحدة لكل اتساع، ثم تُستنتج رؤوس الألواح بالاستيفاء الخطي بين الحلقتين.
   const RP = new Float32Array(R * SEGS * 3), sA = new Float32Array(R), cA = new Float32Array(R);
@@ -236,13 +281,17 @@ export function buildAccordion(opts = {}) {
   }
   bellGeo.attributes.color.needsUpdate = true;
   let lastW = -1;
-  function setWidth(w) {
+  let lastTan = 1e9;
+  function setWidth(w, fan) {
     w = Math.min(DIM.W_MAX, Math.max(DIM.W_MIN, w)); state.w = w;
-    const { tan, gb, gt } = fanFor(w); state.tan = tan; state.gb = gb; state.gt = gt; state.theta = Math.atan(tan);
-    const lift = Math.max(0, 0.55 * WL * Math.sin(state.theta)); state.lift = lift;       // يرتفع طرف صندوق الباص الداخلي قليلًا فلا يغوص طرفه الخارجي في الفخذ
+    if (fan != null && isFinite(fan)) state.fan = Math.max(-1, Math.min(1, fan));
+    const { tan, gb, gt } = fanFor(w, state.fan); state.tan = tan; state.gb = gb; state.gt = gt; state.theta = Math.atan(tan);
+    // V: يدور الصندوق حول ركنه السفلي الداخلي فينخفض طرفه الخارجي، فنرفعه قليلًا كي لا يغوص في الفخذ.
+    // Λ: يدور في الاتجاه المعاكس فيرتفع طرفه الخارجي وحده، ويبقى ركنه السفلي على الفخذ.
+    const lift = Math.max(0, 0.55 * WL * Math.sin(state.theta)); state.lift = lift;
     leftBox.position.set(gb, lift, 0); leftBox.rotation.set(0, 0, -state.theta); leftBox.updateMatrix();
-    if (Math.abs(w - lastW) < 1e-6) return;
-    lastW = w;
+    if (Math.abs(w - lastW) < 1e-6 && Math.abs(tan - lastTan) < 1e-6) return;
+    lastW = w; lastTan = tan;
     const stepB = gb / (R - 1);
     for (let i = 0; i < R; i++) { const alpha = Math.atan(tan * i / (R - 1)); sA[i] = Math.sin(alpha); cA[i] = Math.cos(alpha); }
     for (let i = 0; i < R; i++) {
@@ -294,7 +343,7 @@ export function buildAccordion(opts = {}) {
   const shoulder = {};      // { R:{ribbon, body:[pts], top:()=>Vector3, bot:()=>Vector3}, L:... }
   const tmpV = new THREE.Vector3();
   const anchors = {
-    R: { top: () => rightBox.localToWorld(new THREE.Vector3(-WR * 0.5, H + 0.0105, D * 0.42)), bot: () => rightBox.localToWorld(new THREE.Vector3(-WR * 0.5, -0.004, D * 0.42)) },
+    R: { top: () => rightBox.localToWorld(new THREE.Vector3(-WC * 0.55, H + 0.0105, D * 0.42)), bot: () => rightBox.localToWorld(new THREE.Vector3(-WC * 0.55, -0.004, D * 0.42)) },
     L: { top: () => leftBox.localToWorld(new THREE.Vector3(WL * 0.5, H + 0.0105, D * 0.42)), bot: () => leftBox.localToWorld(new THREE.Vector3(WL * 0.5, -0.004, D * 0.42)) },
   };
   /** مسار الجسم لكل جهة: نقاط بإحداثيات العالم (فوق الكتف، الظهر، تحت الإبط) تحسبها العازفة بعد الجلوس. */
@@ -335,9 +384,10 @@ export function buildAccordion(opts = {}) {
   }
 
   return {
-    root, rightBox, leftBox, keys, buttons, bellows, pickables, setWidth, getWidth: () => state.w, getFan: () => ({ tan: state.tan, theta: state.theta, bottom: state.gb, top: state.gt }),
+    root, rightBox, leftBox, kb, keys, buttons, bellows, pickables, setWidth, getWidth: () => state.w, getFan: () => ({ fan: state.fan, tan: state.tan, theta: state.theta, bottom: state.gb, top: state.gt }),
     setKeyPress, setBassPress, setLit, clearLit, setShoulderPath, updateStraps, DIM, M,
-    keyTop(id) { const k = keys[id]; return new THREE.Vector3(-WR - 0.009 - k.thick, k.y, k.zc + (k.black ? 0.0 : 0.02)); },
+    /** نقطة التلامس على سطح المفتاح (إحداثيات الآلة المحلية) */
+    keyTop(id) { const k = keys[id]; root.updateMatrixWorld(true); return root.worldToLocal(k.mesh.localToWorld(new THREE.Vector3(-k.thick / 2, 0, k.touchZ))); },
     bassTop(id) { const b = buttons[id]; return new THREE.Vector3(DIM.WL + 0.008 + 0.0125 + 0.0063 - 0.004, b.y, b.z); },
   };
 }
