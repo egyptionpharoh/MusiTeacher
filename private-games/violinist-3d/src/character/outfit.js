@@ -206,6 +206,7 @@ function reshapeHips(mesh, k) {
 // ---------- الدالة الرئيسية ----------
 export function applyOutfit(root, cfg = {}) {
   const oc = cfg.outfit || {};
+  const male = oc.style === 'male';                 // العازف: دشداشة بيضاء إلى الكعبين + مَصَرّ + فراخة، بلا لحاف ولا سروال ظاهر
   root.updateMatrixWorld(true);
   const all = []; root.traverse((o) => { if (o.isSkinnedMesh) all.push(o); });
   const find = (re) => all.find((m) => re.test(m.name));
@@ -215,7 +216,7 @@ export function applyOutfit(root, cfg = {}) {
   // نخفّف عمق المؤخرة وعرض الحوض قليلًا (وزن ناعم بحسب الارتفاع) في شبكتي الملابس قبل التفصيل، فيتبعهما الزي كله بلا أي تغيير في الأوزان.
   const _q = (k, d) => { const v = new URLSearchParams(location.search).get(k); return v == null ? d : +v; };
   const hipK = cfg.hipRefine ?? { depth: _q('hipd', 0.14), width: _q('hipw', 0.045) };
-  for (const mesh of [suit, casual]) { reshapeHips(mesh, hipK); }
+  if (!male) for (const mesh of [suit, casual]) { reshapeHips(mesh, hipK); }      // جسم الذكر (من أهداف MakeHuman) حوضه أضيق أصلًا
   const SB = new Src(body), SS = new Src(suit), SC = new Src(casual);
   const boneG = (n) => { const b = suit.skeleton.bones.find((x) => x.name === n); return suit.worldToLocal(b.getWorldPosition(new THREE.Vector3())).toArray(); };
   const bm = cfg.boneMap || {};
@@ -234,8 +235,9 @@ export function applyOutfit(root, cfg = {}) {
 
   // دشداشة فضفاضة: مقدار النفخ الشعاعي (بالمتر في فضاء الهندسة) كدالة في الارتفاع/البارامتر
   const D_TORSO = _q('dold', 0) ? [[0.70, 0.034], [0.80, 0.028], [0.90, 0.018], [1.0, 0.013], [1.1, 0.012]] : [[0.70, 0.022], [0.80, 0.020], [0.90, 0.016], [1.0, 0.013], [1.1, 0.012]];
-  const HEM = 0.185;                                         // ارتفاع حافة الدشداشة عن الأرض (فوقها كم السروال)
-  const D_LEG = [[0.0, 0.012], [0.07, 0.014], [HEM - 0.012, 0.016], [HEM + 0.012, 0.030], [0.20, 0.028], [0.39, 0.020], [0.55, 0.020], [0.72, 0.022]];
+  const HEM = male ? 0.045 : 0.185;                         // ارتفاع حافة الدشداشة عن الأرض (العازفة: فوقها كم السروال؛ العازف: إلى الكعبين)
+  const D_LEG = male ? [[0.0, 0.014], [0.03, 0.022], [0.07, 0.027], [0.14, 0.028], [0.24, 0.026], [0.39, 0.021], [0.55, 0.020], [0.72, 0.022]]
+    : [[0.0, 0.012], [0.07, 0.014], [HEM - 0.012, 0.016], [HEM + 0.012, 0.030], [0.20, 0.028], [0.39, 0.020], [0.55, 0.020], [0.72, 0.022]];
   const D_ARM = [[0, 0.012], [1, 0.013], [1.7, 0.012], [2.0, 0.012]];   // كمّ أضيق عند المعصم (كان 0.021 فتبدو الأسورة حلقة واسعة سائبة)
 
   const dispGroup = (g, p) => {
@@ -243,7 +245,8 @@ export function applyOutfit(root, cfg = {}) {
       const q = onChain(chains.torso, p);
       let r = sub(p, q.c); r = sub(r, [q.tan[0] * dot(r, q.tan), q.tan[1] * dot(r, q.tan), q.tan[2] * dot(r, q.tan)]);
       const L = len(r) || 1, a = Math.atan2(p[0], -(p[1] - P.spine[1]));
-      const d = table(D_TORSO, p[2]) + folds(a, p[2], 0.0035 * smooth(1.0, 0.74, p[2]));
+      let d = table(D_TORSO, p[2]) + folds(a, p[2], 0.0035 * smooth(1.0, 0.74, p[2]));
+      if (male) { const cz = collarZ(p); d *= 0.25 + 0.75 * smooth(cz - 0.005, cz - 0.07, p[2]); }   // فتحة الرقبة تلامس الرقبة
       return [r[0] / L * d, r[1] / L * d, r[2] / L * d];
     }
     if (g.startsWith('leg')) {
@@ -291,9 +294,13 @@ export function applyOutfit(root, cfg = {}) {
   const isArm = (g) => g.startsWith('arm');
   // الجذع من القميص الفضفاض (casualsuit) والساقان من بنطال الرياضة (حتى منتصف الحوض فقط حتى لا تتكرر طبقة الصدر)
   const notArm = (ds) => !isArm(majority(ds)) && !majority(ds).startsWith('hand');
-  const mainSuit = trisFrom(SC, (ds) => notArm(ds)).concat(trisFrom(SS, (ds, idx, zc) => notArm(ds) && zc < 0.80));
+  // خط فتحة الدشداشة (العازف): عند قاعدة الرقبة خلفًا، وأخفض أمامًا كفتحة الدشداشة العمانية. القماش فوقه يُحذف والجلد تحته يُخفى.
+  const collarZ = (p) => { const vx = p[0] - P.neck[0], vy = p[1] - P.neck[1], L = Math.hypot(vx, vy) || 1, front = Math.max(0, -vy / L); return P.neck[2] + 0.005 - 0.04 * Math.pow(front, 1.5); };
+  const belowCollar = (S, idx) => idx.some((i) => { const p = S.p(i); return p[2] < collarZ(p) + 0.004; });
+  const mainSuit = trisFrom(SC, (ds, idx) => notArm(ds) && (!male || belowCollar(SC, idx))).concat(trisFrom(SS, (ds, idx, zc) => notArm(ds) && zc < 0.80));
   const sleeveSuit = trisFrom(SC, (ds) => isArm(majority(ds)));
-  const sleeveBody = trisFrom(SB, (ds) => ds.every((d) => isArm(d.group) && /^(upperarm|lowerarm)/.test(d.name)));
+  // العازف: غلاف الذراع الذكري يغطي الذراع كله؛ إضافة جلد ذراع العازفة فوقه تُنتج طبقتين متقاطعتين (حواف ممزّقة عند الكتف والعضد)
+  const sleeveBody = male ? [] : trisFrom(SB, (ds) => ds.every((d) => isArm(d.group) && /^(upperarm|lowerarm)/.test(d.name)));
 
   // ---- خرائط UV ----
   const HT = 1.2;                                           // ارتفاع التغطية الرأسية للقوام
@@ -312,7 +319,7 @@ export function applyOutfit(root, cfg = {}) {
   // ---- المواد ----
   const wn = weaveNormal();
   const C = { dish: oc.dishdasha || '#7a1f2e', sir: oc.sirwal || '#1f4a44', gold: oc.embroidery || '#d8b25a', teal: oc.embroidery2 || '#2f6b5a' };
-  const mainTex = canvasTex(1024, 1024, (x, w, h) => {
+  const mainTex = male ? maleMainTex(C, HT, HEM) : canvasTex(1024, 1024, (x, w, h) => {
     fabricBase(x, w, h, C.dish);
     const Y = (z) => (1 - z / HT) * h;
     // كم السروال تحت حافة الدشداشة
@@ -327,7 +334,7 @@ export function applyOutfit(root, cfg = {}) {
     // حزام تطريز عند الخصر الواسع (خفيف)
     embroideryBand(x, 0, w, Y(0.99), Y(0.965), C.gold, C.teal, '#f4e2a8');
   });
-  const sleeveTex = canvasTex(512, 512, (x, w, h) => {
+  const sleeveTex = male ? canvasTex(512, 512, (x, w, h) => { fabricBase(x, w, h, C.dish, 0.035); x.fillStyle = C.gold; x.fillRect(0, h * 0.05, w, h * 0.006); x.fillRect(0, h * 0.075, w, h * 0.004); }) : canvasTex(512, 512, (x, w, h) => {
     fabricBase(x, w, h, C.dish);
     // v=1 (أعلى القماش) عند المعصم: شريط تطريز الكُمّ
     embroideryBand(x, 0, w, h * 0.012, h * 0.1, C.gold, C.teal, '#f4e2a8');
@@ -336,7 +343,7 @@ export function applyOutfit(root, cfg = {}) {
   const fabric = (map) => new THREE.MeshPhysicalMaterial({
     map, color: 0xffffff, roughness: 0.78, metalness: 0, side: new URLSearchParams(location.search).has('ds') ? THREE.DoubleSide : THREE.FrontSide,
     normalMap: wn, normalScale: new THREE.Vector2(0.28, 0.28),
-    sheen: 0.1, sheenRoughness: 0.7, sheenColor: new THREE.Color(0x805048),
+    sheen: 0.1, sheenRoughness: 0.7, sheenColor: new THREE.Color(male ? 0xd8d4cc : 0x805048),
   });
 
   // ---- بناء الشبكات ----
@@ -359,14 +366,30 @@ export function applyOutfit(root, cfg = {}) {
     r = sub(r, [t[0] * dot(r, t), t[1] * dot(r, t), t[2] * dot(r, t)]);
     return r;
   };
-  const geoMain = buildGeometry(mainSuit, (S, i) => { const rest = S.p(i), p = displaced(S, i); return { p, uv: uvMain(S, i) }; }, outwardAt);
+  const geoMain = buildGeometry(mainSuit, (S, i) => {
+    const rest = S.p(i); let p = displaced(S, i);
+    return { p, uv: uvMain(S, i) };
+  }, outwardAt);
+  // العازف: قصّ القماش قصًّا هندسيًا على خط فتحة الرقبة (لا حذف مثلثات كاملة) فتخرج حافة نظيفة يغطيها الطوق
+  let collarEdge = null;
+  if (male) collarEdge = clipAbove(geoMain, (q) => q[2] - (collarZ(q) + 0.003));
   const mMain = mkSkinned(geoMain, fabric(mainTex), 'Outfit_dishdasha');
 
   const sleeveTris = sleeveSuit.concat(sleeveBody);
+  // العازف: نهاية الكم (حدّ مثلثات الغلاف عند المعصم متعرّج) تُسوّى على مستوى عمودي على الساعد فتصير حافة مستقيمة تحت الأسورة
+  const hemS = {};
+  // الإسقاط على محور الساعد بلا قصّ (رؤوس ما بعد مفصل المعصم لها s=2 بعد القصّ فلا تُسوّى)؛ الحافة قبل المعصم بقليل
+  const foreS = (gg, p) => { const ch = chains[gg], ab = sub(ch[2], ch[1]); return 1 + dot(sub(p, ch[1]), ab) / dot(ab, ab); };
+  if (male) { hemS.armL = 1.965; hemS.armR = 1.965; }
   const geoSleeve = buildGeometry(sleeveTris, (S, i) => {
     const rest = S.p(i), g = S.dom(i).group;
     const gg = isArm(g) ? g : (rest[0] > 0 ? 'armL' : 'armR');
-    return { p: displaced(S, i), uv: armUV(gg, rest) };
+    let p = displaced(S, i);
+    if (male && hemS[gg]) {
+      const ch = chains[gg], su = foreS(gg, rest), cut = hemS[gg] - 0.035;
+      if (su > cut && onChain(ch, rest).s > 1) { const ab = sub(ch[2], ch[1]); p = [p[0] - ab[0] * (su - cut), p[1] - ab[1] * (su - cut), p[2] - ab[2] * (su - cut)]; }
+    }
+    return { p, uv: armUV(gg, rest) };
   }, outwardAt);
   // الكم والأسورة قماش لا يلتف مع اليد: نحوّل أي تأثير لعظمة المعصم أو الأصابع إلى عظمة الساعد،
   // وإلا مالت الأسورة وانسحبت حافة الكم المسنّنة مع دوران اليد (قبضة القوس تدير المعصم كثيرًا).
@@ -382,10 +405,41 @@ export function applyOutfit(root, cfg = {}) {
     si.needsUpdate = true; return n;
   };
   forearmOnly(geoSleeve);
+  // العازف: أوزان طرف الكم موحّدة (متوسط الحلقة) فيلتف الطرف قطعةً واحدة مع الساعد بدل أن تتعرّج رؤوسه بين عظمتي الساعد
+  if (male) {
+    const pa = geoSleeve.attributes.position, sI = geoSleeve.attributes.skinIndex, sW = geoSleeve.attributes.skinWeight;
+    for (const gg of ['armL', 'armR']) {
+      if (!hemS[gg]) continue;
+      const ch = chains[gg], cut = hemS[gg] - 0.035, sv = [], acc = new Map();
+      for (let i = 0; i < pa.count; i++) {
+        const p = [pa.getX(i), pa.getY(i), pa.getZ(i)], q = onChain(ch, p), qo = onChain(chains[gg === 'armL' ? 'armR' : 'armL'], p);
+        if (qo.d < q.d || q.s < cut - 0.16) continue;
+        sv.push([i, q.s]);
+        if (q.s > cut - 0.06) for (let k = 0; k < 4; k++) { const b = sI.array[i * 4 + k], w = sW.array[i * 4 + k]; if (w > 0) acc.set(b, (acc.get(b) || 0) + w); }
+      }
+      const top = [...acc.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4), tot = top.reduce((a, b) => a + b[1], 0) || 1;
+      for (const [i, sv0] of sv) {
+        const t = smooth(cut - 0.15, cut - 0.05, sv0), cur = new Map();
+        for (let k = 0; k < 4; k++) { const b = sI.array[i * 4 + k], w = sW.array[i * 4 + k]; if (w > 0) cur.set(b, (cur.get(b) || 0) + w * (1 - t)); }
+        for (const [b, w] of top) cur.set(b, (cur.get(b) || 0) + t * w / tot);
+        const best = [...cur.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4), bt = best.reduce((a, b) => a + b[1], 0) || 1;
+        for (let k = 0; k < 4; k++) { sI.array[i * 4 + k] = best[k] ? best[k][0] : 0; sW.array[i * 4 + k] = best[k] ? best[k][1] / bt : 0; }
+      }
+    }
+    sI.needsUpdate = sW.needsUpdate = true;
+  }
+  // العازف: أنماط مشتركة بين الثوب والكمّين (حدّهما متعرّج بين المثلثات، وانقطاع التظليل عنده كان يبدو كقماش ممزّق عند الكتف)
+  if (male) {
+    const a = geoMain.attributes.position.array, b = geoSleeve.attributes.position.array, all = new Float32Array(a.length + b.length);
+    all.set(a, 0); all.set(b, a.length);
+    const nn = smoothNormals(all, null);            // أغلفة MakeHuman متسقة الاتجاه أصلًا؛ تخمين «الخارج» كان يقلب أنماط بعض الأوجه (بقع ظل ممزقة عند الإبط والخصر)
+    geoMain.setAttribute('normal', new THREE.BufferAttribute(nn.slice(0, a.length), 3));
+    geoSleeve.setAttribute('normal', new THREE.BufferAttribute(nn.slice(a.length), 3));
+  }
   const mSleeve = mkSkinned(geoSleeve, fabric(sleeveTex), 'Outfit_sleeves');
 
   // ---- حلقتا الأساور: تغطيان حافة الكم المتعرجة (حدود مثلثات القماش الأصلي) عند المعصم ----
-  const cuffTex = canvasTex(256, 64, (x, w, h) => {
+  const cuffTex = male ? canvasTex(256, 64, (x, w, h) => { fabricBase(x, w, h, C.dish, 0.03); x.fillStyle = C.gold; x.fillRect(0, h * 0.42, w, h * 0.07); x.fillRect(0, h * 0.58, w, h * 0.04); }, true) : canvasTex(256, 64, (x, w, h) => {
     x.fillStyle = C.gold; x.fillRect(0, 0, w, h);
     embroideryBand(x, 0, w, h * 0.12, h * 0.88, C.gold, C.teal, '#f4e2a8');
     x.fillStyle = C.dish; x.fillRect(0, 0, w, 3); x.fillRect(0, h - 3, w, 3);
@@ -409,8 +463,13 @@ export function applyOutfit(root, cfg = {}) {
     }
     const edge = pts.filter((q) => q.s > sMax - 0.05);
     if (edge.length < 6) continue;
-    const rEdge = edge.reduce((a2, q) => a2 + q.d, 0) / edge.length + 0.0045;
-    const s0 = sMax - 0.19, s1 = sMax + 0.014, K = 14, M = 40;
+    let rEdge = edge.reduce((a2, q) => a2 + q.d, 0) / edge.length + 0.0045;
+    let s0 = sMax - 0.19, s1 = sMax + 0.014; const K = 14, M = 40;
+    if (male) {           // أسورة ضيقة عند حافة الكم المستقيمة، وتحيط بالكم كله (نصف القطر الأقصى) فلا يخترقها القماش بأسنان متعرجة
+      const cut = (hemS[g] || sMax) - 0.035, band = pts.filter((q) => q.s > cut - 0.09 && q.s < cut + 0.01);
+      if (band.length > 6) rEdge = Math.max(...band.map((q) => q.d)) + 0.0025;
+      s0 = cut - 0.075; s1 = cut + 0.004;
+    }
     const near = pts.filter((q) => q.s > s0 - 0.08), axis = nrm(sub(ch[2], ch[1])), b1 = nrm(cross(axis, [0, 1, 0])), b2 = cross(axis, b1);
     const pos = [], uv = [], nor = [], si = [], sw = [], idx = [];
     for (let k = 0; k <= K; k++) {
@@ -434,16 +493,38 @@ export function applyOutfit(root, cfg = {}) {
     geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4)); geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(sw, 4));
     geo.setIndex(idx);
     forearmOnly(geo);
-    cuffs.push(mkSkinned(geo, cuffMat, 'Outfit_cuff' + side));
+    cuffs.push(mkSkinned(geo, male ? fabric(cuffTex) : cuffMat, 'Outfit_cuff' + side));
   }
 
-  // ---- اللحاف ----
-  const lihaf = buildLihaf({ SB, SS, mainSuit, displaced, P, cfg, oc, mkSkinned, suit, wn, C });
+  // العازف: جلد العضد والساعد تحت الكم مخفي (يُربط بأوزان مختلفة عن الكم فيبرز منه عند ثني الذراع)؛ يبقى طرف الساعد قرب المعصم تحت الأسورة
+  if (male) {
+    const pa = SB.pos; let hid = 0;
+    for (let t = 0; t + 2 < SB.n; t += 3) {
+      // قاعدة موحّدة: يُخفى المثلث إن كانت رؤوسه كلها تحت الثوب (جذع، أو أسفل الرقبة داخل الطوق، أو عضد/ساعد تحت الكم)،
+      // حتى المثلثات المختلطة بين الترقوة والعضد أو الرقبة (كانت تبرز كبقع جلد عند الكتف)
+      const ok = [t, t + 1, t + 2].every((i) => {
+        const d = SB.dom(i), p = SB.p(i);
+        if (/^(spine|clavicle|shoulder01|breast|pelvis|root|neck0[12])/.test(d.name)) return p[2] < collarZ(p) - 0.002;
+        if (isArm(d.group) && /^(upperarm|lowerarm01)/.test(d.name)) return onChain(chains[d.group], p).s < 1.72;
+        return false;
+      });
+      if (!ok) continue;
+      // مثلث صفري: الرؤوس الثلاثة في نقطة واحدة وبأوزان واحدة (وإلا فرّقها التحريك فظهرت شظايا جلد عبر القماش)
+      for (let k = 1; k < 3; k++) { pa.setXYZ(t + k, pa.getX(t), pa.getY(t), pa.getZ(t)); for (let q = 0; q < 4; q++) { SB.si.array[(t + k) * 4 + q] = SB.si.array[t * 4 + q]; SB.sw.array[(t + k) * 4 + q] = SB.sw.array[t * 4 + q]; } }
+      hid++;
+    }
+    pa.needsUpdate = true; SB.si.needsUpdate = SB.sw.needsUpdate = true; applyOutfit.hiddenTris = hid;
+  }
+  // ---- اللحاف (العازفة) أو المَصَرّ وطوق الرقبة والفراخة (العازف) ----
+  const ctx = { SB, SS, mainSuit, displaced, P, cfg, oc, mkSkinned, suit, wn, C, root, bm, collarZ, collarEdge };
+  const lihaf = male ? null : buildLihaf(ctx);
+  const maleParts = male ? buildMaleHeadAndCollar(ctx) : [];
+  if (male) { const dr = buildRobeDrape({ ...ctx, chains, HEM, onChain, mat: fabric(mainTex), HT }); if (dr) maleParts.push(dr); }
 
   // ---- إزالة الملابس الأصلية والشعر ----
   const gone = [];
   for (const m of all) if (/casualsuit|sportsuit|long01/.test(m.name)) { m.parent.remove(m); m.geometry.dispose(); gone.push(m.name); }
-  return { applied: true, meshes: [mMain, mSleeve, lihaf, ...cuffs].filter(Boolean), removed: gone, tri: { main: mainSuit.length, sleeve: sleeveTris.length } };
+  return { applied: true, style: male ? 'male' : 'female', meshes: [mMain, mSleeve, lihaf, ...cuffs, ...maleParts].filter(Boolean), removed: gone, tri: { main: mainSuit.length, sleeve: sleeveTris.length } };
 }
 
 // ---------- اللحاف: حلقات أفقية حول الرأس ثم الكتفين مع فتحة للوجه ----------
@@ -554,4 +635,258 @@ function buildLihaf(ctx) {
   const m = mkSkinned(g, mat, 'Outfit_lihaf');
   m.userData.rings = rings.length; m.userData.apex = apexZ; m.userData.zTop = zTop; m.userData.zRingTop = zRingTop;
   return m;
+}
+
+// =====================================================================
+//  زيّ العازف العُماني: دشداشة بيضاء بلا ياقة، بفتحة صدر قصيرة مطرّزة بخيط بلون العاج، وفراخة (كشكوشة) تتدلّى من الطوق،
+//  ومَصَرّ ملفوف على الرأس (قماش مطرّز بنقوش صغيرة وحافة ملوّنة) فوق الأذنين، تظهر فيه طيّات اللف المائلة.
+// =====================================================================
+function maleMainTex(C, HT, HEM) {
+  return canvasTex(1024, 1024, (x, w, h) => {
+    fabricBase(x, w, h, C.dish, 0.035);
+    const Y = (z) => (1 - z / HT) * h, cx = w * 0.5;
+    // فتحة الصدر (الجيب الأمامي) من الطوق إلى منتصف الصدر: خطّا تطريز رفيعان وغرزة متعرجة بينهما
+    const top = Y(1.135), bot = Y(1.035), pw = w * 0.0065;
+    x.fillStyle = C.gold; x.fillRect(cx - pw * 1.8, top, pw * 0.45, bot - top); x.fillRect(cx + pw * 1.35, top, pw * 0.45, bot - top);
+    x.strokeStyle = C.teal; x.lineWidth = 1.2; x.beginPath();
+    for (let y = top, k = 0; y < bot; y += 5, k++) x.lineTo(cx + (k % 2 ? pw : -pw) * 0.7, y);
+    x.stroke();
+    x.fillStyle = 'rgba(0,0,0,.10)'; x.fillRect(cx - 0.6, top, 1.2, bot - top);          // خط الفتحة
+    // طوق الرقبة: شريط تطريز رفيع
+    x.fillStyle = C.gold; x.fillRect(0, Y(1.142), w, Y(1.128) - Y(1.142));
+    // حافة الذيل: درزة مزدوجة خفيفة
+    x.fillStyle = 'rgba(0,0,0,.08)'; x.fillRect(0, Y(HEM + 0.006), w, 2); x.fillRect(0, Y(HEM + 0.012), w, 1);
+  });
+}
+
+function masarTexture(cols) {
+  // قماش المصر: أرضية عاجية بنقش «بوته» كشميري (قطرة منحنية الطرف) متكرر بلونين، وحافة ملوّنة عند طرف اللفة الظاهر
+  const [base, a, b] = cols;
+  return canvasTex(1024, 512, (x, w, h) => {
+    fabricBase(x, w, h, base, 0.04);
+    let s = 5; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+    const boteh = (px, py, sz, ang, c1, c2) => {
+      x.save(); x.translate(px, py); x.rotate(ang);
+      const drop = (k) => { x.beginPath(); x.moveTo(0, -sz * 1.05 * k); x.bezierCurveTo(sz * 0.95 * k, -sz * 0.55 * k, sz * 0.75 * k, sz * 0.75 * k, 0, sz * 0.62 * k);
+        x.bezierCurveTo(-sz * 0.72 * k, sz * 0.62 * k, -sz * 0.62 * k, -sz * 0.15 * k, -sz * 0.08 * k, -sz * 0.42 * k); x.quadraticCurveTo(sz * 0.18 * k, -sz * 0.75 * k, 0, -sz * 1.05 * k); x.closePath(); };
+      x.fillStyle = c1; drop(1); x.fill();
+      x.fillStyle = base; drop(0.68); x.fill();
+      x.fillStyle = c2; drop(0.45); x.fill();
+      x.fillStyle = c1; for (let k = 0; k < 5; k++) { const t = k / 4; x.beginPath(); x.arc(-sz * 0.95 + t * sz * 0.2, sz * 0.9 - t * sz * 1.6, sz * 0.09, 0, TAU); x.fill(); }   // نقاط زخرفية جانبية
+      x.restore();
+    };
+    const rows = 6, cols2 = 12;
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols2; i++) {
+      const px = (i + (j % 2) * 0.5 + 0.25) * w / cols2, py = (j + 0.55) * h * 0.86 / rows;
+      const flip = (i + j) % 2 ? 1 : -1;
+      boteh(px, py, 17 + r() * 3, 0.5 * flip + (r() - 0.5) * 0.25, (i + 2 * j) % 3 ? b : a, (i + 2 * j) % 3 ? a : b);
+      // زهيرات صغيرة بين النقوش
+      x.fillStyle = a; x.beginPath(); x.arc(px + w / cols2 * 0.5, py + h * 0.86 / rows * 0.5, 3, 0, TAU); x.fill();
+    }
+    // خطوط «اللفة» الخفيفة المائلة (تُبرز أن القماش ملفوف طبقات)
+    x.strokeStyle = 'rgba(80,60,40,.10)'; x.lineWidth = 3;
+    for (let i = -h; i < w; i += 64) { x.beginPath(); x.moveTo(i, h * 0.88); x.lineTo(i + h * 0.9, 0); x.stroke(); }
+    // حافة الطرف الظاهر (شريط ملوّن مزدوج بحبيبات) عند الأسفل
+    x.fillStyle = a; x.fillRect(0, h * 0.895, w, h * 0.055); x.fillStyle = b; x.fillRect(0, h * 0.958, w, h * 0.022);
+    for (let i = 0; i < w; i += 14) { x.fillStyle = base; x.fillRect(i, h * 0.91, 6, h * 0.025); }
+  });
+}
+
+function buildMaleHeadAndCollar(ctx) {
+  const { SB, mainSuit, displaced, P, oc, mkSkinned, suit, wn, C, root } = ctx;
+  const bones = suit.skeleton.bones, bi = (n) => bones.findIndex((b) => b.name === n);
+  const headIdx = bi('head'), chestIdx = bi('spine01') >= 0 ? bi('spine01') : bi('spine02'), neckIdx = bi('neck01');
+  // معالم الرأس من الشبكة الفعلية (فضاء الهندسة: z للأعلى، الوجه −y)
+  const head = [];
+  for (let i = 0; i < SB.n; i++) if (SB.dom(i).group === 'head') head.push(SB.p(i));
+  const eyes = (() => { let m = null; root.traverse((o) => { if (o.isMesh && /high-poly/.test(o.name)) m = o; }); return m; })();
+  let eyeZ = 0, eyeY = 0;
+  if (eyes) { const p = eyes.geometry.attributes.position; for (let i = 0; i < p.count; i++) { eyeZ += p.getZ(i); eyeY += p.getY(i); } eyeZ /= p.count; eyeY /= p.count; }
+  const zTop = Math.max(...head.map((p) => p[2]));
+  const slice = (z, hw = 0.006) => { let x0 = 9, x1 = -9, y0 = 9, y1 = -9, n = 0; for (const p of head) if (Math.abs(p[2] - z) < hw) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); n++; } return n > 6 ? { cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, rx: (x1 - x0) / 2, ry: (y1 - y0) / 2 } : null; };
+  // ---- المَصَرّ ----
+  // الحافة السفلى مائلة: فوق منتصف الجبهة أمامًا، فوق الأذنين جانبًا، وعند مؤخرة الرأس خلفًا
+  // المصر يُلبس منخفضًا: يغطي أعلى الجبهة (نحو 3 سم فوق الحاجبين)، وأعلى الأذنين جانبًا، ومؤخرة الرأس خلفًا؛ ويعلو قمة الرأس بنحو 4–5 سم
+  const zFront = eyeZ + 0.028, zSide = eyeZ + 0.010, zBack = eyeZ - 0.022, zCap = zTop + 0.024;     // أخفض قليلًا: المصر ملفوف لا أسطوانة عالية
+  const NC = 120, NR = 26;
+  const ext = []; for (let z = zBack - 0.01; z <= zTop - 0.004; z += 0.004) { const e = slice(z); if (e) ext.push({ z, ...e }); }
+  for (let it = 0; it < 3; it++) for (let k = 1; k < ext.length - 1; k++) for (const key of ['cx', 'cy', 'rx', 'ry']) ext[k][key] = 0.25 * ext[k - 1][key] + 0.5 * ext[k][key] + 0.25 * ext[k + 1][key];
+  const extAt = (z) => { if (z <= ext[0].z) return ext[0]; for (let k = 1; k < ext.length; k++) if (z <= ext[k].z) { const a = ext[k - 1], b = ext[k], t = (z - a.z) / (b.z - a.z); return { cx: lerp(a.cx, b.cx, t), cy: lerp(a.cy, b.cy, t), rx: lerp(a.rx, b.rx, t), ry: lerp(a.ry, b.ry, t) }; } return ext[ext.length - 1]; };
+  // جوانب المصر شبه عمودية: لا يتبع انحناء الجمجمة نحو القمة (وإلا بدا قلنسوة صغيرة)، بل يحافظ على اتساعه ثم ينغلق بقبة مسطحة
+  { let mx = 0, my = 0; const zRef = zFront; for (const e of ext) if (e.z >= zBack && e.z <= zRef + 0.01) { mx = Math.max(mx, e.rx); my = Math.max(my, e.ry); }
+    for (const e of ext) if (e.z > zRef) { const k = 1 - 0.10 * smooth(zRef, zTop, e.z); e.rx = Math.max(e.rx, mx * k); e.ry = Math.max(e.ry, my * k); } }
+  const zLast = ext[ext.length - 1].z;
+  const SE = 2.3;
+  const verts = [], uvs = [], idx = [];
+  for (let j = 0; j <= NR; j++) {
+    const t = j / NR;
+    for (let c = 0; c <= NC; c++) {
+      const u = c / NC, a = u * TAU - Math.PI, s = Math.sin(a), co = -Math.cos(a);        // a=0 للأمام
+      const zb = co > 0 ? lerp(zSide, zFront, co) : lerp(zSide, zBack, -co);
+      // من الحافة إلى أعلى القماش ثم قبّة مسطّحة قليلًا
+      const tz = Math.min(1, t / 0.78), z = t <= 0.78 ? lerp(zb, zCap - 0.012, Math.pow(tz, 0.9)) : lerp(zCap - 0.012, zCap, Math.sin((t - 0.78) / 0.22 * Math.PI / 2));
+      const e = extAt(Math.min(z, zLast));
+      // سُمك اللف: يزداد من الحافة إلى منتصف الارتفاع ثم يقل نحو القمة، مع طبقات لفّ مائلة تتقاطع أمامًا (شكل V)
+      const bulk = 0.011 + 0.012 * smooth(0, 0.35, t) + 0.006 * Math.sin(Math.PI * t);     // أعرض في منتصف اللفة
+      const phase = t * 3.4 + Math.abs(a) / Math.PI * 1.9, layer = 1 - (phase - Math.floor(phase));
+      const fold = 0.0075 * Math.pow(layer, 1.6) * (t < 0.8 ? 1 : smooth(0.95, 0.8, t));     // حواف طبقات اللف المائلة
+      const capK = t <= 0.72 ? 1 : Math.pow(Math.cos((t - 0.72) / 0.28 * Math.PI / 2), 0.7) * 0.97 + 0.03;     // حافة علوية مستديرة (قماش ملفوف) ثم قمة شبه مسطحة
+      const k = Math.pow(Math.pow(Math.abs(s), SE) + Math.pow(Math.abs(co), SE), -1 / SE);
+      const rx = (e.rx + bulk + fold) * capK, ry = (e.ry + bulk + fold) * capK;
+      verts.push([e.cx + rx * k * s, e.cy - ry * k * co, z]);
+      uvs.push([u * 3, t]);
+    }
+  }
+  for (let j = 0; j < NR; j++) for (let c = 0; c < NC; c++) { const a = j * (NC + 1) + c, b = a + 1, d = a + NC + 1, e = d + 1; idxs3(idx, a, b, d, e); }
+  const apex = verts.length; verts.push([extAt(zLast).cx, extAt(zLast).cy, zCap + 0.002]); uvs.push([0.5, 1]);
+  for (let c = 0; c < NC; c++) idx.push(NR * (NC + 1) + c, apex, NR * (NC + 1) + c + 1);
+  const rigid = (boneIndex) => (v) => [boneIndex, 0, 0, 0, 1, 0, 0, 0];
+  const masarGeo = flatGeo(verts, uvs, idx, rigid(headIdx), (p) => { const e = extAt(Math.min(p[2], zLast)); return [p[0] - e.cx, p[1] - e.cy, p[2] > zLast ? (p[2] - zLast) * 1.4 : 0]; });
+  const cols = oc.masar || ['#ece3cf', '#8b2d3a', '#2f6170'];
+  const masarMat = new THREE.MeshPhysicalMaterial({ map: masarTexture(cols), roughness: 0.74, side: THREE.DoubleSide, normalMap: wn, normalScale: new THREE.Vector2(0.25, 0.25), sheen: 0.25, sheenRoughness: 0.6, sheenColor: new THREE.Color(0xfff4e0) });
+  const masar = mkSkinned(masarGeo, masarMat, 'Outfit_masar');
+  // ---- طوق الرقبة ----
+  // أعلى نقاط الدشداشة حول الرقبة = حافة فتحتها؛ حلقة قماش رفيعة تغطيها حتى لا يظهر أي فراغ بين الجلد والثوب
+  // الطوق عند قاعدة الرقبة ومائل كفتحة الدشداشة: أعلى خلفًا وأخفض أمامًا (وإلا ارتفع مع القماش على الرقبة واصطدم بالكمان ومسند الذقن)
+  const zCollarMax = ctx.collarZ;
+  const top = [];
+  const seen = new Set();
+  if (ctx.collarEdge && ctx.collarEdge.length > 20) top.push(...ctx.collarEdge.map((q) => [q[0], q[1], q[2] - 0.003]));     // مركز الطوق تحت حافة القصّ بقليل: يغطيها ولا يرتفع على الرقبة
+  else for (const tr of mainSuit) for (const i of tr.idx) { const key = tr.src.mesh.id + ':' + i; if (seen.has(key)) continue; seen.add(key); const p = displaced(tr.src, i); if (p[2] > 1.05 && p[2] < zCollarMax(p) && Math.abs(p[0]) < 0.11) top.push(p); }
+  const neck = P.neck, NA = 72, ring = [];
+  for (let c = 0; c < NA; c++) {
+    const a = c / NA * TAU, dx = Math.sin(a), dy = -Math.cos(a);
+    let best = null;
+    for (const p of top) { const vx = p[0] - neck[0], vy = p[1] - neck[1], L = Math.hypot(vx, vy) || 1; if ((vx * dx + vy * dy) / L < 0.985) continue; if (!best || p[2] > best[2]) best = p; }
+    ring.push(best);
+  }
+  for (let c = 0; c < NA; c++) if (!ring[c]) { for (let k = 1; k < NA; k++) { const q = ring[(c + k) % NA] || ring[(c - k + NA) % NA]; if (q) { ring[c] = q; break; } } }
+  const smoothRing = ring.map((p, c) => { const q = [0, 0, 0]; for (let k = -3; k <= 3; k++) { const r = ring[(c + k + NA) % NA]; q[0] += r[0]; q[1] += r[1]; q[2] += r[2]; } return q.map((v) => v / 7); });
+  const cv = [], cu = [], ci = [], RW = 0.0045, TH = 0.004;
+  for (let c = 0; c <= NA; c++) {
+    const p = smoothRing[c % NA], o = [p[0] - neck[0], p[1] - neck[1]], L = Math.hypot(o[0], o[1]) || 1, n = [o[0] / L, o[1] / L];
+    for (const [dz, dr] of [[-RW, 0], [-RW, TH], [RW, TH], [RW, 0]]) { cv.push([p[0] + n[0] * (dr + 0.002), p[1] + n[1] * (dr + 0.002), p[2] + dz]); cu.push([c / NA * 4, dz > 0 ? 1 : 0]); }
+  }
+  for (let c = 0; c < NA; c++) for (let k = 0; k < 3; k++) { const a = c * 4 + k, b = a + 1, d = a + 4, e = d + 1; idxs3(ci, a, b, d, e); }
+  const collarGeo = flatGeo(cv, cu, ci, (p) => [neckIdx >= 0 ? neckIdx : chestIdx, chestIdx, 0, 0, 0.35, 0.65, 0, 0], (p) => [p[0] - neck[0], p[1] - neck[1], 0]);
+  const collarTex = canvasTex(256, 32, (x, w, h) => { fabricBase(x, w, h, C.dish, 0.03); x.fillStyle = C.gold; x.fillRect(0, h * 0.4, w, h * 0.2); }, true);
+  const collar = mkSkinned(collarGeo, new THREE.MeshPhysicalMaterial({ map: collarTex, roughness: 0.75, normalMap: wn, normalScale: new THREE.Vector2(0.2, 0.2) }), 'Outfit_collar');
+  // ---- الفراخة (الكشكوشة): حبل قصير معطّر يتدلّى من الطوق أمامًا، ينتهي بشرّابة ----
+  const front = smoothRing[0];
+  const surfY = (x, z) => { let best = null; for (const tr of mainSuit) for (const i of tr.idx) { const p = displaced(tr.src, i); if (Math.abs(p[0] - x) < 0.01 && Math.abs(p[2] - z) < 0.01 && (!best || p[1] < best)) best = p[1]; } return best; };
+  const path = []; const LEN = 0.12, NS = 14, TX = -0.014;        // الفراخة: أقصر، تتدلى يمين فتحة الصدر (كما في الدشداشة العمانية)
+  for (let k = 0; k <= NS; k++) { const z = front[2] - 0.004 - LEN * k / NS, y = surfY(TX, z); path.push([TX, (y ?? front[1]) - 0.0045, z]); }
+  const tv = [], tu = [], ti = [], RAD = 0.0022, NSEG = 8;
+  for (let k = 0; k <= NS; k++) {
+    const p = path[k], tail = k > NS - 3 ? 1 + (k - (NS - 3)) * 0.9 : 1;      // تنتفخ في آخرها كشرّابة
+    for (let m = 0; m <= NSEG; m++) { const a = m / NSEG * TAU; tv.push([p[0] + Math.cos(a) * RAD * tail, p[1] + Math.sin(a) * RAD * tail * 0.8, p[2]]); tu.push([m / NSEG, k / NS]); }
+  }
+  for (let k = 0; k < NS; k++) for (let m = 0; m < NSEG; m++) { const a = k * (NSEG + 1) + m, b = a + 1, d = a + NSEG + 1, e = d + 1; idxs3(ti, a, b, d, e); }
+  const last = path[NS], tipI = tv.length; tv.push([last[0], last[1], last[2] - 0.006]); tu.push([0.5, 1]);
+  for (let m = 0; m < NSEG; m++) ti.push(NS * (NSEG + 1) + m, NS * (NSEG + 1) + m + 1, tipI);
+  const tasselGeo = flatGeo(tv, tu, ti, () => [chestIdx, 0, 0, 0, 1, 0, 0, 0], (p) => { const q = path.reduce((b, c) => (Math.abs(c[2] - p[2]) < Math.abs(b[2] - p[2]) ? c : b)); return [p[0] - q[0], p[1] - q[1], 0]; });
+  const tassel = mkSkinned(tasselGeo, new THREE.MeshPhysicalMaterial({ color: new THREE.Color(oc.tassel || '#e9e2d2'), roughness: 0.7, sheen: 0.3, sheenColor: new THREE.Color(0xffffff) }), 'Outfit_farukha');
+  // الشعر الطويل والرموش الأنثوية تُعالج في مكان آخر؛ المصر يغطي الشعر
+  masar.userData.landmarks = { eyeZ, eyeY, zTop, zFront, zSide, zBack };
+  return [masar, collar, tassel];
+}
+// قصّ شبكة غير مفهرسة عند السطح f(p)=0 مع إبقاء الجزء f≤0. الرؤوس الجديدة على الحافة تُستوفى خطيًا (الموضع، UV، الأنماط، الأوزان)،
+// وتأخذ مؤشرات العظام من الرأس الداخلي. يعيد نقاط الحافة الجديدة.
+function clipAbove(geo, f) {
+  const A = geo.attributes, names = ['position', 'uv', 'normal', 'skinIndex', 'skinWeight'].filter((k) => A[k]);
+  const src = Object.fromEntries(names.map((k) => [k, { a: A[k].array, s: A[k].itemSize }]));
+  const out = Object.fromEntries(names.map((k) => [k, []]));
+  const edge = [], n = A.position.count;
+  const get = (k, i) => Array.from(src[k].a.subarray(i * src[k].s, (i + 1) * src[k].s));
+  const vtx = (i) => Object.fromEntries(names.map((k) => [k, get(k, i)]));
+  const mix = (a, b, t) => { const o = {}; for (const k of names) o[k] = k === 'skinIndex' ? a[k].slice() : a[k].map((v, j) => v + (b[k][j] - v) * t); return o; };
+  const push = (v) => { for (const k of names) out[k].push(...v[k]); };
+  for (let t = 0; t < n; t += 3) {
+    const V = [vtx(t), vtx(t + 1), vtx(t + 2)], F = V.map((v) => f(v.position));
+    const ins = F.map((x) => x <= 0), ni = ins.filter(Boolean).length;
+    if (ni === 3) { V.forEach(push); continue; }
+    if (ni === 0) continue;
+    const poly = [];
+    for (let k = 0; k < 3; k++) {
+      const a = V[k], b = V[(k + 1) % 3], fa = F[k], fb = F[(k + 1) % 3];
+      if (fa <= 0) poly.push(a);
+      if ((fa <= 0) !== (fb <= 0)) { const tt = fa / (fa - fb), m = mix(fa <= 0 ? a : b, fa <= 0 ? b : a, fa <= 0 ? tt : 1 - tt); poly.push(m); edge.push(m.position); }
+    }
+    for (let k = 1; k + 1 < poly.length; k++) { push(poly[0]); push(poly[k]); push(poly[k + 1]); }
+  }
+  for (const k of names) { const C = src[k].a.constructor; geo.setAttribute(k, new THREE.BufferAttribute(new C(out[k]), src[k].s)); }
+  return edge;
+}
+
+function idxs3(arr, a, b, d, e) { arr.push(a, d, b, b, d, e); }
+// هندسة غير مفهرسة من رؤوس/مؤشرات + أوزان (دالة لكل رأس تعيد [i0..i3, w0..w3]) + أنماط ناعمة نحو «الخارج»
+function flatGeo(verts, uvs, idx, weightsFn, outwardFn) {
+  const n = idx.length, P3 = new Float32Array(n * 3), U2 = new Float32Array(n * 2), SI = new Uint16Array(n * 4), SW = new Float32Array(n * 4);
+  idx.forEach((vi, o) => {
+    const p = verts[vi], w = weightsFn(p);
+    P3.set(p, o * 3); U2.set(uvs[vi], o * 2); SI.set(w.slice(0, 4), o * 4); SW.set(w.slice(4, 8), o * 4);
+  });
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(P3, 3)); g.setAttribute('uv', new THREE.BufferAttribute(U2, 2));
+  g.setAttribute('skinIndex', new THREE.BufferAttribute(SI, 4)); g.setAttribute('skinWeight', new THREE.BufferAttribute(SW, 4));
+  g.setAttribute('normal', new THREE.BufferAttribute(smoothNormals(P3, outwardFn), 3));
+  return g;
+}
+
+// =====================================================================
+//  ثوب العازف بين الساقين: الدشداشة ثوب واحد يتدلّى من الركبتين، لا بنطال. القماش المنفوخ حول كل ساق وحده يجعل
+//  الساقين تبدوان كسروال منفصل حين يجلس العازف ويباعد ركبتيه، فنضيف لوحًا من القماش نفسه بين الساقين من أعلى الفخذ
+//  إلى الذيل، حافتاه على الجهة الأمامية الداخلية لكل ساق وأوزانه ممزوجة بين الساقين، فيتمدد بين الركبتين ويتدلى بين الساقين.
+// =====================================================================
+function buildRobeDrape(ctx) {
+  const { SS, mainSuit, displaced, chains, HEM, onChain, mkSkinned, mat, HT } = ctx;
+  const L = chains.legL, R = chains.legR; if (!L || !R) return null;
+  // نقاط القماش المنفوخ حول الساقين (من البنطال)
+  const pts = []; const seen = new Set();
+  for (const tr of mainSuit) for (const i of tr.idx) { if (tr.src !== SS) continue; const key = i; if (seen.has(key)) continue; seen.add(key); const p = displaced(SS, i); if (p[2] < 0.80) pts.push({ p, i }); }
+  const front = [0, -1, 0];
+  const NR = 30, NC = 10, s0 = 0.12, s1 = 2.0;       // يبدأ قرب أعلى الفخذ فيغطي الحِجر (لا يظهر شكل الحوض بين الفخذين)
+  const at = (ch, s) => { const k = Math.min(ch.length - 2, Math.floor(s)), t = s - k, a = ch[k], b = ch[k + 1]; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; };
+  const edge = (ch, other, s) => {
+    const c = at(ch, s), o = at(other, s);
+    let d = [o[0] - c[0], 0, o[2] - c[2]]; const l = Math.hypot(d[0], d[2]) || 1; d = [d[0] / l, 0, d[2] / l];
+    const dir = [d[0] * 0.55 + front[0] * 0.83, d[1] * 0.55 + front[1] * 0.83, d[2] * 0.55 + front[2] * 0.83];
+    // نصف قطر القماش في هذا الاتجاه: أبعد نقطة قريبة من المقطع
+    let r = 0.04, best = null;
+    for (const q of pts) { const dz = Math.abs(q.p[2] - c[2]); if (dz > 0.012) continue; const v = [q.p[0] - c[0], q.p[1] - c[1], 0]; const vl = Math.hypot(v[0], v[1]); if (!vl) continue; const cs = (v[0] * dir[0] + v[1] * dir[1]) / (vl * Math.hypot(dir[0], dir[1])); if (cs > 0.9 && vl < 0.11 && (!best || vl > best.vl)) best = { vl, q }; }
+    if (best) r = best.vl;
+    const dn = Math.hypot(dir[0], dir[1]);
+    const p = [c[0] + dir[0] / dn * r * 0.84, c[1] + dir[1] / dn * r * 0.84, c[2]];
+    let nb = best ? best.q : null;
+    if (!nb) { let bd = 1e9; for (const q of pts) { const dd = (q.p[0] - p[0]) ** 2 + (q.p[1] - p[1]) ** 2 + (q.p[2] - p[2]) ** 2; if (dd < bd) { bd = dd; nb = q; } } }
+    return { p, w: nb };
+  };
+  const V = [], U = [], SI = [], SW = [];
+  const rows = [];
+  for (let j = 0; j <= NR; j++) {
+    const s = s0 + (s1 - s0) * j / NR, a = edge(L, R, s), b = edge(R, L, s);
+    if (a.p[2] < HEM - 0.005 || b.p[2] < HEM - 0.005) break;
+    rows.push([a, b]);
+  }
+  const wOf = (q) => { const o = []; for (let k = 0; k < 4; k++) { const w = SS.sw.array[q.i * 4 + k]; if (w > 0) o.push([SS.si.array[q.i * 4 + k], w]); } return o; };
+  rows.forEach(([a, b], j) => {
+    for (let c = 0; c <= NC; c++) {
+      const u = c / NC, sag = Math.sin(Math.PI * u) * 0.006;           // انتفاخ خفيف للأمام في الوسط
+      V.push([a.p[0] + (b.p[0] - a.p[0]) * u, a.p[1] + (b.p[1] - a.p[1]) * u - sag, a.p[2] + (b.p[2] - a.p[2]) * u]);
+      U.push([0.5 + (u - 0.5) * 0.05, Math.min(1, V[V.length - 1][2] / HT)]);
+      const m = new Map(); for (const [bi, w] of wOf(a.w)) m.set(bi, (m.get(bi) || 0) + w * (1 - u)); for (const [bi, w] of wOf(b.w)) m.set(bi, (m.get(bi) || 0) + w * u);
+      const top = [...m.entries()].sort((x, y) => y[1] - x[1]).slice(0, 4), tot = top.reduce((x, y) => x + y[1], 0) || 1;
+      SI.push([0, 1, 2, 3].map((k) => (top[k] ? top[k][0] : 0))); SW.push([0, 1, 2, 3].map((k) => (top[k] ? top[k][1] / tot : 0)));
+    }
+  });
+  if (rows.length < 3) return null;
+  const idx = []; for (let j = 0; j < rows.length - 1; j++) for (let c = 0; c < NC; c++) { const a = j * (NC + 1) + c, b = a + 1, d = a + NC + 1, e = d + 1; idx.push(a, d, b, b, d, e); }
+  const n = idx.length, P3 = new Float32Array(n * 3), U2 = new Float32Array(n * 2), S4 = new Uint16Array(n * 4), W4 = new Float32Array(n * 4);
+  idx.forEach((vi, o) => { P3.set(V[vi], o * 3); U2.set(U[vi], o * 2); S4.set(SI[vi], o * 4); W4.set(SW[vi], o * 4); });
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(P3, 3)); g.setAttribute('uv', new THREE.BufferAttribute(U2, 2));
+  g.setAttribute('skinIndex', new THREE.BufferAttribute(S4, 4)); g.setAttribute('skinWeight', new THREE.BufferAttribute(W4, 4));
+  g.setAttribute('normal', new THREE.BufferAttribute(smoothNormals(P3, () => [0, -1, 0]), 3));
+  const m2 = mat.clone(); m2.side = THREE.DoubleSide;
+  return mkSkinned(g, m2, 'Outfit_robe_drape');
 }

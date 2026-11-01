@@ -40,6 +40,14 @@ export class Accordionist extends SeatedPlayer {
     this.pose({ w: this.acc.getWidth(), R: this.rightState, L: this.leftState });
   }
 
+  /** عند تبديل الشخصية: تُعاد الآلة إلى صدر هذه الشخصية وفخذيها، وتُعاد الأحزمة إلى كتفيها، ثم تُحدَّث الوضعية فورًا */
+  activate() {
+    if (this.accPlace) { this.acc.root.position.copy(this.accPlace.p); this.acc.root.quaternion.copy(this.accPlace.q); this.acc.root.updateMatrixWorld(true); }
+    else this.placeAccordion();
+    this.buildStraps();
+    this.pose({ w: this.acc.getWidth(), R: this.rightState, L: this.leftState });
+  }
+
   // ---------- مساحة الجسم: أعلى سطح للجسم في منطقة (x,y,z) ----------
   surfaceExtent(pred, axis, sign = 1, step = 5) {
     const rig = this.rig, p = new THREE.Vector3(); let best = sign > 0 ? -Infinity : Infinity;
@@ -66,6 +74,7 @@ export class Accordionist extends SeatedPlayer {
     acc.root.rotation.set(-tilt, 0, 0);
     acc.root.updateMatrixWorld(true);
     this.accOrigin = acc.root.position.clone();
+    this.accPlace = { p: acc.root.position.clone(), q: acc.root.quaternion.clone() };      // يُستعاد كما هو عند العودة إلى هذه الشخصية
   }
 
   // تحويل نقطة محلية في الآلة إلى العالم
@@ -152,7 +161,7 @@ export class Accordionist extends SeatedPlayer {
       for (let d = 0; d < 5; d++) {
         const pr = st.digits[d], h = hover(d);
         if (pr && acc.keys[pr.keyId]) {
-          const k = acc.keys[pr.keyId], tp = this.keySurface(k, d === 0 ? 0.0035 : 0);
+          const k = acc.keys[pr.keyId], tp = this.keySurface(k, d === 0 ? (k.black ? 0.006 : 0.0035) : 0);
           tgt.push(pr.lift > 0 ? tp.lerp(h, clamp(pr.lift, 0, 1)) : tp);
         } else tgt.push(h);
       }

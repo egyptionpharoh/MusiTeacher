@@ -29,3 +29,16 @@ select,input[type=range]{width:100%;font:inherit;background:#2b231c;color:var(--
 .airbar{height:7px;background:#2b231c;border-radius:6px;overflow:hidden}.airbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6bd0ff,#ffc83a)}.dirtxt{font-weight:700}
 .modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55);z-index:40}.card{background:#2b231c;border:1px solid #5a4a3a;border-radius:14px;padding:18px;max-width:480px;line-height:1.8;direction:rtl;font-size:14px}
 @media(max-width:760px){#side{top:auto;left:8px;right:8px;width:auto;max-width:none;height:44vh;transform:translateY(120%)}#side.open{transform:none}body.panel-open #side-toggle{right:8px;top:auto;bottom:calc(44vh + 14px)}#side-toggle{top:auto;bottom:12px}#bellows-box{bottom:auto;top:112px;width:132px;left:8px;padding:5px;font-size:11px}#bellows-box .small,#bel-slider{display:none}.brand{display:none}#topbar{padding:4px 6px}.tab{padding:5px 8px;font-size:13px}}
+
+/* زر شخصية العازف: صغير بجانب أدوات الكاميرا */
+/* زر «استبدال العازف»: بارز ثلاثي الأبعاد مع تأثير ضغط */
+.ibtn.perf-btn{white-space:nowrap;padding:5px 12px 6px;font-weight:700;color:#2a1a08;border:1px solid #f6d48a;border-radius:10px;
+  background:linear-gradient(180deg,#ffe3a1 0%,#e9b85a 55%,#cf9431 100%);
+  box-shadow:0 4px 0 #8a5a17,0 6px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.65);
+  text-shadow:0 1px 0 rgba(255,255,255,.45);transform:translateY(-2px);transition:transform .08s ease,box-shadow .08s ease,filter .12s}
+.ibtn.perf-btn:hover{filter:brightness(1.06)}
+.ibtn.perf-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.ibtn.perf-btn:active{transform:translateY(2px);box-shadow:0 0 0 #8a5a17,0 1px 3px rgba(0,0,0,.45),inset 0 2px 4px rgba(0,0,0,.25)}
+.ibtn.perf-btn.busy,.ibtn.perf-btn:disabled{opacity:.8;cursor:progress;transform:translateY(1px);box-shadow:0 1px 0 #8a5a17,0 2px 4px rgba(0,0,0,.4)}
+@media (max-width:760px){.ibtn.perf-btn{padding:4px 8px 5px;font-size:12px}}
+@media (max-width:480px){.ibtn.perf-btn{white-space:normal;width:66px;line-height:1.15;font-size:11px;padding:3px 4px 4px}}

@@ -14,7 +14,7 @@ function skin(hex, rough = 0.6) {
 
 // كرتا العينين: قزحية خضراء بنقش شعاعي وحلقة داكنة وبؤبؤ، تُرسم لكل بكسل (لا لكل رأس) فيخرج البؤبؤ دائريًا ناعمًا
 // رغم قلة رؤوس الشبكة. الاتجاه عن مركز كل كرة يُحسب مرة واحدة ويُحمل كسمة رأس، فيدور مع العين حين تدور عظمتها.
-function paintEyes(mesh) {
+function paintEyes(mesh, brown = false) {
   const g = mesh.geometry, pos = g.attributes.position, n = pos.count;
   const cent = { L: [0, 0, 0, 0], R: [0, 0, 0, 0] };
   for (let i = 0; i < n; i++) { const k = pos.getX(i) > 0 ? 'L' : 'R', c = cent[k]; c[0] += pos.getX(i); c[1] += pos.getY(i); c[2] += pos.getZ(i); c[3]++; }
@@ -26,7 +26,9 @@ function paintEyes(mesh) {
     const l = Math.hypot(dx, dy, dz) || 1; dir[i * 3] = dx / l; dir[i * 3 + 1] = dy / l; dir[i * 3 + 2] = dz / l;   // النظر للأمام = −y في فضاء الهندسة (Z للأعلى)
   }
   g.setAttribute('eyeDir', new THREE.BufferAttribute(dir, 3));
-  const m = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.03 });
+  // العازف: لمعان أهدأ (القرنية اللامعة جدًا مع قزحية فاتحة كانت تجعل النظرة زجاجية مصطنعة)
+  const m = brown ? new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.22, clearcoat: 0.55, clearcoatRoughness: 0.12 })
+    : new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.03 });
   m.onBeforeCompile = (sh) => {
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute vec3 eyeDir;\nvarying vec3 vEyeDir;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvEyeDir = eyeDir;');
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>
@@ -36,13 +38,13 @@ float eh(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }`
   vec3 d = normalize(vEyeDir);
   float ang = acos(clamp(-d.y, -1.0, 1.0));
   float az = atan(d.x, d.z);
-  vec3 white = vec3(0.93, 0.90, 0.87), vein = vec3(0.89, 0.78, 0.75);
-  vec3 iin = vec3(0.20, 0.36, 0.16), iout = vec3(0.03, 0.17, 0.10), gold = vec3(0.34, 0.30, 0.12);
+  vec3 white = ${brown ? 'vec3(0.80, 0.76, 0.71), vein = vec3(0.78, 0.66, 0.61)' : 'vec3(0.93, 0.90, 0.87), vein = vec3(0.89, 0.78, 0.75)'};
+  vec3 iin = ${brown ? 'vec3(0.17, 0.095, 0.045), iout = vec3(0.045, 0.024, 0.012), gold = vec3(0.24, 0.15, 0.065)' : 'vec3(0.20, 0.36, 0.16), iout = vec3(0.03, 0.17, 0.10), gold = vec3(0.34, 0.30, 0.12)'};
   float t = clamp((ang - 0.15) / 0.40, 0.0, 1.0);
   float streak = 0.5 + 0.5 * sin(az * 17.0 + sin(az * 5.0) * 1.5);
   float fine = eh(vec2(floor(az * 40.0), floor(ang * 30.0)));
   vec3 iris = mix(iin, iout, smoothstep(0.0, 1.0, t));
-  iris = mix(iris, gold, (1.0 - t) * 0.55 * streak);               // حلقة عسلية حول البؤبؤ تضيف عمقًا
+  iris = mix(iris, gold, (1.0 - t) * ${brown ? '0.32' : '0.55'} * streak);               // حلقة عسلية حول البؤبؤ تضيف عمقًا
   iris *= 0.82 + 0.3 * streak * 0.6 + 0.08 * fine;
   iris = mix(iris, vec3(0.02, 0.05, 0.05), smoothstep(0.46, 0.57, ang) * 0.85);   // حلقة الحافة الداكنة
   vec3 sclera = mix(white, vein, clamp((ang - 0.58) * 1.0, 0.0, 0.55));
@@ -51,14 +53,14 @@ float eh(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }`
   diffuseColor.rgb = c;
 }`);
   };
-  m.customProgramCacheKey = () => 'eyeIris';
+  m.customProgramCacheKey = () => 'eyeIris' + (brown ? 'B' : '');
   mesh.material = m;
 }
 
 export function applyMaterials(root, cfg = {}) {
   const log = [];
   let lashMesh = null, eyeMesh = null, browMesh = null, skinMesh = null;
-  const tone = (cfg.skinTone || '#d09f82');
+  const male = cfg.gender === 'male', tone = (cfg.skinTone || (male ? '#bd8664' : '#d09f82'));   // العازف: سمرة خليجية دافئة
   root.traverse((o) => {
     if (!o.isMesh) return;
     const n = o.name;
@@ -66,7 +68,7 @@ export function applyMaterials(root, cfg = {}) {
       const slots = (Array.isArray(o.material) ? o.material : [o.material]).map((m) => m.name);
       o.material = slots.map((nm) => {
         if (/nipple|genitals/.test(nm)) { const m = skin(tone); m.visible = false; return m; }     // لا يُرسم أبدًا
-        if (/lips/.test(nm)) return skin('#b2625d', 0.42);
+        if (/lips/.test(nm)) return male ? skin('#97594d', 0.6) : skin('#b2625d', 0.42);
         if (/fingernails|toenails/.test(nm)) return skin('#e0b3a0', 0.3);
         return skin(tone);
       });
@@ -75,11 +77,11 @@ export function applyMaterials(root, cfg = {}) {
     else if (/eyelashes/.test(n)) { o.material = new THREE.MeshStandardMaterial({ color: col('#140e0c'), roughness: 0.5, side: THREE.DoubleSide }); lashMesh = o; }
     else if (/teeth/.test(n)) { o.material = new THREE.MeshStandardMaterial({ color: col('#e9e2d4'), roughness: 0.35 }); }
     else if (/tongue/.test(n)) { o.material = new THREE.MeshStandardMaterial({ color: col('#b0605f'), roughness: 0.5 }); }
-    else if (/high-poly/.test(n)) { paintEyes(o); eyeMesh = o; log.push('eyes'); }
+    else if (/high-poly/.test(n)) { paintEyes(o, male); eyeMesh = o; log.push('eyes'); }
     else if (/shoes/.test(n)) { o.material = new THREE.MeshStandardMaterial({ color: col('#2b201c'), roughness: 0.5 }); }
   });
-  if (lashMesh && eyeMesh) log.push('lashes:' + rebuildLashes(lashMesh, eyeMesh));
-  if (browMesh) log.push('brows:' + rebuildBrows(browMesh, skinMesh));
+  if (lashMesh && eyeMesh) log.push('lashes:' + rebuildLashes(lashMesh, eyeMesh, 7, male ? { per: 3, len: 0.62 } : undefined));
+  if (browMesh) log.push('brows:' + rebuildBrows(browMesh, skinMesh, 11, male ? { hairs: 760, width: 1.45, len: 1.15, band: 1.3 } : undefined));
   return log;
 }
 
@@ -106,7 +108,7 @@ function trimLowerLashes(lash, eyes) {
 // وسُمكه عند كل نقطة وسطحه (الإحداثيات والعمودي)، ثم نزرع عليه شعيرات رفيعة بكثافة منتظمة وباتجاه طبيعي
 // (نحو الصدغ، مع ميل للأعلى عند جهة الأنف، والشعيرات العليا تميل للأسفل والسفلى للأعلى فتلتقي في المنتصف).
 // الأوزان من أقرب مثلث أصلي (الحاجب مثبّت بالرأس)، فيتحرك معه.
-function rebuildBrows(brow, skin, seed = 11) {
+function rebuildBrows(brow, skin, seed = 11, mk = {}) {
   const g = brow.geometry, pos = g.attributes.position, si = g.attributes.skinIndex, sw = g.attributes.skinWeight;
   let rs = seed; const rnd = () => (rs = (rs * 16807) % 2147483647) / 2147483647;
   const nrm = (v) => { const l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
@@ -130,7 +132,7 @@ function rebuildBrows(brow, skin, seed = 11) {
       const b = bins[Math.min(nb - 1, Math.floor((ax[i] - x0) / (x1 - x0 + 1e-9) * nb))];
       b.y += q.c[1]; b.z += q.c[2]; b.k++; b.n = [b.n[0] + q.n[0], b.n[1] + q.n[1], b.n[2] + q.n[2]]; b.zmin = Math.min(b.zmin, q.c[2]); b.zmax = Math.max(b.zmax, q.c[2]);
     });
-    const fill = bins.map((b) => (b.k ? { y: b.y / b.k, z: b.z / b.k, n: nrm(b.n), h: Math.max(0.0012, Math.min(0.0045, (b.zmax - b.zmin) / 2 + 0.0008)) } : null));
+    const fill = bins.map((b) => (b.k ? { y: b.y / b.k, z: b.z / b.k, n: nrm(b.n), h: Math.max(0.0012, Math.min(0.0045, (b.zmax - b.zmin) / 2 + 0.0008)) * (mk.band || 1) } : null));
     for (let i = 0; i < nb; i++) if (!fill[i]) { const a = fill.slice(0, i).reverse().find(Boolean) || fill.find(Boolean), b = fill.slice(i).find(Boolean) || a; fill[i] = { y: (a.y + b.y) / 2, z: (a.z + b.z) / 2, n: nrm([a.n[0] + b.n[0], a.n[1] + b.n[1], a.n[2] + b.n[2]]), h: (a.h + b.h) / 2 }; }
     const sm = fill.map((v, i) => { const a = fill[Math.max(0, i - 1)], c = fill[Math.min(nb - 1, i + 1)], w = (f) => (a[f] + 2 * v[f] + c[f]) / 4; return { y: w('y'), z: w('z'), h: w('h'), n: nrm([w0(a, v, c, 0), w0(a, v, c, 1), w0(a, v, c, 2)]) }; });
     function w0(a, v, c, k) { return (a.n[k] + 2 * v.n[k] + c.n[k]) / 4; }
@@ -162,7 +164,7 @@ function rebuildBrows(brow, skin, seed = 11) {
   let hairs = 0, missed = 0;
   const srcTri = (side, x, z) => { let best = null, bd = 1e9; for (const q of tri) { if (q.side !== side) continue; const d = (Math.abs(q.c[0]) - x) ** 2 + (q.c[2] - z) ** 2; if (d < bd) { bd = d; best = q; } } return best; };
   for (const side of ['L', 'R']) {
-    const cv = curve[side], sgn = side === 'L' ? 1 : -1, nh = 520;
+    const cv = curve[side], sgn = side === 'L' ? 1 : -1, nh = mk.hairs || 520;
     for (let hIdx = 0; hIdx < nh; hIdx++) {
       const t = Math.pow(rnd(), 0.9) * 0.985, f = t * cv.nb - 0.5, i0 = Math.max(0, Math.min(cv.nb - 2, Math.floor(f))), a = cv.b[i0], b = cv.b[i0 + 1], w = Math.max(0, Math.min(1, f - i0));
       const zc = a.z + (b.z - a.z) * w, yc = a.y + (b.y - a.y) * w, hh = (a.h + (b.h - a.h) * w) * (0.55 + 0.45 * Math.sin(Math.PI * Math.min(1, 0.25 + t * 0.9)));
@@ -178,7 +180,7 @@ function rebuildBrows(brow, skin, seed = 11) {
       let d = nrm([sgn * 1, 0, slope + up + spread]);
       const dt = d[0] * nn[0] + d[1] * nn[1] + d[2] * nn[2]; d = nrm([d[0] - nn[0] * dt, d[1] - nn[1] * dt, d[2] - nn[2] * dt]);
       const tang = nrm(crs(nn, d)), lean = (rnd() - 0.5) * 0.10;
-      const L = (0.0050 + 0.0030 * rnd()) * (1 - 0.35 * t), w0h = 0.00034 * (0.8 + 0.4 * rnd()) * (1 - 0.3 * t);
+      const L = (0.0050 + 0.0030 * rnd()) * (1 - 0.35 * t) * (mk.len || 1), w0h = 0.00034 * (0.8 + 0.4 * rnd()) * (1 - 0.3 * t) * (mk.width || 1);
       const shade = 0.85 + 0.35 * rnd();
       let cur = root; const pts = [cur];
       for (let k = 1; k <= NS; k++) {
@@ -212,7 +214,7 @@ function rebuildBrows(brow, skin, seed = 11) {
 // أهداب MakeHuman الأصلية بطاقات صغيرة مصمتة (96 علوية و88 سفلية بلا قوام شفاف)، فتظهر خط كحل أسود عريضًا لا رموشًا.
 // نستعمل مواضع البطاقات كجذور فقط، ونولّد منها رموشًا رفيعة منحنية مدببة الطرف (علوية أطول وأكثف عند الطرف الخارجي للعين، سفلية قصيرة قليلة)،
 // ونحافظ على أوزان الهيكل العظمي من أقرب رأس أصلي، حتى تتبع الجفن في الرمش (Face._prepLids يحسبها من المواضع).
-function rebuildLashes(lash, eyes, seed = 7) {
+function rebuildLashes(lash, eyes, seed = 7, mk = {}) {
   const g = lash.geometry, pos = g.attributes.position, si = g.attributes.skinIndex, sw = g.attributes.skinWeight;
   const ep = eyes.geometry.attributes.position, cg = { L: [0, 0, 0, 0], R: [0, 0, 0, 0] };
   for (let i = 0; i < ep.count; i++) { const c = cg[ep.getX(i) > 0 ? 'L' : 'R']; c[0] += ep.getX(i); c[1] += ep.getY(i); c[2] += ep.getZ(i); c[3]++; }
@@ -236,11 +238,11 @@ function rebuildLashes(lash, eyes, seed = 7) {
     // الاتجاه الشعاعي يتحول إلى «لأعلى/لأسفل» أكثر منه جانبيًا (الرموش الحقيقية تتجه للأمام والأعلى حتى عند الزوايا، لا نجمة شعاعية)
     const rr = nrm([rr0[0] * 0.45, 0, (cd.upper ? 1 : -1) * 0.9 + rr0[2] * 0.25]);
     const tang = nrm(crs(F, rr));                                                  // مماس حافة الجفن
-    const n = cd.upper ? 4 : 0;                      // السفلية غير مرسومة: كانت تظهر شعيرات منفصلة عن حافة الجفن السفلي؛ الرموش السفلية الحقيقية شبه غير مرئية
+    const n = cd.upper ? (mk.per || 4) : 0;                      // السفلية غير مرسومة: كانت تظهر شعيرات منفصلة عن حافة الجفن السفلي؛ الرموش السفلية الحقيقية شبه غير مرئية
     for (let h = 0; h < n; h++) {
       const off = (h - (n - 1) / 2) * 0.0011 + (rnd() - 0.5) * 0.0006;
       const root = [cd.P[0] + tang[0] * off - rr[0] * 0.0004, cd.P[1] + 0.0004 + tang[1] * off, cd.P[2] + tang[2] * off - rr[2] * 0.0004];
-      const L = (cd.upper ? 0.0030 + 0.0040 * Math.pow(t, 0.9) : 0.0018 + 0.0012 * t) * (0.82 + 0.36 * rnd());
+      const L = (cd.upper ? 0.0030 + 0.0040 * Math.pow(t, 0.9) : 0.0018 + 0.0012 * t) * (0.82 + 0.36 * rnd()) * (mk.len || 1);
       const th0 = cd.upper ? 0.28 + 0.10 * rnd() : 0.20, th1 = cd.upper ? 0.95 + 0.20 * rnd() : 0.6, w0 = (cd.upper ? 0.00032 : 0.00022) * (0.85 + 0.3 * rnd());
       const lean = (rnd() - 0.5) * 0.18 * (cd.upper ? 1 : 0.5) + (cd.side === 'L' ? 1 : -1) * 0.12 * t;                          // ميل جانبي طفيف حتى لا تتوازى
       const pts = [root]; let cur = root;

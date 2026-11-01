@@ -20,6 +20,7 @@ import { applyOutfit } from './character/outfit.js';
 import { applyMaterials } from './character/materials.js';
 import { Violinist, defaultViolinFrame } from './character/violinist.js';
 import { Face } from './character/face.js';
+import { loadMorph, applyMaleMorph, addMaleFace } from './character/gender.js';
 import { CONFIG } from './config.js';
 import { POINTS_TEXT } from './ui/texts.js';
 import { ViolinSynth } from './audio/violin-synth.js';
@@ -76,8 +77,14 @@ const R = new LegacyBuilder(scene, renderer);
 // ---------- تحميل العازفة ----------
 const progressEl = $('#loading-pct');
 let usedModel = null, outfitInfo = null;
-async function loadPlayer() {
-  const onProgress = (e) => { if (e.lengthComputable && progressEl) progressEl.textContent = ` ${Math.round(e.loaded / e.total * 100)}%`; };
+// ---------- الشخصيتان: العازفة (الأصل) والعازف (النموذج نفسه بأهداف MakeHuman الذكرية) ----------
+// اختيار المعلم يُحفظ في المتصفح (مشترك بين لعبتي الكمان والأكورديون)، ويمكن فرضه بالرابط ?performer=male|female
+const PKEY = 'mt-performer-gender';
+const readGender = () => { const qg = params.get('performer'); if (qg === 'male' || qg === 'female') return qg; try { return localStorage.getItem(PKEY) === 'male' ? 'male' : 'female'; } catch (e) { return 'female'; } };
+const cfgFor = (g) => (g === 'male' ? { ...CONFIG, ...CONFIG.male, outfit: { ...CONFIG.outfit, ...CONFIG.male.outfit } } : { ...CONFIG, gender: 'female' });
+async function loadPlayer(gender = 'female', silent = false) {
+  const CFG = cfgFor(gender);
+  const onProgress = (e) => { if (!silent && e.lengthComputable && progressEl) progressEl.textContent = ` ${Math.round(e.loaded / e.total * 100)}%`; };
   
   const loadOne = async (url) => {
     if (/\.fbx(\?|$)/i.test(url)) {
@@ -96,7 +103,7 @@ async function loadPlayer() {
   
   let gltf = null, lastErr = null;
   for (const u of candidates) { 
-    try { gltf = await loadOne(u); usedModel = u; break; } catch (e) { lastErr = e; } 
+    try { gltf = await loadOne(u); if (!silent) usedModel = u; break; } catch (e) { lastErr = e; } 
   }
   
   // إذا فشل التحميل هنا، سيظهر الخطأ الفعلي لملف fbx وليس للنموذج الاحتياطي
@@ -110,26 +117,30 @@ async function loadPlayer() {
   const strays = []; gltf.scene.traverse((o) => { if (o.isLight || o.isCamera) strays.push(o); });
   strays.forEach((o) => o.parent && o.parent.remove(o));
   // الزي العماني واللحاف ومواد الجلد/العينين تُبنى قبل Rig حتى تدخل كلها في قياسات الجسم الفعلية
-  outfitInfo = applyOutfit(gltf.scene, CONFIG);
-  applyMaterials(gltf.scene, CONFIG);
-  const rig = new Rig(gltf.scene, CONFIG);
+  if (gender === 'male') applyMaleMorph(gltf.scene, await loadMorph(CFG.morphUrl));
+  const oi = applyOutfit(gltf.scene, CFG); if (!silent) outfitInfo = oi;
+  if (gender === 'male') addMaleFace(gltf.scene);          // قبل المواد: يحتاج أسماء مواد الشفتين الأصلية
+  applyMaterials(gltf.scene, CFG);
+  const rig = new Rig(gltf.scene, CFG);
   if (rig.missing.length) throw Object.assign(new Error('missing-bones'), { missing: rig.missing });
   
-  const player = new Violinist(rig, CONFIG, { renderer });
+  const player = new Violinist(rig, CFG, { renderer });
   scene.add(gltf.scene);
   const pose0 = player.setup();
   
   gltf.scene.traverse((o) => {
     if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false; }
   });
-  return { player, pose0, rig };
+  return { player, pose0, rig, root: gltf.scene, g: gender };
 }
 
 let face = null;
 let player = null, pose0, rigInfo = null, loadError = null;
+const chars = {}; let curChar = null;
 try {
-  const r = await loadPlayer();
-  player = r.player; pose0 = r.pose0; rigInfo = r.rig;
+  const g0 = readGender();
+  const r = await loadPlayer(g0);
+  player = r.player; pose0 = r.pose0; rigInfo = r.rig; chars[g0] = curChar = r;
 } catch (err) {
   console.warn('[violinist] ', err);
   loadError = err;
@@ -141,7 +152,7 @@ const tex = {
   rug: R.texture(texRug()),
   wood: R.texture(texWoodGrain('#6e4529', '#2a160a', 3), true),
 };
-buildViolin(R, pose0.violin, { srK: pose0.srK ?? 1 });
+let violinMeshes = (() => { const n0 = R.meshes.length; buildViolin(R, pose0.violin, { srK: pose0.srK ?? 1 }); return R.meshes.slice(n0); })();
 const bow = buildBow(R);
 buildVSetting(R, tex);
 const placeBow = (frame) => { for (const k in bow) setFrame(bow[k], frame); };
@@ -171,17 +182,17 @@ if (!loadError && usedModel && usedModel === CONFIG.fallbackModelUrl) {
 }
 
 // ---------- نقاط مرجعية للكاميرا ----------
-const vf = pose0.violin;
+let vf = pose0.violin;
 const Vw = (p) => F.pt(vf, p);
-const lm = player ? player.landmarks() : {
+let lm = player ? player.landmarks() : {
   head: [0, 1.31, 0.03], chest: [0, 0.95, 0.02], hips: [0, 0.6, 0.05], kneeL: [0.12, 0.5, 0.45], kneeR: [-0.12, 0.5, 0.45],
   handR: Vw([0.15, 0.0, 0.05]), handL: Vw([0.03, 0.29, 0.04]),
 };
-const chinPt = Vw([-0.03, -0.12, 0.03]);
-const contactPt = Vw(VN.stringAt(2, 0.028));
-const violinCenter = Vw([0, 0.06, 0.0]);
-const headC = lm.head;
-const blockers = [
+let chinPt = Vw([-0.03, -0.12, 0.03]);
+let contactPt = Vw(VN.stringAt(2, 0.028));
+let violinCenter = Vw([0, 0.06, 0.0]);
+let headC = lm.head;
+let blockers = [
   [V.add(headC, [0, 0.06, 0.02]), 0.15], [[0, 0.95, 0.02], 0.2], [[0, 0.74, 0.02], 0.19], [[0, 0.53, 0.05], 0.2],
   [Vw([0, -0.08, -0.015]), 0.095], [Vw([0, 0.09, -0.015]), 0.075],
   [lm.kneeR, 0.1], [lm.kneeL, 0.1],
@@ -737,7 +748,84 @@ if (player && (!params.has('clean') || params.has('face'))) {
 }
 
 // واجهة صغيرة للاختبار الآلي
+// ---------- تبديل الشخصية: عازفة ⇄ عازف (دون إعادة تحميل الصفحة) ----------
+// التمرين والسرعة والصوت وموضع الكاميرا تبقى كما هي. تُحمَّل الشخصية الأخرى مرة واحدة ثم تُخزَّن،
+// ويُعاد بناء الكمان على وضعية حمل الشخصية الجديدة (ارتفاع كتفها وذقنها يختلفان)، وتُعاد معايرة أصابع التمرين.
+const faces = {};
+if (face && curChar) faces[curChar.g] = face;
+function recomputeAnchors() {
+  vf = pose0.violin; lm = player.landmarks();
+  chinPt = Vw([-0.03, -0.12, 0.03]); contactPt = Vw(VN.stringAt(2, 0.028)); violinCenter = Vw([0, 0.06, 0.0]); headC = lm.head;
+  blockers = [
+    [V.add(headC, [0, 0.06, 0.02]), 0.15], [[0, 0.95, 0.02], 0.2], [[0, 0.74, 0.02], 0.19], [[0, 0.53, 0.05], 0.2],
+    [Vw([0, -0.08, -0.015]), 0.095], [Vw([0, 0.09, -0.015]), 0.075],
+    [lm.kneeR, 0.1], [lm.kneeL, 0.1],
+  ];
+  VIEWS.hands.target = V.lerp(lm.handR, lm.handL, 0.5);
+  POINT_VIEWS.chin.view.target = V.lerp(chinPt, headC, 0.25);
+  POINT_VIEWS.lhand.view.target = lm.handL; POINT_VIEWS.bowhold.view.target = lm.handR;
+  POINT_VIEWS.contact.view.target = contactPt; POINT_VIEWS.details.view.target = violinCenter;
+}
+// صيغة النصوص: «العازفة» ⇄ «العازف» في عناوين الواجهة ونصوص نقاط التركيز (نحفظ الأصل ونعيده عند العودة)
+const _orig = new Map();
+const MALE_WORDS = [['للعازفة', 'للعازف'], ['لعازفة', 'لعازف'], ['العازفة', 'العازف'], ['عازفة', 'عازف']];
+const toMale = (t) => MALE_WORDS.reduce((s, [f, m]) => s.split(f).join(m), t);
+function genderizeTexts(g) {
+  const swap = (key, cur, set) => { if (!_orig.has(key)) { if (!/عازف/.test(cur)) return; _orig.set(key, cur); } const o = _orig.get(key); set(g === 'male' ? toMale(o) : o); };
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) swap(n, n.nodeValue, (v) => { n.nodeValue = v; });
+  document.querySelectorAll('[title],[aria-label]').forEach((el) => {
+    for (const at of ['title', 'aria-label']) { const v = el.getAttribute(at); if (v != null) swap(el.id ? '#' + el.id + '@' + at : el, v, (x) => el.setAttribute(at, x)); }
+  });
+  for (const k in POINTS) for (const f of ['title', 'text', 'note']) if (typeof POINTS[k][f] === 'string') swap('pt:' + k + '.' + f, POINTS[k][f], (v) => { POINTS[k][f] = v; });
+}
+let switching = null;
+function setPerformer(g, onStatus) {
+  if (!player || (g !== 'male' && g !== 'female')) return Promise.resolve(curChar && curChar.g);
+  if (curChar.g === g) return Promise.resolve(g);
+  if (switching) return switching;
+  switching = (async () => {
+    try {
+      let c = chars[g];
+      if (!c) { onStatus && onStatus('loading'); c = chars[g] = await loadPlayer(g, true); scene.remove(c.root); }
+      scene.remove(curChar.root); scene.add(c.root);
+      curChar = c; player = c.player; pose0 = c.pose0; rigInfo = c.rig;
+      // الكمان على وضعية حمل هذه الشخصية
+      for (const m of violinMeshes) { m.parent && m.parent.remove(m); m.geometry.dispose(); }
+      R.meshes = R.meshes.filter((m) => !violinMeshes.includes(m));
+      const n0 = R.meshes.length; buildViolin(R, pose0.violin, { srK: pose0.srK ?? 1 }); violinMeshes = R.meshes.slice(n0);
+      recomputeAnchors();
+      warmed.clear(); warmUp(tl);
+      if (!params.has('clean') || params.has('face')) { if (!(g in faces)) { try { const f = new Face(player); faces[g] = f.enabled ? f : null; } catch (err) { faces[g] = null; } } face = faces[g]; } else face = null;
+      if ((playing || manual) && lastState) applyTeach(lastState); else applyPose(0, false);
+      try { localStorage.setItem(PKEY, g); } catch (e) { /* تصفح خاص */ }
+      genderizeTexts(g);
+      needsRender = true;
+      onStatus && onStatus('done', g);
+      return g;
+    } catch (e) { console.error('[performer]', e); onStatus && onStatus('error', e); return curChar && curChar.g; }
+    finally { switching = null; }
+  })();
+  return switching;
+}
+const perfBtn = $('#perf-btn');
+const perfLbl = () => '🔄 استبدال العازف';
+if (perfBtn) {
+  if (!player) perfBtn.hidden = true;
+  else {
+    perfBtn.textContent = perfLbl(curChar.g);
+    perfBtn.addEventListener('click', async () => {
+      if (perfBtn.disabled) return;
+      const next = curChar.g === 'male' ? 'female' : 'male';
+      perfBtn.disabled = true; perfBtn.classList.add('busy');
+      const done = await setPerformer(next, (st) => { if (st === 'loading') perfBtn.textContent = '⏳ جارٍ الاستبدال…'; });
+      perfBtn.textContent = perfLbl(done); perfBtn.disabled = false; perfBtn.classList.remove('busy');
+    });
+  }
+}
+if (curChar && curChar.g === 'male') genderizeTexts('male');
 window.violinViewer = {
+  setPerformer, get performer() { return curChar && curChar.g; }, get playerObj() { return player; }, get violinMeshCount() { return violinMeshes.length; },
   get face() { return face; },
   state: () => ({ theta: cur.theta, phi: cur.phi, r: cur.r, target: cur.target.slice(), pos: cam.pos.slice(), playing }),
   snap() { Object.assign(cur, { theta: goal.theta, phi: goal.phi, r: goal.r, target: goal.target.slice() }); needsRender = true; },

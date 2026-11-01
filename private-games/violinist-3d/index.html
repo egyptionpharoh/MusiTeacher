@@ -26,6 +26,12 @@ body{
 .hidden{display:none!important}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 button:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
+/* زر «استبدال العازف»: بارز ثلاثي الأبعاد مع تأثير ضغط */
+#perf-btn{white-space:nowrap;padding:5px 12px 6px;border-radius:10px;font-size:13px;font-weight:700;color:#2a1a08;cursor:pointer;border:1px solid #f6d48a;background:linear-gradient(180deg,#ffe3a1 0%,#e9b85a 55%,#cf9431 100%);box-shadow:0 4px 0 #8a5a17,0 6px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.65);text-shadow:0 1px 0 rgba(255,255,255,.45);transform:translateY(-2px);transition:transform .08s ease,box-shadow .08s ease,filter .12s}
+#perf-btn:hover{filter:brightness(1.06)}#perf-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#perf-btn:active{transform:translateY(2px);box-shadow:0 0 0 #8a5a17,0 1px 3px rgba(0,0,0,.45),inset 0 2px 4px rgba(0,0,0,.25)}
+#perf-btn.busy,#perf-btn:disabled{opacity:.8;cursor:progress;transform:translateY(1px);box-shadow:0 1px 0 #8a5a17,0 2px 4px rgba(0,0,0,.4)}
+@media (max-width:760px){#perf-btn{padding:4px 8px 5px;font-size:12px}}
 
 /* header */
 .top{position:fixed;top:var(--gutter);right:var(--gutter);max-width:min(300px,calc(100% - 2*var(--gutter)));pointer-events:none}
@@ -292,6 +298,7 @@ body.mode-view .now .meta span:nth-child(n+3){display:none}
   </span>
   <button id="mode-toggle" aria-pressed="false" title="وضع العرض: إخفاء اللوحات لإظهار العازفة والكمان بأكبر مساحة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="lbl">وضع العرض</span></button>
   <button id="help-btn" aria-expanded="false" aria-controls="help" title="طريقة الاستخدام">؟</button>
+  <button id="perf-btn" class="perf-btn" type="button" title="استبدال العازف: عازفة ⇄ عازف (التمرين والصوت لا يتغيران)" aria-label="تبديل شخصية العازف">🔄 استبدال العازف</button>
   <small id="mode">وضعية العزف الثابتة</small>
 </div>
 
@@ -377,6 +384,7 @@ body.mode-view .now .meta span:nth-child(n+3){display:none}
       <li>طريقة التدريب: «مشاهدة وتعلّم» تعزف السلم تباعًا مع شرح الوتر والإصبع وموضع العفق، و«بنفسي» تنتقلين فيها نغمة نغمة بأزرار السابقة/استمع/التالية (أو بالنقر على اسم النغمة)، و«تتابع» تعزف السلم مرة واحدة.</li>
       <li>«وضع العرض» يخفي اللوحات ويترك العازفة والكمان بأكبر مساحة مع أزرار التحكم الأساسية وبطاقة النغمة المصغّرة؛ وزر «وضع التعلّم» يعيد كل شيء. زر ▴ في لوحة الأدوات يطويها دون إخفاء بقية الواجهة.</li>
     </ul>
+    <p class="fine">زر «🔄 استبدال العازف» في الشريط السفلي يبدّل بين العازفة والعازف دون أن يتغير التمرين أو الصوت، ويُحفظ الاختيار في هذا المتصفح. العازف هو النموذج نفسه بعد تطبيق أهداف التشكيل الذكرية من MakeHuman/MPFB2 (ترخيص CC0): الجسم والوجه ومواضع المفاصل؛ والمصر والدشداشة واللحية مولّدة برمجيًا.</p>
     <p class="fine">صوت الكمان من تسجيلات حقيقية (مكتبة VSCO 2 Community Edition، ترخيص CC0، عبر مستودع tonejs-instruments) تُشغَّل داخل المتصفح؛ ويُستبدل بمولّد صوتي بسيط إن تعذّر تحميلها.</p>
     <p class="fine">يمثّل النموذج عازفة عمانية بالدشداشة واللحاف، تمسك القوس باليد اليمنى، وتجلس في مقدمة كرسي بلا ذراعين، وتستخدم مسند كتف. الوضعيات محسوبة آليًا لأغراض تعليمية، وتبقى توجيهات المعلّم/المعلّمة هي المرجع في تفاصيل الأسلوب.</p>
   </div>

@@ -31,6 +31,16 @@ export function buildUI(ctx) {
   const mkMode = (id, label) => (modeBtns[id] = el('button', { class: 'tab', onclick: () => setMode(id) }, label));
   const viewMenu = el('div', { class: 'menu hidden', id: 'view-menu' }, Object.entries(VIEWS).map(([k, v]) => el('button', { onclick: () => { setView(k); closeMenus(); } }, v.ar)));
   const btnView = el('button', { class: 'ibtn', title: 'زوايا الكاميرا', onclick: (e) => { e.stopPropagation(); toggleMenu(viewMenu); } }, '🎥 الكاميرا ▾');
+  // ---------- شخصية العازف: عازفة / عازف (قرار المعلم بحسب الصف؛ يُحفظ في هذا المتصفح) ----------
+  const perfLbl = () => '🔄 استبدال العازف';
+  const btnPerf = el('button', { class: 'ibtn perf-btn', id: 'btn-performer', title: 'استبدال العازف: عازفة ⇄ عازف (الآلة والتمارين لا تتغير)', 'aria-label': 'تبديل شخصية العازف', onclick: () => switchPerformer() }, perfLbl(ctx.performer && ctx.performer.get()));
+  async function switchPerformer() {
+    if (!ctx.performer || btnPerf.disabled) return;
+    const next = ctx.performer.get() === 'male' ? 'female' : 'male';
+    btnPerf.disabled = true; btnPerf.classList.add('busy');
+    const done = await ctx.performer.set(next, (st) => { if (st === 'loading') { btnPerf.textContent = '⏳ جارٍ الاستبدال…'; } });
+    btnPerf.textContent = perfLbl(done); btnPerf.disabled = false; btnPerf.classList.remove('busy');
+  }
   const top = el('div', { id: 'topbar' },
     el('div', { class: 'brand' }, '🪗 الأكورديون الافتراضي'),
     el('div', { class: 'tabs' }, mkMode('identify', 'تعرّف على الآلة'), mkMode('free', 'عزف حر'), mkMode('lesson', 'تمارين')),
@@ -40,6 +50,7 @@ export function buildUI(ctx) {
       el('button', { class: 'ibtn', title: 'تصغير', onclick: () => zoom(0.18) }, '－'),
       el('button', { class: 'ibtn', title: 'إعادة ضبط الكاميرا', onclick: () => setView('default') }, '⟲'),
       el('button', { class: 'ibtn', title: 'إخفاء/إظهار اللوحات (H)', id: 'btn-hide', onclick: () => toggleHidden() }, '👁'),
+      btnPerf,
       el('button', { class: 'ibtn', title: 'حقوق الصوت والنماذج', onclick: () => $('#credits').classList.toggle('hidden') }, 'ⓘ')));
   const sidebar = el('aside', { id: 'side' });
   const handle = el('button', { id: 'side-toggle', title: 'إظهار/إخفاء اللوحة', onclick: () => { S.panelOpen = !S.panelOpen; layout(); } }, '☰');
@@ -60,6 +71,7 @@ export function buildUI(ctx) {
     el('p', {}, 'صوت الأكورديون: عينات حقيقية من FluidR3_GM (Frank Wen) — ترخيص CC BY 3.0 US — عبر مشروع midi-js-soundfonts. التعديلات: قصّ وتحويل إلى mp3 وتكرار متقاطع للنغمات الطويلة.'),
     el('p', {}, 'عينات الأكورديون: github.com/gleitz/midi-js-soundfonts (FluidR3_GM).'),
     el('p', {}, 'العازفة: النموذج نفسه المستخدم في لعبة عازفة الكمان (مُصدَّر من MakeHuman). الأكورديون والكرسي والسجادة: مجسّمات إجرائية أُنشئت برمجيًا لهذه اللعبة. العرض: three.js (MIT).'),
+    el('p', {}, 'العازف: النموذج نفسه بعد تطبيق أهداف التشكيل الذكرية من MakeHuman/MPFB2 (الشبكة الأساسية والأهداف والهيكل العظمي، ترخيص CC0) — تغيير تشريحي في الجسم والوجه ومواضع المفاصل، لا مجرد تبديل ملابس. المصر والدشداشة واللحية مولّدة برمجيًا.'),
     el('p', {}, 'التفاصيل الكاملة والروابط في ملف AUDIO_CREDITS.md داخل المشروع.'),
     el('button', { class: 'ibtn', onclick: () => $('#credits').classList.add('hidden') }, 'إغلاق')));
   root.append(top, sidebar, handle, chip, status, bellowsBox, credits);

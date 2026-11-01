@@ -40,4 +40,11 @@ export const CONFIG = {
     lihaf: '#1e2a45',         // اللحاف
     lihafBorder: '#c9a14a',   // حافة اللحاف حول الوجه
   },
+  // شخصية العازف (ذكر): تُبنى من النموذج نفسه بأهداف MakeHuman التشريحية (انظر _shared/3d/character/gender.js)
+  male: {
+    gender: 'male',
+    height: 1.72,                                             // طول العازف واقفًا مع المصر
+    morphUrl: './_shared/3d/models/character-male-morph.json',
+    outfit: { style: 'male', dishdasha: '#f1eee7', embroidery: '#d9cfb8', embroidery2: '#a99b7c', masar: ['#ece3cf', '#8b2d3a', '#2f6170'], tassel: '#ebe5d6' },
+  },
 };

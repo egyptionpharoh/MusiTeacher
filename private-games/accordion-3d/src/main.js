@@ -5,6 +5,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { Rig } from '../_shared/3d/character/rig.js';
 import { applyOutfit } from '../_shared/3d/character/outfit.js';
 import { applyMaterials } from '../_shared/3d/character/materials.js';
+import { loadMorph, applyMaleMorph, addMaleFace } from '../_shared/3d/character/gender.js';
 import { buildAccordion } from './instrument/accordion-model.js';
 import { Accordionist } from './character/accordionist.js';
 import { CONFIG } from './config.js';
@@ -19,7 +20,7 @@ const canvas = $('#scene');
 if (new URLSearchParams(location.search).has('clean')) { const st = document.createElement('style'); st.textContent = '#ui,#mt-ip-mark{display:none !important}'; document.head.appendChild(st); }
 function fail(m) { $('#loading').classList.add('hidden'); $('#nogl-msg').innerHTML = m; $('#nogl').classList.remove('hidden'); }
 let renderer;
-try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: new URLSearchParams(location.search).has('shot') }); }
 catch (e) { fail('تعذّر تشغيل العرض ثلاثي الأبعاد على هذا الجهاز.<br>يحتاج إلى متصفح حديث يدعم WebGL 2.'); throw e; }
 renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
 renderer.setClearColor(0x000000, 0);
@@ -45,24 +46,62 @@ const camera = new THREE.PerspectiveCamera(34, 1, 0.01, 30);
 const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 const mgr = new THREE.LoadingManager(); mgr.setURLModifier((u) => (/\.(png|jpe?g|tga|bmp|gif|tif)(\?|$)/i.test(u) ? PX : u));
 const pctEl = $('#loading-pct');
-let player, acc, rig;
-try {
-  const root = await new FBXLoader(mgr).loadAsync(CONFIG.modelUrl, (e) => { if (e.lengthComputable && pctEl) pctEl.textContent = ` ${Math.round(e.loaded / e.total * 100)}%`; });
+// ---------- الشخصيتان: العازفة (الأصل) والعازف (من النموذج نفسه بأهداف MakeHuman الذكرية) ----------
+// اختيار المعلم يُحفظ في المتصفح (مشترك بين لعبتي الكمان والأكورديون)، ويمكن فرضه بالرابط ?performer=male|female.
+const PKEY = 'mt-performer-gender';
+const readGender = () => { const qg = new URLSearchParams(location.search).get('performer'); if (qg === 'male' || qg === 'female') return qg; try { return localStorage.getItem(PKEY) === 'male' ? 'male' : 'female'; } catch (e) { return 'female'; } };
+const cfgFor = (g) => (g === 'male' ? { ...CONFIG, ...CONFIG.male, outfit: { ...CONFIG.outfit, ...CONFIG.male.outfit } } : { ...CONFIG, gender: 'female' });
+async function loadCharacter(g, onProgress) {
+  const cfg = cfgFor(g);
+  const root = await new FBXLoader(mgr).loadAsync(CONFIG.modelUrl, onProgress);
   const strays = []; root.traverse((o) => { if (o.isLight || o.isCamera) strays.push(o); }); strays.forEach((o) => o.parent && o.parent.remove(o));
-  applyOutfit(root, CONFIG); applyMaterials(root, CONFIG);
-  rig = new Rig(root, CONFIG);
-  if (rig.missing.length) throw new Error('missing-bones:' + rig.missing.join(','));
-  scene.add(root);
-  acc = buildAccordion(); scene.add(acc.root);
-  player = new Accordionist(rig, CONFIG, acc);
-  player.setup();
+  if (g === 'male') applyMaleMorph(root, await loadMorph(cfg.morphUrl));
+  applyOutfit(root, cfg);
+  if (g === 'male') addMaleFace(root);          // قبل المواد: يحتاج أسماء مواد الشفتين الأصلية
+  applyMaterials(root, cfg);
+  const rg = new Rig(root, cfg);
+  if (rg.missing.length) throw new Error('missing-bones:' + rg.missing.join(','));
+  const pl = new Accordionist(rg, cfg, acc);
+  pl.setup();
   root.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false; } });
+  return { g, cfg, root, rig: rg, player: pl, life: null };
+}
+const chars = {};
+let player, acc, rig, cur = null;
+try {
+  acc = buildAccordion(); scene.add(acc.root);
   acc.root.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-} catch (e) { console.error(e); fail('تعذّر تحميل العازفة.<br><small>' + (e.message || e) + '</small>'); throw e; }
+  const g0 = readGender();
+  chars[g0] = await loadCharacter(g0, (e) => { if (e.lengthComputable && pctEl) pctEl.textContent = ` ${Math.round(e.loaded / e.total * 100)}%`; });
+  cur = chars[g0]; scene.add(cur.root); player = cur.player; rig = cur.rig;
+} catch (e) { console.error(e); fail('تعذّر تحميل الشخصية.<br><small>' + (e.message || e) + '</small>'); throw e; }
 const audio = new AccordionAudio(); audio.init();
 const perf = new Performer(player, audio);
-let life = null;
-try { life = new Life(player, { getCamPos: () => camera.position }); if (!life.ok) life = null; } catch (e) { console.warn('life disabled', e); life = null; }
+const makeLife = (pl) => { try { const l = new Life(pl, { getCamPos: () => camera.position }); return l.ok ? l : null; } catch (e) { console.warn('life disabled', e); return null; } };
+let life = cur.life = makeLife(player);
+// تبديل الشخصية دون إعادة تحميل اللعبة: الآلة والصوت والتمارين وحالة الواجهة كما هي؛ تُحمَّل الشخصية الأخرى مرة واحدة ثم تُخزَّن.
+let switching = null;
+function setPerformer(g, onStatus) {
+  if (g !== 'male' && g !== 'female') return Promise.resolve(cur && cur.g);
+  if (cur && cur.g === g) return Promise.resolve(g);
+  if (switching) return switching;
+  switching = (async () => {
+    try {
+      if (!chars[g]) { onStatus && onStatus('loading'); chars[g] = await loadCharacter(g); chars[g].life = makeLife(chars[g].player); }
+      const c = chars[g];
+      perf.releaseAll();                                  // نرفع النغمات الجارية لحظة التبديل ثم يُستأنف العزف مباشرة
+      if (cur) scene.remove(cur.root);
+      scene.add(c.root);
+      c.player.activate();                                // يعيد وضع الآلة على جسم هذه الشخصية وأحزمتها
+      cur = c; player = c.player; rig = c.rig; life = c.life; perf.p = c.player;
+      try { localStorage.setItem(PKEY, g); } catch (e) { /* تصفح خاص */ }
+      onStatus && onStatus('done', g);
+      return g;
+    } catch (e) { console.error(e); onStatus && onStatus('error', e); return cur && cur.g; }
+    finally { switching = null; }
+  })();
+  return switching;
+}
 $('#loading').classList.add('hidden');
 
 // ---------- كاميرا مدارية ----------
@@ -78,7 +117,7 @@ function applyCam(k = 1) {
   camera.position.set(c.t.x + dd * Math.sin(c.ph) * Math.sin(c.th), c.t.y + dd * Math.cos(c.ph), c.t.z + dd * Math.sin(c.ph) * Math.cos(c.th));
   camera.lookAt(c.t); camera.updateMatrixWorld(true);
 }
-const ui = buildUI({ scene, camera, renderer, canvas, acc, perf, audio, cam });
+const ui = buildUI({ scene, camera, renderer, canvas, acc, perf, audio, cam, performer: { get: () => cur && cur.g, set: setPerformer } });
 function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener('resize', resize); resize();
 
@@ -87,7 +126,7 @@ function tick(dt, draw = true) { applyCam(1 - Math.pow(0.0005, dt)); if (life) l
 renderer.setAnimationLoop((now) => { const dt = Math.min(0.05, (now - prev) / 1000); prev = now; tick(dt); });
 
 window.accordionViewer = {
-  THREE, scene, camera, renderer, rig, player, acc, cam, get life() { return life; },
+  THREE, scene, camera, renderer, acc, cam, get life() { return life; }, get rig() { return rig; }, get player() { return player; }, get performer() { return cur && cur.g; }, setPerformer,
   look(th, ph, d, t) { Object.assign(cam.goal, { th, ph, d }); if (t) cam.goal.t.set(...t); applyCam(1); cam.cur.th = cam.goal.th; },
   hands(R, L, w) { player.pose({ w: w ?? acc.getWidth(), R: R || player.rightState, L: L || player.leftState }); },
   tick, perf, audio, ui, qa: () => player.qa, pen: () => player.penetration(),

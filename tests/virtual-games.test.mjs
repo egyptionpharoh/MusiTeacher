@@ -196,3 +196,25 @@ test('accordion-3d: يخدم ملفاته والنموذج والعينات ال
   assert.equal(resolveGameFile(root, 'accordion-3d', ['_shared', '..', '..', 'package.json']), null);
   assert.equal(resolveGameFile(root, 'accordion-3d', ['src', 'nonexistent.js']), null);
 });
+
+// ---------- لعبة الأورج ثلاثية الأبعاد ----------
+test('organ-3d: مسجّلة في السجل المشترك ولها غلاف وصفحة دخول', async () => {
+  const { VIRTUAL_GAMES } = await import('../src/data/virtualGames.js');
+  const g = VIRTUAL_GAMES.find((x) => x.id === 'organ-3d');
+  assert.ok(g && g.status === 'available' && g.settings.threeD && g.category === 'keys');
+  assert.ok(fsAcc.existsSync(pathAcc.join(process.cwd(), 'public', g.cover)));
+  assert.ok(fsAcc.existsSync(pathAcc.join(process.cwd(), 'private-games', 'organ-3d', g.entry)));
+});
+test('organ-3d: يخدم ملفاته والشخصية والعينات المشتركة ويرفض التسلل', async () => {
+  const { resolveGameFile, gamesRoot } = await import('../src/lib/virtual-games/serve.js');
+  const root = gamesRoot();
+  assert.ok(resolveGameFile(root, 'organ-3d', []));
+  assert.ok(resolveGameFile(root, 'organ-3d', ['src', 'main.js']));
+  assert.ok(resolveGameFile(root, 'organ-3d', ['src', 'character', 'organist.js']));
+  assert.ok(resolveGameFile(root, 'organ-3d', ['_shared', '3d', 'models', 'character-girl.fbx']));
+  assert.ok(resolveGameFile(root, 'organ-3d', ['_shared', '3d', 'character', 'seated-player.js']));
+  assert.ok(resolveGameFile(root, 'organ-3d', ['_shared', 'mt-sampler.js']));
+  assert.equal(resolveGameFile(root, 'organ-3d', ['..', 'accordion-3d', 'index.html']), null);
+  assert.equal(resolveGameFile(root, 'organ-3d', ['_shared', '..', '..', 'package.json']), null);
+  assert.equal(resolveGameFile(root, 'organ-3d', ['src', 'nonexistent.js']), null);
+});
