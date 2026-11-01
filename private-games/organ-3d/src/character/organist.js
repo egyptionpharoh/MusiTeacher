@@ -13,7 +13,7 @@ import { SeatedPlayer, SEAT as SEAT_REF } from '../../_shared/3d/character/seate
 import { fingerArch, thumbChain, poseFingers } from '../../_shared/3d/character/hand.js';
 import { DIM } from '../instrument/organ-model.js';
 import { WHITE_COUNT } from '../instrument/organ-data.js';
-import { fixSeatedGlutes } from './seat-fix.js';
+import { fixSeatedGlutes, calmFabric } from './seat-fix.js';
 
 const v3 = (a) => new THREE.Vector3(a[0], a[1], a[2]);
 const ar = (v) => [v.x, v.y, v.z];
@@ -59,7 +59,10 @@ export class Organist extends SeatedPlayer {
     this.state = { R: { base: 14, digits: {} }, L: { base: 11, digits: {} } };
     this.pose(this.state);
     // تصحيح شكل الأرداف في الجلوس (ثوب العازف) — انظر seat-fix.js
-    if (!new URLSearchParams(location.search).has('noglutefix')) { try { this.qa.glutes = fixSeatedGlutes(this.rig, SEAT_REF, { depth: QP('gd', [0.035])[0] }); } catch (e) { console.warn('glute fix skipped', e); } }
+    if (!new URLSearchParams(location.search).has('noglutefix')) { try { const male = this.cfg && this.cfg.gender === 'male';
+      // العازف: الثوب ينسدل لوحًا محتشمًا في الخلف؛ العازفة: التصحيح السابق كما هو
+      this.qa.glutes = fixSeatedGlutes(this.rig, SEAT_REF, male ? { mode: 'drape', out: QP('gout', [0.006])[0] } : { mode: 'lobes', depth: 0.035 }); } catch (e) { console.warn('glute fix skipped', e); } }
+    if (this.cfg && this.cfg.gender === 'male' && !new URLSearchParams(location.search).has('nocalm')) { try { this.qa.fabric = calmFabric(this.rig); } catch (e) { console.warn('fabric calm skipped', e); } }
     this.qa.seatTorso = this.torsoReport();
   }
   activate() { this.applyHead(this.head.yaw, this.head.pitch, this.head.roll); this.pose(this.state); }
