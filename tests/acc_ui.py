@@ -8,7 +8,7 @@ res = []
 def chk(name, ok, info=''):
     res.append(ok); print(('✔' if ok else '✘'), name, info)
 PROJ = """(id)=>{const v=accordionViewer,T=v.THREE;const o=v.acc.keys[id]||v.acc.buttons[id];let p;
-  if(v.acc.keys[id]){p=o.mesh.localToWorld(new T.Vector3(-o.thick/2,0,o.black?0:0.025));}else{p=o.mesh.localToWorld(new T.Vector3(0.00625,0,0));}
+  if(v.acc.keys[id]){p=o.mesh.localToWorld(new T.Vector3(-o.thick/2,0,o.touchZ));}else{p=o.mesh.localToWorld(new T.Vector3(0.00625,0,0));}
   p.project(v.camera);return [(p.x+1)/2*innerWidth,(1-p.y)/2*innerHeight];}"""
 with sync_playwright() as p:
     b = p.chromium.launch(args=['--autoplay-policy=no-user-gesture-required', '--use-gl=swiftshader', '--enable-unsafe-swiftshader'])
@@ -17,7 +17,7 @@ with sync_playwright() as p:
     pg = ctx.new_page(); errs = []; bad = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200])); pg.on('console', lambda m: errs.append(m.text[:200]) if m.type == 'error' else None)
     pg.on('response', lambda r: bad.append((r.status, r.url[-50:])) if r.status >= 400 else None)
-    pg.goto(A.B + '/embed.html?id=accordion-3d&p=' + quote('index.html?th=-1.0&ph=1.2&d=1.0&t=-0.15,0.8,0.3', safe='')); pg.wait_for_timeout(7000)
+    pg.goto(A.B + '/embed.html?id=accordion-3d&p=' + quote('index.html?th=-1.0&ph=1.2&d=1.0&t=-0.15,0.8,0.3&performer='+__import__('os').environ.get('PERF',''), safe='')); pg.wait_for_timeout(7000)
     fr = [f for f in pg.frames if '/play/' in f.url][0]
     fr.wait_for_function('window.accordionViewer && accordionViewer.audio.state==="ready"', timeout=120000)
     fr.evaluate('setInterval(()=>accordionViewer.tick(0.033,false),33)'); pg.wait_for_timeout(2500)

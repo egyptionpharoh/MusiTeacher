@@ -41,7 +41,7 @@ with sync_playwright() as p:
     ctx.route(lambda u: not u.startswith('http://localhost'), lambda r: r.abort())
     pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:300])); pg.on('console', lambda m: errs.append(m.text[:300]) if m.type == 'error' else None)
-    pg.goto(A.B + '/embed.html?id=accordion-3d&p=' + quote('index.html' + os.environ.get('ACCQ', ''), safe='')); pg.wait_for_timeout(7000)
+    pg.goto(A.B + '/embed.html?id=accordion-3d&p=' + quote('index.html?performer='+os.environ.get('PERF','') + os.environ.get('ACCQ', ''), safe='')); pg.wait_for_timeout(7000)
     fr = [f for f in pg.frames if '/play/' in f.url][0]
     fr.wait_for_function('window.accordionViewer && accordionViewer.ready', timeout=60000)
     r = fr.evaluate(JS, )

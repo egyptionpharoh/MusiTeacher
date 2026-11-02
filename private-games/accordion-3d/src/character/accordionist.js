@@ -6,9 +6,10 @@
 // =====================================================================
 import * as THREE from 'three';
 import { V, Frame, F, ik2 } from '../../_shared/3d/engine/math.js';
-import { SeatedPlayer } from '../../_shared/3d/character/seated-player.js';
+import { SeatedPlayer, SEAT } from '../../_shared/3d/character/seated-player.js';
 import { FINGERS, fingerArch, thumbChain, poseHandRotation, poseFingers } from '../../_shared/3d/character/hand.js';
 import { DIM } from '../instrument/accordion-model.js';
+import { fixSeatedGlutes, fixSeatedLap, fixSeatedHem, calmFabric } from './dish-fix.js';
 import { WHITE_COUNT } from '../instrument/accordion-data.js';
 
 const v3 = (a) => new THREE.Vector3(a[0], a[1], a[2]);
@@ -34,10 +35,22 @@ export class Accordionist extends SeatedPlayer {
 
   setup() {
     this.baseSetup();
+    this.fixMaleCloth();
     this.placeAccordion();
     this.buildStraps();
     this.rightState = { base: 6.0, digits: {} }; this.leftState = { row: 0.5, z: 2.6, digits: {} };
     this.pose({ w: this.acc.getWidth(), R: this.rightState, L: this.leftState });
+  }
+
+  // ثوب العازف في وضعية الجلوس (للعازف فقط؛ العازفة كما هي): الأرداف تنسدل لوحًا واحدًا (كما في لعبة الأورج)، ولوح الحِجر يلتصق بغلاف الفخذين.
+  // يجب أن يسبق وضع الآلة وبناء الأحزمة لأنهما يقيسان سطح الجسم والثوب الفعليين.
+  fixMaleCloth() {
+    if (!(this.cfg && this.cfg.gender === 'male')) return;
+    const has = (k) => new URLSearchParams(location.search).has(k);
+    if (!has('noglutefix')) { try { this.qa.glutes = fixSeatedGlutes(this.rig, SEAT, { mode: 'drape', out: QP('gout', [0.006])[0] }); } catch (e) { console.warn('glute fix skipped', e); } }
+    if (!has('nolapfix')) { try { this.qa.lap = fixSeatedLap(this.rig); } catch (e) { console.warn('lap fix skipped', e); } }
+    if (!has('nohemfix')) { try { this.qa.hem = fixSeatedHem(this.rig); } catch (e) { console.warn('hem fix skipped', e); } }
+    if (!has('nocalm')) { try { this.qa.fabric = calmFabric(this.rig); } catch (e) { console.warn('fabric calm skipped', e); } }
   }
 
   /** عند تبديل الشخصية: تُعاد الآلة إلى صدر هذه الشخصية وفخذيها، وتُعاد الأحزمة إلى كتفيها، ثم تُحدَّث الوضعية فورًا */
@@ -66,7 +79,12 @@ export class Accordionist extends SeatedPlayer {
     const rig = this.rig, acc = this.acc;
     // وجه الصدر الأمامي عند ارتفاع الصدر، وأعلى سطح للفخذين
     const chestZ = this.surfaceExtent((p) => Math.abs(p.x) < 0.14 && p.y > 0.80 && p.y < 1.05, 'z', 1);
-    const thighTop = this.surfaceExtent((p) => p.z > chestZ - 0.02 && p.z < chestZ + 0.20 && Math.abs(p.x) < 0.22 && p.y < 0.75 && p.y > 0.5, 'y', 1);
+    // بطن العازف (وأي بروز للدشداشة أمام الحوض) يقع أمام مستوى الصدر ويعلو الفخذين، فلا يجوز أن يُحسب «سطح فخذ».
+    // نقيس أولًا أقصى امتداد أمامي للجذع في منطقة البطن (y 0.62..0.78) ثم نبدأ نافذة الفخذ بعده، فتُقاس الفخذ نفسها.
+    const bellyZ = this.surfaceExtent((p) => Math.abs(p.x) < 0.16 && p.y > 0.66 && p.y < 0.80, 'z', 1);
+    const zLo = Math.max(chestZ - 0.02, isFinite(bellyZ) ? bellyZ + 0.012 : -Infinity);
+    const thighTop = this.surfaceExtent((p) => p.z > zLo && p.z < zLo + 0.22 && Math.abs(p.x) < 0.22 && p.y < 0.75 && p.y > 0.5, 'y', 1);
+    this.qa.bellyZ = isFinite(bellyZ) ? +bellyZ.toFixed(3) : null;
     this.qa.chestZ = +chestZ.toFixed(3); this.qa.thighTop = +thighTop.toFixed(3);
     const tilt = QP('tilt', [4])[0] * Math.PI / 180;       // ميل الآلة قليلًا نحو الصدر
     const x0 = QP('ax', [-0.05])[0];                        // موضع الطرف الداخلي للصندوق الأيمن
@@ -110,17 +128,21 @@ export class Accordionist extends SeatedPlayer {
       const backAll = (y, xx) => { const z = this.surfaceExtent((p) => Math.abs(p.x - xx) < 0.05 && p.y > y - 0.03 && p.y < y + 0.03 && p.z < sh.z - 0.02, 'z', -1, 2); return isFinite(z) ? z : sh.z - 0.12; };
       const topAt = (xx, zz) => { const y = this.surfaceExtent((p) => Math.abs(p.x - xx) < 0.035 && Math.abs(p.z - zz) < 0.03 && p.y > sh.y - 0.06 && p.y < sh.y + 0.14, 'y', 1, 2); return isFinite(y) ? y : topY; };
       const half = (y) => { const v = Math.abs(this.torsoExtent(y - 0.03, y + 0.03, 'x', sg, (p) => Math.abs(p.z - (sh.z - 0.05)) < 0.08)); return isFinite(v) ? v : 0.15; };
-      const yA = yAx - 0.02, yB = yAx - 0.14, m = 0.009;
+      // ارتفاعات متناقصة بلا رجوع للأعلى (الرجوع للأعلى كان يصنع «ثنية Z» حادة عند الخاصرة): فوق الكتف ← الظهر ← الخاصرة تحت الإبط
+      const m = 0.009, yB1 = sh.y - 0.10, yB2 = yAx - 0.08, yA = yAx - 0.17, yB = yAx - 0.23;
       const zS = sh.z - 0.075, yTop2 = topAt(x, zS);
       const pts = [
         new THREE.Vector3(x, topY + 0.007, sh.z),
         new THREE.Vector3(x, yTop2 + m, zS),
-        new THREE.Vector3(x * 0.95, topY - 0.14, backAll(topY - 0.14, x * 0.95) - m),
-        new THREE.Vector3(x * 0.92, topY - 0.26, backAll(topY - 0.26, x * 0.92) - m),
-        new THREE.Vector3(sg * (half(yA) + 0.014), yA - 0.05, sh.z - 0.1),
-        new THREE.Vector3(sg * (half(yB) + 0.016), yB - 0.04, sh.z - 0.0),
+        new THREE.Vector3(x * 0.95, yB1, backAll(yB1, x * 0.95) - m),
+        new THREE.Vector3(x * 0.92, yB2, backAll(yB2, x * 0.92) - m),
+        new THREE.Vector3(sg * (half(yA) + 0.014), yA, sh.z - 0.09),
+        new THREE.Vector3(sg * (half(yB) + 0.016), yB, sh.z - 0.0),
       ];
-      acc.setShoulderPath(s, pts, 0.05);
+      // اتجاه «الخارج» عن الجذع لكل نقطة من الحزام (قطري أفقي عن محور الجذع، ويميل للأعلى فوق الكتف) ليبقى وجه الحزام ملاصقًا للجسم
+      const zc = sh.z, ySh = sh.y;
+      const outward = (w) => { const rx = w.x, rz = w.z - zc, rl = Math.hypot(rx, rz) || 1, up = Math.min(1, Math.max(0, (w.y - (ySh - 0.04)) / 0.05)); return new THREE.Vector3(rx / rl * (1 - up), up, rz / rl * (1 - up)); };
+      acc.setShoulderPath(s, pts, 0.05, outward);
     }
     this._strapped = true;
   }
@@ -201,11 +223,61 @@ export class Accordionist extends SeatedPlayer {
     this.handRFrame = fr;
     const fo = clamp((this.acc.getWidth() - 0.13) / 0.18, 0, 1);               // مع اتساع المنفاخ يبتعد المرفق الأيمن قليلًا للخارج/الخلف
     this.poseArm('R', fr, [RPOLE[0] - 0.4 * fo, RPOLE[1] + 0.25 * fo, RPOLE[2] - 0.75 * fo]);
+    // بداية دافئة: نطبّق تصحيح التلامس الذي وُجد في الإطار السابق للإصبع نفسه على المفتاح نفسه، فيكفي غالبًا قياس واحد للتحقق (أداء)
+    const warm = this._warmR || (this._warmR = new Map());
+    for (const k of [...warm.keys()]) { const [d, id] = k.split(':'); const pr = st.digits[d]; if (!pr || pr.keyId !== id || (pr.lift ?? 0) > 0.9) warm.delete(k); }
+    for (const [k, [dy, dl]] of warm) { const d = +k.split(':')[0]; tgt[d] = tgt[d].clone().add(new THREE.Vector3(...ar(this.WdK([-dl, dy, 0])))); }
     const chains = [];
     for (let i = 0; i < 4; i++) chains.push(fingerArch(hm.fingers[i], side, toL(ar(tgt[i + 1])), HAND_POLE, 0.7));
-    const thumb = thumbChain(hm.thumb, side, toL(ar(tgt[0])), V.norm([0.2, 0.2, -0.5]), [0, 0.6, 0.6]); this.lastThumbShort = thumb.short;
+    let thumb = thumbChain(hm.thumb, side, toL(ar(tgt[0])), V.norm([0.2, 0.2, -0.5]), [0, 0.6, 0.6]); this.lastThumbShort = thumb.short;
     poseFingers(rig, hm, fr, chains, thumb);
+    // تصحيح التلامس الجانبي: الإصبع الضاغط ينزل مع مفتاحه ~6 مم تحت سطح جيرانه، فإن امتد لحم طرفه (خصوصًا الإبهام العريض المائل)
+    // خارج عرض مفتاحه دخل في المفتاح المجاور. نقيس الجلد الفعلي بعد الوضعية، ونزيح هدف ذلك الإصبع على عرض اللوحة بالقدر اللازم
+    // ليبقى طرفه داخل مفتاحه، ونضبط عمقه ليستقر لحم الطرف على سطح مفتاحه (لا اختراق ولا تحليق — سُمك اللحم يختلف بين الأصابع والشخصيتين)، ثم نعيد حلّ الأصابع في الإطار نفسه (تكراران كحدّ أقصى) — لا تأخّر ولا اهتزاز بين الإطارات.
+    for (let it = 0; it < 2; it++) {
+      const sh = this.padSideShift(st);
+      if (!sh) break;
+      for (const [d, [dy, dl]] of sh) tgt[d] = tgt[d].clone().add(new THREE.Vector3(...ar(this.WdK([-dl, dy, 0]))));      // −x في إطار اللوحة = بعيدًا عن السطح
+      for (const [d, [dy, dl]] of sh) { const k = d + ':' + st.digits[d].keyId, o = warm.get(k) || [0, 0]; warm.set(k, [clamp(o[0] + dy, -0.007, 0.007), clamp(o[1] + dl, -0.008, 0.008)]); }
+      for (let i = 0; i < 4; i++) if (sh.has(i + 1)) chains[i] = fingerArch(hm.fingers[i], side, toL(ar(tgt[i + 1])), HAND_POLE, 0.7);
+      if (sh.has(0)) { thumb = thumbChain(hm.thumb, side, toL(ar(tgt[0])), V.norm([0.2, 0.2, -0.5]), [0, 0.6, 0.6]); this.lastThumbShort = thumb.short; }
+      poseFingers(rig, hm, fr, chains, thumb);
+    }
     this.rChains = chains; this.rTargets = tgt;
+  }
+
+  /** لكل إصبع ضاغط: إزاحة جانبية (م، محور y للوحة) تُخرج جلد طرفه من المفاتيح المجاورة، ورفع (م) يُبقيه فوق سطح مفتاحه. Map(d → [dy, lift]) أو null */
+  padSideShift(st) {
+    const rig = this.rig, acc = this.acc, kbInv = acc.kb.matrixWorld.clone().invert(), p = new THREE.Vector3();
+    const FN = ['index', 'middle', 'ring', 'little'], M = 0.0004;
+    if (!this._padV) this._padV = {};
+    const keys = Object.values(acc.keys);
+    let out = null;
+    for (let d = 0; d < 5; d++) {
+      const pr = st.digits[d]; if (!pr || !acc.keys[pr.keyId] || (pr.lift ?? 0) > 0.9) continue;
+      const k = acc.keys[pr.keyId];
+      if (!this._padV[d]) { const bn = d === 0 ? ['thumb3', 'thumb2'] : [FN[d - 1] + '3', FN[d - 1] + '2']; this._padV[d] = rig.verts(bn.map((n) => rig.b('R', n)).filter(Boolean), 0.35).filter((_, j) => j % 3 === 0); }     // كل ثالث رأس (الشبكة كثيفة جدًا عند الأصابع) — أداء
+      const near = keys.filter((q) => Math.abs(q.y - k.y) < 0.045);      // الجيران القريبون فقط (أداء)
+      let up = 0, dn = 0, gap = Infinity;                     // up/dn: إزاحة جانبية لازمة، gap: أقل مسافة بين لحم الطرف وسطح مفتاحه (سالب = اختراق)
+      for (const e of this._padV[d]) {
+        rig.vertexWorld(e.m, e.i, p); p.applyMatrix4(kbInv);
+        if (p.y < 0 || p.y > DIM.H || p.z < 0 || p.z > DIM.KB_LEN) continue;
+        // المفتاح «المالك» لهذه النقطة بنفس قاعدة قياس الاختراق: الأسود يسبق الأبيض
+        let own = null;
+        for (const q of near) { if (Math.abs(p.y - q.y) <= q.wid / 2 && p.z >= q.zc - q.len / 2 && p.z <= q.zc + q.len / 2 && (!own || q.black)) own = q; }
+        if (!own) continue;
+        const depth = p.x - (own.pivot.position.x - own.thick / 2);
+        if (own === k) { if (depth < own.thick) gap = Math.min(gap, -depth); continue; }
+        if (depth <= -M || depth > own.thick + 0.004) continue;
+        if (own.y > k.y) dn = Math.max(dn, p.y - (own.y - own.wid / 2) + M);
+        else up = Math.max(up, own.y + own.wid / 2 - p.y + M);
+      }
+      // التلامس مع سطح المفتاح نفسه: الطرف يستقر على السطح (0.2 مم) فلا يخترقه ولا يحوم فوقه — فقط حين يكون الإصبع ضاغطًا فعلًا (لا أثناء الرفع)
+      const contact = (pr.lift ?? 0) < 0.05 && isFinite(gap) ? gap - 0.0002 : 0;
+      const lift = Math.abs(contact) > 0.0002 ? -clamp(contact, -0.004, 0.008) : 0;
+      if (up > 0 || dn > 0 || lift !== 0) { (out || (out = new Map())).set(d, [clamp(up - dn, -0.007, 0.007), lift]); }
+    }
+    return out;
   }
 
   // ---------- يد يسرى ----------
@@ -237,12 +309,24 @@ export class Accordionist extends SeatedPlayer {
     const toL = (q) => { const d = V.sub(q, O); return [V.dot(d, xv), V.dot(d, yv), V.dot(d, zv)]; };
     this.handLFrame = fr;
     this.poseArm('L', fr, LPOLE_ARM);
+    const warm = this._warmL || (this._warmL = new Map());
+    const wkey = (d) => { const pr = st.digits[d]; return d + ':' + (d < 3 && pr && acc.buttons[pr.bassId] && (pr.lift ?? 0) <= 0.05 ? pr.bassId : 'h'); };
+    for (const k of [...warm.keys()]) if (wkey(+k.split(':')[0]) !== k) warm.delete(k);
+    for (const [k, off] of warm) { const d = +k.split(':')[0]; tgt[d] = tgt[d].clone().add(new THREE.Vector3(...ar(this.WdL(off)))); }
     const chains = [];
     for (let i = 0; i < 4; i++) chains.push(fingerArch(hm.fingers[i], side, toL(ar(tgt[i])), HAND_POLE, 0.7));
     // الإبهام خلف الصندوق: على حافته العليا الخلفية
     const thTarget = this.WL([xEnd + 0.012, DIM.H + 0.006, colZ(clamp(st.z, 0, 7)) - 0.03]);
     const thumb = thumbChain(hm.thumb, side, toL(ar(thTarget)), V.norm([-0.2, 0.2, -0.5]), [0, 0.6, 0.6]);
     poseFingers(rig, hm, fr, chains, thumb);
+    // تلامس الأصابع الضاغطة مع الأزرار (كاليد اليمنى): الطرف يستقر على سطح زرّه، ولا يدخل لحمه في الأزرار المجاورة
+    for (let it = 0; it < 2; it++) {
+      const sh = this.padFixLeft(st);
+      if (!sh) break;
+      for (const [d, off] of sh) { tgt[d] = tgt[d].clone().add(new THREE.Vector3(...ar(this.WdL(off)))); chains[d] = fingerArch(hm.fingers[d], side, toL(ar(tgt[d])), HAND_POLE, 0.7); }
+      for (const [d, off] of sh) { const k = wkey(d), o = warm.get(k) || [0, 0, 0]; warm.set(k, [clamp(o[0] + off[0], -0.004, 0.008), clamp(o[1] + off[1], -0.006, 0.006), clamp(o[2] + off[2], -0.006, 0.006)]); }
+      poseFingers(rig, hm, fr, chains, thumb);
+    }
     this.lChains = chains; this.lTargets = tgt;
   }
 
@@ -254,7 +338,103 @@ export class Accordionist extends SeatedPlayer {
     const fl = this.handLFrame, el = this.rig.wp('L', 'lowerArm');
     const dir = new THREE.Vector3(fl.o[0] - el.x, fl.o[1] - el.y, fl.o[2] - el.z).normalize();
     const pos = new THREE.Vector3(...fl.o).addScaledVector(dir, -0.014);
-    this.acc.updateStraps({ pos, dir, up: new THREE.Vector3(...fl.z) });
+    const dorsum = this.leftDorsum();
+    if (this._bassZ == null && dorsum.length) {               // المثبّتان على عمق الصندوق تحت ظهر الكف في الوضع الافتراضي (ثابتان بعدها كالحقيقة؛ تنزلق اليد تحت الحزام)
+      const mid = dorsum[Math.floor(dorsum.length / 2)].clone(); this.acc.leftBox.worldToLocal(mid); this._bassZ = clamp(mid.z, 0.022, DIM.D - 0.022);     // على وجه الصندوق نفسه (لا خلفه)
+    }
+    if (this._bassZ != null) this.acc.setBassStrapZ(this._bassZ);
+    this.acc.updateStraps({ pos, dir, up: new THREE.Vector3(...fl.z), dorsum });
+  }
+
+  /** تصحيح أطراف اليد اليسرى الضاغطة (إحداثيات صندوق الباص): Map(d → [dx, dy, dz]) أو null */
+  padFixLeft(st) {
+    const rig = this.rig, acc = this.acc, inv = acc.leftBox.matrixWorld.clone().invert(), p = new THREE.Vector3();
+    const FN = ['index', 'middle', 'ring', 'little'], R = 0.0078, M = 0.0004, HOVER = 0.0015;
+    // الأزرار في متناول الأصابع فقط (أداء): ضمن 21 سم من الرسغ (طول الكف مع الأصابع) في مستوى لوحة الباص
+    // بحث مباشر في شبكة الأزرار المنتظمة (الزر تحت النقطة وجيرانه فقط) بدل المرور على 48 زرًا لكل رأس — أداء
+    if (!this._btnGrid) { this._btnGrid = new Map(); for (const q of Object.values(acc.buttons)) this._btnGrid.set(q.data.row * 100 + q.data.col, q); }
+    const DY = DIM.BASS_DY, DZ = DIM.BASS_DZ, py0 = (DIM.H - 6 * DY) / 2, pz0 = (DIM.D - 8 * DZ) / 2, cand = [];
+    const btnsAt = (pp) => { cand.length = 0; const r0 = Math.round((DIM.H - pp.y - py0) / DY - 0.5), c0 = Math.round((pp.z - pz0) / DZ - 0.5);
+      for (let r = r0 - 1; r <= r0 + 1; r++) for (let c = c0 - 1; c <= c0 + 1; c++) { const q = this._btnGrid.get(r * 100 + c); if (q) cand.push(q); } return cand; };
+    if (!this._padVL) this._padVL = {};
+    let out = null;
+    for (let d = 0; d < 4; d++) {
+      const pr = st.digits[d], pressing = d < 3 && pr && acc.buttons[pr.bassId] && (pr.lift ?? 0) <= 0.05;
+      const b = pressing ? acc.buttons[pr.bassId] : null;
+      if (!pressing) {
+        // الأصابع غير الضاغطة (أو أثناء الرفع): تبقى فوق كل الأزرار بهامش 1.5 مم — لحم طرف العازف أسمك فكان البنصر الحائم يلمس الزر تحته
+        if (!this._padVL[d]) this._padVL[d] = rig.verts([FN[d] + '3', FN[d] + '2'].map((n) => rig.b('L', n)).filter(Boolean), 0.35).filter((_, j) => j % 3 === 0);
+        let g0 = Infinity;
+        for (const e of this._padVL[d]) { rig.vertexWorld(e.m, e.i, p); p.applyMatrix4(inv); for (const q of btnsAt(p)) { const dy = p.y - q.y, dz = p.z - q.z; if (dy * dy + dz * dz > R * R) continue; g0 = Math.min(g0, p.x - (DIM.WL + q.pivot.position.x + 0.00625)); } }
+        if (isFinite(g0) && g0 < HOVER - 0.0002 && g0 > -0.01) (out || (out = new Map())).set(d, [HOVER - g0, 0, 0]);
+        continue;
+      }
+      if (!this._padVL[d]) this._padVL[d] = rig.verts([FN[d] + '3', FN[d] + '2'].map((n) => rig.b('L', n)).filter(Boolean), 0.35).filter((_, j) => j % 3 === 0);
+      let gap = Infinity, sy = 0, sz = 0, sm = 0;
+      for (const e of this._padVL[d]) {
+        rig.vertexWorld(e.m, e.i, p); p.applyMatrix4(inv);
+        for (const q of btnsAt(p)) {
+          const dy = p.y - q.y, dz = p.z - q.z, r2 = dy * dy + dz * dz; if (r2 > R * R) continue;
+          const surf = DIM.WL + q.pivot.position.x + 0.00625, g = p.x - surf;
+          if (q === b) { if (g > -0.006) gap = Math.min(gap, g); continue; }
+          if (g >= M) continue;                                   // فوق سطح الجار: لا تماس
+          const r = Math.sqrt(r2) || 1e-6, need = R - r + M;     // نُخرج النقطة من دائرة الزر المجاور جانبيًا
+          if (need > sm) { sm = need; sy = dy / r * need; sz = dz / r * need; }
+        }
+      }
+      const dx = isFinite(gap) && Math.abs(gap - 0.0002) > 0.0002 ? -clamp(gap - 0.0002, -0.004, 0.008) : 0;
+      if (dx !== 0 || sm > 0) (out || (out = new Map())).set(d, [dx, sy, sz]);
+    }
+    return out;
+  }
+
+  /** نقاط ظهر الكف اليسرى (عالمية) عبر عرض اليد عند منتصف عظام المشط: يمرّ عليها حزام الباص ملامسًا الجلد من فوق.
+   *  تُقاس من جلد اليد الفعلي في كل إطار (يختلف حجم يد العازف عن العازفة، وتتغير الوضعية أثناء العزف). */
+  leftDorsum() {
+    const rig = this.rig, fr = this.handLFrame; if (!fr) return [];
+    if (!this._dorsV) {                                          // ظهر الكف مربوط بعظام المشط (metacarpal1..4) لا بعظمة الرسغ
+      const sk = rig.meshes.find((m) => m.skeleton) && rig.meshes.find((m) => m.skeleton).skeleton, hb = rig.b('L', 'hand');
+      const meta = sk ? sk.bones.filter((b) => /^metacarpal\dL$/i.test(b.name)) : [];
+      this._dorsV = rig.verts([hb, ...meta].filter(Boolean), 0.4).filter((_, j) => j % 2 === 0);      // نصف الرؤوس يكفي لغلاف ظهر الكف (أداء)
+    }
+    const O = fr.o, X = fr.x, Y = fr.y, Z = fr.z, mid = this.hand.L.fingers[1];
+    const A0 = 0.74 * mid.k[1], p = new THREE.Vector3();          // موضع الحزام على طول الكف: قبل المفاصل بقليل (منتصف المشط)
+    if (this._bassZ != null) { const pl = this.dorsumPlane(); if (pl) return pl; }
+    const NB = 7, bins = new Array(NB).fill(null); let bmin = Infinity, bmax = -Infinity; const pts = [];
+    for (let i = 0; i < this._dorsV.length; i += 2) {
+      const e = this._dorsV[i]; rig.vertexWorld(e.m, e.i, p);
+      const d = [p.x - O[0], p.y - O[1], p.z - O[2]], a = V.dot(d, Y); if (Math.abs(a - A0) > 0.014) continue;
+      const b = V.dot(d, X), c = V.dot(d, Z); pts.push([b, c]); if (b < bmin) bmin = b; if (b > bmax) bmax = b;
+    }
+    if (pts.length < 8) return [];
+    const w = (bmax - bmin) / NB;
+    for (const [b, c] of pts) { const k = Math.min(NB - 1, Math.floor((b - bmin) / w)); if (!bins[k] || c > bins[k][1]) bins[k] = [b, c]; }
+    const out = [];
+    for (let k = 1; k < NB - 1; k++) {                          // نتجاهل الحافتين (جانبا الكف) فيلتف الحزام عليهما بالانحناء الطبيعي
+      if (!bins[k]) continue; const [b, c] = bins[k], h = c + 0.0030;   // فوق الجلد بنصف سُمك الحزام وهامش صغير
+      out.push(new THREE.Vector3(O[0] + Y[0] * A0 + X[0] * b + Z[0] * h, O[1] + Y[1] * A0 + X[1] * b + Z[1] * h, O[2] + Y[2] * A0 + X[2] * b + Z[2] * h));
+    }
+    return out;
+  }
+  dorsumPlane() {
+    const rig = this.rig, p = new THREE.Vector3();
+    // الحزام مثبّت في الصندوق فيمرّ في مستوى ثابت (z = عمق المثبّتين في صندوق الباص)، واليد تنزلق تحته حين تنتقل بين أعمدة الأزرار.
+    // نقيس مقطع ظهر الكف مع هذا المستوى نفسه (أعلى جلد في كل شريحة رأسية) فيلامس الحزام اليد في موضعها الحالي بلا اختراق ولا تعرّج.
+    const lb = this.acc.leftBox, inv = lb.matrixWorld.clone().invert(), zz = this._bassZ, NS = 11, sl = new Array(NS).fill(null);
+    let ylo = Infinity, yhi = -Infinity; const hits = [];
+    for (let i = 0; i < this._dorsV.length; i++) {
+      const e = this._dorsV[i]; rig.vertexWorld(e.m, e.i, p); p.applyMatrix4(inv);
+      if (Math.abs(p.z - zz) > 0.017) continue;                  // عرض الحزام كله (±15 مم) وهامش
+      hits.push([p.y, p.x]); if (p.y < ylo) ylo = p.y; if (p.y > yhi) yhi = p.y;
+    }
+    if (hits.length < 10) return null;
+    const sw = (yhi - ylo) / NS;
+    for (const [y, x] of hits) { const k = Math.min(NS - 1, Math.floor((y - ylo) / sw)); if (!sl[k] || x > sl[k][1]) sl[k] = [y, x]; }
+    // غلاف علوي: ارتفاع كل شريحة = أعلى جلد فيها وفي جارتيها، فلا ينخفض الحزام بين نقطتين فيظهر الجلد من خلاله (الجلد الحقيقي لا يتبع كل نتوء)
+    const hx = sl.map((v, k) => (v ? Math.max(v[1], sl[k - 1] ? sl[k - 1][1] : -1, sl[k + 1] ? sl[k + 1][1] : -1) : null));
+    const plane = [];
+    for (let k = 1; k < NS - 1; k++) if (sl[k]) plane.push(lb.localToWorld(new THREE.Vector3(hx[k] + 0.0050, sl[k][0], zz)));     // نصف سُمك الحزام + هامش للجلد
+    return plane.length >= 2 ? plane : null;
   }
 
   // قياس اختراق اليدين للمفاتيح/الأزرار (مم): أعمق نقطة جلد داخل جسم المفتاح، وأقرب مسافة للأطراف من أهدافها

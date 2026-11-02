@@ -86,6 +86,7 @@ function setPerformer(g, onStatus) {
   if (cur && cur.g === g) return Promise.resolve(g);
   if (switching) return switching;
   switching = (async () => {
+    await null;                                           // يضمن أن finally لا تُنفَّذ قبل إسناد switching (الشخصية المخزّنة لا تنتظر شيئًا فكان القفل يبقى للأبد)
     try {
       if (!chars[g]) { onStatus && onStatus('loading'); chars[g] = await loadCharacter(g); chars[g].life = makeLife(chars[g].player); }
       const c = chars[g];

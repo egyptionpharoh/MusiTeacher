@@ -128,13 +128,15 @@ class Ribbon {
     this.mesh = new THREE.Mesh(g, mat); this.mesh.frustumCulled = false; this.mesh.castShadow = true;
     this.curve = new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(0, 0, 1)], false, 'catmullrom', 0.4);
   }
-  set(points, up) {
+  /** nfn (اختياري): دالة تعيد لكل نقطة اتجاه «الخارج» عن سطح الجسم؛ يبقى وجه الحزام المسطّح مواجهًا له فلا يلتف الحزام عند تغيّر اتجاهه */
+  set(points, up, nfn, widthDir) {
     this.curve.points = points.map((p) => (p.isVector3 ? p : new THREE.Vector3(...p)));
     const N = this.N, P = this.curve.getPoints(N), pos = this.pos, U = up ? new THREE.Vector3(...up) : this.up;
-    const t = new THREE.Vector3(), s = new THREE.Vector3(), n = new THREE.Vector3(), p = new THREE.Vector3();
+    const t = new THREE.Vector3(), s = new THREE.Vector3(), n = new THREE.Vector3(), p = new THREE.Vector3(), prevS = new THREE.Vector3(1, 0, 0), U2 = new THREE.Vector3();
     for (let i = 0; i <= N; i++) {
       this.curve.getTangentAt(i / N, t).normalize();
-      s.crossVectors(t, U); if (s.lengthSq() < 1e-6) s.set(1, 0, 0); s.normalize(); n.crossVectors(s, t).normalize();
+      if (nfn) U2.copy(nfn(P[i])); else U2.copy(U);
+      if (widthDir) { s.copy(widthDir).addScaledVector(t, -widthDir.dot(t)); } else s.crossVectors(t, U2); if (s.lengthSq() < 1e-4) s.copy(prevS); s.normalize(); if (s.dot(prevS) < 0 && i > 0) s.negate(); prevS.copy(s); n.crossVectors(s, t).normalize();
       let k = 0;
       for (const [a, b] of [[-1, 1], [1, 1], [1, -1], [-1, -1]]) { p.copy(P[i]).addScaledVector(s, a * this.width / 2).addScaledVector(n, b * this.thick / 2); const o = (i * 4 + k++) * 3; pos[o] = p.x; pos[o + 1] = p.y; pos[o + 2] = p.z; }
     }
@@ -195,9 +197,14 @@ export function buildAccordion(opts = {}) {
   }
   // نافذة بيضاء لؤلؤية على واجهة صندوق الباص (كما في المرجع) + حافة
   add(leftBox, new THREE.Mesh(rbox(0.0012, 0.12, 0.034, 0.0006, 1), M.binding), WL * 0.5, H * 0.58, D + 0.0007, 'inlay', false).rotation.y = 0;
-  // مشابك حزام المعصم على صندوق الباص (حلقتان معدنيتان على الطرف الخارجي)
-  const wA = add(leftBox, new THREE.Mesh(new THREE.TorusGeometry(0.0085, 0.0021, 8, 18), M.chrome), WL + 0.003, 0.05, 0.012, 'wristAnchor'); wA.rotation.y = Math.PI / 2;
-  const wB = add(leftBox, new THREE.Mesh(new THREE.TorusGeometry(0.0085, 0.0021, 8, 18), M.chrome), WL + 0.003, 0.012, D * 0.4, 'wristAnchor'); wB.rotation.x = Math.PI / 2;
+  // مثبّتا حزام اليد اليسرى (حزام الباص) على الطرف الخارجي لصندوق الباص: لوح معدني صغير بمسمارين أعلى الوجه وأسفله.
+  // يمرّ الحزام رأسيًا بينهما فوق ظهر الكف (كما في الآلات الحقيقية)، لا حول المعصم. موضعهما على عمق الصندوق يُضبط من يد العازف (setBassStrapZ).
+  const bassFix = [H - 0.013, 0.013].map((y) => {
+    const g = new THREE.Group(); g.position.set(WL + 0.0012, y, D * 0.42); leftBox.add(g);
+    const plate = new THREE.Mesh(rbox(0.0024, 0.016, 0.036, 0.0008, 1), M.chrome); plate.castShadow = true; g.add(plate); tag(plate, 'wristAnchor');
+    for (const dz of [-0.012, 0.012]) { const sc = new THREE.Mesh(new THREE.CylinderGeometry(0.0022, 0.0022, 0.0016, 10), M.chrome); sc.rotation.z = Math.PI / 2; sc.position.set(0.0018, 0, dz); g.add(sc); }
+    return g;
+  });
 
   // ---------- لوحة المفاتيح ----------
   // إطار لوحة المفاتيح kb (محلي): x = عمودي على سطح اللوحة (السالب نحو الخارج، حيث أصابع العازفة)،
@@ -347,13 +354,17 @@ export function buildAccordion(opts = {}) {
     L: { top: () => leftBox.localToWorld(new THREE.Vector3(WL * 0.5, H + 0.0105, D * 0.42)), bot: () => leftBox.localToWorld(new THREE.Vector3(WL * 0.5, -0.004, D * 0.42)) },
   };
   /** مسار الجسم لكل جهة: نقاط بإحداثيات العالم (فوق الكتف، الظهر، تحت الإبط) تحسبها العازفة بعد الجلوس. */
-  function setShoulderPath(side, worldPts, width = 0.05) {
+  function setShoulderPath(side, worldPts, width = 0.05, outward = null) {
     let s = shoulder[side];
     if (!s) { const rb = new Ribbon(56, width, 0.006, M.strap, [0, 1, 0]); rb.mesh.userData.part = 'strap'; straps.add(rb.mesh); pickables.push(rb.mesh); s = shoulder[side] = { rb }; }
-    s.path = worldPts.map((p) => p.clone()); s.rb.width = width;
+    s.path = worldPts.map((p) => p.clone()); s.rb.width = width; s.out = outward || null;
   }
   const wrist = { loopA: new Ribbon(20, 0.022, 0.004, M.strap, [1, 0, 0]), loopB: new Ribbon(20, 0.022, 0.004, M.strap, [1, 0, 0]), cuff: null };
   for (const r of [wrist.loopA, wrist.loopB]) { r.mesh.userData.part = 'strap'; straps.add(r.mesh); pickables.push(r.mesh); }
+  // حزام الباص: شريط جلدي واحد من المثبّت العلوي إلى السفلي يعبر فوق ظهر الكف، مع إبزيم ضبط في جزئه العلوي
+  const bassStrap = new Ribbon(48, 0.030, 0.0045, M.strap, [1, 0, 0]); bassStrap.mesh.userData.part = 'strap'; straps.add(bassStrap.mesh); pickables.push(bassStrap.mesh);
+  const bassBuckle = new THREE.Mesh(new THREE.TorusGeometry(0.0115, 0.0018, 6, 4), M.chrome); bassBuckle.userData.part = 'strap'; bassBuckle.castShadow = true; straps.add(bassBuckle);
+  function setBassStrapZ(z) { const zz = Math.max(0.022, Math.min(D - 0.022, z)); for (const g of bassFix) g.position.z = zz; }
   wrist.cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.03, 32, 1, true), new THREE.MeshStandardMaterial({ color: 0x241b16, roughness: 0.55, side: THREE.DoubleSide }));
   wrist.cuff.userData.part = 'strap'; wrist.cuff.castShadow = true; pickables.push(wrist.cuff); straps.add(wrist.cuff);
   const cuffBuckle = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.016, 0.004), M.chrome); cuffBuckle.position.set(0, 0, 0.0425); wrist.cuff.add(cuffBuckle);
@@ -367,9 +378,29 @@ export function buildAccordion(opts = {}) {
       const s = shoulder[side]; if (!s || !s.path) continue;
       const top = anchors[side].top(), bot = anchors[side].bot();
       const pts = [top, top.clone().lerp(s.path[0], 0.5).add(new THREE.Vector3(0, 0.03, 0)), ...s.path, bot.clone().lerp(s.path[s.path.length - 1], 0.4).add(new THREE.Vector3(0, 0.02, 0)), bot];
-      s.rb.set(pts.map(L), [0, 0, 1]);
+      const nf = s.out ? (pl) => s.out(pl.clone().applyMatrix4(root.matrixWorld)).transformDirection(inv) : null;
+      s.rb.set(pts.map(L), [0, 0, 1], nf);
     }
+    if (wristInfo && wristInfo.dorsum && wristInfo.dorsum.length) {
+      // حزام الباص فوق ظهر الكف: المثبّت العلوي ← يبتعد قليلًا عن الوجه فوق صفوف الأزرار ← نقاط ظهر الكف (من الأعلى للأسفل) ← المثبّت السفلي
+      wrist.cuff.visible = false; wrist.loopA.mesh.visible = false; wrist.loopB.mesh.visible = false; bassStrap.mesh.visible = true; bassBuckle.visible = true;
+      const ax = new THREE.Vector3(1, 0, 0).applyQuaternion(leftBox.getWorldQuaternion(new THREE.Quaternion())).transformDirection(inv);
+      const [gT, gB] = bassFix, zz = gT.position.z;
+      const aT = leftBox.localToWorld(new THREE.Vector3(WL + 0.0035, gT.position.y, zz)), aB = leftBox.localToWorld(new THREE.Vector3(WL + 0.0035, gB.position.y, zz));
+      const ds = wristInfo.dorsum.slice().sort((a, b) => b.y - a.y);
+      const lift = (a, toward, k, outM) => { const p = a.clone().lerp(toward, k); const lp = leftBox.worldToLocal(p.clone()); lp.x = Math.max(lp.x, WL + outM); return leftBox.localToWorld(lp); };
+      const pts = [aT, lift(aT, ds[0], 0.35, 0.020), ...ds, lift(aB, ds[ds.length - 1], 0.35, 0.020), aB];
+      // عرض الحزام ثابت على اتجاه عمق الصندوق (z) فيبقى وجهه المسطح على ظهر الكف وعلى الوجه الخارجي للصندوق، بلا التفاف في جزئيه الطرفيين
+      const az = new THREE.Vector3(0, 0, 1).applyQuaternion(leftBox.getWorldQuaternion(new THREE.Quaternion())).transformDirection(inv);
+      bassStrap.set(pts.map(L), [ax.x, ax.y, ax.z], null, az);
+      // الإبزيم على الجزء العلوي من الحزام بين المثبّت وظهر الكف
+      const bp = L(pts[0].clone().lerp(pts[1], 0.6)); bassBuckle.position.copy(bp).addScaledVector(ax, 0.003);
+      bassBuckle.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), ax); bassBuckle.rotateZ(Math.PI / 4);
+      return;
+    }
+    bassStrap.mesh.visible = false; bassBuckle.visible = false;
     if (wristInfo) {
+      wrist.cuff.visible = true; wrist.loopA.mesh.visible = true; wrist.loopB.mesh.visible = true;
       const { pos, dir, up } = wristInfo;
       wrist.cuff.position.copy(L(pos));
       const dl = L(pos.clone().add(dir)).sub(L(pos)).normalize();
@@ -385,7 +416,7 @@ export function buildAccordion(opts = {}) {
 
   return {
     root, rightBox, leftBox, kb, keys, buttons, bellows, pickables, setWidth, getWidth: () => state.w, getFan: () => ({ fan: state.fan, tan: state.tan, theta: state.theta, bottom: state.gb, top: state.gt }),
-    setKeyPress, setBassPress, setLit, clearLit, setShoulderPath, updateStraps, DIM, M,
+    setKeyPress, setBassPress, setLit, clearLit, setShoulderPath, updateStraps, setBassStrapZ, DIM, M,
     /** نقطة التلامس على سطح المفتاح (إحداثيات الآلة المحلية) */
     keyTop(id) { const k = keys[id]; root.updateMatrixWorld(true); return root.worldToLocal(k.mesh.localToWorld(new THREE.Vector3(-k.thick / 2, 0, k.touchZ))); },
     bassTop(id) { const b = buttons[id]; return new THREE.Vector3(DIM.WL + 0.008 + 0.0125 + 0.0063 - 0.004, b.y, b.z); },

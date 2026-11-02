@@ -8,7 +8,7 @@ with sync_playwright() as p:
     ctx = b.new_context(viewport={'width': 1000, 'height': 700}); ctx.add_init_script(A.TAP); ctx.add_init_script('window.__noRender=true')
     ctx.route(lambda u: not u.startswith('http://localhost'), lambda r: r.abort())
     pg = ctx.new_page(); errs = []; pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
-    pg.goto(A.B + '/embed.html?id=accordion-3d&p=index.html'); pg.wait_for_timeout(8000)
+    pg.goto(A.B + '/embed.html?id=accordion-3d&p=index.html%3Fperformer%3D'+__import__('os').environ.get('PERF','')); pg.wait_for_timeout(8000)
     fr = [f for f in pg.frames if '/play/' in f.url][0]
     fr.wait_for_function('window.accordionViewer && accordionViewer.audio.state==="ready"', timeout=120000)
     fr.evaluate('setInterval(()=>accordionViewer.tick(0.033,false),33)')

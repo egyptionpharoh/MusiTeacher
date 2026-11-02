@@ -24,13 +24,13 @@ with sync_playwright() as p:
     ctx.route(lambda u: not u.startswith('http://localhost'), lambda r: r.abort())
     pg = ctx.new_page(); errs = []; pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
     pg.on('console', lambda m: errs.append(m.text[:200]) if m.type == 'error' else None)
-    pg.goto(A.B + '/embed.html?id=accordion-3d&p=' + quote('index.html?th=-1.2&ph=1.15&d=0.95&t=-0.17,0.78,0.3', safe='')); pg.wait_for_timeout(8000)
+    pg.goto(A.B + '/embed.html?id=accordion-3d&p=' + quote('index.html?th=-1.2&ph=1.15&d=0.95&t=-0.17,0.78,0.3&performer='+__import__('os').environ.get('PERF',''), safe='')); pg.wait_for_timeout(8000)
     fr = [f for f in pg.frames if '/play/' in f.url][0]
     fr.wait_for_function('window.accordionViewer && accordionViewer.audio.state==="ready"', timeout=120000)
     fr.evaluate('setInterval(()=>accordionViewer.tick(0.033,false),33)'); pg.wait_for_timeout(2500)
     iframe = pg.query_selector('iframe'); box = iframe.bounding_box()
     # إسقاط موضع مفتاح على الشاشة
-    PROJ = """(id)=>{const v=accordionViewer,k=v.acc.keys[id],T=v.THREE;const p=k.mesh.localToWorld(new T.Vector3(-k.thick/2,0,k.black?0:0.025));p.project(v.camera);return [(p.x+1)/2*innerWidth,(1-p.y)/2*innerHeight];}"""
+    PROJ = """(id)=>{const v=accordionViewer,k=v.acc.keys[id],T=v.THREE;const p=k.mesh.localToWorld(new T.Vector3(-k.thick/2,0,k.touchZ));p.project(v.camera);return [(p.x+1)/2*innerWidth,(1-p.y)/2*innerHeight];}"""
     res = []
     # لوحة المفاتيح تُغطّيها الأيدي أحيانًا، لذا نختار المفاتيح حسب الظهور
     for midi, name in [(60,'دو٤'),(64,'مي٤'),(67,'صول٤'),(72,'دو٥'),(69,'لا٤')]:

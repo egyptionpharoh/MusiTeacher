@@ -131,6 +131,8 @@ svg.i{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.3;stro
 @container stage (max-height:330px){ .nc-hint,.nc-count{display:none} }
 @container stage (max-height:560px){ .stage.is-vertical .nc-hint{display:none} }
 @container stage (max-width:620px){ .note-card{width:clamp(160px,40cqw,260px)} }
+/* الوضع الأفقي: الزند والرأس إلى اليمين، فتنتقل البطاقة إلى جهة الصندوق (اليسار) حتى لا تغطي أسماء الأوتار عند الرأس */
+.stage:not(.is-vertical) .note-card{inset-inline-start:auto;inset-inline-end:156px}
 
 /* زند عمودي (الهاتف): البطاقة شريط أفقي في الأسفل فوق الصندوق */
 .stage.is-vertical .note-card{top:auto;bottom:10px;inset-inline:10px;width:auto;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center;padding:8px 12px}
@@ -56435,10 +56437,13 @@ class Fingerboard3D {
     // التكبير يقترب من منطقة الأصابع
     const yc = (VIEW.yMin + VIEW.yMax) / 2 + (s.zoom > 1 ? Math.min(0.1, 0.08 * (s.zoom - 1)) : 0);
     const T = new THREE.Vector3(0, YB + yc, 0.012);
-    const dir = new THREE.Vector3(Math.sin(s.a) * Math.cos(s.b), Math.sin(s.b), Math.cos(s.a) * Math.cos(s.b));
+     // الوضع الأفقي: الزند إلى يمين الشاشة (يد العازف اليسرى) ووتر قرار المفرد في الأعلى.
+    // هذا دوران 180° داخل مستوى الشاشة وليس قلبًا مرآويًا: وجه العود يبقى مواجهًا للمشاهد.
+    // الوضع العمودي (الهاتف) بلا تغيير (sg = 1).
+    const sg = this.vertical ? 1 : -1;
+    const dir = new THREE.Vector3(sg * Math.sin(s.a) * Math.cos(s.b), sg * Math.sin(s.b), Math.cos(s.a) * Math.cos(s.b));
     const P = T.clone().addScaledVector(dir, d);
-    const up = this.vertical ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(1, 0, 0);
-    const m = this.violin.matrixWorld;
+    const up = this.vertical ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(-1, 0, 0);    const m = this.violin.matrixWorld;
     cam.position.copy(P.applyMatrix4(m));
     cam.up.copy(up.transformDirection(m));
     cam.lookAt(T.applyMatrix4(m));
