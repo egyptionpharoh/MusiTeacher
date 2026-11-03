@@ -14,8 +14,8 @@
   {
     "gameId": "rhythm-dictation",
     "gameName": "مسابقة التدوين والإملاء الإيقاعي",
-    "route": "/games/rhythm-dictation",
-    "physicalPath": "D:\\MusiTeacher\\public\\games\\rhythm-dictation",
+    "route": "/dashboard/resources/lab/rhythm-dictation",
+    "physicalPath": "D:\\MusiTeacher\\private-games\\rhythm-dictation",
     "targetKeywords": [
       "الأشكال الإيقاعية", "الأزمنة الإيقاعية", "الموازير", "علامات إيقاعية",
       "النبر القوي", "النبر الضعيف", "الإملاء الإيقاعي", "الإيقاعات الشعبية", 

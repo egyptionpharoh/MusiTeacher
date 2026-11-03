@@ -175,6 +175,19 @@ export const VIRTUAL_GAMES = [
     // allowDownloads: تصدير ملف النوتة ‎.musinote.json‎ · allowPrint: طباعة النوتة للمعلم
     settings: { threeD: false, needsAudio: true, markCorner: 'bottom-left', allowDownloads: true, allowPrint: true },
   },
+
+  {
+    // مستقلة تمامًا عن اللعبة اللحنية (مجلد وملفات وبيانات وتصحيح خاصة بها). بطاقتها في «عالم الألعاب الموسيقية»
+    // (src/lib/gamesConfig.js عبر labId)، وتُخدم محميًة من private-games/rhythm-dictation. الدليل: docs/RHYTHM_DICTATION.md
+    id: 'rhythm-dictation',
+    title: 'مسابقة التدوين والإملاء الإيقاعي',
+    description: 'استماع إلى الأنماط الإيقاعية وتمييزها وتدوينها: إملاء إيقاعي بمستويات متدرجة وفق دروس الأدلة، وتصحيح مبني على الإيقاع المسموع، ومسابقة بين المجموعات، وتدوين وقراءة حرة، ونماذج الإملاء من دليل الصف الثامن.',
+    category: 'notation', grade: null, status: 'available', entry: 'index.html',
+    cover: null, listInLab: false,
+    tags: ['إيقاع', 'إملاء إيقاعي', 'تدوين إيقاعي', 'قراءة إيقاعية', 'إيمي باري', 'مسابقة'],
+    // لا تنزيل ولا طباعة: لا يوجد في اللعبة ما يحتاجهما
+    settings: { threeD: false, needsAudio: true, markCorner: 'bottom-left' },
+  },
 ];
 
 // ---------- دوال مساعدة (تُستعمل في الخادم والواجهة) ----------
