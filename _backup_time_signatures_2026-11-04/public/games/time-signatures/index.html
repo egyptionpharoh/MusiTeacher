@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طريقة أداء الموازين -  By: Hussien Elmalek</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --oman-red: #d92128;
+            --oman-green: #00843d;
+            --accent: #6c5ce7;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 95%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-top: 15px solid var(--oman-red);
+            text-align: center;
+        }
+
+        .header { margin-bottom: 25px; }
+        .badge {
+            background: var(--oman-green);
+            color: white;
+            padding: 5px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .selector-box {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .mode-btn {
+            padding: 10px 25px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            background: white;
+        }
+
+        .mode-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .rhythm-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            min-height: 150px;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .beat-box {
+            width: 110px;
+            height: 110px;
+            border-radius: 20px;
+            border: 5px solid #eee;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.2s;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .beat-box.active {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.2);
+        }
+
+        .beat-box.strong { border-color: var(--oman-red); }
+
+        .maestro-box {
+            background: #fdfdfd;
+            border: 2px dashed #ddd;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        svg { overflow: visible; }
+        .path-guide { fill: none; stroke: #eee; stroke-width: 3; stroke-dasharray: 5; }
+        .ball { fill: var(--oman-red); transition: all 0.3s ease-in-out; }
+
+        .controls { display: flex; gap: 15px; justify-content: center; }
+        button.main-action {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+        .btn-start { background: var(--oman-green); color: white; }
+        .btn-ai { background: #2d3436; color: white; }
+
+        #ai-msg { margin-top: 15px; font-weight: bold; min-height: 24px; color: var(--oman-green); }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div class="badge">لعبة إيقاعية للفنون والمهارات الموسيقية</div>
+        <h1 id="title-text">طريقة أداء الموازين الموسيقية</h1>
+        <small>إعداد وبرمجة: Hussien Elmalek</small>
+    </div>
+
+    <div class="selector-box">
+        <button class="mode-btn" onclick="switchMode(2)">الميزان الثنائي 2/4</button>
+        <button class="mode-btn active" onclick="switchMode(3)">الميزان الثلاثي 3/4</button>
+        <button class="mode-btn" onclick="switchMode(4)">الميزان الرباعي 4/4</button>
+    </div>
+
+    <div class="rhythm-grid" id="beat-container"></div>
+
+    <div class="maestro-box">
+        <h4 id="direction-hint">حركة إشارات الميزان الصحيحة</h4>
+        <svg width="200" height="160" id="maestro-svg">
+            <path id="guide-path" class="path-guide" d="" />
+            <circle id="moving-ball" class="ball" r="10" cx="100" cy="20" />
+        </svg>
+    </div>
+
+    <div class="controls">
+        <button class="main-action btn-start" onclick="togglePlay()" id="play-btn">ابدأ العزف</button>
+        <button class="main-action btn-ai" onclick="runAI()">تحليل الأداء</button>
+    </div>
+
+    <div id="ai-msg"></div>
+</div>
+
+<script>
+    let currentMode = 3;
+    let isPlaying = false;
+    let interval;
+    let currentBeat = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const config = {
+        2: {
+            name: "الثنائي",
+            beats: [{t: "قوي", f: 880}, {t: "ضعيف", f: 440}],
+            path: "M100 20 L100 140",
+            coords: [{x:100, y:140}, {x:100, y:20}]
+        },
+        3: {
+            name: "الثلاثي",
+            beats: [{t: "قوي", f: 880}, {t: "ضعيف", f: 440}, {t: "ضعيف", f: 440}],
+            // تم ضبط المسار هنا ليكون مثلث (أسفل - يمين - أعلى)
+            path: "M100 20 L100 140 L180 140 Z",
+            coords: [{x:100, y:140}, {x:180, y:140}, {x:100, y:20}]
+        },
+        4: {
+            name: "الرباعي",
+            beats: [{t: "قوي", f: 880}, {t: "ضعيف", f: 440}, {t: "نصف قوي", f: 660}, {t: "ضعيف", f: 440}],
+            path: "M100 20 L100 140 M100 140 L20 100 M20 100 L180 100 M180 100 L100 20",
+            coords: [{x:100, y:140}, {x:20, y:100}, {x:180, y:100}, {x:100, y:20}]
+        }
+    };
+
+    function switchMode(m) {
+        stopMetronome();
+        currentMode = m;
+        document.querySelectorAll('.mode-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', (idx + 2) === m);
+        });
+        document.getElementById('title-text').innerText = `طريقة أداء الميزان ${config[m].name} (${m}/4)`;
+        renderBeats();
+        updateMaestroPath();
+    }
+
+    function renderBeats() {
+        const container = document.getElementById('beat-container');
+        container.innerHTML = '';
+        config[currentMode].beats.forEach((b, i) => {
+            const div = document.createElement('div');
+            div.className = `beat-box ${i === 0 ? 'strong' : ''}`;
+            div.id = `beat-${i}`;
+            div.innerHTML = `<span>${i+1}</span><small>${b.t}</small>`;
+            div.onclick = () => { playTone(b.f, 0.2); highlightBeat(i); };
+            container.appendChild(div);
+        });
+    }
+
+    function updateMaestroPath() {
+        document.getElementById('guide-path').setAttribute('d', config[currentMode].path);
+        const ball = document.getElementById('moving-ball');
+        ball.setAttribute('cx', 100); ball.setAttribute('cy', 20);
+    }
+
+    function playTone(freq, dur) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.value = freq;
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur);
+    }
+
+    function togglePlay() { isPlaying ? stopMetronome() : startMetronome(); }
+
+    function startMetronome() {
+        isPlaying = true; currentBeat = 0;
+        document.getElementById('play-btn').innerText = "إيقاف";
+        document.getElementById('play-btn').style.background = "#e74c3c";
+        interval = setInterval(() => {
+            const bConfig = config[currentMode].beats[currentBeat];
+            playTone(bConfig.f, 0.2);
+            highlightBeat(currentBeat);
+            moveBall(currentBeat);
+            currentBeat = (currentBeat + 1) % currentMode;
+        }, 850); // تم تقليل السرعة قليلاً لتناسب استيعاب الحركة
+    }
+
+    function stopMetronome() {
+        isPlaying = false; clearInterval(interval);
+        document.getElementById('play-btn').innerText = "ابدأ العزف";
+        document.getElementById('play-btn').style.background = "var(--oman-green)";
+        document.querySelectorAll('.beat-box').forEach(b => b.classList.remove('active'));
+    }
+
+    function highlightBeat(idx) {
+        document.querySelectorAll('.beat-box').forEach(b => b.classList.remove('active'));
+        document.getElementById(`beat-${idx}`).classList.add('active');
+    }
+
+    function moveBall(idx) {
+        const ball = document.getElementById('moving-ball');
+        const pos = config[currentMode].coords[idx];
+        ball.setAttribute('cx', pos.x); ball.setAttribute('cy', pos.y);
+    }
+
+    function runAI() {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        const msgs = [
+            "تحليل الذكاء الاصطناعي: الميزان منضبط تماماً!",
+            "أداء رائع.. التوافق بين النبر والحركة مثالي.",
+            "مذهل! لقد استوعبت الفرق بين النبر القوي والنبر الضعيف.",
+            "أنت مايسترو المستقبل في مدرستك يا فنان."
+        ];
+        document.getElementById('ai-msg').innerText = msgs[Math.floor(Math.random()*msgs.length)];
+    }
+
+    switchMode(3);
+</script>
+</body>
+</html>

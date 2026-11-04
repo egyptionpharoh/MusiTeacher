@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0">
+<div class="vlp-stage" style="width:1400px;height:880px"><iframe id="f" style="width:100%;height:100%;border:0" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups allow-modals" allow="autoplay; fullscreen"></iframe></div>
+<script>
+const g = new URLSearchParams(location.search).get('g') || 'time-signatures';
+fetch('/api/virtual-games/session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer good-sub'},body:JSON.stringify({gameId:g})})
+ .then(r=>r.json()).then(d=>{window.__sess=d; if(d.ok) document.getElementById('f').src=d.playUrl;});
+</script>

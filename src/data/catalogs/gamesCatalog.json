@@ -26,8 +26,8 @@
   {
     "gameId": "time-signatures",
     "gameName": "لعبة الموازين وإشاراتها",
-    "route": "/games/time-signatures",
-    "physicalPath": "D:\\MusiTeacher\\public\\games\\time-signatures",
+    "route": "/dashboard/resources/lab/time-signatures",
+    "physicalPath": "D:\\MusiTeacher\\private-games\\time-signatures",
     "targetKeywords": [
       "الميزان الموسيقي", "إشارات الميزان", "طريقة أداء الموازين", "الميزان الثنائي", 
       "الميزان الثلاثي", "الميزان الرباعي", "حركة المايسترو", "قيادة الأوركسترا", 

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>طريقة أداء الموازين الإيقاعية — المايسترو ثلاثية الأبعاد | MusiTeacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20261104a">
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="brand"><span class="logo">🎼</span><span><b>MusiTeacher</b><small>عالم الألعاب الموسيقية</small></span></div>
+    <h1>طريقة أداء الموازين الإيقاعية <small>مع المايسترو ثلاثية الأبعاد</small></h1>
+    <div class="tools">
+      <label class="vol" data-tip="مستوى صوت النبض"><span id="volIcon">🔊</span><input id="vol" type="range" min="0" max="100" value="80" aria-label="مستوى الصوت"></label>
+      <button id="btnHelp" class="ic" data-tip="طريقة الاستخدام" aria-label="طريقة الاستخدام">❓</button>
+      <button id="btnSources" class="ic" data-tip="المصادر وحقوق المحتوى" aria-label="المصادر">📚</button>
+      <button id="btnFull" class="ic" data-tip="ملء الشاشة" aria-label="ملء الشاشة">⛶</button>
+    </div>
+  </header>
+
+  <aside id="panel" aria-label="لوحة التحكم">
+    <section class="box">
+      <h2>1. اختر الميزان</h2>
+      <div id="meters" class="seg3" role="radiogroup" aria-label="الميزان">
+        <button data-m="2" role="radio"><b>2/4</b><span>الثنائي</span></button>
+        <button data-m="3" role="radio"><b>3/4</b><span>الثلاثي</span></button>
+        <button data-m="4" role="radio"><b>4/4</b><span>الرباعي</span></button>
+      </div>
+      <h3>طريقة الأداء</h3>
+      <div id="schools" class="seg2 small" role="radiogroup" aria-label="طريقة الأداء">
+        <button data-school="curved" role="radio" data-tip="نقطة لكل نبضة ثم ارتداد خفيف، والحركة منحنية متصلة">〰 مسار منحنٍ بالارتداد</button>
+        <button data-school="arrows" role="radio" data-tip="كل نبضة سهم مستقيم ينتهي عند موضعها، كما في مخططات الأسهم المرقّمة">↗ مسار الأسهم المستقيمة</button>
+      </div>
+      <p id="schoolInfo" class="info"></p>
+    </section>
+
+    <section class="box">
+      <h2>2. مراحل التعلم</h2>
+      <div id="stages" class="stages" role="tablist">
+        <button data-stage="watch" role="tab"><i>👀</i>شاهد</button>
+        <button data-stage="slow" role="tab"><i>🐢</i>شاهد ببطء</button>
+        <button data-stage="pulse" role="tab"><i>🥁</i>مع النبض</button>
+        <button data-stage="practice" role="tab"><i>🎯</i>تدرّب</button>
+      </div>
+      <p id="stageInfo" class="info"></p>
+    </section>
+
+    <section class="box" id="transportBox">
+      <div class="row">
+        <button id="btnPlay" class="big go">▶ ابدأ</button>
+        <button id="btnRestart" class="mid" data-tip="من البداية: ضربة التحضير ثم النبضة الأولى">↺ من البداية</button>
+      </div>
+      <button id="btnStep" class="mid wide" data-tip="تتحرك اليد نبضة واحدة ثم تتوقف عند الإكتوس (لحظة النبضة)">⏭ النبضة التالية (خطوة بخطوة)</button>
+      <div class="speed">
+        <label for="bpm">السرعة: <b id="bpmVal">72</b> نبضة/دقيقة</label>
+        <input id="bpm" type="range" min="40" max="120" step="2" value="72">
+        <label class="chk"><input type="checkbox" id="slow"> بطيء (نصف السرعة: الحركة نفسها بزمن مضاعف)</label>
+        <label class="chk"><input type="checkbox" id="sound"> النبض المسموع</label>
+        <label class="chk inline">الصوت:
+          <select id="voice"><option value="wood">بلوك خشبي</option><option value="claves">كلافيس</option></select></label>
+      </div>
+    </section>
+
+    <section class="box" id="practiceBox" hidden>
+      <h2>الأنشطة</h2>
+      <div id="acts" class="acts">
+        <button data-act="dir"><i>🧭</i>إلى أين تتجه اليد؟</button>
+        <button data-act="order"><i>🔢</i>رتّب الإشارات</button>
+        <button data-act="where"><i>📍</i>أين تقع النبضة؟</button>
+        <button data-act="meter"><i>🎼</i>ما الميزان؟</button>
+        <button data-act="spot"><i>🔍</i>اكتشف الخطأ</button>
+        <button data-act="challenge" class="gold"><i>🏆</i>التحدي</button>
+      </div>
+      <div class="score">النقاط: <b id="score">0</b> <span id="streak"></span></div>
+    </section>
+
+    <details class="box" id="viewBox" open>
+      <summary>العرض والكاميرا</summary>
+      <div id="views" class="seg4">
+        <button data-view="front" data-tip="وجهًا لوجه أمام المايسترو">أمامي</button>
+        <button data-view="behind" data-tip="من خلف المايسترو: يمينها يمينك">من الخلف</button>
+        <button data-view="angle" data-tip="زاوية جانبية لرؤية عمق الحركة">جانبي</button>
+        <button data-view="hands" data-tip="تكبير منطقة اليدين">تكبير</button>
+      </div>
+      <div class="chks">
+        <label class="chk"><input type="checkbox" id="shPath" checked> مسار اليد</label>
+        <label class="chk"><input type="checkbox" id="shPoints" checked> نقاط النبضات</label>
+        <label class="chk"><input type="checkbox" id="shNumbers" checked> أرقام النبضات</label>
+        <label class="chk"><input type="checkbox" id="shTrail" checked> أثر الحركة</label>
+        <label class="chk"><input type="checkbox" id="shLabel" checked> تمييز اليد المستخدمة</label>
+      </div>
+      <h3>اليد القائدة</h3>
+      <div id="hands" class="seg3 small">
+        <button data-hands="right" data-tip="كما في الدليل: إشارات الميزان باليد اليمنى">اليمنى</button>
+        <button data-hands="both" data-tip="اليدان معًا بحركة متناظرة (تتحركان للداخل وللخارج معًا)">اليدان</button>
+        <button data-hands="mirror" data-tip="للمعلم أمام الصف: صورة مرآة باليد اليسرى">مرآة</button>
+      </div>
+      <h3>المايسترو</h3>
+      <div id="performer" class="seg2 small">
+        <button data-g="female">معلمة</button><button data-g="male">معلم</button>
+      </div>
+    </details>
+  </aside>
+
+  <main id="stage">
+    <canvas id="scene" aria-label="المايسترو ثلاثية الأبعاد تؤدي إشارات الميزان"></canvas>
+    <div id="viewNote" class="note"></div>
+    <div id="warnNote" class="note warn" hidden></div>
+    <div id="hotspots"></div>
+    <div id="hud">
+      <div id="hudTitle"></div>
+      <div id="beats" aria-live="off"></div>
+      <div id="caption" aria-live="polite"></div>
+    </div>
+    <div id="quiz" hidden>
+      <div class="qhead"><span id="qTitle"></span><button id="qClose" class="ic sm" aria-label="إغلاق النشاط">✕</button></div>
+      <div id="qText"></div>
+      <div id="qOpts"></div>
+      <div id="qFeed" aria-live="polite"></div>
+      <div class="qfoot"><button id="qReplay" class="mid">↺ أعد العرض</button><button id="qNext" class="mid go" hidden>التالي ◀</button></div>
+    </div>
+    <div id="loading"><div class="spin"></div><div>جارٍ تحميل المايسترو…<span id="loading-pct"></span></div></div>
+    <div id="nogl" class="hidden"><div id="nogl-msg"></div></div>
+    <div id="celebrate" hidden></div>
+  </main>
+</div>
+
+<div id="modal" hidden><div class="mcard"><button id="mClose" class="ic sm" aria-label="إغلاق">✕</button><div id="mBody"></div></div></div>
+<div id="tip" role="tooltip" hidden></div>
+
+<script type="importmap">
+{ "imports": { "three": "./_shared/3d/vendor/three/three.module.js", "three/addons/": "./_shared/3d/vendor/three/addons/" } }
+</script>
+<script type="module" src="./src/main.js?v=20261104a"></script>
+</body>
+</html>

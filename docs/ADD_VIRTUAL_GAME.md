@@ -19,7 +19,8 @@
 - `allowPrint: true` لا يُخفي الصفحة عند الطباعة ولا يمنع Ctrl+P (للألعاب التي فيها زر «طباعة» مقصود).
 - لعبة تظهر كبطاقة في «الألعاب الموسيقية» (`src/lib/gamesConfig.js`) وتُخدم محميًة: أعطها `labId: '<game-id>'` بدل `path`،
   فتفتح البطاقة `/dashboard/resources/lab/<game-id>`، ويُحوَّل الرابط القديم `/dashboard/resources/<id>` إليها تلقائيًا.
-  مثالان: `melodic-dictation` (مسابقة التدوين والإملاء اللحني) و`rhythm-dictation` (مسابقة التدوين والإملاء الإيقاعي، انظر `docs/RHYTHM_DICTATION.md`).
+  أمثلة: `melodic-dictation` (مسابقة التدوين والإملاء اللحني) و`rhythm-dictation` (مسابقة التدوين والإملاء الإيقاعي، انظر `docs/RHYTHM_DICTATION.md`)
+  و`time-signatures` (طريقة أداء الموازين الإيقاعية بالمايسترو ثلاثية الأبعاد، انظر `docs/TIME_SIGNATURES_3D.md`).
 4. لا شيء آخر: البطاقة وصفحة التشغيل والحماية تعمل تلقائيًا. لتصنيف جديد أضفه في `GAME_CATEGORIES`.
 
 ## ملاحظات
