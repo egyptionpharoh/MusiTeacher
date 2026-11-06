@@ -56443,7 +56443,8 @@ class Fingerboard3D {
     const sg = this.vertical ? 1 : -1;
     const dir = new THREE.Vector3(sg * Math.sin(s.a) * Math.cos(s.b), sg * Math.sin(s.b), Math.cos(s.a) * Math.cos(s.b));
     const P = T.clone().addScaledVector(dir, d);
-    const up = this.vertical ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(-1, 0, 0);    const m = this.violin.matrixWorld;
+    const up = this.vertical ? new THREE.Vector3(0, 1, 0) : new THREE.Vector3(-1, 0, 0);
+    const m = this.violin.matrixWorld;
     cam.position.copy(P.applyMatrix4(m));
     cam.up.copy(up.transformDirection(m));
     cam.lookAt(T.applyMatrix4(m));

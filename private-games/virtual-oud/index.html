@@ -943,9 +943,13 @@
     const fbTop = (x) => courseY(0, x) - courseGap(x) * 0.95;
     const fbBottom = (x) => courseY(5, x) + courseGap(x) * 0.95;
 
+    // اتجاه العود على الشاشة: الزند في جهة يد العازف اليسرى (يمين الشاشة)، ووجه العود مواجه للمشاهد،
+    // والوتر الأغلظ (قرار) في الأعلى كما في الصور المرجعية. كل الهندسة أدناه مرسومة بإحداثيات
+    // "الزند عند x الصغيرة"، ثم تُعكس أفقيًا مرة واحدة في buildOud (x' = MIRROR_X - x).
+    const MIRROR_X = 1000;
     const VIEWS = {
         full: { x: 0, y: 0, w: 1000, h: 560 },
-        neck: { x: 4, y: 188, w: 562, h: 184 }      // الزند مكبّرًا (الوضع الأول وما بعده)
+        neck: { x: MIRROR_X - 566, y: 188, w: 562, h: 184 }      // الزند مكبّرًا (معكوس أفقيًا: 434 بدل 4)
     };
 
     let svgRoot = null;
@@ -983,9 +987,9 @@
     }
 
     function buildOud() {
-        const svg = el('svg', { viewBox: '0 0 1000 560', 'aria-hidden': 'true' });
-        svgRoot = svg;
-        const defs = el('defs', null, svg);
+        const root = el('svg', { viewBox: '0 0 1000 560', 'aria-hidden': 'true' });
+        svgRoot = root;
+        const defs = el('defs', null, root);
         defs.innerHTML = `
             <radialGradient id="face-grad" cx="0.55" cy="0.5" r="0.62">
                 <stop offset="0%" stop-color="#f0d29c"/>
@@ -1014,6 +1018,10 @@
                 <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
                 <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>`;
+
+        // مجموعة العود كلها معكوسة أفقيًا (الزند إلى اليمين). تبقى y كما هي فيبقى ترتيب الأوتار
+        // (قرار في الأعلى). النصوص تُعاد إلى اتجاهها الصحيح كلٌّ حول نقطة ارتكازه.
+        const svg = el('g', { id: 'oud-world', transform: `translate(${MIRROR_X} 0) scale(-1 1)` }, root);
 
         // --- صندوق المفاتيح (البنجق) منحنٍ إلى الخلف، وفيه 11 مفتاحًا ---
         const pb = el('g', { class: 'pegbox' }, svg);
@@ -1071,7 +1079,7 @@
         // --- الأنف (العتبة) ---
         el('rect', { x: NUT_X - 5, y: fbTop(NUT_X) - 1, width: 5, height: fbBottom(NUT_X) - fbTop(NUT_X) + 2, rx: 1.5, fill: '#e9dfc7', stroke: '#9b8f78', 'stroke-width': 0.6 }, svg);
 
-        el('text', { x: PLUCK_X, y: CY + 96, class: 'zone-label' }, svg).textContent = 'منطقة الريشة: انقر الأوتار هنا';
+        el('text', { x: PLUCK_X, y: CY + 96, class: 'zone-label', transform: `matrix(-1 0 0 1 ${2 * PLUCK_X} 0)` }, svg).textContent = 'منطقة الريشة: انقر الأوتار هنا';
 
         dotsLayer = el('g', { class: 'dots-layer' }, svg);
         stringsLayer = el('g', { class: 'strings-layer' }, svg);
@@ -1097,7 +1105,7 @@
         el('rect', { x: -40, y: -40, width: 1080, height: 640, class: 'hit-area' }, svg);
 
         container.innerHTML = '';
-        container.appendChild(svg);
+        container.appendChild(root);
         buildPositionNodes();
     }
 
@@ -1236,8 +1244,7 @@
     function createPlayIndicator(i) {
         const g = el('g', { class: 'play-indicator' }, indicatorLayer);
         const dot = el('rect', { class: 'play-dot', x: -9, y: -9, width: 18, height: 18, rx: 9 }, g);
-        const name = el('text', { class: 'play-name', x: 0, y: 0.6 }, g);
-        playIndicators[i] = { g, dot, name, timer: null };
+        const name = el('text', { class: 'play-name', x: 0, y: 0.6, transform: 'scale(-1 1)' }, g);        playIndicators[i] = { g, dot, name, timer: null };
     }
 
     function setTextLines(t, lines, x, fs) {
@@ -1324,8 +1331,7 @@
                 const x = nToX(nQ / 2);
                 const y = courseY(i, x);
                 const dot = el('circle', { cx: x.toFixed(2), cy: y.toFixed(2), r: dotRadius(x).toFixed(2), class: 'pos-dot' }, dotsLayer);
-                const label = el('text', { x: x.toFixed(2), y: (y + 0.5).toFixed(2), class: 'pos-label' }, labelsLayer);
-                map.set(nQ, { dot, label, x, y, r: dotRadius(x), gap: courseGap(x) });
+                const label = el('text', { x: x.toFixed(2), y: (y + 0.5).toFixed(2), class: 'pos-label', transform: `matrix(-1 0 0 1 ${(2 * x).toFixed(2)} 0)` }, labelsLayer);                map.set(nQ, { dot, label, x, y, r: dotRadius(x), gap: courseGap(x) });
             }
             return map;
         });
@@ -1693,7 +1699,9 @@
         if (!ctm) return null;
         const pt = svgRoot.createSVGPoint();
         pt.x = e.clientX; pt.y = e.clientY;
-        return pt.matrixTransform(ctm.inverse());
+        const p = pt.matrixTransform(ctm.inverse());
+        // إحداثيات الشاشة معكوسة أفقيًا بالنسبة إلى إحداثيات الهندسة (انظر MIRROR_X)
+        return { x: MIRROR_X - p.x, y: p.y };
     }
 
     function hitCourse(x, y, current) {
@@ -2104,7 +2112,7 @@
         clientPoint(i, n, xOverride) {
             const x = xOverride !== undefined ? xOverride : nToX(n);
             const pt = svgRoot.createSVGPoint();
-            pt.x = x; pt.y = courseY(i, x);
+            pt.x = MIRROR_X - x; pt.y = courseY(i, x);
             const p = pt.matrixTransform(svgRoot.getScreenCTM());
             return { x: p.x, y: p.y };
         }
