@@ -1,5 +1,5 @@
 'use client';
-// مشغّل ألعاب المختبر: يطلب جلسة من الخادم (تحقق Firebase + الاشتراك) ثم يضع اللعبة في iframe من /play/<id>/.
+// مشغّل ألعاب استوديو الموسيقى الافتراضي: يطلب جلسة من الخادم (تحقق Firebase + الاشتراك) ثم يضع اللعبة في iframe من /play/<id>/.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -96,8 +96,8 @@ export default function LabPlayerPage() {
     );
   }
   const cat = GAME_CATEGORIES[game.category];
-  // الألعاب التي لا تظهر في شبكة المختبر تعود إلى قسم «عالم الألعاب الموسيقية»
-  const back = game.listInLab ? { href: '/dashboard/resources#virtual-lab', label: '← المختبر', place: 'مختبر الألعاب الافتراضية' }
+  // الألعاب التي لا تظهر في شبكة الاستوديو تعود إلى قسم «عالم الألعاب الموسيقية»
+  const back = game.listInLab ? { href: '/dashboard/resources#virtual-lab', label: '← استوديو الموسيقى', place: 'استوديو الموسيقى الافتراضي' }
     : { href: '/dashboard/resources', label: '← الألعاب الموسيقية', place: 'الألعاب الموسيقية' };
   const sandbox = 'allow-scripts allow-same-origin allow-pointer-lock allow-popups allow-modals' + (game.allowDownloads ? ' allow-downloads' : '');
   const mark = '© MusiTeacher – All Rights Reserved – 2026';

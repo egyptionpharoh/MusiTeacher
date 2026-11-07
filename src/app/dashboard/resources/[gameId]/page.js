@@ -10,7 +10,7 @@ export default function GamePlayerPage() {
   const router = useRouter();
   const game = gamesConfig.find(g => g.id === params.gameId);
 
-  // زر ملء الشاشة / تصغير الشاشة (مثل مشغّل ألعاب المختبر)
+  // زر ملء الشاشة / تصغير الشاشة (مثل مشغّل ألعاب استوديو الموسيقى)
   const stageRef = useRef(null);
   const [isFull, setIsFull] = useState(false);
   useEffect(() => {

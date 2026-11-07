@@ -1,5 +1,5 @@
 'use client';
-// قسم «مختبر الألعاب الافتراضية» داخل صفحة الموارد. البيانات من src/data/virtualGames.js فقط.
+// قسم «استوديو الموسيقى الافتراضي» داخل صفحة الموارد. البيانات من src/data/virtualGames.js فقط.
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
@@ -62,7 +62,7 @@ export default function VirtualLab() {
     <section id="virtual-lab" className="vl" aria-labelledby="vl-h">
       <div className="vl-hero">
         <span className="vl-badge">🧪 VIRTUAL MUSIC LAB</span>
-        <h2 id="vl-h" className="vl-title">مختبر الألعاب الافتراضية<small>ثلاثية الأبعاد · تفاعلية · بصوت حقيقي</small></h2>
+        <h2 id="vl-h" className="vl-title">استوديو الموسيقى الافتراضي<small>ثلاثية الأبعاد · تفاعلية · بصوت حقيقي</small></h2>
         <p className="vl-sub">عوالم موسيقية ثلاثية الأبعاد تُشغَّل داخل المنصة: آلات تفاعلية وسلالم ومقامات وعازفة كمان افتراضية، مصمَّمة لتقريب المفاهيم الموسيقية لطلابك.</p>
       </div>
 

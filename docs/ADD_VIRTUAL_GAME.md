@@ -1,4 +1,4 @@
-# إضافة لعبة جديدة إلى «مختبر الألعاب الافتراضية»
+# إضافة لعبة جديدة إلى «استوديو الموسيقى الافتراضي»
 
 1. أنشئ مجلدًا: `private-games/<game-id>/` (حروف إنجليزية صغيرة وأرقام وشرطة فقط) وضع فيه `index.html` وأي ملفات تخصه.
    **لا تضعه أبدًا داخل `public/`** — المجلد `private-games` لا يُخدم إلا عبر `/play/<id>/` بعد التحقق من الجلسة.
@@ -11,7 +11,7 @@
   grade: 'الصف الرابع',            // أو null
   status: 'available',            // available | soon (للمدير فقط) | unavailable (مخفية)
   entry: 'index.html', cover: '/lab-covers/my-game.jpg', tags: ['كلمة'],
-  listInLab: true,                // false = لا تظهر في شبكة المختبر (تُفتح من بطاقتها في «الألعاب الموسيقية» فقط)
+  listInLab: true,                // false = لا تظهر في شبكة استوديو الموسيقى (تُفتح من بطاقتها في «الألعاب الموسيقية» فقط)
   settings: { threeD: true, needsAudio: true, markCorner: 'bottom-left', allowDownloads: false, allowPrint: false },
 }
 ```

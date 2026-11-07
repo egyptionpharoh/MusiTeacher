@@ -1,13 +1,12 @@
-import LibraryViewer from '@/components/LibraryViewer';
-import coversData from '@/data/covers.json';
+import CoverStudio from '@/components/cover-studio/CoverStudio';
+
+// بنك أغلفة السجلات: استوديو لاختيار الغلاف وتخصيصه وتصديره ملف Word حقيقيًا قابلًا للتعديل.
+// النسخة السابقة من هذه الصفحة محفوظة في backups/covers-2026-11-08/page.js
+export const metadata = {
+  title: 'بنك أغلفة السجلات | MusiTeacher',
+  description: 'مجموعة كروت وأغلفة Word احترافية قابلة للتعديل والطباعة فورًا.',
+};
 
 export default function CoversPage() {
-  return (
-    <LibraryViewer 
-      title="بنك أغلفة السجلات"
-      subtitle="مجموعة كروت وأغلفة وورد احترافية قابلة للتعديل والطباعة فوراً"
-      items={coversData}
-      gradientColor="from-violet-400 via-purple-500 to-fuchsia-500"
-    />
-  );
+  return <CoverStudio />;
 }

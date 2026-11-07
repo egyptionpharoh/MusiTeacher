@@ -1,5 +1,5 @@
 // =====================================================================
-//  سجل الألعاب الافتراضية (Virtual Music Lab) — المصدر الوحيد لبيانات الألعاب
+//  سجل الألعاب الافتراضية (استوديو الموسيقى الافتراضي) — المصدر الوحيد لبيانات الألعاب
 //  لإضافة لعبة جديدة: ضع ملفاتها في  private-games/<id>/  ثم أضف عنصرًا هنا.
 //  (الدليل الكامل: docs/ADD_VIRTUAL_GAME.md)
 //
@@ -8,7 +8,7 @@
 //    title       اسم اللعبة (عربي)
 //    description وصف مختصر
 //    category    أحد مفاتيح GAME_CATEGORIES
-//    listInLab   false = لا تظهر في شبكة المختبر (لها بطاقة في مكان آخر) مع بقاء الحماية نفسها
+//    listInLab   false = لا تظهر في شبكة استوديو الموسيقى (لها بطاقة في مكان آخر) مع بقاء الحماية نفسها
 //    grade       المرحلة/الصف المستهدف (نص) أو null = كل المراحل
 //    status      'available' متاحة | 'soon' قيد التطوير (للمدير فقط) | 'unavailable' غير متاحة
 //    entry       ملف التشغيل داخل المجلد (الافتراضي index.html)
@@ -69,6 +69,15 @@ export const VIRTUAL_GAMES = [
     category: 'scales', grade: null, status: 'available', entry: 'index.html',
     cover: '/lab-covers/violin-scales.jpg',
     tags: ['كمان', 'سلم صول', 'سلالم'],
+    settings: { threeD: true, needsAudio: true, markCorner: 'top-left' },
+  },
+  {
+    id: 'oudist-3d',
+    title: 'عازف العود ثلاثي الأبعاد',
+    description: 'عازف أو عازفة ثلاثيا الأبعاد بالزي العماني يعزفان على عود عربي حقيقي الشكل: اليد اليسرى تضغط الأوتار في مواضع النغمات على زند بلا دساتين، واليمنى تضرب بالريشة نزولًا وصعودًا في لحظة الصوت نفسها. تعرّف على أجزاء العود، وعزف حر من خريطة الزند، وتعلّم موجّه خطوة بخطوة، وتمارين لحنية بأسماء الأوتار والنغمات.',
+    category: 'strings', grade: null, status: 'available', entry: 'index.html',
+    cover: '/lab-covers/oudist-3d.jpg',
+    tags: ['عود', 'عازف', 'عازفة', 'ريشة', 'أوتار', 'مقامات', 'آلة شرقية', 'زند'],
     settings: { threeD: true, needsAudio: true, markCorner: 'top-left' },
   },
   {
@@ -164,7 +173,7 @@ export const VIRTUAL_GAMES = [
   },
 
   {
-    // تُعرض بطاقتها في «عالم الألعاب الموسيقية» (src/lib/gamesConfig.js عبر labId) وليس في شبكة المختبر ثلاثي الأبعاد،
+    // تُعرض بطاقتها في «عالم الألعاب الموسيقية» (src/lib/gamesConfig.js عبر labId) وليس في شبكة استوديو الموسيقى ثلاثي الأبعاد،
     // لكنها تُشغَّل بنفس الحماية: جلسة موقّعة + /play/melodic-dictation/ من مجلد private-games.
     id: 'melodic-dictation',
     title: 'مسابقة التدوين والإملاء اللحني',

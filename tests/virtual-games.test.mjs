@@ -218,3 +218,22 @@ test('organ-3d: يخدم ملفاته والشخصية والعينات المش
   assert.equal(resolveGameFile(root, 'organ-3d', ['_shared', '..', '..', 'package.json']), null);
   assert.equal(resolveGameFile(root, 'organ-3d', ['src', 'nonexistent.js']), null);
 });
+
+test('oudist-3d: مسجّلة في السجل المشترك ولها غلاف وصفحة دخول', async () => {
+  const { VIRTUAL_GAMES } = await import('../src/data/virtualGames.js');
+  const g = VIRTUAL_GAMES.find((x) => x.id === 'oudist-3d');
+  assert.ok(g && g.status === 'available' && g.category === 'strings');
+  assert.ok(fsAcc.existsSync(pathAcc.join(process.cwd(), 'public', g.cover)));
+  assert.ok(fsAcc.existsSync(pathAcc.join(process.cwd(), 'private-games', 'oudist-3d', g.entry)));
+});
+test('oudist-3d: يخدم ملفاته والشخصية المشتركة ويرفض التسلل', async () => {
+  const { resolveGameFile, gamesRoot } = await import('../src/lib/virtual-games/serve.js');
+  const root = gamesRoot();
+  assert.ok(resolveGameFile(root, 'oudist-3d', []));
+  assert.ok(resolveGameFile(root, 'oudist-3d', ['src', 'main.js']));
+  assert.ok(resolveGameFile(root, 'oudist-3d', ['src', 'character', 'oudist.js']));
+  assert.ok(resolveGameFile(root, 'oudist-3d', ['src', 'audio', 'oud-audio.js']));
+  assert.ok(resolveGameFile(root, 'oudist-3d', ['_shared', '3d', 'models', 'character-male-morph.json']));
+  assert.equal(resolveGameFile(root, 'oudist-3d', ['..', 'organ-3d', 'index.html']), null);
+  assert.equal(resolveGameFile(root, 'oudist-3d', ['_shared', '..', '..', 'package.json']), null);
+});

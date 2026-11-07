@@ -7,3 +7,7 @@ build/
 .env
 .env*.local
 .env.local
+# استوديو فصل الصوت: مخرجات الاختبار
+tests/audio-separator/_dist/
+live-check-output/
+tests/cover-studio/_dist/
