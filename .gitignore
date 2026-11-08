@@ -13,3 +13,10 @@ live-check-output/
 tests/cover-studio/_dist/
 # منبّه الحصص: مخرجات اختبار الواجهة
 tests/class-alarm/_dist/
+# مشاغل الإنماء المهني: مخرجات اختبار الواجهة
+tests/pd-workshops/_dist/
+tests/pd-workshops/_out/
+# مبادرات تعليمية: مخرجات اختبار الواجهة
+tests/initiatives/_dist/
+tests/initiatives/_out/
+tests/initiatives/_out_noai/

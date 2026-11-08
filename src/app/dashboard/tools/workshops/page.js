@@ -1,13 +1,10 @@
-import LibraryViewer from '@/components/LibraryViewer';
-import workshopsData from '@/data/workshops.json';
+import WorkshopStudio from '@/components/pd-workshops/WorkshopStudio';
+
+export const metadata = {
+  title: 'مشاغل الإنماء المهني | MusiTeacher',
+  description: 'عروض تقديمية وحقائب تدريبية جاهزة لبرامج الإنماء المهني.',
+};
 
 export default function WorkshopsPage() {
-  return (
-    <LibraryViewer 
-      title="مشاغل الإنماء المهني"
-      subtitle="عروض تقديمية وحقائب تدريبية جاهزة لبرامج الإنماء المهني"
-      items={workshopsData}
-      gradientColor="from-sky-400 via-indigo-500 to-purple-600"
-    />
-  );
+  return <WorkshopStudio />;
 }
