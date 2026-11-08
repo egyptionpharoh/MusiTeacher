@@ -11,3 +11,5 @@ build/
 tests/audio-separator/_dist/
 live-check-output/
 tests/cover-studio/_dist/
+# منبّه الحصص: مخرجات اختبار الواجهة
+tests/class-alarm/_dist/

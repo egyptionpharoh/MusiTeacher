@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
   FileSpreadsheet, FileText, Music, Mic, Presentation, 
-  CalendarDays, BookOpen, ClipboardList, Star, Crown, BookCopy, ArrowRight, Headphones
+  CalendarDays, BookOpen, ClipboardList, Star, Crown, BookCopy, ArrowRight, Headphones, AlarmClock
 } from 'lucide-react';
 
 export default function TeacherToolsPage() {
@@ -14,6 +14,7 @@ export default function TeacherToolsPage() {
   // استخدام تدرجات لونية ثلاثية الأبعاد (3-Stop Gradients) لإضاءة مذهلة
   const toolsList = [
 { id: 'music-factory', name: 'مصنع الألحان (AI)', desc: 'من كلماتك إلى أغنية أو موسيقى تصويرية، مع برومبت احترافي لـ Suno', icon: <Music size={32} />, color: 'from-fuchsia-500 via-rose-500 to-orange-500', path: '/dashboard/tools/music-factory' },    
+    { id: 'class-alarm', name: 'منبّه الحصص الذكي ⏰', desc: 'نظّم يومك الدراسي وتلقَّ تنبيهًا قبل كل حصة باسم الصف والشعبة، مع جدول أسبوعي أنيق باسمك', icon: <AlarmClock size={32} />, color: 'from-amber-400 via-orange-500 to-sky-600', path: '/dashboard/tools/class-alarm' },
     { id: 'covers', name: 'بنك أغلفة السجلات', desc: 'أغلفة وورد قابلة للتعديل', icon: <FileText size={32} />, color: 'from-violet-400 via-purple-500 to-fuchsia-500', path: '/dashboard/tools/covers' },
     { id: 'audio-separator', name: 'استوديو فصل الصوت بالذكاء الاصطناعي 🎧', desc: 'افصل الغناء عن الموسيقى، أو استخرج الصوت البشري وحده، وحمّل النتيجة بجودة عالية', icon: <Headphones size={32} />, color: 'from-amber-400 via-cyan-500 to-sky-600', path: '/dashboard/tools/audio-separator' },
     { id: 'radio', name: ' مولِّد الإذاعات المدرسية', desc: 'توليد متميز بالذكاء الاصطناعي', icon: <Mic size={32} />, color: 'from-pink-400 via-rose-500 to-red-500', path: '/dashboard/tools/radio' },

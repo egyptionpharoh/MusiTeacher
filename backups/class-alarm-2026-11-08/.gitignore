@@ -1,0 +1,13 @@
+node_modules
+.next/
+out/
+dist/
+build/
+# Environment variables
+.env
+.env*.local
+.env.local
+# استوديو فصل الصوت: مخرجات الاختبار
+tests/audio-separator/_dist/
+live-check-output/
+tests/cover-studio/_dist/
