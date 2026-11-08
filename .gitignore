@@ -20,3 +20,6 @@ tests/pd-workshops/_out/
 tests/initiatives/_dist/
 tests/initiatives/_out/
 tests/initiatives/_out_noai/
+# نوتات النشيد والمارشات: مخرجات اختبار الواجهة
+tests/anthem/_dist/
+tests/anthem/_out/

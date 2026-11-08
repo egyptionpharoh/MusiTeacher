@@ -1,13 +1,11 @@
-import LibraryViewer from '@/components/LibraryViewer';
+import AnthemStudio from '@/components/anthem/AnthemStudio';
 import anthemData from '@/data/anthem.json';
 
+export const metadata = {
+  title: 'نوتات النشيد والمارشات | MusiTeacher',
+  description: 'مكتبة تفاعلية لنوتات الأناشيد والمارشات المدرسية: قراءة واستماع متزامن وتمارين.',
+};
+
 export default function AnthemPage() {
-  return (
-    <LibraryViewer 
-      title="نوتات النشيد والمارشات"
-      subtitle="مكتبة شاملة لنوتات الانصراف والطابور المدرسي"
-      items={anthemData}
-      gradientColor="from-rose-400 via-red-500 to-orange-600"
-    />
-  );
+  return <AnthemStudio files={anthemData} />;
 }
