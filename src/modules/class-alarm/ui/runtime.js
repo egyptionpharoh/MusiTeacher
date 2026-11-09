@@ -64,7 +64,7 @@ export class AlarmRuntime {
   alerts(now) {
     const st = this.getState();
     if (!st || !st.profile) return [];
-    const list = st.settings.enabled ? upcomingAlerts(st.profile, st.settings, now) : [];
+    const list = upcomingAlerts(st.profile, st.settings, now, st.ctx || {});
     return [...list, ...(st.adhoc || [])];
   }
 

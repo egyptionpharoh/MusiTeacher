@@ -405,3 +405,11 @@ textarea.ca-input { resize: vertical; line-height: 1.7; }
   .ca-head h1 { font-size: 1.55rem; }
 }
 @media (prefers-reduced-motion: reduce) { .ca-root *, .ca-alarm-back *, .ca-display * { animation: none !important; transition: none !important; } }
+
+/* الدرس المرتبط من «الخطط الفصلية» */
+.ca-ev-lesson { flex: 1 1 100%; display: flex; align-items: center; flex-wrap: wrap; gap: .3rem; font-size: .86rem; color: var(--ca-next); font-weight: 700; }
+.ca-ev-lesson.is-none { color: var(--ca-ink-2); font-weight: 600; font-style: italic; }
+.ca-ev-st { font-style: normal; background: var(--ca-warn-bg); color: var(--ca-warn); border-radius: 999px; padding: 0 .5rem; font-size: .74rem; }
+.ca-ev-record { grid-column: 3; justify-self: start; margin-top: -.15rem; font-size: .8rem; font-weight: 800; color: var(--ca-brand); text-decoration: underline; }
+.dark .ca-ev-record { color: var(--ca-mist); }
+.ca-next-lesson { margin: 0; font-size: 1rem; color: var(--ca-next); font-weight: 700; }

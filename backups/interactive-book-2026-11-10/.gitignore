@@ -1,0 +1,30 @@
+node_modules
+.next/
+out/
+dist/
+build/
+# Environment variables
+.env
+.env*.local
+.env.local
+# استوديو فصل الصوت: مخرجات الاختبار
+tests/audio-separator/_dist/
+live-check-output/
+tests/cover-studio/_dist/
+# منبّه الحصص: مخرجات اختبار الواجهة
+tests/class-alarm/_dist/
+# مشاغل الإنماء المهني: مخرجات اختبار الواجهة
+tests/pd-workshops/_dist/
+tests/pd-workshops/_out/
+# مبادرات تعليمية: مخرجات اختبار الواجهة
+tests/initiatives/_dist/
+tests/initiatives/_out/
+tests/initiatives/_out_noai/
+# نوتات النشيد والمارشات: مخرجات اختبار الواجهة
+tests/anthem/_dist/
+tests/anthem/_out/
+# الخطط الفصلية: مخرجات اختبار الواجهة ونسخ محلية من ملفات الخطط الرسمية (لا تُرفع)
+tests/lesson-plans/_dist/
+tests/lesson-plans/_out/
+tests/lesson-plans/fixtures/*.pdf
+tests/lesson-plans/fixtures/*.docx

@@ -83,3 +83,22 @@ export async function unzipEntry(buf, wanted) {
   }
   return null;
 }
+
+/** أسماء الملفات داخل الأرشيف (للعثور على صور داخل ملف Word ممسوح) */
+export function unzipNames(buf) {
+  const b = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
+  let eocd = -1;
+  for (let i = b.length - 22; i >= Math.max(0, b.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) return [];
+  const n = dv.getUint16(eocd + 10, true);
+  let p = dv.getUint32(eocd + 16, true);
+  const dec = new TextDecoder(), out = [];
+  for (let k = 0; k < n; k++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) break;
+    const nlen = dv.getUint16(p + 28, true), xlen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true);
+    out.push(dec.decode(b.subarray(p + 46, p + 46 + nlen)));
+    p += 46 + nlen + xlen + clen;
+  }
+  return out;
+}

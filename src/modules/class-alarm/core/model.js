@@ -20,7 +20,7 @@ import { DEFAULT_TZ, normHHMM, parseHHMM, toHHMM, isDateKey, safeTz } from './ti
 export const STORE_VERSION = 1;
 export const ORDINALS = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة', 'الخامسة', 'السادسة', 'السابعة', 'الثامنة', 'التاسعة', 'العاشرة', 'الحادية عشرة', 'الثانية عشرة'];
 export const OMAN_DAYS = [0, 1, 2, 3, 4];
-export const BEFORE_PRESETS = [30, 15, 10, 5, 2, 1];
+export const BEFORE_PRESETS = [60, 30, 15, 10, 5, 2, 1];
 export const EXTRA_KINDS = [
   { id: 'lesson', label: 'حصة استثنائية' },
   { id: 'meeting', label: 'اجتماع' },
@@ -193,6 +193,8 @@ export function defaultSettings() {
     h24: false,
     motivation: true,
     sync: false,
+    // تذكير المساء من «الخطط الفصلية» (يعمل فقط إن وُجدت خطط وروابط معتمدة)
+    planReminders: { on: false, time: '19:00', tone: 'soft', tomorrow: true, postponed: true, incomplete: true, unlinked: false },
   };
 }
 export function normalizeSettings(s) {
@@ -212,6 +214,7 @@ export function normalizeSettings(s) {
     h24: bool(o.h24),
     motivation: o.motivation !== false,
     sync: bool(o.sync),
+    planReminders: (() => { const p = o.planReminders || {}, dp = d.planReminders; return { on: bool(p.on), time: normHHMM(p.time) || dp.time, tone: str(p.tone, 60) || dp.tone, tomorrow: p.tomorrow !== false, postponed: p.postponed !== false, incomplete: p.incomplete !== false, unlinked: bool(p.unlinked) }; })(),
   };
 }
 

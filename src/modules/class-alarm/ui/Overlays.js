@@ -10,7 +10,7 @@ export function AlarmOverlay({ ringing, now, onAck, onSnooze, onMute, muted }) {
   if (!ringing.length) return null;
   const a = ringing[ringing.length - 1];
   const toStart = a.startMs ? a.startMs - now : 0;
-  const canSnooze = a.type !== 'end' && a.type !== 'test' && toStart > 70000;
+  const canSnooze = a.type !== 'end' && a.type !== 'test' && a.type !== 'digest' && toStart > 70000;
   return (
     <div className="ca-alarm-back" role="alertdialog" aria-modal="true" aria-labelledby="ca-alarm-title" aria-describedby="ca-alarm-body">
       <div className={`ca-alarm is-${a.type}`}>
@@ -18,7 +18,7 @@ export function AlarmOverlay({ ringing, now, onAck, onSnooze, onMute, muted }) {
         <h2 id="ca-alarm-title">{a.title}</h2>
         <p className="ca-alarm-what">{a.what || ''}</p>
         <div id="ca-alarm-body" className="ca-alarm-body">{a.body.split('\n').slice(a.what ? 1 : 0).map((l, i) => <p key={i}>{l}</p>)}</div>
-        {a.type !== 'end' && a.startMs > now && <div className="ca-alarm-count"><span>تبدأ بعد</span><strong>{clock(toStart)}</strong></div>}
+        {a.type !== 'end' && a.startMs && a.startMs > now && <div className="ca-alarm-count"><span>تبدأ بعد</span><strong>{clock(toStart)}</strong></div>}
         {ringing.length > 1 && <p className="ca-muted ca-small">+ {ringing.length - 1} تنبيه آخر</p>}
         <div className="ca-alarm-actions">
           <button type="button" className="ca-btn is-lg" onClick={() => onAck(null)} autoFocus><Icon n="check" />تم، شكرًا</button>

@@ -12,7 +12,10 @@ import ImportWizard from './ImportWizard';
 import { AlarmOverlay, DisplayMode } from './Overlays';
 import { AlarmRuntime, askNotify, notifyPermission, registerSW, showSystemNotification, closeSystemNotification } from './runtime';
 import { TONES, CUSTOM_PREFIX, playTone, stopAll, unlockAudio, audioState, setCustomResolver, forgetCustom, inspectToneFile } from './audio';
-import { loadStore, saveStore, listTones, saveTone, deleteTone, wipeAll, requestPersist } from './storage';
+import { loadStore, saveStore, listTones, saveTone, deleteTone, wipeAll, requestPersist, setStorageUser } from './storage';
+import { loadWorkspace, PLANS_CHANNEL } from '../../lesson-plans/ui/storage';
+import { normalizeWorkspace } from '../../lesson-plans/core/model.js';
+import { linksForDay, eveningDigest } from '../../lesson-plans/core/links.js';
 import { createApi } from './api';
 import { normalizeStore, normalizeProfile, normalizeSettings, emptyStore, cloneProfile, uid } from '../core/model.js';
 import { zonedParts } from '../core/time.js';
@@ -28,7 +31,7 @@ const TABS = [
 const ADHOC_KEY = 'mt-class-alarm:adhoc';
 const TAB_ID = Math.random().toString(36).slice(2);
 
-export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', backHref = '/dashboard/tools', swScope = '/dashboard/tools/class-alarm' }) {
+export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/class-alarm', backHref = '/dashboard/tools', swScope = '/dashboard/tools/class-alarm', plansHref = '/dashboard/tools/plans' }) {
   const [store, setStore] = useState(null);
   const [toneRecs, setToneRecs] = useState([]);
   const [tab, setTab] = useState('today');
@@ -47,6 +50,8 @@ export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', 
   const [syncState, setSyncState] = useState({ state: 'idle', at: 0, error: '' });
   const [syncOffer, setSyncOffer] = useState(null);
   const [installEvt, setInstallEvt] = useState(null);
+  const [uid, setUid] = useState(undefined);
+  const [plansWs, setPlansWs] = useState(null); // بيانات «الخطط الفصلية» للقراءة فقط (اختيارية)
 
   const api = useMemo(() => (getToken ? createApi({ base: apiBase, getToken }) : null), [getToken, apiBase]);
   const notify = useCallback((text, kind = 'ok') => { setToast({ text, kind, k: Date.now() }); }, []);
@@ -60,8 +65,12 @@ export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', 
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [raw, tn] = await Promise.all([loadStore(), listTones()]);
+      const id = getUserId ? await getUserId() : null;
+      setStorageUser(id);
+      const [raw, tn, ws] = await Promise.all([loadStore(), listTones(), loadWorkspace(id).catch(() => null)]);
       if (!alive) return;
+      setUid(id);
+      setPlansWs(ws ? normalizeWorkspace(ws) : null);
       skipSave.current = !raw ? false : true;
       setStore(normalizeStore(raw || emptyStore()));
       setToneRecs(tn);
@@ -74,7 +83,7 @@ export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', 
     const bip = (e) => { e.preventDefault(); setInstallEvt(e); };
     window.addEventListener('beforeinstallprompt', bip);
     return () => { alive = false; window.removeEventListener('beforeinstallprompt', bip); };
-  }, [swScope]);
+  }, [swScope]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ---------- الحفظ + مزامنة التبويبات ----------
   const bc = useRef(null);
@@ -89,6 +98,16 @@ export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', 
     };
     return () => bc.current && bc.current.close();
   }, []);
+  // تحديثات «الخطط الفصلية» من تبويب آخر (ربط درس، تسجيل تنفيذ...) تنعكس فورًا
+  useEffect(() => {
+    if (uid === undefined || typeof BroadcastChannel === 'undefined') return undefined;
+    const ch = new BroadcastChannel(PLANS_CHANNEL);
+    ch.onmessage = async () => { const ws = await loadWorkspace(uid).catch(() => null); setPlansWs(ws ? normalizeWorkspace(ws) : null); };
+    const vis = async () => { if (document.visibilityState === 'visible') { const ws = await loadWorkspace(uid).catch(() => null); setPlansWs(ws ? normalizeWorkspace(ws) : null); } };
+    document.addEventListener('visibilitychange', vis);
+    return () => { ch.close(); document.removeEventListener('visibilitychange', vis); };
+  }, [uid]);
+
   useEffect(() => {
     if (!store) return undefined;
     if (skipSave.current) { skipSave.current = false; return undefined; }
@@ -145,7 +164,15 @@ export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', 
 
   // ---------- المحرك ----------
   const stateRef = useRef(null);
-  stateRef.current = profile ? { profile, settings, adhoc } : null;
+  const todayKey = profile ? zonedParts(now, profile.tz).dateKey : '';
+  const planCtx = useMemo(() => {
+    if (!profile || !plansWs || !plansWs.assignments.length && !plansWs.plans.length) return {};
+    const cache = new Map();
+    const linksFor = (k) => { if (!cache.has(k)) cache.set(k, linksForDay(plansWs, profile, k, todayKey)); return cache.get(k); };
+    const pr = settings.planReminders;
+    return { linksFor, digest: (k, next) => eveningDigest(plansWs, profile, next, k, pr), hasPlans: plansWs.plans.length > 0 };
+  }, [profile, plansWs, todayKey, settings]); // eslint-disable-line react-hooks/exhaustive-deps
+  stateRef.current = profile ? { profile, settings, adhoc, ctx: planCtx } : null;
   const ringRef = useRef([]);
   ringRef.current = ringing;
   const mutedRef = useRef(false);
@@ -165,7 +192,7 @@ export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', 
     if (!list.length) return;
     setAdhoc((a) => a.filter((x) => !list.some((m) => m.id === x.id)));
     const last = list[list.length - 1];
-    const repeats = s.repeat.on && (s.visual || last.type === 'test') ? s.repeat.count : 0;
+    const repeats = s.repeat.on && last.type !== 'digest' && (s.visual || last.type === 'test') ? s.repeat.count : 0;
     const entries = list.map((a) => ({ ...a, ringsLeft: last.type === 'test' ? 0 : repeats, nextRingAt: t + s.repeat.every * 1000 }));
     if (s.visual || last.type === 'test') { setRingMuted(false); setRinging((r) => [...r.filter((x) => !entries.some((e) => e.id === x.id)), ...entries]); }
     let soundOk = false;
@@ -257,7 +284,7 @@ export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', 
   const removeRemote = async () => { if (!window.confirm('حذف النسخة المحفوظة في حسابك؟ (تبقى بياناتك على هذا الجهاز)')) return; try { await api.remove(); onSettings({ sync: false }); notify('حُذفت النسخة من حسابك.'); } catch (e) { notify(e.message, 'err'); } };
   const restore = (s) => setStore(normalizeStore({ ...s, settings: { ...s.settings, sync: settings ? settings.sync : false }, updatedAt: Date.now() }));
 
-  if (!store || !profile) {
+  if (!store || !profile || uid === undefined) {
     return <div className="ca-root"><div className="ca-loading"><span className="ca-spin" />جارٍ تجهيز المنبه...</div></div>;
   }
 
@@ -294,12 +321,12 @@ export default function ClassAlarmApp({ getToken, apiBase = '/api/class-alarm', 
         </nav>
 
         <main className="ca-main" role="tabpanel">
-          {tab === 'today' && <TodayView profile={profile} settings={settings} now={now} onOverride={onOverride} onGoto={setTab} onOpenImport={() => setImporting(true)} profilesCount={store.profiles.length} missed={missed} rt={rt} onDisplay={() => setDisplay(true)} onTest={test}
+          {tab === 'today' && <TodayView profile={profile} settings={settings} now={now} planCtx={planCtx} plansHref={plansHref} onOverride={onOverride} onGoto={setTab} onOpenImport={() => setImporting(true)} profilesCount={store.profiles.length} missed={missed} rt={rt} onDisplay={() => setDisplay(true)} onTest={test}
             onCopyFrom={() => { const src = [...store.profiles].filter((p) => p.id !== store.activeId).sort((a, b) => b.updatedAt - a.updatedAt)[0]; if (!src) return; const c = cloneProfile(src, { name: `${src.name} (نسخة)` }); onStore((s) => ({ ...s, profiles: [...s.profiles, c], activeId: c.id })); setTab('schedule'); notify(`نسخنا «${src.name}». عدّل الأوقات والأيام للفصل الجديد.`); }} />}
           {tab === 'schedule' && <ScheduleView profile={profile} store={store} settings={settings} onProfile={onProfile} onStore={onStore} onImport={() => setImporting(true)} tones={tones} onPreview={preview} notify={notify} />}
           {tab === 'alerts' && <AlertsView profile={profile} settings={settings} onProfile={onProfile} onSettings={onSettings} tones={tones} onPreview={preview} onAddTone={addTone} onDeleteTone={removeTone} onRenameTone={renameTone}
             readiness={{ audio, perm, leader: rt.leader, worker: rt.worker }} onAskNotify={async () => { const p = await askNotify(); setPerm(p); if (p === 'granted') notify('تم السماح بالإشعارات.'); else if (p === 'denied') notify('رُفض الإذن. يمكنك تغييره من أيقونة القفل بجوار عنوان الموقع.', 'err'); }}
-            onUnlock={() => unlockAudio().then(() => setAudio(audioState()))} onTest={test} now={now} canInstall={!!installEvt} onInstall={async () => { installEvt.prompt(); await installEvt.userChoice.catch(() => {}); setInstallEvt(null); }} onGoto={setTab} />}
+            onUnlock={() => unlockAudio().then(() => setAudio(audioState()))} onTest={test} now={now} hasPlans={!!planCtx.hasPlans} plansHref={plansHref} canInstall={!!installEvt} onInstall={async () => { installEvt.prompt(); await installEvt.userChoice.catch(() => {}); setInstallEvt(null); }} onGoto={setTab} />}
           {tab === 'export' && <ExportView profile={profile} settings={settings} notify={notify} />}
           {tab === 'data' && <DataView store={store} settings={settings} onSettings={onSettings} tonesCount={toneRecs.length} notify={notify} onRestore={restore}
             onWipe={async () => { await wipeAll(); setToneRecs([]); skipSave.current = false; setStore(emptyStore()); setTab('today'); notify('حُذفت كل البيانات من هذا الجهاز.'); }}

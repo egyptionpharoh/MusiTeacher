@@ -59,7 +59,7 @@ export function resolveDay(profile, dateKey) {
 const teaching = (e) => (e.type === 'lesson' || e.type === 'extra') && !e.cancelled;
 
 /** نص الإشعار حسب بيانات الحصة الفعلية */
-export function alertText(profile, e, type, min) {
+export function alertText(profile, e, type, min, link = null, dayName = '') {
   const isMeeting = e.kind === 'meeting' || e.kind === 'activity';
   const head = type === 'end'
     ? (min ? `اقترب ختام ${isMeeting ? e.label : 'الحصة'}` : `انتهت ${isMeeting ? e.label : 'الحصة'}`)
@@ -69,8 +69,10 @@ export function alertText(profile, e, type, min) {
     ? `تنتهي ${min === 1 ? 'بعد دقيقة' : min === 2 ? 'بعد دقيقتين' : `بعد ${min} ${min <= 10 ? 'دقائق' : 'دقيقة'}`}.`
     : type === 'start' ? 'موعد البداية الآن.' : `تبدأ ${min === 1 ? 'بعد دقيقة' : min === 2 ? 'بعد دقيقتين' : `بعد ${min} ${min <= 10 ? 'دقائق' : 'دقيقة'}`}.`;
   const lines = [what, when];
-  if (e.no && e.type === 'lesson') lines.push(`الحصة ${e.label}${e.room ? ` • ${e.room}` : ''}`);
+  if (e.no && e.type === 'lesson') lines.push(`الحصة ${e.label}${dayName ? ` – ${dayName}` : ''}${e.room ? ` • ${e.room}` : ''}`);
   else if (e.room) lines.push(e.room);
+  // الدرس المرتبط من «الخطط الفصلية» — يظهر فقط إن وُجد ربط معتمد
+  if (link && link.lessonTitle) lines.push(`الدرس: ${link.lessonTitle}${link.sessions ? ` (الحصة ${link.part} من ${link.sessions})` : ''}`);
   if (profile.school) lines.push(`مدرسة: ${profile.school.replace(/^مدرسة\s+/, '')}`);
   if (e.note && type !== 'end') lines.push(`📝 ${e.note}`);
   return { title: head, body: lines.filter(Boolean).join('\n'), what, when };
@@ -86,18 +88,21 @@ function inQuiet(settings, profile, ms) {
 }
 
 /** كل تنبيهات يوم معيّن (بعد تطبيق الكتم والإيقاف المؤقت وفترة السماح) */
-export function alertsForDay(profile, settings, dateKey, day = resolveDay(profile, dateKey)) {
+/** ctx.links (اختياري): خريطة «معرّف الحصة ← الدرس المرتبط» من أداة الخطط الفصلية */
+export function alertsForDay(profile, settings, dateKey, day = resolveDay(profile, dateKey), ctx = {}) {
   if (!settings.enabled || day.muted) return [];
   const out = [];
+  const links = ctx.links || null;
   for (const e of day.events) {
     if (!teaching(e) || e.muted) continue;
-    const plan = e.plan || profile.plan;
+    const link = links ? links.get(e.key) || null : null;
+    const plan = (link && link.alertPlan) || e.plan || profile.plan;
     const push = (type, min, due, tone) => {
       if (!Number.isFinite(due)) return;
       if (settings.pausedUntil && due < settings.pausedUntil) return;
       if (inQuiet(settings, profile, due)) return;
       const id = `${profile.id}|${dateKey}|${e.key}|${type}${min || 0}|${e.start}`;
-      out.push({ id, due, type, min, tone, eventKey: e.key, dateKey, profileId: profile.id, startMs: e.startMs, endMs: e.endMs, ...alertText(profile, e, type, min) });
+      out.push({ id, due, type, min, tone, eventKey: e.key, dateKey, profileId: profile.id, startMs: e.startMs, endMs: e.endMs, lessonTitle: link ? link.lessonTitle : '', ...alertText(profile, e, type, min, link, day.dayName) });
     };
     for (const b of plan.before || []) push('before', b.min, e.startMs - b.min * MIN, b.tone);
     if (plan.start && plan.start.on) push('start', 0, e.startMs, plan.start.tone);
@@ -159,7 +164,19 @@ export function weekStats(profile) {
 }
 
 /** يومَا التنبيهات اللذان يراقبهما المحرك: اليوم وغدًا (لحصص بعد منتصف الليل أو تنبيهات قبله) */
-export function upcomingAlerts(profile, settings, now) {
+// ctx.linksFor(dateKey) و ctx.digest(todayKey) اختياريان (من أداة الخطط) — بدونهما يعمل المنبّه كالمعتاد
+export function upcomingAlerts(profile, settings, now, ctx = {}) {
   const today = zonedParts(now, profile.tz).dateKey;
-  return [...alertsForDay(profile, settings, addDays(today, -1)), ...alertsForDay(profile, settings, today), ...alertsForDay(profile, settings, addDays(today, 1))];
+  const day = (k) => alertsForDay(profile, settings, k, resolveDay(profile, k), { links: ctx.linksFor ? ctx.linksFor(k) : null });
+  const out = [...day(addDays(today, -1)), ...day(today), ...day(addDays(today, 1))];
+  const pr = settings.planReminders;
+  if (settings.enabled && pr && pr.on && ctx.digest) {
+    for (const k of [addDays(today, -1), today]) {
+      const due = zonedToMs(k, pr.time, profile.tz);
+      if (!Number.isFinite(due) || (settings.pausedUntil && due < settings.pausedUntil)) continue;
+      const d = ctx.digest(k, addDays(k, 1));
+      if (d) out.push({ id: `${profile.id}|${k}|digest|${pr.time}`, due, type: 'digest', min: 0, tone: pr.tone || 'soft', eventKey: 'digest', dateKey: k, profileId: profile.id, startMs: null, endMs: null, title: d.title, body: d.body, what: '', when: '' });
+    }
+  }
+  return out;
 }

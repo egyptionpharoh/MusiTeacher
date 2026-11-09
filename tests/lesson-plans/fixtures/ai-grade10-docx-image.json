@@ -1,0 +1,148 @@
+{
+ "_note": "محاكاة لرد «القراءة الذكية» على صورة الخطة داخل ملف Word المرفق (الصف العاشر – الفصل الأول – 2025)، منقولة يدويًا من الصورة. الصورة مقتطعة عند الأسبوع التاسع.",
+ "plans": [
+  {
+   "year": "",
+   "semester": "الفصل الدراسي الأول",
+   "grade": "الصف العاشر",
+   "subject": "",
+   "session_columns": [
+    "مدارس الفترة الواحدة",
+    "مدارس الفترتين"
+   ],
+   "per_week_rows": true,
+   "rows": [
+    {
+     "week": "الأول",
+     "unit": "الوحدة الأولى",
+     "lesson": "مفتاح (فا) الخط الرابع",
+     "period_text": "٢٠٢٥/٩/٤ – ٨/٣١",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    },
+    {
+     "week": "الثاني",
+     "unit": "الوحدة الأولى",
+     "lesson": "مفتاح (فا) الخط الرابع",
+     "period_text": "٢٠٢٥/٩/١١-٧",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    },
+    {
+     "week": "الثالث",
+     "unit": "الوحدة الأولى",
+     "lesson": "سلم (فا) الكبير وسلم (ري) الصغير الهارموني",
+     "period_text": "٢٠٢٥/٩/١٨-١٤",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    },
+    {
+     "week": "الرابع",
+     "unit": "الوحدة الأولى",
+     "lesson": "سلم (فا) الكبير وسلم (ري) الصغير الهارموني",
+     "period_text": "٢٠٢٥/٩/٢٥-٢١",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    },
+    {
+     "week": "الخامس",
+     "unit": "الوحدة الأولى",
+     "lesson": "التآلف الكبير والتآلف الصغير",
+     "period_text": "٢٠٢٥/١٠/٢-٩/٢٨",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    },
+    {
+     "week": "السادس",
+     "unit": "الوحدة الأولى",
+     "lesson": "التآلف الكبير والتآلف الصغير",
+     "period_text": "٢٠٢٥/١٠/٩-٥",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    },
+    {
+     "week": "السابع",
+     "unit": "الوحدة الأولى",
+     "lesson": "التآلف الكبير والتآلف الصغير",
+     "period_text": "٢٠٢٥/١٠/١٦-١٢",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    },
+    {
+     "week": "الثامن",
+     "unit": "الوحدة الثانية",
+     "lesson": "فن المولد",
+     "period_text": "٢٠٢٥/١٠/٢٣-١٩",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    },
+    {
+     "week": "التاسع",
+     "unit": "الوحدة الثانية",
+     "lesson": "نشيد (يا نبي سلام عليك)",
+     "period_text": "٢٠٢٥/١٠/٣٠-٢٦",
+     "start": "",
+     "end": "",
+     "sessions": 1,
+     "sessions_alt": 1,
+     "outcomes": "",
+     "assessment": "",
+     "notes": "",
+     "unclear": []
+    }
+   ]
+  }
+ ],
+ "warnings": [
+  "الصورة تنتهي عند الأسبوع التاسع؛ قد تكون الخطة أطول في الأصل.",
+  "العام الدراسي غير مكتوب صراحة (التواريخ من 2025)."
+ ]
+}

@@ -1,7 +1,7 @@
 'use client';
 import ClassAlarmApp from '@/modules/class-alarm/ui/ClassAlarmApp';
-import { getIdToken } from '@/modules/class-alarm/adapters/musiteacherClient';
+import { getIdToken, getUserId } from '@/modules/class-alarm/adapters/musiteacherClient';
 
 export default function ClassAlarmPage() {
-  return <ClassAlarmApp getToken={getIdToken} apiBase="/api/class-alarm" backHref="/dashboard/tools" swScope="/dashboard/tools/class-alarm" />;
+  return <ClassAlarmApp getToken={getIdToken} getUserId={getUserId} apiBase="/api/class-alarm" backHref="/dashboard/tools" swScope="/dashboard/tools/class-alarm" plansHref="/dashboard/tools/plans" />;
 }

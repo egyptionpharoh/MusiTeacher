@@ -2,11 +2,11 @@
 // 🔔 إعدادات التنبيه: خطة التنبيه، النغمات (المكتبة + نغماتي)، طرق التنبيه، الإيقاف المؤقت، الاختبار، وجاهزية المنبه.
 import { useState } from 'react';
 import { Icon, Toggle } from './parts';
-import PlanEditor from './PlanEditor';
+import PlanEditor, { ToneSelect } from './PlanEditor';
 import { TONES, TONE_ACCEPT, MAX_TONE_SECONDS, CUSTOM_PREFIX } from './audio';
 import { fmtTime, zonedParts } from '../core/time.js';
 
-export default function AlertsView({ profile, settings, onProfile, onSettings, tones, onPreview, onAddTone, onDeleteTone, onRenameTone, readiness, onAskNotify, onUnlock, onTest, now, onInstall, canInstall, onGoto }) {
+export default function AlertsView({ hasPlans = false, plansHref = '/dashboard/tools/plans', profile, settings, onProfile, onSettings, tones, onPreview, onAddTone, onDeleteTone, onRenameTone, readiness, onAskNotify, onUnlock, onTest, now, onInstall, canInstall, onGoto }) {
   const [busy, setBusy] = useState(false);
   const [toneErr, setToneErr] = useState('');
   const paused = settings.pausedUntil > now;
@@ -61,6 +61,25 @@ export default function AlertsView({ profile, settings, onProfile, onSettings, t
         )}
         <Toggle checked={settings.h24} onChange={(v) => onSettings({ h24: v })} label="عرض الوقت بنظام 24 ساعة" />
         <Toggle checked={settings.motivation} onChange={(v) => onSettings({ motivation: v })} label="عبارة تحفيزية قصيرة في لوحة اليوم" />
+      </section>
+
+      <section className="ca-card">
+        <div className="ca-card-head"><div><h3>تذكيرات الخطة الفصلية</h3><p className="ca-muted">تذكير واحد في المساء من بيانات «الخطط الفصلية» المرتبطة بجدولك</p></div><a className="ca-btn is-ghost is-sm" href={plansHref}>فتح الخطط الفصلية</a></div>
+        {!hasPlans && <div className="ca-notice is-info"><Icon n="info" /><span>لا توجد خطط فصلية في حسابك بعد. يعمل المنبّه طبيعيًا بدونها، وتبدأ هذه التذكيرات بعد رفع خطتك وربط دروسها بحصصك.</span></div>}
+        <Toggle checked={settings.planReminders.on} onChange={(v) => onSettings({ planReminders: { ...settings.planReminders, on: v } })} label="تذكير المساء" hint="يصدر مرة واحدة يوميًا في الوقت المحدد، ولا يصدر إن لم يكن هناك ما يُذكَّر به" />
+        {settings.planReminders.on && (
+          <div className="ca-indent">
+            <div className="ca-row ca-wrap ca-mb">
+              <label className="ca-time"><span>الوقت</span><input className="ca-input" type="time" value={settings.planReminders.time} onChange={(e) => e.target.value && onSettings({ planReminders: { ...settings.planReminders, time: e.target.value } })} /></label>
+              <ToneSelect value={settings.planReminders.tone} tones={tones} onPreview={onPreview} onChange={(tone) => onSettings({ planReminders: { ...settings.planReminders, tone } })} />
+            </div>
+            <Toggle checked={settings.planReminders.tomorrow} onChange={(v) => onSettings({ planReminders: { ...settings.planReminders, tomorrow: v } })} label="دروس الغد المرتبطة بحصصي" />
+            <Toggle checked={settings.planReminders.postponed} onChange={(v) => onSettings({ planReminders: { ...settings.planReminders, postponed: v } })} label="حصص مؤجلة لم يُحدد لها موعد جديد" />
+            <Toggle checked={settings.planReminders.incomplete} onChange={(v) => onSettings({ planReminders: { ...settings.planReminders, incomplete: v } })} label="دروس تحتاج إلى استكمال" />
+            <Toggle checked={settings.planReminders.unlinked} onChange={(v) => onSettings({ planReminders: { ...settings.planReminders, unlinked: v } })} label="حصص الغد التي لم يُربط بها درس" />
+          </div>
+        )}
+        <p className="ca-muted ca-small">تنبيه كل حصة مرتبطة بدرس يحمل اسم الدرس تلقائيًا. ولتخصيص توقيت تنبيه حصة بعينها (مثل قبلها بساعة) افتح الحصة من «ربط الخطة بجدولي».</p>
       </section>
 
       <section className="ca-card">

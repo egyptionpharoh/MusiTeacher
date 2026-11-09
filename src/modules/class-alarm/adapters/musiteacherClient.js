@@ -9,3 +9,10 @@ export async function getIdToken() {
   if (!u) return null;
   try { return await u.getIdToken(); } catch { return null; }
 }
+
+/** معرّف الحساب الحالي (لفصل بيانات كل معلم على نفس الجهاز) */
+export async function getUserId() {
+  if (!auth || typeof auth !== 'object') return null;
+  if (typeof auth.authStateReady === 'function') { try { await auth.authStateReady(); } catch { /* ignore */ } }
+  return (auth.currentUser && auth.currentUser.uid) || null;
+}

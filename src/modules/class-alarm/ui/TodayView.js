@@ -28,7 +28,7 @@ function Ring({ pct, children, size = 220 }) {
   );
 }
 
-export default function TodayView({ profile, settings, now, onOverride, onGoto, onOpenImport, profilesCount, onCopyFrom, missed, rt, onDisplay, onTest }) {
+export default function TodayView({ profile, settings, now, planCtx = {}, plansHref = '/dashboard/tools/plans', onOverride, onGoto, onOpenImport, profilesCount, onCopyFrom, missed, rt, onDisplay, onTest }) {
   const [dateKey, setDateKey] = useState(null);
   const [act, setAct] = useState(null);        // حدث مختار لتعديل اليوم
   const [adding, setAdding] = useState(false);
@@ -43,6 +43,7 @@ export default function TodayView({ profile, settings, now, onOverride, onGoto, 
   const hasLessons = week.lessons > 0;
   const alertsToday = useMemo(() => alertsForDay(profile, settings, viewKey, day), [profile, settings, viewKey, day]);
   const missedToday = (missed || []).filter((m) => m.dateKey === today);
+  const links = planCtx.linksFor ? planCtx.linksFor(viewKey) : null;
 
   if (!hasLessons && !Object.keys(profile.overrides).length) {
     return (
@@ -92,7 +93,7 @@ export default function TodayView({ profile, settings, now, onOverride, onGoto, 
                 <strong className="ca-countdown" aria-live="off">{clock(nextCard.ms)}</strong>
                 <span className="ca-ring-sub">{durationWords(nextCard.ms)}</span>
               </Ring>
-              <NextInfo e={nextCard.e} profile={profile} h24={h24} onOpen={() => setAct(nextCard.e)} alerts={alertsToday.filter((a) => a.eventKey === nextCard.e.key && a.due > now)} />
+              <NextInfo e={nextCard.e} profile={profile} h24={h24} link={planCtx.linksFor ? planCtx.linksFor(today).get(nextCard.e.key) : null} onOpen={() => setAct(nextCard.e)} alerts={alertsToday.filter((a) => a.eventKey === nextCard.e.key && a.due > now)} />
             </>
           ) : card ? null : (
             <div className="ca-next-empty">
@@ -164,7 +165,9 @@ export default function TodayView({ profile, settings, now, onOverride, onGoto, 
                       {e.muted && <span className="ca-badge">بدون تنبيه</span>}
                       {e.note && <span className="ca-ev-note"><Icon n="note" size={13} /> {e.note}</span>}
                     </span>
+                    {links && (e.type === 'lesson' || (e.type === 'extra' && e.kind === 'lesson')) && !e.cancelled && <LessonLine link={links.get(e.key)} hasPlans={planCtx.hasPlans} />}
                   </button>
+                  {links && links.get(e.key) && viewKey <= today && !e.cancelled && <a className="ca-ev-record" href={`${plansHref}?tab=today&record=${encodeURIComponent(links.get(e.key).assignmentId)}`}>تسجيل تنفيذ الحصة</a>}
                 </li>
               );
             })}
@@ -193,12 +196,20 @@ function groupFree(events) {
   return out;
 }
 
-function NextInfo({ e, profile, h24, onOpen, alerts }) {
+/** سطر الدرس المرتبط من «الخطط الفصلية» — أو رسالة واضحة إن لم يُربط درس بعد (لا نخترع درسًا) */
+function LessonLine({ link, hasPlans }) {
+  if (link) return <span className="ca-ev-lesson"><Icon n="note" size={13} /> الدرس: <b>{link.lessonTitle}</b>{link.sessions ? ` • الحصة ${link.part} من ${link.sessions}` : ''}{link.remaining != null ? ` • المتبقي ${link.remaining}` : ''}{link.status !== 'scheduled' && <i className="ca-ev-st">{link.statusLabel}</i>}</span>;
+  if (!hasPlans) return null;
+  return <span className="ca-ev-lesson is-none">لم يتم تحديد درس لهذه الحصة بعد</span>;
+}
+
+function NextInfo({ e, profile, h24, onOpen, alerts, link }) {
   return (
     <div className="ca-next-info">
       <span className="ca-badge is-next">{e.type === 'extra' ? e.label : `الحصة ${e.label}`}</span>
       <h3>{e.title}</h3>
       {e.cls && <p className="ca-next-cls">{e.cls}</p>}
+      {link && <p className="ca-next-lesson">الدرس: <b>{link.lessonTitle}</b>{link.sessions ? ` (الحصة ${link.part} من ${link.sessions})` : ''}</p>}
       <dl>
         <div><dt>البداية</dt><dd>{fmtTime(e.start, h24)}</dd></div>
         <div><dt>النهاية</dt><dd>{fmtTime(e.end, h24)}</dd></div>

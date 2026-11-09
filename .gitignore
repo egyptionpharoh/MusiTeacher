@@ -23,3 +23,10 @@ tests/initiatives/_out_noai/
 # نوتات النشيد والمارشات: مخرجات اختبار الواجهة
 tests/anthem/_dist/
 tests/anthem/_out/
+# الخطط الفصلية: مخرجات اختبار الواجهة ونسخ محلية من ملفات الخطط الرسمية (لا تُرفع)
+tests/lesson-plans/_dist/
+tests/lesson-plans/_out/
+tests/lesson-plans/fixtures/*.pdf
+tests/lesson-plans/fixtures/*.docx
+# الكتاب التفاعلي الذكي: مخرجات اختبار الواجهة
+tests/interactive-book/_dist/

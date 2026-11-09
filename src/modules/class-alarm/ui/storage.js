@@ -1,14 +1,26 @@
 // 💾 الحفظ المحلي على جهاز المعلم (IndexedDB): الجداول والإعدادات والنغمات الخاصة.
 // لا شيء يُرفع لأي خادم إلا إذا فعّل المعلم «المزامنة مع حسابي» بنفسه (والنغمات لا تُرفع أبدًا).
-const DB = 'musiteacher-class-alarm', VER = 1;
-const LS_KEY = 'mt-class-alarm:store';
+// كل حساب له قاعدة بيانات مستقلة على نفس الجهاز (musiteacher-class-alarm:<uid>) حتى لا يرى معلم بيانات معلم آخر
+// يستخدم نفس المتصفح. البيانات المحفوظة قبل هذا الفصل (القاعدة القديمة بلا uid) تنتقل مرة واحدة لأول حساب يفتح الأداة.
+const BASE = 'musiteacher-class-alarm', VER = 1;
+let DB = BASE, LS_KEY = 'mt-class-alarm:store';
 const FIRED_KEY = 'mt-class-alarm:fired';
 let mem = { kv: new Map(), tones: new Map() };
+let currentUser = null;
 
-function open() {
+export function setStorageUser(uid) {
+  currentUser = uid || null;
+  DB = currentUser ? `${BASE}:${currentUser}` : BASE;
+  LS_KEY = currentUser ? `mt-class-alarm:store:${currentUser}` : 'mt-class-alarm:store';
+  mem = { kv: new Map(), tones: new Map() };
+}
+export const storageUser = () => currentUser;
+export const dbNameFor = (uid) => (uid ? `${BASE}:${uid}` : BASE);
+
+function open(name = DB) {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === 'undefined') { reject(new Error('no-idb')); return; }
-    const r = indexedDB.open(DB, VER);
+    const r = indexedDB.open(name, VER);
     r.onupgradeneeded = () => {
       const db = r.result;
       if (!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
@@ -19,8 +31,8 @@ function open() {
     r.onblocked = () => reject(new Error('blocked'));
   });
 }
-async function tx(store, mode, fn) {
-  const db = await open();
+async function tx(store, mode, fn, name) {
+  const db = await open(name);
   return new Promise((resolve, reject) => {
     const t = db.transaction(store, mode);
     const req = fn(t.objectStore(store));
@@ -32,10 +44,28 @@ async function tx(store, mode, fn) {
 
 export let persistent = true;
 
+/** نقل بيانات القاعدة القديمة (قبل فصل الحسابات) إلى قاعدة هذا الحساب، مرة واحدة، ثم مسحها من القديمة */
+async function claimLegacy(uid = currentUser) {
+  if (!uid) return null;
+  const mine = dbNameFor(uid);
+  try {
+    const legacy = await tx('kv', 'readonly', (s) => s.get('store'), BASE);
+    if (!legacy) return null;
+    const tones = (await tx('tones', 'readonly', (s) => s.getAll(), BASE)) || [];
+    await tx('kv', 'readwrite', (s) => s.put(legacy, 'store'), mine);
+    if (tones.length) await tx('tones', 'readwrite', (s) => { for (const t of tones) s.put(t); }, mine);
+    await tx('kv', 'readwrite', (s) => s.clear(), BASE);
+    await tx('tones', 'readwrite', (s) => s.clear(), BASE);
+    return legacy;
+  } catch { return null; }
+}
+
 export async function loadStore() {
   try {
     const v = await tx('kv', 'readonly', (s) => s.get('store'));
     if (v) return v;
+    const claimed = await claimLegacy();
+    if (claimed) return claimed;
   } catch { persistent = false; }
   try { const raw = window.localStorage.getItem(LS_KEY); if (raw) return JSON.parse(raw); } catch { /* */ }
   return mem.kv.get('store') || null;
@@ -85,3 +115,19 @@ export async function requestPersist() {
   try { if (navigator.storage && navigator.storage.persist) return await navigator.storage.persist(); } catch { /* */ }
   return false;
 }
+
+/**
+ * قراءة فقط لجدول المنبّه من أداة أخرى (الخطط الفصلية) دون تغيير الحساب الحالي لهذه الوحدة ودون نسخ البيانات.
+ * إن لم يكن للحساب بيانات بعد وكانت هناك بيانات قديمة (قبل فصل الحسابات) تنتقل لهذا الحساب مرة واحدة.
+ */
+export async function readAlarmStoreFor(uid) {
+  try {
+    const v = await tx('kv', 'readonly', (s) => s.get('store'), dbNameFor(uid));
+    if (v) return v;
+    // أول حساب يفتح أيًّا من الأداتين بعد التحديث يستلم بيانات الجهاز القديمة (كما في المنبّه نفسه)، ولا يراها غيره
+    if (uid) return await claimLegacy(uid);
+  } catch { /* */ }
+  try { const raw = window.localStorage.getItem(uid ? `mt-class-alarm:store:${uid}` : 'mt-class-alarm:store'); if (raw) return JSON.parse(raw); } catch { /* */ }
+  return null;
+}
+export const ALARM_CHANNEL = 'musiteacher-class-alarm';
