@@ -359,6 +359,30 @@ export function buildOud() {
   }
   strings.forEach(layoutString);
 
+  // ---------- علامات موضع الضغط (وسيلة تعليمية) ----------
+  // حلقة ذهبية رفيعة على لوحة الأصابع حول موضع الإصبع الضاغط (أو عند الأنف للوتر المطلق) ما دامت النغمة ترنّ،
+  // ليرى الطالب أين يقع الموضع بالضبط حتى حين يحجبه الإصبع أو تكون الكاميرا بعيدة. تُعطَّل بإضافة ?nomark إلى الرابط.
+  const marks = [];
+  if (!(typeof location !== 'undefined' && new URLSearchParams(location.search).has('nomark'))) {
+    for (const c of COURSES) {
+      const g = new THREE.Group(); g.visible = false; g.userData.pickOnly = true;
+      const mat = new THREE.MeshBasicMaterial({ color: 0xffcf4a, transparent: true, opacity: 0, depthWrite: false, toneMapped: false });
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.0074, 0.00065, 6, 40), mat); ring.userData.pickOnly = true; ring.raycast = () => {};
+      const dot = new THREE.Mesh(new THREE.CircleGeometry(0.0074, 32), new THREE.MeshBasicMaterial({ color: 0xffcf4a, transparent: true, opacity: 0, depthWrite: false, toneMapped: false })); dot.raycast = () => {};
+      g.add(ring, dot); root.add(g);
+      marks.push({ g, ring, dot, on: false, a: 0, y: null });
+    }
+  }
+  function setMark(course, y) {                   // y محلي لموضع النغمة، أو 'open' للوتر المطلق، أو null للإطفاء
+    const m = marks[course]; if (!m) return;
+    if (y == null) { m.on = false; return; }
+    const open = y === 'open', yy = open ? OUD.yNut - 0.0045 : y;
+    m.on = true; m.g.position.set(OUD.courseX(course, yy), yy, OUD.fbTop(yy) + 0.0005); m.g.scale.setScalar(open ? 0.62 : 1); m.g.visible = true;
+  }
+  function updateMarks(dt) {
+    for (const m of marks) { if (!m.g.visible) continue; m.a += ((m.on ? 1 : 0) - m.a) * (1 - Math.exp(-dt / (m.on ? 0.03 : 0.12))); m.ring.material.opacity = 0.95 * m.a; m.dot.material.opacity = 0.16 * m.a; if (!m.on && m.a < 0.01) { m.g.visible = false; m.a = 0; } }
+  }
+
   // ---------- واجهة الاستعمال ----------
   const api = {
     root, parts, strings, OUD, M, pbAt, pegs,
@@ -368,7 +392,9 @@ export function buildOud() {
     /** نقر مجموعة: يبدأ اهتزازها (السعة تتبع قوة الريشة) */
     pluck(course, vel = 0.7) { for (const s of strings) if (s.course === course) { s.amp = 0.0007 + 0.0009 * vel; s.t = 0; s.dirty = true; } },
     damp(course) { for (const s of strings) if (s.course === course) s.decay = 0.05; },
+    setMark, marks,
     update(dt) {
+      updateMarks(dt);
       for (const s of strings) {
         if (s.amp > 1e-6) { s.t += dt; s.phase += dt * s.f * Math.PI * 2; const tau = s.decay || (0.35 + (5 - s.course) * 0.08); s.amp *= Math.exp(-dt / tau); if (s.amp < 2e-6) { s.amp = 0; s.decay = 0; } s.dirty = true; }
         if (s.dirty) layoutString(s);
@@ -388,17 +414,25 @@ export function buildOud() {
 // شريط رفيع مستدق من مادة كريمية (كما ريشة النسر التقليدية/البلاستيكية الحديثة)، طوله 12 سم.
 // الإطار المحلي: y على امتداد الريشة من الطرف الضارب (y=0) نحو مؤخرتها، x عرضها، z سُمكها.
 export const RISHA = { len: 0.12, w0: 0.0045, w1: 0.0078, t: 0.0012 };
-export function buildRisha() {
-  const n = 24, pos = [], idx = [];
+// يبني هندسة الشريط على مسار (نقاط من الطرف الضارب إلى المؤخرة) بمحور عرض ثابت: الريشة مرنة تنثني داخل القبضة حول عرضها
+export function shapeRisha(mesh, pts, wAx) {
+  const S = [0]; for (let i = 1; i < pts.length; i++) S.push(S[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1], pts[i][2] - pts[i - 1][2]));
+  const total = S[S.length - 1], n = 56, pos = [], idx = [];
   const half = (u) => (RISHA.w0 + (RISHA.w1 - RISHA.w0) * Math.min(1, u * 1.8)) / 2 * (u > 0.94 ? Math.sqrt(Math.max(0, 1 - ((u - 0.94) / 0.06) ** 2)) : 1);
+  const at = (s) => { let k = 1; while (k < S.length - 1 && S[k] < s) k++; const t = (s - S[k - 1]) / Math.max(1e-9, S[k] - S[k - 1]), a = pts[k - 1], b = pts[k]; return [[a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t], [b[0] - a[0], b[1] - a[1], b[2] - a[2]]]; };
   for (let i = 0; i <= n; i++) {
-    const u = i / n, y = u * RISHA.len, w = Math.max(0.0012, half(u)), tip = u < 0.04 ? 0.6 + 10 * u : 1, th = RISHA.t / 2 * tip;
-    pos.push(-w, y, th, w, y, th, w, y, -th, -w, y, -th);
+    const u = i / n, [c, tg] = at(u * total), w = Math.max(0.0012, half(u)), tip = u < 0.04 ? 0.6 + 10 * u : 1, th = RISHA.t / 2 * tip;
+    let nx = wAx[1] * tg[2] - wAx[2] * tg[1], ny = wAx[2] * tg[0] - wAx[0] * tg[2], nz = wAx[0] * tg[1] - wAx[1] * tg[0]; const nl = Math.hypot(nx, ny, nz) || 1; nx /= nl; ny /= nl; nz /= nl;
+    for (const [sw, sn] of [[-1, 1], [1, 1], [1, -1], [-1, -1]]) pos.push(c[0] + wAx[0] * w * sw + nx * th * sn, c[1] + wAx[1] * w * sw + ny * th * sn, c[2] + wAx[2] * w * sw + nz * th * sn);
   }
   for (let i = 0; i < n; i++) for (let s = 0; s < 4; s++) { const a = i * 4 + s, b = i * 4 + (s + 1) % 4, c = a + 4, d = b + 4; idx.push(a, b, c, b, d, c); }
   idx.push(0, 2, 1, 0, 3, 2); const e = n * 4; idx.push(e, e + 1, e + 2, e, e + 2, e + 3);
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals();
-  const m = new THREE.Mesh(g, new THREE.MeshPhysicalMaterial({ color: 0xeadfc4, roughness: 0.35, clearcoat: 0.5, side: THREE.DoubleSide }));
+  if (mesh.geometry) mesh.geometry.dispose(); mesh.geometry = g;
+}
+export function buildRisha() {
+  const m = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshPhysicalMaterial({ color: 0xeadfc4, roughness: 0.35, clearcoat: 0.5, side: THREE.DoubleSide }));
+  shapeRisha(m, [[0, 0, 0], [0, RISHA.len, 0]], [1, 0, 0]);
   m.name = 'risha'; m.userData.part = 'risha'; m.castShadow = true; m.frustumCulled = false;
   return m;
 }

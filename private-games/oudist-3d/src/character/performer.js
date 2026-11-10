@@ -15,7 +15,9 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const sstep = (x) => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
 const lerp = (a, b, t) => a + (b - a) * t;
 const lerp3 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
-const LEAD = 0.085;            // زمن الحركة قبل الصوت عند نقرة المستخدم (ث)
+const LEAD = 0.13;             // زمن الحركة قبل الصوت عند نقرة المستخدم (ث)
+const SETTLE = 0.025;          // يكتمل ضغط الإصبع قبل لحظة الصوت بهذا القدر (ث)
+const POS_K = 0.6;             // نسبة ما تتحركه الكف من المسافة حين تتراجع السبابة إلى نصف الوضع (والباقي مدّ إصبع)
 
 export class Performer {
   constructor(player, audio, oud) {
@@ -24,14 +26,43 @@ export class Performer {
     this.onEvent = null; this.dir = 'down'; this.speedK = 1;
     this.restTip = player.restState().R.tip.slice(); this.tip = this.restTip.slice(); this.flex = 0;
     this.lastCourse = 3; this.stats = { plucks: 0, syncErrMs: [] };
+    this.handCourse = 3; this.handPos = 2; this.holds = {};
+  }
+  // ---------- تخطيط اليد اليسرى ----------
+  // لكل نغمة: نافذة التحضير (متى يبدأ الإصبع حركته قبل الصوت)، ومتى يغادر الإصبع نغمته السابقة.
+  //  • إصبع ينتقل من موضع إلى موضع آخر: يغادر الأول في الوقت المناسب (تُقصَّر النغمة السابقة قليلًا كما يفعل العازف).
+  //  • هبوط على الوتر نفسه إلى إصبع أدنى: يُجهَّز الإصبع الأدنى مبكرًا تحت الأعلى («الإصبع المُعَدّ») فلا تنقطع النغمة.
+  planLeft() {
+    const N = this.notes, last = {}, HOME = [0, 2, 3, 4, 5];
+    // مسافة انتقال الطرف التقريبية (م) من موضع إلى موضع: على امتداد الزند + عبر الأوتار
+    const travel = (c0, s0, c1, s1) => Math.hypot(OUD.stopY(s0) - OUD.stopY(s1), (c0 - c1) * 0.008);
+    let pv = null;
+    for (const n of N) {
+      if (n.finger > 0) {
+        if (!n.plucked) {
+          const pf = last[n.finger];
+          const moved = pf && (pf.course !== n.course || pf.semis !== n.semis);
+          // زمن التحضير يتناسب مع المسافة: الانتقال البعيد (تراجع السبابة إلى نصف الوضع، تبديل وتر) يبدأ أبكر فيبقى هادئًا
+          const d = moved ? travel(pf.course, pf.semis, n.course, n.semis) : travel(n.course, HOME[n.finger], n.course, n.semis);
+          let prep = clamp(0.16 + d * 4, 0.18, 0.34);
+          if (moved) {
+            prep = Math.min(prep, Math.max(0.08, (n.T - pf.T) * 0.5));
+            pf.relT = Math.min(pf.relT ?? Infinity, pf.T + pf.dur, n.T - prep);
+          } else if (pv && pv.finger > n.finger && pv.course === n.course && pv.semis > n.semis) prep = clamp(n.T - pv.T - 0.06, prep, 0.45);
+          n.prepWin = Math.max(0.04, Math.min(prep, n.T - SETTLE - (n.tSched ?? -Infinity) - 0.005));
+        }
+        last[n.finger] = n;
+      }
+      pv = n;
+    }
   }
   // ---------- الجدولة ----------
   /** نغمة واحدة: { course, semis, finger, risha: 'down'|'up', vel, dur (ث) } عند الزمن T (ساعة المؤدّي) */
   schedule(n, T) {
-    const note = { ...n, T, dur: n.dur ?? 0.9, midi: n.midi ?? midiOf(n.course, n.semis), vel: n.vel ?? 0.72, id: (this._id = (this._id || 0) + 1), sounded: false, plucked: false };
+    const note = { ...n, T, dur: n.dur ?? 0.9, midi: n.midi ?? midiOf(n.course, n.semis), vel: n.vel ?? 0.72, id: (this._id = (this._id || 0) + 1), sounded: false, plucked: false, tSched: this.t };
     if (!note.risha) { note.risha = this.dir; this.dir = this.dir === 'down' ? 'up' : 'down'; }
     this.notes.push(note); this.notes.sort((a, b) => a.T - b.T);
-    this.planStrokes();
+    this.planStrokes(); this.planLeft();
     return note;
   }
   /** نقرة المستخدم: تُعزف بعد زمن حركة قصير جدًا */
@@ -109,27 +140,60 @@ export class Performer {
     this.notes = this.notes.filter((n) => !(n.done && t > (n.relT ?? (n.T + n.dur)) + 0.6));
     if (this.strokes.length && this.strokes[0].T < t - 0.6) this.planStrokes();
     // 2) اليد اليسرى: لكل إصبع النغمة التي تخصه الآن
-    const L = { f: {}, lastCourse: this.lastCourse };
-    const releaseOf = (n) => n.relT ?? (n.T + n.dur);
+    const releaseOf = (n) => n.relT ?? (n.T + n.dur), prepOf = (n) => n.prepWin ?? 0.18;
+    // الوتر الذي تعمل عليه الكف ووضعها على الزند: من أحدث نغمة مضغوطة بدأ تحضيرها (الأوتار المطلقة لا تحرّك الكف)
+    { let hn = null, pn = null;
+      for (const n of this.notes) { if (n.finger > 0 && t >= n.T - prepOf(n) - 0.06) { if (!hn || n.T > hn.T) hn = n; if (n.finger === 1 && (!pn || n.T > pn.T)) pn = n; } }
+      if (hn) this.handCourse = hn.course;
+      if (pn) this.handPos = pn.semis < 2 ? pn.semis : 2; }
+    const L = { f: {}, course: this.handCourse, shift: POS_K * (OUD.stopY(this.handPos) - OUD.stopY(2)) };
     for (let f = 1; f <= 4; f++) {
-      let best = null, amt = 0;
+      let best = null;
+      for (const n of this.notes) { if (n.finger !== f) continue; if (t < n.T - prepOf(n) || t > releaseOf(n) + 0.07) continue; if (!best || n.T > best.T) best = n; }
+      if (!best) continue;
+      // مقدار الضغط: أقصى قيمة بين النغمات التي على الموضع نفسه (نغمة مكررة بالإصبع نفسه: يبقى ضاغطًا ولا يرتفع بينهما)
+      let amt = 0;
       for (const n of this.notes) {
-        if (n.finger !== f) continue;
-        const prep = Math.min(0.2, Math.max(0.09, (n.prepWin || 0.18)));
-        const a0 = n.T - prep, a1 = n.T - 0.025, r0 = releaseOf(n), r1 = r0 + 0.07;
+        if (n.finger !== f || n.course !== best.course || n.semis !== best.semis) continue;
+        const a0 = n.T - prepOf(n), a1 = n.T - SETTLE, r0 = releaseOf(n), r1 = r0 + 0.07;
         if (t < a0 || t > r1) continue;
-        // نغمة لاحقة على الإصبع نفسه تسبق رفع السابقة: يرتفع السابق قبيل تحضير اللاحق
-        const v = t < a1 ? sstep((t - a0) / (a1 - a0)) : t < r0 ? 1 : 1 - sstep((t - r0) / (r1 - r0));
-        if (!best || n.T > best.T) { best = n; amt = v; }
+        amt = Math.max(amt, t < a1 ? sstep((t - a0) / (a1 - a0)) : t < r0 ? 1 : 1 - sstep((t - r0) / (r1 - r0)));
       }
-      if (best) L.f[f] = { course: best.course, semis: best.semis, amt };
+      L.f[f] = { course: best.course, semis: best.semis, amt, T: best.T };
+      if (amt > 0.9) { const h = this.holds[f]; if (!h || h.course !== best.course || h.semis !== best.semis) this.holds[f] = { course: best.course, semis: best.semis, kept: false, rel: null }; }
     }
-    // الأوتار المطلقة: لا يبقى إصبع ضاغط على وتر يُضرب مطلقًا
-    for (const n of this.notes) if (n.finger === 0 && t > n.T - 0.06 && t < releaseOf(n)) for (const f in L.f) if (L.f[f].course === n.course) L.f[f].amt = Math.min(L.f[f].amt, clamp((n.T - 0.025 - t) / 0.035, 0, 1));
+    // الأصابع المُبقاة: حين يُعزف بإصبع أعلى على الوتر نفسه يبقى الإصبع الأدنى في موضعه (لا يتحرك إلا من يحتاج إلى الحركة)،
+    // ويُرفع حين ينتهي ذلك أو يُطلب الوتر مطلقًا أو بنغمة أخفض من موضعه.
+    for (let f = 1; f <= 3; f++) {
+      const h = this.holds[f]; if (!h) continue;
+      const own = L.f[f];
+      if (own && (own.course !== h.course || own.semis !== h.semis)) { delete this.holds[f]; continue; }
+      const keep = this.notes.some((m) => m.finger > f && m.course === h.course && m.semis > h.semis && t >= m.T - prepOf(m) - 0.3 && t < releaseOf(m))
+        && !this.notes.some((m) => m.course === h.course && (m.finger === 0 || m.semis < h.semis) && t > m.T - 0.12 && t < releaseOf(m));
+      if (keep) { h.kept = true; h.rel = null; L.f[f] = { course: h.course, semis: h.semis, amt: 1, held: true }; }
+      else if (!own) {
+        if (!h.kept) { delete this.holds[f]; continue; }
+        if (h.rel == null) h.rel = t;
+        const a = 1 - sstep((t - h.rel) / 0.08);
+        if (a <= 0) delete this.holds[f]; else L.f[f] = { course: h.course, semis: h.semis, amt: a, held: true };
+      }
+    }
+    // الأوتار المطلقة: لا يبقى إصبع ضاغط على وتر يُضرب مطلقًا. والإصبع الذي يستعد لنغمة تالية على الوتر نفسه ينتقل فوق موضعه
+    // دون أن يلمس الوتر ما دام يرنّ مطلقًا، ثم ينزل قبيل نغمته (لا ينتظر ثم يقفز).
+    for (const n of this.notes) if (n.finger === 0 && t > n.T - 0.06 && t < releaseOf(n)) for (const f in L.f) {
+      const q = L.f[f]; if (q.course !== n.course) continue;
+      if (q.T != null && q.T > n.T) q.amt = Math.min(q.amt, 0.5 + 0.5 * sstep((t - (q.T - SETTLE - 0.075)) / 0.075));
+      else q.amt = Math.min(q.amt, clamp((n.T - SETTLE - t) / 0.035, 0, 1));
+    }
     // الوتر المرئي: يُنزَل عند موضع أعلى إصبع ضاغط على كل مجموعة
     for (const c of COURSES) {
       let y = null, s = -1; for (const f in L.f) { const q = L.f[f]; if (q.course === c.index && q.amt > 0.85 && q.semis > s) { s = q.semis; y = OUD.stopY(q.semis); } }
       this.oud.setPress(c.index, y);
+    }
+    // علامة الموضع على اللوحة: للنغمة التي ترنّ الآن على كل وتر (من لحظة الصوت حتى رفع الإصبع)
+    if (this.oud.setMark) for (const c of COURSES) {
+      let cur = null; for (const n of this.notes) if (n.course === c.index && n.plucked && !n.done && (!cur || n.T > cur.T)) cur = n;
+      this.oud.setMark(c.index, cur ? (cur.finger === 0 ? 'open' : OUD.stopY(cur.semis)) : null);
     }
     // 3) اليد اليمنى: مسار طرف الريشة + انثناء الرسغ
     const r = this.tipAt(t);
