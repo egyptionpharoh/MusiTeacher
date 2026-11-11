@@ -10,6 +10,7 @@ import { SeatedPlayer, SEAT } from '../../_shared/3d/character/seated-player.js'
 import { FINGERS, fingerArch, thumbChain, poseHandRotation, poseFingers } from '../../_shared/3d/character/hand.js';
 import { DIM } from '../instrument/accordion-model.js';
 import { fixSeatedGlutes, fixSeatedLap, fixSeatedHem, calmFabric } from './dish-fix.js';
+import { buildSeatedRobe } from './robe.js';
 import { WHITE_COUNT } from '../instrument/accordion-data.js';
 
 const v3 = (a) => new THREE.Vector3(a[0], a[1], a[2]);
@@ -37,6 +38,7 @@ export class Accordionist extends SeatedPlayer {
     this.baseSetup();
     this.fixMaleCloth();
     this.placeAccordion();
+    this.buildRobe();
     this.buildStraps();
     this.rightState = { base: 6.0, digits: {} }; this.leftState = { row: 0.5, z: 2.6, digits: {} };
     this.pose({ w: this.acc.getWidth(), R: this.rightState, L: this.leftState });
@@ -51,6 +53,24 @@ export class Accordionist extends SeatedPlayer {
     if (!has('nolapfix')) { try { this.qa.lap = fixSeatedLap(this.rig); } catch (e) { console.warn('lap fix skipped', e); } }
     if (!has('nohemfix')) { try { this.qa.hem = fixSeatedHem(this.rig); } catch (e) { console.warn('hem fix skipped', e); } }
     if (!has('nocalm')) { try { this.qa.fabric = calmFabric(this.rig); } catch (e) { console.warn('fabric calm skipped', e); } }
+  }
+
+  // العازفة: دشداشة ساترة فضفاضة تُبنى حول الجسم الجالس (robe.js — المعالجة نفسها المعتمدة في لعبة العود).
+  // تُبنى بعد وضع الآلة (فينضغط القماش تحت قاعدتها وخلف ظهرها ولا يخترقها) وقبل الأحزمة (فتمرّ الأحزمة فوق الثوب).
+  buildRobe() {
+    const U = new URLSearchParams(location.search), male = this.cfg && this.cfg.gender === 'male';
+    if (male || U.has('norobe')) return;
+    try {
+      if (!U.has('noglutefix')) this.qa.glutes = fixSeatedGlutes(this.rig, SEAT, { mode: 'drape', out: QP('gout', [0.012])[0] });
+      const acc = this.acc; acc.root.updateMatrixWorld(true);
+      const bx = new THREE.Box3(); for (const ch of acc.root.children) if (ch.name !== 'straps') bx.expandByObject(ch);     // جسم الآلة فقط (بلا الأحزمة)
+      const yB = bx.min.y - 0.002, zB = bx.min.z - 0.002, zF = bx.max.z + 0.006;
+      // الآلة صندوق يستقر على الفخذين وظهره إلى الصدر: ما يقع من القماش داخل حيّزها يُزاح إلى أقرب وجهيها (القاعدة أو الظهر)
+      const press = (x, y, z) => { if (Math.abs(x) > 0.36 || y <= yB || z <= zB || z >= zF || y > bx.max.y) return [x, y, z]; return (y - yB) < (z - zB) ? [x, yB, z] : [x, y, zB]; };
+      const oc = (this.cfg && this.cfg.outfit) || {};
+      this.qa.robe = buildSeatedRobe(this.rig, SEAT, { color: oc.dishdasha, gold: oc.embroidery, teal: oc.embroidery2, press });
+      this._tv = null;
+    } catch (e) { console.warn('robe skipped', e); }
   }
 
   /** عند تبديل الشخصية: تُعاد الآلة إلى صدر هذه الشخصية وفخذيها، وتُعاد الأحزمة إلى كتفيها، ثم تُحدَّث الوضعية فورًا */

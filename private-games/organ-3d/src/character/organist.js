@@ -14,6 +14,7 @@ import { fingerArch, thumbChain, poseFingers } from '../../_shared/3d/character/
 import { DIM } from '../instrument/organ-model.js';
 import { WHITE_COUNT } from '../instrument/organ-data.js';
 import { fixSeatedGlutes, calmFabric } from './seat-fix.js';
+import { buildSeatedRobe } from './robe.js';
 
 const v3 = (a) => new THREE.Vector3(a[0], a[1], a[2]);
 const ar = (v) => [v.x, v.y, v.z];
@@ -61,7 +62,11 @@ export class Organist extends SeatedPlayer {
     // تصحيح شكل الأرداف في الجلوس (ثوب العازف) — انظر seat-fix.js
     if (!new URLSearchParams(location.search).has('noglutefix')) { try { const male = this.cfg && this.cfg.gender === 'male';
       // العازف: الثوب ينسدل لوحًا محتشمًا في الخلف؛ العازفة: التصحيح السابق كما هو
-      this.qa.glutes = fixSeatedGlutes(this.rig, SEAT_REF, male ? { mode: 'drape', out: QP('gout', [0.006])[0] } : { mode: 'lobes', depth: 0.035 }); } catch (e) { console.warn('glute fix skipped', e); } }
+      const U = new URLSearchParams(location.search), oldF = U.get('fcloth') === 'lobes';
+      this.qa.glutes = fixSeatedGlutes(this.rig, SEAT_REF, male ? { mode: 'drape', out: QP('gout', [0.006])[0] } : oldF ? { mode: 'lobes', depth: 0.035 } : { mode: 'drape', out: QP('gout', [0.012])[0] }); } catch (e) { console.warn('glute fix skipped', e); } }
+    // العازفة: دشداشة ساترة فضفاضة تُبنى حول الجسم الجالس (robe.js — المعالجة نفسها المعتمدة في لعبة العود)
+    { const U = new URLSearchParams(location.search), male = this.cfg && this.cfg.gender === 'male';
+      if (!male && !U.has('norobe') && U.get('fcloth') !== 'lobes') { try { const oc = (this.cfg && this.cfg.outfit) || {}; this.qa.robe = buildSeatedRobe(this.rig, SEAT_REF, { color: oc.dishdasha, gold: oc.embroidery, teal: oc.embroidery2 }); } catch (e) { console.warn('robe skipped', e); } } }
     if (this.cfg && this.cfg.gender === 'male' && !new URLSearchParams(location.search).has('nocalm')) { try { this.qa.fabric = calmFabric(this.rig); } catch (e) { console.warn('fabric calm skipped', e); } }
     this.qa.seatTorso = this.torsoReport();
   }

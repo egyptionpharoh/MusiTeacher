@@ -12,6 +12,7 @@ import * as THREE from 'three';
 import { V, Frame, F, ik2, smooth } from '../engine/math.js';
 import { VN, violinOutline } from '../instruments/violin.js';
 import { BOW } from '../instruments/bow.js';
+import { buildSeatedRobe } from './robe.js';
 import { stopLength } from '../teaching/exercise.js';
 import { FINGERS, measureHand, fingerFK, fingerIK, fingerArch, thumbChain, handFromBow, poseHandRotation, poseFingers, handFrameNow } from './hand.js';
 
@@ -95,7 +96,15 @@ export class Violinist {
     this.placeLeftHand();
     this.refineBowHold();
     this.pose0 = this.pose(0, false);
+    this.buildRobe();
     return this.pose0;
+  }
+  // العازفة: دشداشة ساترة فضفاضة تُبنى حول الجسم الجالس (robe.js — المعالجة نفسها المعتمدة في لعبة العود)؛ تتبع الهيكل العظمي أثناء العزف.
+  buildRobe() {
+    const U = new URLSearchParams(location.search), male = this.cfg && this.cfg.gender === 'male';
+    if (male || U.has('norobe')) return;
+    try { const oc = (this.cfg && this.cfg.outfit) || {}; if (oc.enabled === false) return; this.qa.robe = buildSeatedRobe(this.rig, SEAT, { color: oc.dishdasha, gold: oc.embroidery, teal: oc.embroidery2 }); this._seatVerts = null; }
+    catch (e) { console.warn('robe skipped', e); }
   }
 
   // ---------- القياسات ----------
