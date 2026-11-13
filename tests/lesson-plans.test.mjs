@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { parsePlanGrid, fromAIPlans, officialDraft, draftToUnits, detectMeta } from '../src/modules/lesson-plans/core/importPlan.js';
 import { normalizeWorkspace, normalizePlan, emptyWorkspace, gradeNum, classKeyOf, uid } from '../src/modules/lesson-plans/core/model.js';
 import { replacePlanUnits, restoreVersion } from '../src/modules/lesson-plans/core/merge.js';
-import { classesFromProfile, occurrences, suggestDistribution, validateSlot, makeAssignment, lessonState, planProgress, conflicts, alternativeSlots } from '../src/modules/lesson-plans/core/track.js';
+import { classesFromProfile, occurrences, suggestDistribution, validateSlot, makeAssignment, lessonState, conflicts, alternativeSlots } from '../src/modules/lesson-plans/core/track.js';
 import { linksForDay, eveningDigest } from '../src/modules/lesson-plans/core/links.js';
 import { emptyProfile, normalizeProfile, defaultSettings } from '../src/modules/class-alarm/core/model.js';
 import { alertsForDay } from '../src/modules/class-alarm/core/schedule.js';
@@ -159,8 +159,6 @@ test('سجل التنفيذ: منفذة + مؤجلة + موعد بديل؛ ال�
   st = lessonState(ws, 'P1', L1, cls.classKey, '2026-11-12');
   assert.equal(st.complete, true);
   assert.equal(JSON.stringify(ws.plans), before, 'الخطة الأصلية لم تتغير');
-  const pr = planProgress(ws, plan, cls.classKey, '2026-11-12');
-  assert.deepEqual([pr.total, pr.completed, pr.doneSessions, pr.totalSessions, pr.pct, pr.missingSessions], [3, 1, 2, 4, 50, 1]);
 });
 
 test('تنفيذ جزئي يحتاج حصة استكمال قبل اكتمال الدرس', () => {

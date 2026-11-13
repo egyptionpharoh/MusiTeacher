@@ -193,8 +193,8 @@ export function defaultSettings() {
     h24: false,
     motivation: true,
     sync: false,
-    // تذكير المساء من «الخطط الفصلية» (يعمل فقط إن وُجدت خطط وروابط معتمدة)
-    planReminders: { on: false, time: '19:00', tone: 'soft', tomorrow: true, postponed: true, incomplete: true, unlinked: false },
+    // تذكير المساء من «الخطط الفصلية» (يصدر فقط إن وُجد ما يُذكَّر به) — مفعّل افتراضيًا ما لم يوقفه المعلم بنفسه (userSet)
+    planReminders: { on: true, userSet: false, time: '19:00', tone: 'soft', tomorrow: true, postponed: true, incomplete: true, unlinked: false },
   };
 }
 export function normalizeSettings(s) {
@@ -214,7 +214,7 @@ export function normalizeSettings(s) {
     h24: bool(o.h24),
     motivation: o.motivation !== false,
     sync: bool(o.sync),
-    planReminders: (() => { const p = o.planReminders || {}, dp = d.planReminders; return { on: bool(p.on), time: normHHMM(p.time) || dp.time, tone: str(p.tone, 60) || dp.tone, tomorrow: p.tomorrow !== false, postponed: p.postponed !== false, incomplete: p.incomplete !== false, unlinked: bool(p.unlinked) }; })(),
+    planReminders: (() => { const p = o.planReminders || {}, dp = d.planReminders; return { on: p.userSet === true ? bool(p.on) : true, userSet: p.userSet === true, time: normHHMM(p.time) || dp.time, tone: str(p.tone, 60) || dp.tone, tomorrow: p.tomorrow !== false, postponed: p.postponed !== false, incomplete: p.incomplete !== false, unlinked: bool(p.unlinked) }; })(),
   };
 }
 

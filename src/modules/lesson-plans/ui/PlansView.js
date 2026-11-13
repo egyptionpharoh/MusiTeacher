@@ -1,8 +1,9 @@
 'use client';
-// 📚 «خططي»: رفع خطة (Excel/Word/CSV/PDF/صورة) → مراجعة إلزامية مقابل الملف الأصلي → اعتماد؛ تعديل، استبدال بنسخ سابقة، حذف، مزامنة.
-import { useEffect, useMemo, useRef, useState } from 'react';
+// 📚 ⚙️ «خططي حسب الصف»: رفع خطة لكل صف (Excel/Word/CSV/PDF/صورة) → مراجعة إلزامية → اعتماد؛ معاينة وتعديل، استبدال بنسخ سابقة، حذف، مزامنة.
+import { useMemo, useRef, useState } from 'react';
 import { Icon, Modal, Field, Seg, Toggle } from '../../class-alarm/ui/parts';
-import { normalizePlan, planLabel, allLessons, SEMESTERS, GRADE_NAMES } from '../core/model.js';
+import { normalizePlan, planLabel, SEMESTERS, GRADE_NAMES, gradeNum } from '../core/model.js';
+import { planWindows } from '../core/auto.js';
 import { officialDraft, draftToUnits } from '../core/importPlan.js';
 import { matchUnits, replacePlanUnits, restoreVersion } from '../core/merge.js';
 import { readPlanFile, downloadPlanTemplate, PLAN_ACCEPT } from './planFiles';
@@ -10,134 +11,168 @@ import { LessonTable } from './lpParts';
 
 const fmtStamp = (t) => (t ? new Date(t).toLocaleString('ar-OM', { dateStyle: 'medium', timeStyle: 'short' }) : '—');
 
-export default function PlansView({ ws, update, notify, ai, aiReady, plansData, pendingDraft, clearPendingDraft, sync, onWipe, onGoto }) {
-  const [filter, setFilter] = useState({ year: '', semester: '', grade: '' });
-  const [importing, setImporting] = useState(null);   // { drafts, via, note, preview, name, target }
-  const [busy, setBusy] = useState('');
-  const [err, setErr] = useState('');
+const MAX_FILE = 15 * 1024 * 1024;
+
+/** حالة تحليل الخطة: هل يمكن ربط دروسها تلقائيًا؟ (درس بلا أسابيع/تواريخ لا يُربط تلقائيًا) */
+export function planHealth(p) {
+  const ws = planWindows(p);
+  const noTime = ws.filter((w) => !w.start).length;
+  const noSessions = ws.filter((w) => !w.lesson.sessions).length;
+  const unsure = ws.filter((w) => w.lesson.unsure && w.lesson.unsure.some((f) => f !== 'sessions')).length;
+  return { lessons: ws.length, noTime, noSessions, unsure, ok: ws.length > 0 && noTime === 0 };
+}
+
+/** ⚙️ «خططي حسب الصف»: بطاقة لكل صف مختار — رفع/استبدال/معاينة/حالة التحليل؛ خطة كل صف منفصلة تمامًا عن غيره */
+export default function GradePlansView({ ws, update, notify, ai, aiReady, plansData, grades, onOpenGrades }) {
+  const [importing, setImporting] = useState(null);   // { drafts, via, note, preview, name, target, grade }
+  const [busy, setBusy] = useState(null);             // { grade, text }
+  const [err, setErr] = useState(null);               // { grade, text }
   const [editId, setEditId] = useState(null);
-  const [replaceFor, setReplaceFor] = useState(null);
+  const [pickFor, setPickFor] = useState(null);       // { grade, target }
+  const [refSem, setRefSem] = useState({});
   const fileRef = useRef(null);
-
-  useEffect(() => {
-    if (!pendingDraft) return;
-    const d = officialDraft(plansData, pendingDraft.semester, pendingDraft.grade);
-    clearPendingDraft();
-    if (d) setImporting({ drafts: [d], via: 'official', note: 'من الخطة المدمجة في المنصة.', preview: null, name: `${pendingDraft.grade} – ${pendingDraft.semester}` });
-  }, [pendingDraft]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const pickFile = async (file, target = null) => {
-    if (!file) return;
-    setErr(''); setBusy('نقرأ الملف...');
-    try {
-      const r = await readPlanFile(file, { ai, onStage: setBusy });
-      if (!r.ok) { setErr(r.error); if (r.preview) URL.revokeObjectURL(r.preview.url); return; }
-      setImporting({ ...r, name: file.name, target });
-    } catch (e) { setErr(e.message || 'تعذرت قراءة الملف.'); } finally { setBusy(''); }
-  };
-
-  const years = [...new Set(ws.plans.map((p) => p.year).filter(Boolean))].sort().reverse();
-  const shown = ws.plans.filter((p) => (!filter.year || p.year === filter.year) && (!filter.semester || p.semester === filter.semester) && (!filter.grade || p.grade === filter.grade))
-    .sort((a, b) => (b.year || '').localeCompare(a.year || '') || (a.semester || '').localeCompare(b.semester || '') || (GRADE_NAMES.indexOf(a.grade) - GRADE_NAMES.indexOf(b.grade)));
   const edit = ws.plans.find((p) => p.id === editId);
+
+  const openPicker = (grade, target = null) => { setPickFor({ grade, target }); setTimeout(() => fileRef.current && fileRef.current.click(), 0); };
+  const pickFile = async (file, { grade, target }) => {
+    if (!file) return;
+    const name = GRADE_NAMES[grade - 1];
+    setErr(null);
+    if (file.size > MAX_FILE) { setErr({ grade, text: 'حجم الملف كبير جدًا (الحد 15 ميجابايت).' }); return; }
+    if (!file.size) { setErr({ grade, text: 'الملف فارغ.' }); return; }
+    setBusy({ grade, text: 'نقرأ الملف...' });
+    try {
+      const r = await readPlanFile(file, { ai, onStage: (text) => setBusy({ grade, text }) });
+      if (!r.ok) { setErr({ grade, text: r.error }); if (r.preview) URL.revokeObjectURL(r.preview.url); return; }
+      const f = filterDraftsForGrade(r.drafts, grade);
+      if (!f.drafts.length) { setErr({ grade, text: f.error }); if (r.preview) URL.revokeObjectURL(r.preview.url); return; }
+      setImporting({ ...r, drafts: f.drafts, note: [r.note, f.note].filter(Boolean).join(' '), name: file.name, target, grade: name });
+    } catch (e) { setErr({ grade, text: e.message || 'تعذرت قراءة الملف.' }); } finally { setBusy(null); }
+  };
 
   const removePlan = (p) => {
     const asg = ws.assignments.filter((a) => a.planId === p.id);
     const ids = new Set(asg.map((a) => a.id));
     const logs = ws.log.filter((g) => ids.has(g.assignmentId));
     const msg = asg.length || logs.length
-      ? `حذف «${planLabel(p)}» نهائيًا؟\nسيُحذف معها ${asg.length} ربط بحصص و${logs.length} تسجيل تنفيذ. لا يمكن التراجع.`
+      ? `حذف «${planLabel(p)}» نهائيًا؟\nسيُحذف معها ${asg.length} ربط يدوي بحصص و${logs.length} تسجيل تنفيذ. لا يمكن التراجع.`
       : `حذف «${planLabel(p)}» نهائيًا؟ لا يمكن التراجع.`;
     if (!window.confirm(msg)) return;
-    update((w) => ({ ...w, plans: w.plans.filter((x) => x.id !== p.id), assignments: w.assignments.filter((a) => a.planId !== p.id), log: w.log.filter((g) => !ids.has(g.assignmentId)) }));
+    update((w) => ({ ...w, plans: w.plans.filter((x) => x.id !== p.id), assignments: w.assignments.filter((a) => a.planId !== p.id), log: w.log.filter((g) => !ids.has(g.assignmentId)), overrides: w.overrides.filter((o) => o.planId !== p.id) }));
     notify('حُذفت الخطة.');
   };
 
+  if (!grades.length) return (
+    <section className="ca-card"><div className="ca-empty"><Icon n="note" size={34} /><strong>اختر صفوفك أولًا</strong><p>بعد اختيار الصفوف التي تدرّسها تظهر هنا بطاقة لكل صف لرفع خطته.</p><button type="button" className="ca-btn" onClick={onOpenGrades}>اختيار صفوفي</button></div></section>
+  );
+  const hidden = ws.plans.filter((p) => !grades.includes(gradeNum(p.grade)));
   return (
     <div className="ca-stack">
-      <section className="ca-card">
-        <div className="ca-card-head">
-          <div><h3>خططي الفصلية</h3><p className="ca-muted">خطة مستقلة لكل عام وفصل وصف. تبقى في حسابك فقط.</p></div>
-          <div className="ca-row ca-wrap">
-            <button type="button" className="ca-btn" onClick={() => fileRef.current && fileRef.current.click()} disabled={!!busy}><Icon n="upload" />{busy || 'رفع خطة'}</button>
-            <button type="button" className="ca-btn is-ghost" onClick={() => downloadPlanTemplate().catch(() => notify('تعذر إنشاء القالب.', 'err'))}><Icon n="download" />قالب Excel</button>
-            <button type="button" className="ca-btn is-ghost" onClick={() => setImporting({ drafts: [{ year: '', semester: '', grade: '', subject: 'المهارات الموسيقية', units: [{ id: `u${Date.now()}`, title: '', lessons: [] }], issues: [], stats: {} }], via: 'manual', note: '', preview: null, name: 'خطة جديدة' })}><Icon n="plus" />إدخال يدوي</button>
-            <input ref={fileRef} type="file" accept={PLAN_ACCEPT} hidden onChange={(e) => { const f = e.target.files[0]; e.target.value = ''; pickFile(f, replaceFor); setReplaceFor(null); }} />
-          </div>
-        </div>
-        {busy && <div className="ca-busy is-inline" role="status"><span className="ca-spin" /> {busy}</div>}
-        {err && <div className="ca-notice is-err" role="alert"><Icon n="warn" /><span>{err}</span></div>}
-        <ul className="ca-tips">
-          <li><b>Excel وCSV وWord (جداول)</b> تُقرأ على جهازك مباشرة. <b>PDF والصور وملفات Word الممسوحة</b> {aiReady ? 'تُقرأ بالقراءة الذكية عبر خادم المنصة لحظيًا دون حفظ الملف.' : 'تحتاج «القراءة الذكية» غير المفعّلة حاليًا على المنصة؛ استخدم قالب Excel.'}</li>
-          <li>لا تُعتمد أي خطة قبل مراجعتك. لا نخمّن اسم درس غير واضح، ولا نضع عدد حصص من عندنا، ولا نغيّر الترتيب.</li>
-          <li>الملف الأصلي لا يُحفظ؛ تُحفظ البيانات التي اعتمدتها فقط. استخدام خطة الوزارة داخل حسابك لا يعني امتلاك حق إعادة نشرها، ولا تُنسب للمنصة.</li>
-        </ul>
-      </section>
-
-      {ws.plans.length > 0 && (
-        <section className="ca-card">
-          <div className="ca-row ca-wrap lp-mb">
-            <select className="ca-input ca-w8" value={filter.year} onChange={(e) => setFilter({ ...filter, year: e.target.value })} aria-label="العام"><option value="">كل الأعوام</option>{years.map((y) => <option key={y}>{y}</option>)}</select>
-            <select className="ca-input ca-w8" value={filter.semester} onChange={(e) => setFilter({ ...filter, semester: e.target.value })} aria-label="الفصل"><option value="">كل الفصول</option>{SEMESTERS.map((s) => <option key={s}>{s}</option>)}</select>
-            <select className="ca-input ca-w8" value={filter.grade} onChange={(e) => setFilter({ ...filter, grade: e.target.value })} aria-label="الصف"><option value="">كل الصفوف</option>{GRADE_NAMES.filter((g) => ws.plans.some((p) => p.grade === g)).map((g) => <option key={g}>{g}</option>)}</select>
-          </div>
-          <div className="lp-plan-grid">
-            {shown.map((p) => {
-              const ls = allLessons(p);
-              const linked = ws.assignments.filter((a) => a.planId === p.id).length;
-              const missing = ls.filter((l) => !l.sessions).length;
+      <input ref={fileRef} type="file" accept={PLAN_ACCEPT} hidden onChange={(e) => { const f = e.target.files[0]; e.target.value = ''; if (pickFor) pickFile(f, pickFor); }} />
+      <div className="ca-notice is-info"><Icon n="info" /><span>لكل صف خطة مستقلة. ارفع ملف Excel أو Word أو CSV (أو PDF/صورة إن كانت القراءة الذكية متاحة)، ثم راجع الدروس قبل الاعتماد. <button type="button" className="ca-link" onClick={() => downloadPlanTemplate().catch(() => notify('تعذر إنشاء القالب.', 'err'))}>تنزيل قالب Excel</button></span></div>
+      {grades.map((g) => {
+        const name = GRADE_NAMES[g - 1];
+        const plans = ws.plans.filter((p) => gradeNum(p.grade) === g).sort((a, b) => (b.year || '').localeCompare(a.year || '') || SEMESTERS.indexOf(a.semester) - SEMESTERS.indexOf(b.semester));
+        const isBusy = busy && busy.grade === g;
+        return (
+          <section key={g} className="ca-card lp-grade-card" aria-label={name}>
+            <div className="ca-card-head">
+              <div><h3>{name}</h3><p className="ca-muted">{plans.length ? `${plans.length} ${plans.length === 1 ? 'خطة' : 'خطط'} لهذا الصف` : 'لم تُرفع خطة لهذا الصف بعد'}</p></div>
+              <div className="ca-row ca-wrap">
+                <button type="button" className="ca-btn is-sm" disabled={!!busy} onClick={() => openPicker(g)}><Icon n="upload" size={15} />{isBusy ? busy.text : 'رفع خطة لهذا الصف'}</button>
+              </div>
+            </div>
+            {isBusy && <div className="ca-busy is-inline" role="status"><span className="ca-spin" /> {busy.text}</div>}
+            {err && err.grade === g && <div className="ca-notice is-err" role="alert"><Icon n="warn" /><span>{err.text}</span></div>}
+            {plans.map((p) => {
+              const h = planHealth(p);
               return (
-                <article key={p.id} className="lp-plan-card">
-                  <div className="lp-plan-top"><span className="lp-chip">{p.grade || 'صف غير محدد'}</span><span className="lp-chip is-soft">{p.semester || 'فصل غير محدد'}</span><span className="lp-chip is-soft">{p.year || 'عام غير محدد'}</span></div>
-                  <h4>{p.grade || 'صف غير محدد'}{p.subject ? ` — ${p.subject}` : ''}</h4>
-                  <p className="ca-muted ca-small">{p.units.length} وحدة • {ls.length} درس • {ls.reduce((a, l) => a + (l.sessions || 0), 0)} حصة{missing ? ` • ${missing} بلا عدد حصص` : ''}</p>
-                  <p className="ca-muted ca-small">المصدر: {p.source.official ? 'الخطة المدمجة في المنصة' : p.source.name || 'إدخال يدوي'} • رُفعت {fmtStamp(p.createdAt)} • آخر تحديث {fmtStamp(p.updatedAt)}{p.versions.length ? ` • ${p.versions.length} نسخة سابقة` : ''}</p>
-                  <p className="ca-small">{linked ? `${linked} حصة مرتبطة بجدولك` : 'لم تُربط بجدولك بعد'}</p>
-                  <div className="ca-row ca-wrap">
-                    <button type="button" className="ca-btn is-sm" onClick={() => setEditId(p.id)}><Icon n="edit" size={15} />فتح وتعديل</button>
-                    <button type="button" className="ca-btn is-ghost is-sm" onClick={() => onGoto('link')}><Icon n="grid" size={15} />ربط بجدولي</button>
-                    <button type="button" className="ca-btn is-ghost is-sm" onClick={() => { setReplaceFor(p.id); fileRef.current && fileRef.current.click(); }}><Icon n="upload" size={15} />استبدال/تحديث بملف</button>
-                    <button type="button" className="ca-icon-btn" onClick={() => removePlan(p)} aria-label="حذف الخطة"><Icon n="trash" size={15} /></button>
+                <div key={p.id} className="lp-gp-row">
+                  <div className="lp-gp-main">
+                    <div className="lp-plan-top"><span className="lp-chip">{p.semester || 'فصل غير محدد'}</span><span className="lp-chip is-soft"><bdi>{p.year || 'عام غير محدد'}</bdi></span></div>
+                    <p className="ca-small">{h.lessons} درس • المصدر: {p.source.official ? 'الخطة المرجعية المدمجة' : p.source.name || 'إدخال يدوي'} • آخر تحديث {fmtStamp(p.updatedAt)}</p>
+                    {h.ok
+                      ? <p className="ca-small lp-ok-text">✓ حُللت الخطة بنجاح ويمكن ربطها تلقائيًا بجدولك{h.noSessions ? ` (${h.noSessions} درس بلا عدد حصص؛ يُرقَّم حسب حصصك الفعلية)` : ''}.</p>
+                      : <p className="ca-small ca-warn-text">⚠ {h.lessons ? `${h.noTime} درس بلا أسابيع أو تواريخ، فلن يُربط تلقائيًا. افتح الخطة وأكمل الفترة أو الأسابيع.` : 'الخطة بلا دروس.'}</p>}
                   </div>
-                </article>
+                  <div className="ca-row ca-wrap">
+                    <button type="button" className="ca-btn is-ghost is-sm" onClick={() => setEditId(p.id)}><Icon n="edit" size={15} />معاينة وتعديل</button>
+                    <button type="button" className="ca-btn is-ghost is-sm" disabled={!!busy} onClick={() => openPicker(g, p.id)}><Icon n="upload" size={15} />استبدال بملف</button>
+                    <button type="button" className="ca-icon-btn" onClick={() => removePlan(p)} aria-label={`حذف خطة ${name} ${p.semester}`}><Icon n="trash" size={15} /></button>
+                  </div>
+                </div>
               );
             })}
-            {!shown.length && <p className="ca-muted">لا توجد خطط بهذه الاختيارات.</p>}
-          </div>
-        </section>
-      )}
-
-      <section className="ca-card">
-        <div className="ca-card-head"><div><h3>الحفظ والمزامنة</h3><p className="ca-muted">الخطط والتوزيع وسجل التنفيذ محفوظة على هذا الجهاز لحسابك فقط</p></div></div>
-        {sync.available ? (
-          <>
-            <Toggle checked={sync.on} onChange={sync.toggle} label="مزامنة خططي مع حسابي" hint="لاستخدامها من جهاز آخر بعد تسجيل الدخول؛ لا يصل إليها غيرك" />
-            {sync.on && <p className={`ca-small ${sync.state === 'error' ? 'ca-error' : 'ca-muted'}`}>{sync.state === 'saving' ? 'جارٍ الحفظ...' : sync.state === 'error' ? sync.error : sync.at ? `آخر مزامنة: ${fmtStamp(sync.at)}` : 'ستتم المزامنة بعد أول تعديل'}</p>}
-            <div className="ca-row ca-wrap"><button type="button" className="ca-btn is-ghost is-sm" onClick={sync.pull}><Icon n="cloud" size={15} />استرجاع من حسابي</button>{sync.on && <button type="button" className="ca-btn is-ghost is-sm" onClick={sync.push}><Icon n="upload" size={15} />{sync.conflict ? 'حفظ نسخة هذا الجهاز فوق نسخة الحساب' : 'حفظ الآن'}</button>}</div>
-          </>
-        ) : <p className="ca-muted ca-small">المزامنة مع الحساب غير متاحة حاليًا (تتطلب تسجيل الدخول وقاعدة البيانات على الخادم).</p>}
-        <button type="button" className="ca-btn is-danger is-sm ca-mt" onClick={() => { if (window.confirm('حذف كل الخطط والتوزيع وسجل التنفيذ من هذا الجهاز نهائيًا؟')) onWipe(); }}><Icon n="trash" size={15} />حذف كل بيانات الخطط من هذا الجهاز</button>
-      </section>
-
-      {importing && <ReviewModal ws={ws} update={update} notify={notify} data={importing} onClose={() => { if (importing.preview && importing.preview.url.startsWith('blob:')) URL.revokeObjectURL(importing.preview.url); setImporting(null); }} onDone={(id) => { setImporting(null); setEditId(null); notify('اعتُمدت الخطة. الخطوة التالية: ربطها بجدولك.'); onGoto('link'); }} />}
-      {edit && <PlanDetail plan={edit} ws={ws} update={update} notify={notify} onClose={() => setEditId(null)} />}
+            {plansData && (
+              <details className="lp-ref">
+                <summary>لا تملك ملفًا؟ ابدأ من الخطة المرجعية المدمجة في المنصة</summary>
+                <div className="ca-row ca-wrap ca-mt">
+                  <select className="ca-input ca-w8" value={refSem[g] || ''} onChange={(e) => setRefSem({ ...refSem, [g]: e.target.value })} aria-label="الفصل"><option value="">— الفصل —</option>{SEMESTERS.filter((s) => plansData[s] && plansData[s][name]).map((s) => <option key={s}>{s}</option>)}</select>
+                  <button type="button" className="ca-btn is-ghost is-sm" disabled={!refSem[g]} onClick={() => { const d = officialDraft(plansData, refSem[g], name); if (d) setImporting({ drafts: [d], via: 'official', note: 'من الخطة المرجعية المدمجة (الدروس والأسابيع فقط).', preview: null, name: `${name} – ${refSem[g]}`, grade: name }); }}>إنشاء مسودة للمراجعة</button>
+                </div>
+              </details>
+            )}
+          </section>
+        );
+      })}
+      {hidden.length > 0 && <p className="ca-small ca-muted">لديك {hidden.length} {hidden.length === 1 ? 'خطة' : 'خطط'} لصفوف غير مختارة حاليًا ({[...new Set(hidden.map((p) => p.grade || 'بدون صف'))].join('، ')}). هي محفوظة كما هي وتظهر عند اختيار صفوفها من جديد.</p>}
+      <ul className="ca-tips">
+        <li><b>Excel وCSV وWord (جداول)</b> تُقرأ على جهازك مباشرة. <b>PDF والصور</b> {aiReady ? 'تُقرأ بالقراءة الذكية عبر خادم المنصة لحظيًا دون حفظ الملف.' : 'تحتاج «القراءة الذكية» غير المفعّلة حاليًا؛ استخدم قالب Excel.'}</li>
+        <li>لا تُعتمد أي خطة قبل مراجعتك. لا نخمّن اسم درس غير واضح، ولا نضع عدد حصص من عندنا.</li>
+        <li>الملف الأصلي لا يُحفظ؛ تُحفظ البيانات التي اعتمدتها فقط في حسابك. رفع خطة لا يجعلها رسمية أو معتمدة من الوزارة.</li>
+      </ul>
+      {importing && <ReviewModal ws={ws} update={update} notify={notify} data={importing} fixedGrade={importing.grade} onClose={() => { if (importing.preview && importing.preview.url.startsWith('blob:')) URL.revokeObjectURL(importing.preview.url); setImporting(null); }} onDone={() => { setImporting(null); notify('اعتُمدت الخطة، وستُربط دروسها تلقائيًا بحصص هذا الصف في جدولك.'); }} />}
+      {edit && <PlanDetail plan={edit} ws={ws} update={update} notify={notify} onClose={() => setEditId(null)} fixedGrade />}
     </div>
   );
 }
 
+/** خطط ملفٍّ مقابل الصف المطلوب: نقبل خطط نفس الصف، ونُسند الخطة بلا صف إليه، ونرفض/نستبعد خطط الصفوف الأخرى بوضوح */
+export function filterDraftsForGrade(drafts, g) {
+  const name = GRADE_NAMES[g - 1];
+  const same = [], other = [];
+  for (const d of drafts) {
+    const n = gradeNum(d.grade);
+    if (!n) same.push({ ...d, grade: name, issues: [...(d.issues || []), `لم يُذكر الصف داخل الملف؛ ستُحفظ كخطة ${name}. تأكد أنها له.`] });
+    else if (n === g) same.push({ ...d, grade: name });
+    else other.push(d);
+  }
+  if (!same.length) return { drafts: [], error: `محتوى الملف يخص «${[...new Set(other.map((d) => d.grade))].join('، ')}» وليس «${name}». ارفعه من بطاقة ذلك الصف (بعد اختياره في صفوفي)، أو تأكد من الملف.` };
+  return { drafts: same, note: other.length ? `تجاهلنا خطط صفوف أخرى موجودة في نفس الملف (${[...new Set(other.map((d) => d.grade))].join('، ')}).` : '' };
+}
+
+/** ⚙️ «الحفظ والمزامنة» */
+export function SyncPanel({ sync, onWipe }) {
+  return (
+    <section className="ca-card">
+      <div className="ca-card-head"><div><h3>الحفظ والمزامنة</h3><p className="ca-muted">الخطط والإعدادات وسجل التنفيذ محفوظة على هذا الجهاز لحسابك فقط</p></div></div>
+      {sync.available ? (
+        <>
+          <Toggle checked={sync.on} onChange={sync.toggle} label="مزامنة خططي مع حسابي" hint="لاستخدامها من جهاز آخر بعد تسجيل الدخول؛ لا يصل إليها غيرك" />
+          {sync.on && <p className={`ca-small ${sync.state === 'error' ? 'ca-error' : 'ca-muted'}`}>{sync.state === 'saving' ? 'جارٍ الحفظ...' : sync.state === 'error' ? sync.error : sync.at ? `آخر مزامنة: ${fmtStamp(sync.at)}` : 'ستتم المزامنة بعد أول تعديل'}</p>}
+          <div className="ca-row ca-wrap"><button type="button" className="ca-btn is-ghost is-sm" onClick={sync.pull}><Icon n="cloud" size={15} />استرجاع من حسابي</button>{sync.on && <button type="button" className="ca-btn is-ghost is-sm" onClick={sync.push}><Icon n="upload" size={15} />{sync.conflict ? 'حفظ نسخة هذا الجهاز فوق نسخة الحساب' : 'حفظ الآن'}</button>}</div>
+        </>
+      ) : <p className="ca-muted ca-small">المزامنة مع الحساب غير متاحة حاليًا (تتطلب تسجيل الدخول وقاعدة البيانات على الخادم).</p>}
+      <button type="button" className="ca-btn is-danger is-sm ca-mt" onClick={() => { if (window.confirm('حذف كل الخطط والتوزيع وسجل التنفيذ من هذا الجهاز نهائيًا؟')) onWipe(); }}><Icon n="trash" size={15} />حذف كل بيانات الخطط من هذا الجهاز</button>
+    </section>
+  );
+}
+
 /** مراجعة المستخرج قبل الاعتماد — مع معاينة الملف الأصلي للمقارنة */
-function ReviewModal({ ws, update, notify, data, onClose, onDone }) {
+export function ReviewModal({ ws, update, notify, data, onClose, onDone, fixedGrade = '' }) {
   const [drafts, setDrafts] = useState(() => data.drafts.map((d) => ({ ...d, units: d.units.map((u) => ({ ...u, lessons: u.lessons.map((l) => ({ ...l, unsure: [...(l.unsure || [])] })) })) })));
   const [i, setI] = useState(0);
   const [useAlt, setUseAlt] = useState(false);
-  const [dest, setDest] = useState(data.target ? `replace:${data.target}` : 'new');
+  // افتراضيًا: إن وُجدت خطة لنفس الصف والفصل والعام نستبدلها (بحفظ نسختها السابقة) بدل إنشاء خطة مكررة
+  const sameAs = (x) => ws.plans.find((p) => gradeNum(p.grade) === gradeNum(x.grade) && p.semester === x.semester && p.year === x.year);
+  const [dest, setDest] = useState(() => { const f = data.drafts[0]; const t = data.target || (f && f.grade && f.semester && f.year && (sameAs(f) || {}).id); return t ? `replace:${t}` : 'new'; });
   const [done, setDone] = useState([]);
   const d = drafts[i];
   const setD = (patch) => setDrafts((all) => all.map((x, k) => (k === i ? { ...x, ...patch } : x)));
   const lessons = d.units.flatMap((u) => u.lessons);
   const noTitle = lessons.filter((l) => !l.title.trim()).length;
   const metaMissing = !d.year || !d.semester || !d.grade;
-  const candidates = ws.plans.filter((p) => (!d.grade || p.grade === d.grade));
+  const candidates = ws.plans.filter((p) => (!d.grade || gradeNum(p.grade) === gradeNum(d.grade)));
   const targetId = dest.startsWith('replace:') ? dest.slice(8) : null;
   const target = ws.plans.find((p) => p.id === targetId);
   const report = useMemo(() => (target ? matchUnits(target.units, draftToUnits(d, { useAlt })).report : null), [target, d, useAlt]);
@@ -177,7 +212,7 @@ function ReviewModal({ ws, update, notify, data, onClose, onDone }) {
           <div className="ca-form-grid">
             <Field label="العام الدراسي"><input className="ca-input" value={d.year} placeholder="2026/2027" onChange={(e) => setD({ year: e.target.value })} /></Field>
             <Field label="الفصل الدراسي"><select className="ca-input" value={d.semester} onChange={(e) => setD({ semester: e.target.value })}><option value="">— اختر —</option>{SEMESTERS.map((s) => <option key={s}>{s}</option>)}</select></Field>
-            <Field label="الصف"><select className="ca-input" value={d.grade} onChange={(e) => setD({ grade: e.target.value })}><option value="">— اختر —</option>{GRADE_NAMES.map((g) => <option key={g}>{g}</option>)}</select></Field>
+            <Field label="الصف"><select className="ca-input" value={d.grade} disabled={!!fixedGrade} onChange={(e) => setD({ grade: e.target.value })}><option value="">— اختر —</option>{GRADE_NAMES.map((g) => <option key={g}>{g}</option>)}</select></Field>
             <Field label="المادة"><input className="ca-input" value={d.subject} onChange={(e) => setD({ subject: e.target.value })} /></Field>
           </div>
           {d.altLabels && <div className="ca-row ca-wrap lp-mb"><span className="ca-label">عدد الحصص حسب:</span><Seg label="عمود الحصص" value={useAlt ? 'alt' : 'main'} onChange={(v) => setUseAlt(v === 'alt')} options={[{ id: 'main', label: d.altLabels[0] }, { id: 'alt', label: d.altLabels[1] }]} /></div>}
@@ -188,6 +223,7 @@ function ReviewModal({ ws, update, notify, data, onClose, onDone }) {
               <option value="new">خطة جديدة مستقلة</option>
               {candidates.map((p) => <option key={p.id} value={`replace:${p.id}`}>استبدال/تحديث: {planLabel(p)} (تُحفظ النسخة الحالية في السجل)</option>)}
             </select>
+            {dest === 'new' && d.grade && d.semester && d.year && sameAs(d) && <p className="ca-warn-text ca-small">توجد خطة لنفس الصف والفصل والعام. اختر «استبدال/تحديث» لتجنب خطتين متكررتين (تحتاج الحصص حينها إلى مراجعة).</p>}
             {report && (
               <div className="lp-report">
                 <p>سيبقى مرتبطًا كما هو: <b>{report.kept.length}</b> درس{report.kept.some((k) => k.changes.length) ? ` (تغيّرت بيانات ${report.kept.filter((k) => k.changes.length).length})` : ''} • دروس جديدة: <b>{report.added.length}</b> • دروس لن تبقى في الخطة: <b>{report.removed.length}</b></p>
@@ -201,7 +237,7 @@ function ReviewModal({ ws, update, notify, data, onClose, onDone }) {
   );
 }
 
-function PlanDetail({ plan, ws, update, notify, onClose }) {
+export function PlanDetail({ plan, ws, update, notify, onClose, fixedGrade = false }) {
   const [units, setUnits] = useState(plan.units);
   const [meta, setMeta] = useState({ year: plan.year, semester: plan.semester, grade: plan.grade, subject: plan.subject });
   const dirty = JSON.stringify(units) !== JSON.stringify(plan.units) || JSON.stringify(meta) !== JSON.stringify({ year: plan.year, semester: plan.semester, grade: plan.grade, subject: plan.subject });
@@ -219,7 +255,7 @@ function PlanDetail({ plan, ws, update, notify, onClose }) {
       <div className="ca-form-grid">
         <Field label="العام الدراسي"><input className="ca-input" value={meta.year} onChange={(e) => setMeta({ ...meta, year: e.target.value })} /></Field>
         <Field label="الفصل الدراسي"><select className="ca-input" value={meta.semester} onChange={(e) => setMeta({ ...meta, semester: e.target.value })}>{SEMESTERS.map((s) => <option key={s}>{s}</option>)}</select></Field>
-        <Field label="الصف"><select className="ca-input" value={meta.grade} onChange={(e) => setMeta({ ...meta, grade: e.target.value })}>{GRADE_NAMES.map((g) => <option key={g}>{g}</option>)}</select></Field>
+        <Field label="الصف"><select className="ca-input" value={meta.grade} disabled={fixedGrade} onChange={(e) => setMeta({ ...meta, grade: e.target.value })}>{GRADE_NAMES.map((g) => <option key={g}>{g}</option>)}</select></Field>
         <Field label="المادة"><input className="ca-input" value={meta.subject} onChange={(e) => setMeta({ ...meta, subject: e.target.value })} /></Field>
       </div>
       <LessonTable units={units} onChange={setUnits} />

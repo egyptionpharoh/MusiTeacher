@@ -65,8 +65,8 @@ export default function AlertsView({ hasPlans = false, plansHref = '/dashboard/t
 
       <section className="ca-card">
         <div className="ca-card-head"><div><h3>تذكيرات الخطة الفصلية</h3><p className="ca-muted">تذكير واحد في المساء من بيانات «الخطط الفصلية» المرتبطة بجدولك</p></div><a className="ca-btn is-ghost is-sm" href={plansHref}>فتح الخطط الفصلية</a></div>
-        {!hasPlans && <div className="ca-notice is-info"><Icon n="info" /><span>لا توجد خطط فصلية في حسابك بعد. يعمل المنبّه طبيعيًا بدونها، وتبدأ هذه التذكيرات بعد رفع خطتك وربط دروسها بحصصك.</span></div>}
-        <Toggle checked={settings.planReminders.on} onChange={(v) => onSettings({ planReminders: { ...settings.planReminders, on: v } })} label="تذكير المساء" hint="يصدر مرة واحدة يوميًا في الوقت المحدد، ولا يصدر إن لم يكن هناك ما يُذكَّر به" />
+        {!hasPlans && <div className="ca-notice is-info"><Icon n="info" /><span>لا توجد خطط فصلية في حسابك بعد. يعمل المنبّه طبيعيًا بدونها، وتبدأ هذه التذكيرات تلقائيًا بعد رفع خطة صفك.</span></div>}
+        <Toggle checked={settings.planReminders.on} onChange={(v) => onSettings({ planReminders: { ...settings.planReminders, on: v, userSet: true } })} label="تذكير المساء" hint="يصدر مرة واحدة يوميًا في الوقت المحدد، ولا يصدر إن لم يكن هناك ما يُذكَّر به" />
         {settings.planReminders.on && (
           <div className="ca-indent">
             <div className="ca-row ca-wrap ca-mb">
@@ -79,7 +79,7 @@ export default function AlertsView({ hasPlans = false, plansHref = '/dashboard/t
             <Toggle checked={settings.planReminders.unlinked} onChange={(v) => onSettings({ planReminders: { ...settings.planReminders, unlinked: v } })} label="حصص الغد التي لم يُربط بها درس" />
           </div>
         )}
-        <p className="ca-muted ca-small">تنبيه كل حصة مرتبطة بدرس يحمل اسم الدرس تلقائيًا. ولتخصيص توقيت تنبيه حصة بعينها (مثل قبلها بساعة) افتح الحصة من «ربط الخطة بجدولي».</p>
+        <p className="ca-muted ca-small">تنبيه كل حصة مرتبطة بدرس يحمل اسم الدرس تلقائيًا. ولتخصيص توقيت تنبيه حصة بعينها (مثل قبلها بساعة) استخدم «الربط اليدوي المتقدم» في ⚙️ «الربط بجدولي» داخل «مولد الخطط الفصلية».</p>
       </section>
 
       <section className="ca-card">

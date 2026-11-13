@@ -37,7 +37,7 @@ export async function wipeWorkspace(uid) {
   mem.delete(nameFor(uid));
 }
 
-// آخر اختيارات «الخطة الرسمية» لكل حساب (لا تختلط بين معلمين على نفس الجهاز)
+// آخر اختيارات «موعد الدرس» لكل حساب (لا تختلط بين معلمين على نفس الجهاز)
 const selKey = (uid) => `mt-plans:last:${uid || 'guest'}`;
 export function loadSelection(uid) { try { return JSON.parse(localStorage.getItem(selKey(uid)) || 'null'); } catch { return null; } }
 export function saveSelection(uid, sel) { try { localStorage.setItem(selKey(uid), JSON.stringify(sel)); } catch { /* */ } }

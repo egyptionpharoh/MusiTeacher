@@ -66,10 +66,18 @@ function normUnits(units) {
     lessons: (Array.isArray(u && u.lessons) ? u.lessons : []).slice(0, 80).map(normLesson).map((l) => { while (seen.has(l.id)) l.id = uid('l'); seen.add(l.id); return l; }),
   }));
 }
+/** «الأول» / «الفصل الأول» / «1» → «الفصل الدراسي الأول» (يصحّح أيضًا خططًا قديمة حُفظت بالاسم المختصر) */
+export function semesterOf(v) {
+  const b = bare(v);
+  if (!b) return '';
+  if (/(^|[^\u0600-\u06FF\w])(الاول|1)(?![\u0600-\u06FF\w])/.test(b)) return SEMESTERS[0];
+  if (/(^|[^\u0600-\u06FF\w])(الثاني|2)(?![\u0600-\u06FF\w])/.test(b)) return SEMESTERS[1];
+  return str(v, 40);
+}
 export function normalizePlan(p) {
   const o = p && typeof p === 'object' ? p : {};
   return {
-    id: str(o.id, 40) || uid('p'), year: str(o.year, 20), semester: str(o.semester, 40), grade: str(o.grade, 40), subject: str(o.subject, 80),
+    id: str(o.id, 40) || uid('p'), year: str(o.year, 20), semester: semesterOf(o.semester), grade: str(o.grade, 40), subject: str(o.subject, 80),
     title: str(o.title, 160),
     source: o.source && typeof o.source === 'object' ? { name: str(o.source.name, 200), kind: str(o.source.kind, 20), official: o.source.official === true, importedAt: +o.source.importedAt || 0 } : { name: '', kind: 'manual', official: false, importedAt: 0 },
     units: normUnits(o.units),
@@ -99,7 +107,22 @@ function normLog(e) {
   return { id: str(o.id, 40) || uid('g'), assignmentId: o.assignmentId, status: o.status, executedOn: dk(o.executedOn), note: str(o.note, 1000), reason: str(o.reason, 300), at: +o.at || Date.now() };
 }
 
-export function emptyWorkspace() { return { version: 1, plans: [], assignments: [], log: [], updatedAt: 0 }; }
+// Settings  = { grades:[1..12] صفوف المعلم المختارة (فارغة = لم يحدد بعد)، autoLink: الربط التلقائي بجدول المنبّه (افتراضيًا مفعّل) }
+// Override  = تصحيح المعلم لحصة واحدة في الربط التلقائي: { id, profileId, dateKey, slotKey, classKey, planId, lessonId('' = لا درس في هذه الحصة), at }
+export function normalizeSettings(s) {
+  const o = s && typeof s === 'object' ? s : {};
+  const grades = [...new Set((Array.isArray(o.grades) ? o.grades : []).map((g) => Math.round(+g)).filter((g) => g >= 1 && g <= 12))].sort((a, b) => a - b);
+  return { grades, autoLink: o.autoLink !== false, gradesAt: +o.gradesAt || 0 };
+}
+function normOverride(x) {
+  const o = x && typeof x === 'object' ? x : {};
+  if (!dk(o.dateKey) || !str(o.slotKey, 60) || !str(o.profileId, 40)) return null;
+  const lessonId = str(o.lessonId, 40);
+  return { id: str(o.id, 40) || uid('o'), profileId: o.profileId, dateKey: o.dateKey, slotKey: o.slotKey, classKey: str(o.classKey, 80), planId: lessonId ? str(o.planId, 40) : '', lessonId, at: +o.at || Date.now() };
+}
+export const overrideKey = (o) => `${o.profileId}|${o.dateKey}|${o.slotKey}`;
+
+export function emptyWorkspace() { return { version: 1, plans: [], assignments: [], log: [], settings: normalizeSettings(), overrides: [], updatedAt: 0 }; }
 export function normalizeWorkspace(w) {
   const o = w && typeof w === 'object' ? w : {};
   return {
@@ -107,9 +130,15 @@ export function normalizeWorkspace(w) {
     plans: (Array.isArray(o.plans) ? o.plans : []).slice(0, 60).map(normalizePlan),
     assignments: (Array.isArray(o.assignments) ? o.assignments : []).slice(0, 5000).map(normAssignment).filter(Boolean),
     log: (Array.isArray(o.log) ? o.log : []).slice(0, 10000).map(normLog).filter(Boolean),
+    // حقول أُضيفت لاحقًا: البيانات القديمة بدونها تُقرأ بقيم افتراضية آمنة (لا يُحذف شيء)
+    settings: normalizeSettings(o.settings),
+    overrides: dedupeOverrides((Array.isArray(o.overrides) ? o.overrides : []).slice(-3000).map(normOverride).filter(Boolean)),
     updatedAt: +o.updatedAt || 0,
   };
 }
+
+/** تصحيح واحد فقط لكل حصة (الأحدث يبقى) */
+function dedupeOverrides(list) { const m = new Map(); for (const o of list) { const k = overrideKey(o); const c = m.get(k); if (!c || o.at >= c.at) m.set(k, o); } return [...m.values()]; }
 
 export const allLessons = (plan) => plan.units.flatMap((u) => u.lessons.map((l) => ({ ...l, unitId: u.id, unitTitle: u.title })));
 export function findLesson(ws, planId, lessonId) {

@@ -4,7 +4,31 @@ const http = require('http'); const fs = require('fs'); const path = require('pa
 const dist = path.join(__dirname, '_dist'); const fx = path.join(__dirname, 'fixtures'); const port = +(process.env.PORT || 5340);
 const T = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
 const db = { plans: new Map(), alarm: new Map() };
-http.createServer((req, res) => {
+// «الخطط الفصلية»: المعالج الحقيقي (server/http.js) بمخازن في الذاكرة — يختبر صلاحية الأدمن والتحقق من الملفات فعليًا.
+// الحساب من Bearer tok-<uid>؛ الأدمن = uid يبدأ بـ admin. القراءة الذكية (extract) تبقى محاكاة بلا ذكاء اصطناعي.
+let realHandle = null;
+const ready = (async () => {
+  const { createLessonPlansHandler } = await import(path.join(__dirname, '../../src/modules/lesson-plans/server/http.js'));
+  const { makeMemoryStores } = await import(path.join(__dirname, 'memoryStores.mjs'));
+  const mem = makeMemoryStores();
+  const syncStore = { async get(uid) { return db.plans.get(uid) || null; }, async put(uid, data, updatedAt) { db.plans.set(uid, { data, updatedAt }); }, async remove(uid) { db.plans.delete(uid); } };
+  realHandle = createLessonPlansHandler({
+    env: { LP_SYNC_ENABLED: 'true' },
+    authorize: async (r) => { const u = ((r.headers.get('authorization') || '').match(/^Bearer tok-(.+)$/) || [])[1]; return u ? { ok: true, userId: u, admin: /^admin/.test(u) } : { ok: false, status: 401, error: 'سجّل الدخول' }; },
+    store: syncStore, suggested: process.env.NO_SUGGESTED ? null : mem.suggested, prefs: mem.prefs,
+  });
+})();
+http.createServer(async (req, res) => {
+  const p0 = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  if (p0.startsWith('/api/lesson-plans/') && !p0.endsWith('/extract')) {
+    await ready;
+    const chunks = []; for await (const c of req) chunks.push(c);
+    const body = chunks.length ? Buffer.concat(chunks) : undefined;
+    const r = new Request(`http://127.0.0.1:${port}${req.url}`, { method: req.method, headers: req.headers, body: ['GET', 'HEAD'].includes(req.method) ? undefined : body });
+    let out = await realHandle(r, p0.split('/')[3]);
+    if (p0.endsWith('/status')) { const j = await out.json(); j.ai = process.env.AI !== '0'; out = Response.json(j); }
+    res.writeHead(out.status, { 'content-type': 'application/json' }); return res.end(Buffer.from(await out.arrayBuffer()));
+  }
   const p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   const send = (o, s = 200) => { res.writeHead(s, { 'content-type': 'application/json' }); res.end(JSON.stringify(o)); };
   if (p.startsWith('/api/')) {
@@ -31,6 +55,10 @@ http.createServer((req, res) => {
     });
     return;
   }
+  // ملفات public (مثل مكتبة الخطط المقترحة) كما يقدّمها Next.js
+  const pub = path.join(__dirname, '../../public');
+  const pf = path.join(pub, p);
+  if (p.startsWith('/suggested-plans/') && pf.startsWith(pub) && fs.existsSync(pf) && fs.statSync(pf).isFile()) { res.writeHead(200, { 'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }); return res.end(fs.readFileSync(pf)); }
   const f = path.join(dist, p === '/' ? 'index.html' : p);
   if (f.startsWith(dist) && fs.existsSync(f) && fs.statSync(f).isFile()) { res.writeHead(200, { 'content-type': T[path.extname(f)] || 'application/octet-stream' }); return res.end(fs.readFileSync(f)); }
   res.writeHead(404); res.end('nf');

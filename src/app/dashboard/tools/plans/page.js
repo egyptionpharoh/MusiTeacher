@@ -1,5 +1,5 @@
 'use client';
-// مولد الخطط الفصلية — كل المنطق في src/modules/lesson-plans (الواجهة الأصلية أصبحت تبويب «الخطة الرسمية»)
+// مولد الخطط الفصلية — كل المنطق في src/modules/lesson-plans (تبويبا «موعد الدرس» و«الخطط المقترحة» + ⚙️ الإعدادات)
 import plansData from '@/data/semester-plans.json';
 import LessonPlansApp from '@/modules/lesson-plans/ui/LessonPlansApp';
 import { getIdToken, getUserId } from '@/modules/lesson-plans/adapters/musiteacherClient';

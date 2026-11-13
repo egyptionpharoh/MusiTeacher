@@ -21,7 +21,7 @@ export default function LinkView({ ws, update, profile, today, notify, alarmHref
   const [suggest, setSuggest] = useState(null);
   const [alertFor, setAlertFor] = useState(null);
 
-  if (!ws.plans.length) return <section className="ca-card"><div className="ca-empty"><Icon n="note" size={34} /><strong>لا توجد خطة بعد</strong><p>ارفع خطتك من «خططي» أولًا، ثم اربط دروسها بحصصك.</p></div></section>;
+  if (!ws.plans.length) return <section className="ca-card"><div className="ca-empty"><Icon n="note" size={34} /><strong>لا توجد خطة بعد</strong><p>ارفع خطة صفك من «خططي حسب الصف» أولًا.</p></div></section>;
   if (!hasSchedule) return (
     <section className="ca-card"><div className="ca-empty"><Icon n="bell" size={34} /><strong>جدولك المدرسي غير موجود في «منبّه الحصص»</strong>
       <p>الجدول يُدخل مرة واحدة فقط في المنبّه (الأيام والحصص والصفوف والشعب)، وتقرؤه الخطط من هناك مباشرة.</p>
@@ -43,7 +43,7 @@ export default function LinkView({ ws, update, profile, today, notify, alarmHref
     <div className="ca-stack">
       <section className="ca-card">
         <div className="ca-card-head">
-          <div><h3>ربط الخطة بجدولي المدرسي</h3><p className="ca-muted">فترة الدرس في الخطة ليست موعدًا فعليًا؛ الموعد يحدده المعلم من حصصه الحقيقية في المنبّه.</p></div>
+          <div><h3>الربط اليدوي</h3><p className="ca-muted">اربط جزءًا من درس بحصة محددة بنفسك؛ هذا الربط له الأولوية على الربط التلقائي.</p></div>
           <a className="ca-btn is-ghost is-sm" href={alarmHref}><Icon n="bell" size={15} />فتح الجدول الذكي</a>
         </div>
         <div className="ca-row ca-wrap">
@@ -92,7 +92,7 @@ export default function LinkView({ ws, update, profile, today, notify, alarmHref
                     <div><strong>{s.lesson.title || '(بلا اسم)'}</strong><span className="ca-muted ca-small">{s.unitTitle ? `${s.unitTitle} • ` : ''}{s.lesson.start ? `الفترة في الخطة: ${fmtD(s.lesson.start)} ← ${fmtD(s.lesson.end)}` : 'بلا فترة'} • {s.sessions ? `${s.sessions} حصة` : 'عدد الحصص غير محدد'}</span></div>
                     <div className="ca-row ca-wrap">
                       {st && <StatusBadge status={st} label={s.complete ? 'مكتمل' : st === 'overdue' ? 'متأخر' : 'بدأ التنفيذ'} />}
-                      {s.sessions ? <button type="button" className="ca-btn is-sm" onClick={() => setAssign({ plan, lesson: s.lesson, unitTitle: s.unitTitle, cls })}><Icon n="plus" size={15} />ربط بموعد</button> : <span className="ca-warn-text ca-small">أدخل عدد الحصص في «خططي» أولًا</span>}
+                      {s.sessions ? <button type="button" className="ca-btn is-sm" onClick={() => setAssign({ plan, lesson: s.lesson, unitTitle: s.unitTitle, cls })}><Icon n="plus" size={15} />ربط بموعد</button> : <span className="ca-warn-text ca-small">أدخل عدد الحصص في «خططي حسب الصف» أولًا</span>}
                     </div>
                   </div>
                   <ul className="lp-parts">

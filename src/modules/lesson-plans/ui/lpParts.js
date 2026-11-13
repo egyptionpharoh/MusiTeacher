@@ -209,7 +209,7 @@ export function RecordModal({ ws, update, profile, today, assignmentId, onClose,
       ) : (
         <>
           <p className="ca-muted">{completion ? 'هذا الجزء يحتاج حصة استكمال. هذه أقرب حصص متاحة للصف نفسه في جدولك:' : 'أقرب الحصص المتاحة للصف نفسه في جدولك (لن يُعتمد أي موعد إلا باختيارك):'}</p>
-          {alts.length === 0 ? <p className="ca-muted ca-pad">لا توجد حصص متاحة في الأسابيع القادمة. يمكنك تحديد الموعد لاحقًا من «ربط الخطة بجدولي».</p> : (
+          {alts.length === 0 ? <p className="ca-muted ca-pad">لا توجد حصص متاحة في الأسابيع القادمة. يمكنك تحديد الموعد لاحقًا من ⚙️ «الربط بجدولي».</p> : (
             <div className="lp-slots">{alts.map((o) => <button key={o.dateKey + o.slotKey} type="button" className="lp-slot" onClick={() => pick(o)}><b>{o.dayName} {o.dateKey.slice(8).replace(/^0/, '')}/{o.dateKey.slice(5, 7).replace(/^0/, '')}</b><span>{o.label} • {fmtTime(o.start)}</span></button>)}</div>
           )}
         </>

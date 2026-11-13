@@ -1,7 +1,7 @@
 // 🧭 الجسر بين الخطة وجدول المنبّه: حصص كل صف/شعبة الفعلية، التوزيع اليدوي والمقترح، حالة كل حصة، التقدم، والتعارضات.
 // يقرأ جدول المنبّه كما هو (ملف الإعداد profile) ولا ينسخه: التوزيع يحفظ فقط (التاريخ + معرّف الحصة).
 import { resolveDay } from '../../class-alarm/core/schedule.js';
-import { zonedParts, addDays, weekdayOf } from '../../class-alarm/core/time.js';
+import { addDays, weekdayOf } from '../../class-alarm/core/time.js';
 import { classKeyOf, classLabelOf, allLessons, uid } from './model.js';
 
 const ACTIVE = (s) => s === 'scheduled' || s === 'awaiting';
@@ -88,25 +88,6 @@ export function lessonState(ws, planId, lesson, classKey, todayKey) {
   return { lesson, items, parts, sessions: n, doneParts, partialCount, pendingCompletion, needsSlot, postponed, complete, started, awaiting: items.filter((x) => x.status === 'awaiting'), scheduled: items.filter((x) => x.status === 'scheduled') };
 }
 
-/** لوحة التقدم: من سجلات التنفيذ الحقيقية فقط (لا من مرور التاريخ) */
-export function planProgress(ws, plan, classKey, todayKey) {
-  const lessons = allLessons(plan).map((l) => ({ ...lessonState(ws, plan.id, l, classKey, todayKey), unitTitle: l.unitTitle }));
-  const withSessions = lessons.filter((s) => s.sessions > 0);
-  const totalSessions = withSessions.reduce((a, s) => a + s.sessions, 0);
-  const doneSessions = withSessions.reduce((a, s) => a + Math.min(s.sessions, s.doneParts + Math.min(s.partialCount, s.items.filter((x) => x.a.kind === 'completion' && x.status === 'done').length)), 0);
-  const overdue = lessons.filter((s) => s.lesson.end && s.lesson.end < todayKey && !s.complete);
-  const soon = lessons.filter((s) => s.lesson.start && s.lesson.start >= todayKey && s.lesson.start <= addDays(todayKey, 7) && s.needsSlot.length > 0);
-  return {
-    lessons, total: lessons.length, started: lessons.filter((s) => s.started).length, completed: lessons.filter((s) => s.complete).length,
-    totalSessions, doneSessions, remainingSessions: Math.max(0, totalSessions - doneSessions),
-    pct: totalSessions ? Math.round((doneSessions / totalSessions) * 100) : 0,
-    overdue, soon, needsCompletion: lessons.filter((s) => s.pendingCompletion > 0 || s.postponed.length > 0),
-    missingSessions: lessons.filter((s) => !s.sessions).length,
-    unassigned: lessons.filter((s) => s.sessions > 0 && s.needsSlot.length > 0),
-    awaiting: lessons.flatMap((s) => s.awaiting),
-  };
-}
-
 // ---------- التوزيع ----------
 /** الحصة محجوزة إذا ارتبط بها درس لم يُسجَّل تأجيله/إلغاؤه/عدم تنفيذه */
 const FREEING = new Set(['postponed', 'cancelled', 'missed']);
@@ -181,5 +162,4 @@ export function conflicts(ws, profile, todayKey) {
   return out;
 }
 
-export const todayKeyOf = (tz = 'Asia/Muscat', now = Date.now()) => zonedParts(now, tz).dateKey;
 export const dayNameOf = (k) => ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'][weekdayOf(k)];

@@ -412,4 +412,10 @@ textarea.ca-input { resize: vertical; line-height: 1.7; }
 .ca-ev-st { font-style: normal; background: var(--ca-warn-bg); color: var(--ca-warn); border-radius: 999px; padding: 0 .5rem; font-size: .74rem; }
 .ca-ev-record { grid-column: 3; justify-self: start; margin-top: -.15rem; font-size: .8rem; font-weight: 800; color: var(--ca-brand); text-decoration: underline; }
 .dark .ca-ev-record { color: var(--ca-mist); }
+button.ca-ev-record { border: 0; background: none; font-family: inherit; cursor: pointer; padding: 0; }
+.ca-ev-record.is-review, .ca-ev-lesson.is-review { color: var(--ca-warn); }
+.ca-ev-lesson.is-review small { font-weight: 600; color: var(--ca-ink-2); }
+.ca-plan-note { margin: 0 0 .6rem; }
+.ca-plan-note a { color: var(--ca-brand); font-weight: 800; }
+.dark .ca-plan-note a { color: var(--ca-mist); }
 .ca-next-lesson { margin: 0; font-size: 1rem; color: var(--ca-next); font-weight: 700; }

@@ -13,9 +13,10 @@ import { AlarmOverlay, DisplayMode } from './Overlays';
 import { AlarmRuntime, askNotify, notifyPermission, registerSW, showSystemNotification, closeSystemNotification } from './runtime';
 import { TONES, CUSTOM_PREFIX, playTone, stopAll, unlockAudio, audioState, setCustomResolver, forgetCustom, inspectToneFile } from './audio';
 import { loadStore, saveStore, listTones, saveTone, deleteTone, wipeAll, requestPersist, setStorageUser } from './storage';
-import { loadWorkspace, PLANS_CHANNEL } from '../../lesson-plans/ui/storage';
+import { loadWorkspace, saveWorkspace, PLANS_CHANNEL } from '../../lesson-plans/ui/storage';
 import { normalizeWorkspace } from '../../lesson-plans/core/model.js';
 import { linksForDay, eveningDigest } from '../../lesson-plans/core/links.js';
+import { withOverride } from '../../lesson-plans/core/auto.js';
 import { createApi } from './api';
 import { normalizeStore, normalizeProfile, normalizeSettings, emptyStore, cloneProfile, uid } from '../core/model.js';
 import { zonedParts } from '../core/time.js';
@@ -98,6 +99,15 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
     };
     return () => bc.current && bc.current.close();
   }, []);
+  // إشعارات النظام مفعّلة افتراضيًا: المتصفح لا يسمح بطلب الإذن إلا بعد تفاعل المستخدم،
+  // فنطلبه مرة واحدة عند أول نقرة في الأداة (ما لم يوقف المعلم التنبيهات أو إشعارات النظام من الإعدادات)
+  const sysWanted = !!(settings && settings.enabled && settings.system);
+  useEffect(() => {
+    if (!sysWanted || perm !== 'default') return undefined;
+    const once = () => { askNotify().then(setPerm); };
+    window.addEventListener('pointerdown', once, { once: true });
+    return () => window.removeEventListener('pointerdown', once);
+  }, [sysWanted, perm]);
   // تحديثات «الخطط الفصلية» من تبويب آخر (ربط درس، تسجيل تنفيذ...) تنعكس فورًا
   useEffect(() => {
     if (uid === undefined || typeof BroadcastChannel === 'undefined') return undefined;
@@ -170,8 +180,17 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
     const cache = new Map();
     const linksFor = (k) => { if (!cache.has(k)) cache.set(k, linksForDay(plansWs, profile, k, todayKey)); return cache.get(k); };
     const pr = settings.planReminders;
-    return { linksFor, digest: (k, next) => eveningDigest(plansWs, profile, next, k, pr), hasPlans: plansWs.plans.length > 0 };
-  }, [profile, plansWs, todayKey, settings]); // eslint-disable-line react-hooks/exhaustive-deps
+    // تصحيح درس حصة من المنبّه: يُحفظ في بيانات «الخطط الفصلية» نفسها (أحدث نسخة من التخزين) ويُبلَّغ تبويب الخطط
+    const saveOverride = async (dateKey, e, choice) => {
+      const cur = normalizeWorkspace((await loadWorkspace(uid).catch(() => null)) || plansWs);
+      const next = normalizeWorkspace({ ...withOverride(cur, { profileId: profile.id, dateKey, slotKey: e.key, ...choice }), updatedAt: Date.now() });
+      await saveWorkspace(uid, next);
+      setPlansWs(next);
+      try { const ch = new BroadcastChannel(PLANS_CHANNEL); ch.postMessage({ from: 'alarm', type: 'ws' }); ch.close(); } catch { /* */ }
+      notify(choice.lessonId === null ? 'أُعيدت الحصة للربط التلقائي.' : 'حُفظ تصحيح درس هذه الحصة.');
+    };
+    return { linksFor, digest: (k, next) => eveningDigest(plansWs, profile, next, k, pr), hasPlans: plansWs.plans.length > 0, ws: plansWs, saveOverride };
+  }, [profile, plansWs, todayKey, settings, uid]); // eslint-disable-line react-hooks/exhaustive-deps
   stateRef.current = profile ? { profile, settings, adhoc, ctx: planCtx } : null;
   const ringRef = useRef([]);
   ringRef.current = ringing;

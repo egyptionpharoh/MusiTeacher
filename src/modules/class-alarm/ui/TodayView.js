@@ -5,6 +5,7 @@ import { Icon, Modal, Field, Seg } from './parts';
 import { dayStatus, resolveDay, weekStats, alertsForDay } from '../core/schedule.js';
 import { fmtTime, fmtDate, clock, durationWords, zonedParts, addDays, DAY_NAMES, normHHMM, parseHHMM, toHHMM, MIN } from '../core/time.js';
 import { EXTRA_KINDS, uid } from '../core/model.js';
+import CorrectModal from '../../lesson-plans/ui/CorrectModal';
 
 const MOTIVATION = [
   'كل حصة فرصة لبداية لحن جديد.', 'الاستعداد الجيد نصف نجاح الحصة.', 'دقيقة تنظيم توفر عشر دقائق ارتباك.',
@@ -32,6 +33,7 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
   const [dateKey, setDateKey] = useState(null);
   const [act, setAct] = useState(null);        // حدث مختار لتعديل اليوم
   const [adding, setAdding] = useState(false);
+  const [fix, setFix] = useState(null);        // { e, link } تصحيح درس حصة (من الخطط)
   const zp = zonedParts(now, profile.tz);
   const today = zp.dateKey;
   const viewKey = dateKey || today;
@@ -136,6 +138,7 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
           <button type="button" className="ca-btn is-ghost" onClick={() => setAdding(true)}><Icon n="plus" />إضافة حصة استثنائية أو اجتماع</button>
           {day.override && <button type="button" className="ca-btn is-ghost" onClick={() => { if (window.confirm('إلغاء كل تعديلات هذا اليوم والعودة للجدول الأساسي؟')) onOverride(viewKey, () => ({})); }}><Icon n="x" />إلغاء تعديلات اليوم</button>}
         </div>
+        {!planCtx.hasPlans && <p className="ca-small ca-muted ca-plan-note">📚 لم تُرفع خطة دراسية بعد؛ ارفع خطة صفك في <a href={plansHref}>«مولد الخطط الفصلية»</a> ليظهر درس كل حصة تلقائيًا.</p>}
         {day.events.length === 0 ? <p className="ca-muted ca-pad">لا توجد حصص في هذا اليوم.</p> : (
           <ol className="ca-timeline">
             {groupFree(day.events).map((e) => {
@@ -165,9 +168,10 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
                       {e.muted && <span className="ca-badge">بدون تنبيه</span>}
                       {e.note && <span className="ca-ev-note"><Icon n="note" size={13} /> {e.note}</span>}
                     </span>
-                    {links && (e.type === 'lesson' || (e.type === 'extra' && e.kind === 'lesson')) && !e.cancelled && <LessonLine link={links.get(e.key)} hasPlans={planCtx.hasPlans} />}
+                    {links && (e.type === 'lesson' || (e.type === 'extra' && e.kind === 'lesson')) && !e.cancelled && <LessonLine link={links.get(e.key)} />}
                   </button>
-                  {links && links.get(e.key) && viewKey <= today && !e.cancelled && <a className="ca-ev-record" href={`${plansHref}?tab=today&record=${encodeURIComponent(links.get(e.key).assignmentId)}`}>تسجيل تنفيذ الحصة</a>}
+                  {links && links.get(e.key) && links.get(e.key).source === 'manual' && viewKey <= today && !e.cancelled && <a className="ca-ev-record" href={`${plansHref}?record=${encodeURIComponent(links.get(e.key).assignmentId)}`}>تسجيل تنفيذ الحصة</a>}
+                  {links && links.get(e.key) && links.get(e.key).source === 'auto' && !e.cancelled && planCtx.saveOverride && <button type="button" className={`ca-ev-record${links.get(e.key).review ? ' is-review' : ''}`} onClick={() => setFix({ e, link: links.get(e.key) })}>{links.get(e.key).review ? 'تحديد الدرس' : 'تصحيح الدرس'}</button>}
                 </li>
               );
             })}
@@ -178,6 +182,7 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
       <WeekCard profile={profile} week={week} h24={h24} />
 
       {act && <EventModal e={act} dateKey={viewKey} profile={profile} h24={h24} onClose={() => setAct(null)} onOverride={onOverride} />}
+      {fix && planCtx.ws && <CorrectModal ws={planCtx.ws} dateKey={viewKey} event={fix.e} link={fix.link} onClose={() => setFix(null)} onSave={async (c) => { await planCtx.saveOverride(viewKey, fix.e, c); setFix(null); }} />}
       {adding && <ExtraModal dateKey={viewKey} profile={profile} onClose={() => setAdding(false)} onSave={(x) => { onOverride(viewKey, (o) => ({ ...o, extra: [...(o.extra || []), x] })); setAdding(false); }} />}
     </div>
   );
@@ -196,11 +201,13 @@ function groupFree(events) {
   return out;
 }
 
-/** سطر الدرس المرتبط من «الخطط الفصلية» — أو رسالة واضحة إن لم يُربط درس بعد (لا نخترع درسًا) */
-function LessonLine({ link, hasPlans }) {
-  if (link) return <span className="ca-ev-lesson"><Icon n="note" size={13} /> الدرس: <b>{link.lessonTitle}</b>{link.sessions ? ` • الحصة ${link.part} من ${link.sessions}` : ''}{link.remaining != null ? ` • المتبقي ${link.remaining}` : ''}{link.status !== 'scheduled' && <i className="ca-ev-st">{link.statusLabel}</i>}</span>;
-  if (!hasPlans) return null;
-  return <span className="ca-ev-lesson is-none">لم يتم تحديد درس لهذه الحصة بعد</span>;
+/** سطر درس الحصة من «الخطط الفصلية»: ربط يدوي، أو ربط تلقائي مؤكد، أو «يحتاج مراجعة» (لا نخترع درسًا) */
+function LessonLine({ link }) {
+  if (!link) return null;
+  if (link.source === 'auto' && link.review) return <span className="ca-ev-lesson is-review"><Icon n="warn" size={13} /> الدرس: <i className="ca-ev-st">يحتاج مراجعة</i> <small>{link.reason}</small></span>;
+  if (!link.lessonTitle) return <span className="ca-ev-lesson is-none">{link.reason || 'لا يوجد درس مخطط لهذه الحصة'}</span>;
+  const part = link.part ? (link.sessions ? ` • الحصة ${link.part} من ${link.sessions}` : ` • الحصة ${link.part}`) : '';
+  return <span className="ca-ev-lesson"><Icon n="note" size={13} /> الدرس: <b>{link.lessonTitle}</b>{part}{link.remaining != null ? ` • المتبقي ${link.remaining}` : ''}{link.source === 'manual' && link.status !== 'scheduled' && <i className="ca-ev-st">{link.statusLabel}</i>}{link.overridden && <i className="ca-ev-st">مصحّح</i>}</span>;
 }
 
 function NextInfo({ e, profile, h24, onOpen, alerts, link }) {
@@ -209,7 +216,8 @@ function NextInfo({ e, profile, h24, onOpen, alerts, link }) {
       <span className="ca-badge is-next">{e.type === 'extra' ? e.label : `الحصة ${e.label}`}</span>
       <h3>{e.title}</h3>
       {e.cls && <p className="ca-next-cls">{e.cls}</p>}
-      {link && <p className="ca-next-lesson">الدرس: <b>{link.lessonTitle}</b>{link.sessions ? ` (الحصة ${link.part} من ${link.sessions})` : ''}</p>}
+      {link && link.lessonTitle && <p className="ca-next-lesson">الدرس: <b>{link.lessonTitle}</b>{link.part ? (link.sessions ? ` (الحصة ${link.part} من ${link.sessions})` : ` (الحصة ${link.part})`) : ''}</p>}
+      {link && link.review && <p className="ca-next-lesson">الدرس: <i>يحتاج مراجعة</i></p>}
       <dl>
         <div><dt>البداية</dt><dd>{fmtTime(e.start, h24)}</dd></div>
         <div><dt>النهاية</dt><dd>{fmtTime(e.end, h24)}</dd></div>

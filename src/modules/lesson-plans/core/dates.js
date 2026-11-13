@@ -19,7 +19,9 @@ export function yearFor(month, schoolYear) {
 export function parseDate(v, schoolYear) {
   if (v == null || v === '') return null;
   if (typeof v === 'number' && v > 20000 && v < 80000) { const t = new Date(Math.round((v - 25569) * 86400000)); return ymd(t.getUTCFullYear(), t.getUTCMonth() + 1, t.getUTCDate()); }
-  if (v instanceof Date && !Number.isNaN(+v)) return ymd(v.getFullYear(), v.getMonth() + 1, v.getDate());
+  // خلايا التاريخ من Excel (SheetJS) تصل أحيانًا قبل منتصف الليل بثوانٍ (مثل 23:59:48 من اليوم السابق) أو بفارق المنطقة الزمنية،
+  // فنقرّب لأقرب يوم بدل أخذ الجزء التاريخي حرفيًا (كان ذلك يُرجع التاريخ يومًا كاملًا للخلف)
+  if (v instanceof Date && !Number.isNaN(+v)) { const t = new Date(+v + 12 * 3600 * 1000); return ymd(t.getFullYear(), t.getMonth() + 1, t.getDate()); }
   const s = toLatin(v).trim();
   let m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
   if (m) return ymd(+m[1], +m[2], +m[3]);
