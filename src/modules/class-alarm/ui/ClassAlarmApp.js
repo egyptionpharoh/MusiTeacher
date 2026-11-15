@@ -14,8 +14,9 @@ import { AlarmRuntime, askNotify, notifyPermission, registerSW, showSystemNotifi
 import { TONES, CUSTOM_PREFIX, playTone, stopAll, unlockAudio, audioState, setCustomResolver, forgetCustom, inspectToneFile } from './audio';
 import { loadStore, saveStore, listTones, saveTone, deleteTone, wipeAll, requestPersist, setStorageUser } from './storage';
 import { loadWorkspace, saveWorkspace, PLANS_CHANNEL } from '../../lesson-plans/ui/storage';
-import { normalizeWorkspace } from '../../lesson-plans/core/model.js';
-import { linksForDay, eveningDigest } from '../../lesson-plans/core/links.js';
+import { normalizeWorkspace, classKeyOf } from '../../lesson-plans/core/model.js';
+import { linksForDay, eveningDigest, weekPlan, lessonHref } from '../../lesson-plans/core/links.js';
+import { schoolWeekOf } from '../../lesson-plans/core/weekly.js';
 import { withOverride } from '../../lesson-plans/core/auto.js';
 import { createApi } from './api';
 import { normalizeStore, normalizeProfile, normalizeSettings, emptyStore, cloneProfile, uid } from '../core/model.js';
@@ -181,15 +182,27 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
     const linksFor = (k) => { if (!cache.has(k)) cache.set(k, linksForDay(plansWs, profile, k, todayKey)); return cache.get(k); };
     const pr = settings.planReminders;
     // تصحيح درس حصة من المنبّه: يُحفظ في بيانات «الخطط الفصلية» نفسها (أحدث نسخة من التخزين) ويُبلَّغ تبويب الخطط
-    const saveOverride = async (dateKey, e, choice) => {
+    // يُحفظ التصحيح مع صف الحصة: إن تغيّر صف هذه الحصة في الجدول لاحقًا لا يُطبَّق التصحيح على الصف الجديد
+    const writeWs = async (fn, msg) => {
       const cur = normalizeWorkspace((await loadWorkspace(uid).catch(() => null)) || plansWs);
-      const next = normalizeWorkspace({ ...withOverride(cur, { profileId: profile.id, dateKey, slotKey: e.key, ...choice }), updatedAt: Date.now() });
+      const next = normalizeWorkspace({ ...fn(cur), updatedAt: Date.now() });
       await saveWorkspace(uid, next);
       setPlansWs(next);
       try { const ch = new BroadcastChannel(PLANS_CHANNEL); ch.postMessage({ from: 'alarm', type: 'ws' }); ch.close(); } catch { /* */ }
-      notify(choice.lessonId === null ? 'أُعيدت الحصة للربط التلقائي.' : 'حُفظ تصحيح درس هذه الحصة.');
+      notify(msg);
     };
-    return { linksFor, digest: (k, next) => eveningDigest(plansWs, profile, next, k, pr), hasPlans: plansWs.plans.length > 0, ws: plansWs, saveOverride };
+    const saveOverride = (dateKey, e, choice) => writeWs((cur) => withOverride(cur, { profileId: profile.id, dateKey, slotKey: e.key, classKey: classKeyOf((e.lesson || {}).grade, (e.lesson || {}).section), ...choice }),
+      choice.lessonId === null ? 'أُعيدت الحصة للتوزيع التلقائي.' : 'حُفظ تعديل درس هذه الحصة (لا يغيّر ملف الخطة).');
+    const myOverrides = plansWs.overrides.filter((o) => o.profileId === profile.id);
+    const resetOverrides = () => writeWs((cur) => ({ ...cur, overrides: cur.overrides.filter((o) => o.profileId !== profile.id) }), 'أُلغيت تعديلاتك، وأُعيد توليد التوزيع التلقائي من الخطة.');
+    const weekCache = new Map();
+    return {
+      linksFor, digest: (k, next) => eveningDigest(plansWs, profile, next, k, pr), hasPlans: plansWs.plans.length > 0, ws: plansWs, saveOverride,
+      overridesCount: myOverrides.length, resetOverrides,
+      hrefFor: (l) => lessonHref(plansWs, l, plansHref),
+      weekOf: (k) => schoolWeekOf(plansWs, k),
+      weekPlan: (k) => { if (!weekCache.has(k)) weekCache.set(k, weekPlan(plansWs, profile, k, todayKey)); return weekCache.get(k); },
+    };
   }, [profile, plansWs, todayKey, settings, uid]); // eslint-disable-line react-hooks/exhaustive-deps
   stateRef.current = profile ? { profile, settings, adhoc, ctx: planCtx } : null;
   const ringRef = useRef([]);
@@ -356,8 +369,8 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
 
       {importing && <ImportWizard onClose={() => setImporting(false)} ai={api ? (payload, signal) => api.extract(payload, signal) : null} aiReady={svc.ai && !!api} activeProfile={profile}
         onApply={(p, dest) => { onStore((s) => (dest === 'replace' ? { ...s, profiles: s.profiles.map((x) => (x.id === s.activeId ? { ...p, id: x.id } : x)) } : { ...s, profiles: [...s.profiles, p], activeId: p.id })); setImporting(false); setTab('schedule'); notify('اعتُمد الجدول. راجع بيانات المعلم والمدرسة وخطة التنبيه.'); }} />}
-      {display && <DisplayMode profile={profile} settings={settings} now={now} onClose={() => setDisplay(false)} />}
-      <AlarmOverlay ringing={ringing} now={now} onAck={ack} onSnooze={snooze} muted={ringMuted} onMute={() => { stopAll(); setRingMuted(true); }} />
+      {display && <DisplayMode profile={profile} settings={settings} now={now} linksFor={planCtx.linksFor} onClose={() => setDisplay(false)} />}
+      <AlarmOverlay ringing={ringing} now={now} hrefFor={planCtx.hrefFor} onAck={ack} onSnooze={snooze} muted={ringMuted} onMute={() => { stopAll(); setRingMuted(true); }} />
       {toast && <div key={toast.k} className={`ca-toast is-${toast.kind}`} role="status"><Icon n={toast.kind === 'err' ? 'warn' : 'check'} />{toast.text}</div>}
     </div>
   );

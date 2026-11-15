@@ -1,15 +1,13 @@
 // 🤝 الربط التلقائي بين «خطة الصف» و«جدول الحصص في المنبّه» — يُحسب لحظيًا ولا يُخزَّن، فيتبع أي تعديل في الخطة أو الجدول دون تكرار.
 //
 // الخطة تحدد: أي درس، وفي أي أسابيع/تواريخ، وكم حصة (إن ذُكر).  المنبّه يحدد: الحصص الفعلية لكل صف/شعبة (بعد الإجازات والإلغاء والحصص الاستثنائية).
-// القاعدة: لكل حصة فعلية نبحث عن دروس خطة صفها التي تقع فترتها في تاريخ الحصة:
-//   • درس واحد فقط ⇒ ربط مؤكد، ورقم الحصة = ترتيبها بين حصص الشعبة داخل فترة الدرس.
-//       - إن تجاوز ترتيبها عدد حصص الدرس المكتوب في الخطة ⇒ «يحتاج مراجعة» (لا نفترض أي درس بعده).
-//   • عدة دروس في نفس التاريخ ⇒ إن كان عدد حصص كل درس معروفًا نوزعها بالترتيب على الحصص الفعلية،
-//       وإلا ⇒ «يحتاج مراجعة» مع الدروس المحتملة (لا نخمّن).
-//   • لا درس في هذا التاريخ ⇒ «لا يوجد درس مخطط» • لا خطة لهذا الصف ⇒ «لا توجد خطة لهذا الصف».
-// تصحيحات المعلم (overrides) تُطبَّق على الحصة المعنية فقط، وتُحتسب عند ترقيم بقية الحصص.
+// لكل حصة فعلية: نجمع دروس خطة صفها المتداخلة الفترات حول تاريخها، ثم يوزّعها «Weekly Lesson Scheduler» (core/weekly.js)
+// على حصص الشعبة الفعلية في تلك الفترة: بترتيب الخطة، وبعدد حصص كل درس، دون اختراع درس ولا إسقاط درس بصمت.
+//   • لا درس في هذا التاريخ ⇒ «لا يوجد درس مخطط» • لا خطة لهذا الصف ⇒ «لا توجد خطة لهذا الصف» • غموض حقيقي ⇒ «يحتاج مراجعة».
+// تصحيحات المعلم (overrides) تُطبَّق على الحصة المعنية فقط، وتُحتسب عند ترقيم بقية الحصص؛ وتصحيحٌ صار لصف آخر بعد تعديل الجدول يُتجاهل.
 import { gradeNum, classKeyOf, overrideKey } from './model.js';
-import { lessonTiming, maxWeekOf } from './calendar.js';
+import { lessonTiming, maxWeekOf, planCalendar, weekOfDate, weekOrdinal } from './calendar.js';
+import { allocate } from './weekly.js';
 import { occurrences } from './track.js';
 
 const winCache = new WeakMap();
@@ -18,10 +16,11 @@ export function planWindows(plan) {
   if (winCache.has(plan)) return winCache.get(plan);
   const lessons = plan.units.flatMap((u) => u.lessons.map((l) => ({ ...l, unitTitle: u.title })));
   const mx = maxWeekOf(lessons.map((l) => l.weeks));
+  const cal = planCalendar(plan); // الرسمي المعروف، أو المستنتج من دروس الخطة نفسها
   const out = lessons.map((l, order) => {
     let start = '', end = '';
     if (l.start) { start = l.start; end = l.end && l.end >= l.start ? l.end : l.start; } else {
-      const t = lessonTiming({ weeks: l.weeks, year: plan.year, semester: plan.semester, maxWeek: mx });
+      const t = lessonTiming({ weeks: l.weeks, year: plan.year, semester: plan.semester, maxWeek: mx, cal });
       if (t.state === 'ok') { start = t.start; end = t.end; }
     }
     return { plan, lesson: l, order, start, end };
@@ -49,27 +48,33 @@ export function autoLinkEvent(ws, profile, dateKey, e, memo = new Map()) {
   const ck = classKeyOf(l.grade, l.section);
   const ovMap = memo.get('ov') || new Map((ws.overrides || []).map((o) => [overrideKey(o), o]));
   memo.set('ov', ovMap);
-  const ov = ovMap.get(`${profile.id}|${dateKey}|${e.key}`);
+  // تصحيح محفوظ لصف آخر (تغيّر صف هذه الحصة في الجدول بعد التصحيح) لا يُطبَّق على الصف الجديد
+  const ovFor = (dk, slot, cls) => { const o = ovMap.get(`${profile.id}|${dk}|${slot}`); return o && (!o.classKey || o.classKey === cls) ? o : undefined; };
+  const raw = ovMap.get(`${profile.id}|${dateKey}|${e.key}`);
+  const ov = ovFor(dateKey, e.key, ck);
+  const stale = !!(raw && !ov);
   const plans = plansOfGrade(ws, g);
   const windows = plans.flatMap(planWindows);
+  const wk = weekInfo(plans, dateKey);
   if (ov) {
-    if (!ov.lessonId) return { state: 'none', overridden: true, reason: 'حددتَ أنه لا يوجد درس من الخطة في هذه الحصة' };
+    if (!ov.lessonId) return { state: 'none', overridden: true, ...wk, reason: 'حددتَ أنه لا يوجد درس من الخطة في هذه الحصة' };
     const w = windows.find((x) => x.plan.id === ov.planId && x.lesson.id === ov.lessonId);
-    if (w) return { state: 'sure', overridden: true, ...cand(w), lessonTitle: w.lesson.title, part: null, sessions: w.lesson.sessions, candidates: [] };
-    // الدرس المصحَّح لم يعد في الخطة: نعود للحساب التلقائي ونُعلِم المعلم
+    if (w) return { state: 'sure', overridden: true, ...cand(w), lessonTitle: w.lesson.title, lessons: [cand(w)], part: null, sessions: w.lesson.sessions, candidates: [], ...wk };
+    // الدرس المصحَّح لم يعد في الخطة (استُبدلت): نعود للحساب التلقائي
   }
   if (!plans.length) return { state: 'no-plan', reason: 'لا توجد خطة لهذا الصف' };
   const covering = windows.filter((w) => w.start && w.start <= dateKey && dateKey <= w.end);
   if (!covering.length) {
     const any = windows.some((w) => w.start);
-    return { state: 'none', reason: any ? 'لا يوجد درس مخطط لهذا التاريخ في خطة الصف' : 'دروس خطة هذا الصف بلا أسابيع أو تواريخ، فلا يمكن ربطها تلقائيًا' };
+    return { state: 'none', ...wk, staleOverride: stale, reason: any ? 'لا يوجد درس مخطط لهذا التاريخ في خطة الصف' : 'دروس خطة هذا الصف بلا أسابيع أو تواريخ، فلا يمكن ربطها تلقائيًا' };
   }
   const planIds = new Set(covering.map((w) => w.plan.id));
-  if (planIds.size > 1) return { state: 'review', reason: 'أكثر من خطة لهذا الصف تغطي هذا التاريخ', candidates: covering.map(cand) };
+  if (planIds.size > 1) return { state: 'review', ...wk, reason: 'لديك أكثر من خطة لهذا الصف تغطي هذا التاريخ؛ احذف المكررة أو استبدلها', candidates: covering.map(cand) };
 
   // مجموعة الدروس المتداخلة (تتوسع حتى لا يبقى درس يتداخل مع المدى)
   const pw = windows.filter((w) => w.plan.id === covering[0].plan.id && w.start);
-  let comp = covering.slice(), from = comp.reduce((m, w) => (w.start < m ? w.start : m), comp[0].start), to = comp.reduce((m, w) => (w.end > m ? w.end : m), comp[0].end);
+  const comp = covering.slice();
+  let from = comp.reduce((m, w) => (w.start < m ? w.start : m), comp[0].start), to = comp.reduce((m, w) => (w.end > m ? w.end : m), comp[0].end);
   for (let grown = true; grown;) {
     grown = false;
     for (const w of pw) if (!comp.includes(w) && w.start <= to && w.end >= from) { comp.push(w); from = w.start < from ? w.start : from; to = w.end > to ? w.end : to; grown = true; }
@@ -79,43 +84,37 @@ export function autoLinkEvent(ws, profile, dateKey, e, memo = new Map()) {
   const ok = `${profile.id}|${ck}|${from}|${to}`;
   if (!memo.has(ok)) memo.set(ok, occurrences(profile, ck, from, to));
   const occ = memo.get(ok);
-  const idx = occ.findIndex((o) => o.dateKey === dateKey && o.slotKey === e.key);
-  if (idx < 0) return { state: 'review', reason: 'تعذر تحديد ترتيب هذه الحصة بين حصص الشعبة', candidates: covering.map(cand) };
-
-  // ترقيم الحصص بعد استبعاد ما صحّحه المعلم
-  const ovOf = (o) => ovMap.get(`${profile.id}|${o.dateKey}|${o.slotKey}`);
-  // درس واحد فقط مخطط لهذا التاريخ ⇒ هو درس الحصة يقينًا؛ ترقيمها بين حصص الشعبة داخل فترة ذلك الدرس
-  if (covering.length === 1) {
-    const w = covering[0];
-    const own = occ.filter((o) => { if (o.dateKey < w.start || o.dateKey > w.end) return false; const x = ovOf(o); return !x || (x.lessonId === w.lesson.id && x.planId === w.plan.id); });
-    const part = own.findIndex((o) => o.dateKey === dateKey && o.slotKey === e.key) + 1;
-    const n = w.lesson.sessions;
-    if (n && part > n) return { state: 'review', reason: `حصص الشعبة في فترة الدرس أكثر من عدد حصصه في الخطة (${n})`, candidates: [cand(w), ...nextOf(pw, w)], part, inWindow: own.length };
-    return { state: 'sure', ...cand(w), lessonTitle: w.lesson.title, part, sessions: n || null, inWindow: own.length, short: !!(n && own.length < n) };
+  const ak = `alloc|${ok}|${comp.map((w) => `${w.plan.id}:${w.lesson.id}`).join(',')}`;
+  if (!memo.has(ak)) memo.set(ak, allocate(comp, occ, (o) => ovFor(o.dateKey, o.slotKey, ck)));
+  const al = memo.get(ak);
+  const r = al.bySlot.get(`${dateKey}|${e.key}`);
+  if (!r) return { state: 'review', ...wk, reason: 'تعذر تحديد ترتيب هذه الحصة بين حصص الشعبة', candidates: covering.map(cand) };
+  if (r.state === 'review') {
+    const cs = r.cand.map((i) => comp[i]);
+    const extra = r.reason.startsWith('حصص الشعبة في هذه الفترة أكثر') ? nextOf(pw, comp[comp.length - 1]) : [];
+    return { state: 'review', ...wk, staleOverride: stale, reason: r.reason, candidates: [...cs.map(cand), ...extra] };
   }
-  if (comp.some((w) => !w.lesson.sessions)) return { state: 'review', reason: 'عدة دروس في نفس الفترة ولم يُحدَّد عدد حصص كل منها في الخطة', candidates: covering.map(cand) };
-  // توزيع متسلسل حسب عدد الحصص، دون أن يبدأ درس قبل بداية فترته
-  let i = 0, used = 0;
-  const usedBy = new Map();
-  for (let k = 0; k < occ.length; k++) {
-    const o = occ[k];
-    const x = ovOf(o);
-    if (x) {
-      if (x.lessonId) { const j = comp.findIndex((w) => w.lesson.id === x.lessonId && w.plan.id === x.planId); if (j >= 0) usedBy.set(j, (usedBy.get(j) || 0) + 1); }
-      continue;
-    }
-    while (i < comp.length && used + (usedBy.get(i) || 0) >= comp[i].lesson.sessions) { i++; used = 0; }
-    const here = k === idx;
-    if (i >= comp.length) { if (here) return { state: 'review', reason: 'حصص الشعبة في هذه الفترة أكثر من مجموع حصص دروسها في الخطة', candidates: covering.map(cand) }; continue; }
-    const w = comp[i];
-    if (o.dateKey < w.start || o.dateKey > w.end) {
-      if (here) return { state: 'review', reason: 'ترتيب الحصص لا يطابق فترات الدروس في الخطة', candidates: [...new Set([...covering, w])].map(cand) };
-      continue;
-    }
-    used++;
-    if (here) return { state: 'sure', ...cand(w), lessonTitle: w.lesson.title, part: used + (usedBy.get(i) || 0), sessions: w.lesson.sessions, inWindow: null };
-  }
-  return { state: 'review', reason: 'تعذر تحديد الدرس', candidates: covering.map(cand) };
+  const ls = r.items.map((i) => comp[i]);
+  const w = ls[0];
+  const stat = al.lessons[r.items[0]];
+  const inWindow = occ.filter((o) => covers(w, o.dateKey)).length;
+  return {
+    state: 'sure', ...cand(w), ...wk, staleOverride: stale,
+    lessonTitle: ls.map((x) => x.lesson.title).join(' + '), lessons: ls.map(cand),
+    part: r.kind === 'combined' || (!w.lesson.sessions && inWindow <= 1) ? null : r.part, sessions: r.kind === 'combined' ? null : w.lesson.sessions || null,
+    extra: r.kind === 'extra', combined: r.kind === 'combined', compressed: !!r.compressed,
+    short: r.kind === 'lesson' && !!stat.short, inWindow,
+    note: r.kind === 'extra' ? `استكمال وتثبيت: حصص الدرس في الخطة (${w.lesson.sessions || '—'}) اكتملت ولم يبدأ الدرس التالي بعد`
+      : r.kind === 'combined' ? 'دروس هذه الفترة أكثر من حصص الشعبة فيها، فجُمعت في هذه الحصة بترتيب الخطة'
+        : r.compressed ? `حصص الشعبة في هذه الفترة أقل مما تخصصه الخطة؛ وُزّعت الدروس بترتيبها (أخذ هذا الدرس ${stat.given} من ${w.lesson.sessions})`
+          : stat.short ? `الخطة تخصص ${w.lesson.sessions} حصص لهذا الدرس، وفي جدولك ${stat.given} فقط في فترته` : '',
+  };
+}
+const covers = (w, d) => !!w.start && w.start <= d && d <= w.end;
+/** رقم الأسبوع الدراسي للتاريخ وفق تقويم خطط الصف (يُعرض في التنبيه) */
+function weekInfo(plans, dateKey) {
+  for (const p of plans) { const n = weekOfDate(planCalendar(p), dateKey); if (n) return { week: n, weekText: `الأسبوع ${weekOrdinal(n)}`, semester: p.semester || '' }; }
+  return { week: 0, weekText: '', semester: '' };
 }
 function nextOf(pw, w) { const n = pw.filter((x) => x.order > w.order).sort((a, b) => a.order - b.order)[0]; return n ? [cand(n)] : []; }
 

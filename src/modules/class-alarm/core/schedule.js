@@ -1,5 +1,5 @@
 // 📅 حساب يوم المعلم: الجدول الأسبوعي + تعديلات اليوم + الإجازات → أحداث بمواعيد مطلقة، ثم التنبيهات المستحقة.
-import { zonedParts, zonedToMs, parseHHMM, weekdayOf, addDays, MIN, DAY_NAMES } from './time.js';
+import { zonedParts, zonedToMs, parseHHMM, weekdayOf, addDays, MIN, DAY_NAMES, fmtDate, fmtTime } from './time.js';
 import { lessonTitle, classLabel } from './model.js';
 
 export function holidayOn(profile, dateKey) {
@@ -58,24 +58,51 @@ export function resolveDay(profile, dateKey) {
 
 const teaching = (e) => (e.type === 'lesson' || e.type === 'extra') && !e.cancelled;
 
-/** نص الإشعار حسب بيانات الحصة الفعلية */
-export function alertText(profile, e, type, min, link = null, dayName = '') {
+/** سطر الدرس المقرر للتنبيه/العرض من «الخطط الفصلية» ('' إن لم يوجد ربط) */
+const partOf = (link) => (link.extra ? 'استكمال وتثبيت' : link.combined ? '' : link.part ? (link.sessions ? `الحصة ${link.part} من ${link.sessions}` : `الحصة ${link.part}`) : '');
+export function lessonLine(link) {
+  if (!link) return '';
+  if (link.lessonTitle) {
+    const part = partOf(link);
+    return `الدرس المقرر: ${link.lessonTitle}${part ? ` (${part})` : ''}`;
+  }
+  if (link.review) return 'الدرس المقرر: غير محدد — توزيع الدروس على الحصص يحتاج مراجعتك';
+  return '';
+}
+
+/** بيانات «الدرس المقرر» للعرض (التنبيه، الحصة القادمة، الدروس القادمة) — null إن لم يوجد ربط */
+export function lessonInfo(link) {
+  if (!link || !(link.lessonTitle || link.review)) return null;
+  return {
+    title: link.lessonTitle || '', review: !link.lessonTitle && !!link.review, part: link.lessonTitle ? partOf(link) : '',
+    planId: link.planId || '', lessonId: link.lessonId || '', extra: !!link.extra, combined: !!link.combined, note: link.note || '', reason: link.reason || '',
+    week: link.weekText || '', semester: link.semester || '', source: link.source === 'manual' ? 'manual' : link.overridden ? 'edited' : 'auto', unit: link.unitTitle || '',
+  };
+}
+
+/** نص الإشعار حسب بيانات الحصة الفعلية (الدرس المقرر في السطر الثاني حتى يظهر حتى في إشعارات النظام المختصرة) */
+export function alertText(profile, e, type, min, link = null, dayName = '', dateKey = '') {
   const isMeeting = e.kind === 'meeting' || e.kind === 'activity';
   const head = type === 'end'
     ? (min ? `اقترب ختام ${isMeeting ? e.label : 'الحصة'}` : `انتهت ${isMeeting ? e.label : 'الحصة'}`)
-    : type === 'start' ? (isMeeting ? `بدأ ${e.label} الآن` : 'بدأت الحصة الآن') : (isMeeting ? `تذكير: ${e.label} قريبًا` : 'حان وقت الاستعداد للحصة القادمة');
+    : type === 'start' ? (isMeeting ? `بدأ ${e.label} الآن` : 'بدأت الحصة الآن') : (isMeeting ? `تذكير: ${e.label} قريبًا` : 'حان موعد حصتك القادمة');
   const what = [e.title, e.cls].filter(Boolean).join(' – ');
   const when = type === 'end'
     ? `تنتهي ${min === 1 ? 'بعد دقيقة' : min === 2 ? 'بعد دقيقتين' : `بعد ${min} ${min <= 10 ? 'دقائق' : 'دقيقة'}`}.`
     : type === 'start' ? 'موعد البداية الآن.' : `تبدأ ${min === 1 ? 'بعد دقيقة' : min === 2 ? 'بعد دقيقتين' : `بعد ${min} ${min <= 10 ? 'دقائق' : 'دقيقة'}`}.`;
-  const lines = [what, when];
-  if (e.no && e.type === 'lesson') lines.push(`الحصة ${e.label}${dayName ? ` – ${dayName}` : ''}${e.room ? ` • ${e.room}` : ''}`);
-  else if (e.room) lines.push(e.room);
-  // الدرس المرتبط من «الخطط الفصلية» — يظهر فقط إن وُجد ربط معتمد
-  if (link && link.lessonTitle) lines.push(`الدرس: ${link.lessonTitle}${link.sessions ? ` (الحصة ${link.part} من ${link.sessions})` : ''}`);
+  const lesson = type === 'end' ? '' : lessonLine(link);
+  const lines = [what];
+  if (lesson) lines.push(lesson);
+  lines.push(when);
+  const date = dateKey ? fmtDate(dateKey) : dayName;
+  const time = `${fmtTime(e.start)} – ${fmtTime(e.end)}`;
+  if (e.no && e.type === 'lesson') lines.push(`الحصة ${e.label} • ${time}${date ? ` • ${date}` : ''}${e.room ? ` • ${e.room}` : ''}`);
+  else lines.push(`${time}${date ? ` • ${date}` : ''}${e.room ? ` • ${e.room}` : ''}`);
+  if (link && link.weekText && type !== 'end') lines.push(`الأسبوع الدراسي: ${link.weekText.replace(/^الأسبوع\s*/, '')}${link.semester ? ` – ${link.semester}` : ''}`);
   if (profile.school) lines.push(`مدرسة: ${profile.school.replace(/^مدرسة\s+/, '')}`);
   if (e.note && type !== 'end') lines.push(`📝 ${e.note}`);
-  return { title: head, body: lines.filter(Boolean).join('\n'), what, when };
+  const lessonInfoV = type !== 'end' ? lessonInfo(link) : null;
+  return { title: head, body: lines.filter(Boolean).join('\n'), what, when, lesson: lessonInfoV, cls: e.cls || '', periodLabel: e.no && e.type === 'lesson' ? `الحصة ${e.label}` : e.label, time, dateText: date };
 }
 
 function inQuiet(settings, profile, ms) {
@@ -102,7 +129,7 @@ export function alertsForDay(profile, settings, dateKey, day = resolveDay(profil
       if (settings.pausedUntil && due < settings.pausedUntil) return;
       if (inQuiet(settings, profile, due)) return;
       const id = `${profile.id}|${dateKey}|${e.key}|${type}${min || 0}|${e.start}`;
-      out.push({ id, due, type, min, tone, eventKey: e.key, dateKey, profileId: profile.id, startMs: e.startMs, endMs: e.endMs, lessonTitle: link ? link.lessonTitle : '', ...alertText(profile, e, type, min, link, day.dayName) });
+      out.push({ id, due, type, min, tone, eventKey: e.key, dateKey, profileId: profile.id, startMs: e.startMs, endMs: e.endMs, lessonTitle: link ? link.lessonTitle : '', ...alertText(profile, e, type, min, link, day.dayName, dateKey) });
     };
     for (const b of plan.before || []) push('before', b.min, e.startMs - b.min * MIN, b.tone);
     if (plan.start && plan.start.on) push('start', 0, e.startMs, plan.start.tone);
@@ -177,6 +204,27 @@ export function upcomingAlerts(profile, settings, now, ctx = {}) {
       const d = ctx.digest(k, addDays(k, 1));
       if (d) out.push({ id: `${profile.id}|${k}|digest|${pr.time}`, due, type: 'digest', min: 0, tone: pr.tone || 'soft', eventKey: 'digest', dateKey: k, profileId: profile.id, startMs: null, endMs: null, title: d.title, body: d.body, what: '', when: '' });
     }
+  }
+  return out;
+}
+
+/**
+ * 📋 الدروس القادمة: حصص التدريس المتبقية اليوم + أيام الدوام التالية (حتى days يومًا دراسيًا) مع درس كل حصة.
+ * linksFor(dateKey) اختياري (من «الخطط الفصلية»)؛ بدونه تظهر الحصص بلا دروس.
+ */
+export function agenda(profile, now, linksFor = null, { days = 1, scan = 10 } = {}) {
+  const today = zonedParts(now, profile.tz).dateKey;
+  const out = [];
+  let found = 0;
+  for (let i = 0; i <= scan && found <= days; i++) {
+    const k = addDays(today, i);
+    const d = resolveDay(profile, k);
+    const evs = d.events.filter((e) => teaching(e) && (i > 0 || e.endMs > now));
+    if (i > 0 && !evs.length) continue;
+    const links = linksFor ? linksFor(k) : null;
+    if (evs.length || i === 0) out.push({ dateKey: k, dayName: d.dayName, rel: i === 0 ? 'today' : i === 1 ? 'tomorrow' : 'later', holiday: d.holiday, items: evs.map((e) => ({ e, link: links ? links.get(e.key) || null : null, now: e.startMs <= now && now < e.endMs })) });
+    if (i > 0) found++;
+    if (i > 0 && found >= days) break;
   }
   return out;
 }

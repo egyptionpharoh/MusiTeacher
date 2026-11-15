@@ -2,7 +2,8 @@
 // 🌅 لوحة اليوم الدراسي: الساعة، بطاقة الحصة القادمة مع العدّاد، الخط الزمني لليوم، وتعديلات «هذا اليوم فقط».
 import { useMemo, useState } from 'react';
 import { Icon, Modal, Field, Seg } from './parts';
-import { dayStatus, resolveDay, weekStats, alertsForDay } from '../core/schedule.js';
+import { dayStatus, resolveDay, weekStats, alertsForDay, agenda, lessonInfo } from '../core/schedule.js';
+import { LessonBlock } from './Overlays';
 import { fmtTime, fmtDate, clock, durationWords, zonedParts, addDays, DAY_NAMES, normHHMM, parseHHMM, toHHMM, MIN } from '../core/time.js';
 import { EXTRA_KINDS, uid } from '../core/model.js';
 import CorrectModal from '../../lesson-plans/ui/CorrectModal';
@@ -46,6 +47,7 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
   const alertsToday = useMemo(() => alertsForDay(profile, settings, viewKey, day), [profile, settings, viewKey, day]);
   const missedToday = (missed || []).filter((m) => m.dateKey === today);
   const links = planCtx.linksFor ? planCtx.linksFor(viewKey) : null;
+  const schoolWeek = planCtx.weekOf ? planCtx.weekOf(today) : null;
 
   if (!hasLessons && !Object.keys(profile.overrides).length) {
     return (
@@ -83,6 +85,7 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
             {st.lessons.length > 0 && <span className="ca-chip">حصص اليوم: <b>{st.lessons.length}</b></span>}
             {st.lessons.length > 0 && <span className="ca-chip">المتبقية: <b>{st.remaining.length}</b></span>}
             {st.first && <span className="ca-chip">من {fmtTime(st.first.start, h24)} إلى {fmtTime(st.last.end, h24)}</span>}
+            {schoolWeek && <span className="ca-chip ca-chip-week">{schoolWeek.text.replace('الأسبوع', 'الأسبوع الدراسي')}{schoolWeek.semester ? ` • ${schoolWeek.semester}` : ''}</span>}
             <button type="button" className="ca-chip ca-chip-btn" onClick={onDisplay}><Icon n="expand" size={14} /> وضع العرض</button>
           </div>
         </div>
@@ -95,7 +98,7 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
                 <strong className="ca-countdown" aria-live="off">{clock(nextCard.ms)}</strong>
                 <span className="ca-ring-sub">{durationWords(nextCard.ms)}</span>
               </Ring>
-              <NextInfo e={nextCard.e} profile={profile} h24={h24} link={planCtx.linksFor ? planCtx.linksFor(today).get(nextCard.e.key) : null} onOpen={() => setAct(nextCard.e)} alerts={alertsToday.filter((a) => a.eventKey === nextCard.e.key && a.due > now)} />
+              <NextInfo e={nextCard.e} profile={profile} h24={h24} hrefFor={planCtx.hrefFor} link={planCtx.linksFor ? planCtx.linksFor(today).get(nextCard.e.key) : null} onOpen={() => setAct(nextCard.e)} alerts={alertsToday.filter((a) => a.eventKey === nextCard.e.key && a.due > now)} />
             </>
           ) : card ? null : (
             <div className="ca-next-empty">
@@ -119,6 +122,8 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
         <div className="ca-notice is-warn" role="status"><Icon n="warn" /><span>فات {missedToday.length === 1 ? 'تنبيه واحد' : `${missedToday.length} تنبيهات`} اليوم لأن الأداة كانت مغلقة أو الجهاز في وضع السكون (آخرها: {missedToday[missedToday.length - 1].what}). لم نُطلقها متأخرة حتى لا تربكك.</span></div>
       )}
       {!rt.leader && rt.locks && <div className="ca-notice"><Icon n="info" /><span>المنبه يعمل في تبويب آخر مفتوح لهذه الأداة؛ لن يرن هذا التبويب حتى لا تتكرر التنبيهات.</span></div>}
+
+      {isToday && <AgendaCard profile={profile} now={now} planCtx={planCtx} h24={h24} plansHref={plansHref} />}
 
       <section className="ca-card">
         <div className="ca-card-head">
@@ -171,7 +176,7 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
                     {links && (e.type === 'lesson' || (e.type === 'extra' && e.kind === 'lesson')) && !e.cancelled && <LessonLine link={links.get(e.key)} />}
                   </button>
                   {links && links.get(e.key) && links.get(e.key).source === 'manual' && viewKey <= today && !e.cancelled && <a className="ca-ev-record" href={`${plansHref}?record=${encodeURIComponent(links.get(e.key).assignmentId)}`}>تسجيل تنفيذ الحصة</a>}
-                  {links && links.get(e.key) && links.get(e.key).source === 'auto' && !e.cancelled && planCtx.saveOverride && <button type="button" className={`ca-ev-record${links.get(e.key).review ? ' is-review' : ''}`} onClick={() => setFix({ e, link: links.get(e.key) })}>{links.get(e.key).review ? 'تحديد الدرس' : 'تصحيح الدرس'}</button>}
+                  {links && links.get(e.key) && links.get(e.key).source === 'auto' && !e.cancelled && planCtx.saveOverride && <button type="button" className={`ca-ev-record${links.get(e.key).review ? ' is-review' : ''}`} onClick={() => setFix({ e, link: links.get(e.key) })}>{links.get(e.key).review ? 'تحديد الدرس' : 'تعديل الدرس'}</button>}
                 </li>
               );
             })}
@@ -179,10 +184,12 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
         )}
       </section>
 
+      <WeekPlanCard planCtx={planCtx} viewKey={viewKey} h24={h24} onFix={planCtx.saveOverride ? (x) => setFix({ e: x.e, link: x.link, dateKey: x.dateKey }) : null} />
+
       <WeekCard profile={profile} week={week} h24={h24} />
 
       {act && <EventModal e={act} dateKey={viewKey} profile={profile} h24={h24} onClose={() => setAct(null)} onOverride={onOverride} />}
-      {fix && planCtx.ws && <CorrectModal ws={planCtx.ws} dateKey={viewKey} event={fix.e} link={fix.link} onClose={() => setFix(null)} onSave={async (c) => { await planCtx.saveOverride(viewKey, fix.e, c); setFix(null); }} />}
+      {fix && planCtx.ws && <CorrectModal ws={planCtx.ws} dateKey={fix.dateKey || viewKey} event={fix.e} link={fix.link} onClose={() => setFix(null)} onSave={async (c) => { await planCtx.saveOverride(fix.dateKey || viewKey, fix.e, c); setFix(null); }} />}
       {adding && <ExtraModal dateKey={viewKey} profile={profile} onClose={() => setAdding(false)} onSave={(x) => { onOverride(viewKey, (o) => ({ ...o, extra: [...(o.extra || []), x] })); setAdding(false); }} />}
     </div>
   );
@@ -201,23 +208,103 @@ function groupFree(events) {
   return out;
 }
 
-/** سطر درس الحصة من «الخطط الفصلية»: ربط يدوي، أو ربط تلقائي مؤكد، أو «يحتاج مراجعة» (لا نخترع درسًا) */
-function LessonLine({ link }) {
+/** سطر درس الحصة من «الخطط الفصلية» — يفرّق بوضوح بين: تلقائي من الخطة • عدّلته يدويًا • غير محدد (يحتاج مراجعة) */
+export function LessonLine({ link }) {
   if (!link) return null;
-  if (link.source === 'auto' && link.review) return <span className="ca-ev-lesson is-review"><Icon n="warn" size={13} /> الدرس: <i className="ca-ev-st">يحتاج مراجعة</i> <small>{link.reason}</small></span>;
-  if (!link.lessonTitle) return <span className="ca-ev-lesson is-none">{link.reason || 'لا يوجد درس مخطط لهذه الحصة'}</span>;
-  const part = link.part ? (link.sessions ? ` • الحصة ${link.part} من ${link.sessions}` : ` • الحصة ${link.part}`) : '';
-  return <span className="ca-ev-lesson"><Icon n="note" size={13} /> الدرس: <b>{link.lessonTitle}</b>{part}{link.remaining != null ? ` • المتبقي ${link.remaining}` : ''}{link.source === 'manual' && link.status !== 'scheduled' && <i className="ca-ev-st">{link.statusLabel}</i>}{link.overridden && <i className="ca-ev-st">مصحّح</i>}</span>;
+  if (link.source === 'auto' && link.review) return <span className="ca-ev-lesson is-review"><Icon n="warn" size={13} /> الدرس المقرر: <i className="ca-src is-review">غير محدد – يحتاج مراجعة</i> <small>{link.reason}</small></span>;
+  if (!link.lessonTitle) return <span className="ca-ev-lesson is-none">{link.reason || 'لا يوجد درس مخطط لهذه الحصة'}{link.overridden && <i className="ca-src is-edited">عدّلته يدويًا</i>}</span>;
+  const part = link.extra ? ' • استكمال وتثبيت' : link.part ? (link.sessions ? ` • الحصة ${link.part} من ${link.sessions}` : ` • الحصة ${link.part}`) : '';
+  const src = link.source === 'manual' ? 'manual' : link.overridden ? 'edited' : 'auto';
+  return (
+    <span className="ca-ev-lesson">
+      <Icon n="note" size={13} /> الدرس المقرر: <b>{link.lessonTitle}</b>{part}{link.remaining != null ? ` • المتبقي ${link.remaining}` : ''}
+      <i className={`ca-src is-${src}`}>{src === 'manual' ? 'ربط يدوي' : src === 'edited' ? 'عدّلته يدويًا' : 'تلقائي من الخطة'}</i>
+      {link.source === 'manual' && link.status !== 'scheduled' && <i className="ca-ev-st">{link.statusLabel}</i>}
+      {link.note && <small className="ca-ev-why">{link.note}</small>}
+    </span>
+  );
 }
 
-function NextInfo({ e, profile, h24, onOpen, alerts, link }) {
+const REL = { today: 'اليوم', tomorrow: 'غدًا' };
+/** 📋 «دروسك القادمة»: بقية حصص اليوم وحصص يوم الدوام التالي، ودرس كل حصة — أين؟ متى؟ لأي صف؟ ماذا؟ */
+function AgendaCard({ profile, now, planCtx, h24, plansHref }) {
+  const days = useMemo(() => agenda(profile, now - (now % 60000), planCtx.linksFor || null, { days: 1 }), [profile, Math.floor(now / 60000), planCtx]); // eslint-disable-line react-hooks/exhaustive-deps
+  const total = days.reduce((m, d) => m + d.items.length, 0);
+  if (!total) return null;
+  return (
+    <section className="ca-card ca-agenda" aria-label="دروسك القادمة">
+      <div className="ca-card-head"><div><h3>دروسك القادمة</h3><p className="ca-muted">{planCtx.hasPlans ? 'حسب جدولك وخطتك الفصلية — جهّز درسك قبل دخول الفصل.' : <>ارفع خطة صفك في <a href={plansHref}>«مولد الخطط الفصلية»</a> ليظهر درس كل حصة.</>}</p></div></div>
+      {days.filter((d) => d.items.length).map((d) => (
+        <div key={d.dateKey} className="ca-ag-day">
+          <div className="ca-ag-head">{REL[d.rel] || d.dayName} <span className="ca-muted">{fmtDate(d.dateKey)}</span></div>
+          <ol className="ca-ag-list">
+            {d.items.map(({ e, link, now: isNow }) => (
+              <li key={e.key} className={`ca-ag-item${isNow ? ' is-now' : ''}`}>
+                <span className="ca-ag-time"><b>{fmtTime(e.start, h24)}</b><small>{e.type === 'lesson' ? `الحصة ${e.label}` : e.label}</small></span>
+                <span className="ca-ag-main">
+                  <span className="ca-ag-cls">{e.cls || e.title}{e.room ? <small className="ca-muted"> • {e.room}</small> : null}{isNow && <span className="ca-badge is-now">الآن</span>}</span>
+                  {link ? <LessonLine link={link} /> : planCtx.hasPlans ? <span className="ca-ev-lesson is-none">لا توجد خطة لهذا الصف</span> : null}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+/** 🗓️ «خطة الأسبوع لصفوفك»: درس كل حصة لكل صف/شعبة هذا الأسبوع + دروس لم تجد حصة (لا تُتجاوز بصمت) + إعادة التوزيع التلقائي */
+function WeekPlanCard({ planCtx, viewKey, h24, onFix }) {
+  const [open, setOpen] = useState(false);
+  const wp = useMemo(() => (planCtx.weekPlan ? planCtx.weekPlan(viewKey) : null), [planCtx, viewKey]);
+  if (!wp || !planCtx.hasPlans || !wp.classes.length) return null;
+  const missing = wp.classes.reduce((m, c) => m + c.missing.length, 0);
+  const review = wp.classes.reduce((m, c) => m + c.items.filter((x) => x.link && x.link.review).length, 0);
+  return (
+    <section className="ca-card ca-weekplan">
+      <button type="button" className="ca-card-head ca-collapse" onClick={() => setOpen(!open)} aria-expanded={open}>
+        <div>
+          <h3>خطة الأسبوع لصفوفك{wp.weekText ? ` – ${wp.weekText.replace('الأسبوع', 'الأسبوع الدراسي')}` : ''}</h3>
+          <p className="ca-muted">{fmtDate(wp.from)} – {fmtDate(addDays(wp.from, 4))}{review ? ` • ${review} حصة تحتاج مراجعة` : ''}{missing ? ` • ${missing} درس بلا حصة` : ''}</p>
+        </div>
+        <Icon n="back" className={open ? 'ca-rot-up' : 'ca-rot-down'} />
+      </button>
+      {open && (
+        <div className="ca-wp">
+          {wp.classes.map((c) => (
+            <div key={c.classKey} className="ca-wp-cls">
+              <h4>{c.label} <small className="ca-muted">{c.items.length} حصة هذا الأسبوع</small></h4>
+              {!c.hasPlan && <p className="ca-small ca-muted">لا توجد خطة لهذا الصف.</p>}
+              <ul>
+                {c.items.map((x) => (
+                  <li key={x.dateKey + x.e.key} className={x.link && x.link.review ? 'is-review' : ''}>
+                    <span className="ca-wp-when">{x.dayName} • {x.e.type === 'lesson' ? `الحصة ${x.e.label}` : x.e.label} • {fmtTime(x.e.start, h24)}</span>
+                    {x.link ? <LessonLine link={x.link} /> : <span className="ca-ev-lesson is-none">—</span>}
+                    {x.link && x.link.source === 'auto' && onFix && <button type="button" className="ca-btn is-ghost is-sm" onClick={() => onFix(x)}>{x.link.review ? 'تحديد الدرس' : 'تعديل'}</button>}
+                  </li>
+                ))}
+              </ul>
+              {c.missing.map((m) => <p key={m.lessonId} className="ca-notice is-warn ca-small"><Icon n="warn" /><span>الدرس «{m.title}» مقرر في هذه الفترة ولم يُربط بأي حصة: {m.reason}.</span></p>)}
+            </div>
+          ))}
+          {planCtx.overridesCount > 0 && planCtx.resetOverrides && (
+            <div className="ca-row ca-wrap ca-wp-reset"><span className="ca-muted ca-small">لديك {planCtx.overridesCount} تعديل يدوي على توزيع الدروس.</span>
+              <button type="button" className="ca-btn is-ghost is-sm" onClick={() => { if (window.confirm('إلغاء كل تعديلاتك اليدوية على دروس الحصص وإعادة التوزيع التلقائي من الخطة؟ (لا يغيّر ملف الخطة)')) planCtx.resetOverrides(); }}><Icon n="x" />إعادة التوزيع التلقائي</button></div>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function NextInfo({ e, profile, h24, onOpen, alerts, link, hrefFor }) {
   return (
     <div className="ca-next-info">
       <span className="ca-badge is-next">{e.type === 'extra' ? e.label : `الحصة ${e.label}`}</span>
       <h3>{e.title}</h3>
       {e.cls && <p className="ca-next-cls">{e.cls}</p>}
-      {link && link.lessonTitle && <p className="ca-next-lesson">الدرس: <b>{link.lessonTitle}</b>{link.part ? (link.sessions ? ` (الحصة ${link.part} من ${link.sessions})` : ` (الحصة ${link.part})`) : ''}</p>}
-      {link && link.review && <p className="ca-next-lesson">الدرس: <i>يحتاج مراجعة</i></p>}
+      {(() => { const li = lessonInfo(link); return li ? <LessonBlock compact lesson={li} href={!li.review && hrefFor ? hrefFor(li) : ''} /> : null; })()}
       <dl>
         <div><dt>البداية</dt><dd>{fmtTime(e.start, h24)}</dd></div>
         <div><dt>النهاية</dt><dd>{fmtTime(e.end, h24)}</dd></div>

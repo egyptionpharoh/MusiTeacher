@@ -67,9 +67,9 @@ export function weekRange(cal, n, maxWeek = 0) {
  * توقيت درس من «الأسابيع» (+ فترة صريحة إن وُجدت): يعيد الأسابيع مرتبة ومع تاريخ كل أسبوع.
  * { state: 'ok'|'by-plan'|'unknown', weeks:[{week, label, start, end, text}], start, end, weeksText }
  */
-export function lessonTiming({ weeks = '', start = '', end = '', year = '', semester = '', maxWeek = 0 } = {}) {
+export function lessonTiming({ weeks = '', start = '', end = '', year = '', semester = '', maxWeek = 0, cal: calIn = null } = {}) {
   const raw = String(weeks || '').trim();
-  const cal = calendarFor(year, semester);
+  const cal = calIn || calendarFor(year, semester);
   const nums = [...new Set(weekNumbers(raw))].sort((a, b) => a - b);
   if (nums.length && cal) {
     const list = nums.map((n) => weekRange(cal, n, maxWeek || Math.max(...nums))).filter(Boolean)
@@ -93,4 +93,55 @@ export function maxWeekOf(lessonsWeeks) {
   let m = 0;
   for (const w of lessonsWeeks) for (const n of weekNumbers(w || '')) if (n > m) m = n;
   return m;
+}
+
+// ---------- تقويم الخطة والأسبوع الدراسي لتاريخ معيّن ----------
+const sundayOf = (key) => addDaysKey(key, -weekday(key));
+const planCalCache = new WeakMap();
+
+/**
+ * تقويم خطةٍ ما: التقويم الرسمي المعروف لعامها وفصلها، وإلا يُستنتج من دروسها التي تحمل «رقم أسبوع + تاريخ» معًا
+ * (بداية الأسبوع الأول = أحد أسبوع الدرس − (رقم الأسبوع − 1) × 7). لا يُستنتج شيء إن تعارضت الدروس فيما بينها.
+ * يعيد { week1, lastWeek, lastDay, maxWeek, inferred } أو null.
+ */
+export function planCalendar(plan) {
+  if (!plan || typeof plan !== 'object') return null;
+  if (planCalCache.has(plan)) return planCalCache.get(plan);
+  const lessons = (plan.units || []).flatMap((u) => u.lessons || []);
+  const maxWeek = maxWeekOf(lessons.map((l) => l.weeks));
+  let cal = calendarFor(plan.year, plan.semester);
+  if (cal) cal = { ...cal, maxWeek: Math.max(maxWeek, cal.lastWeek), inferred: false };
+  else {
+    const votes = new Map();
+    for (const l of lessons) {
+      const ns = weekNumbers(l.weeks || '');
+      if (!ns.length || !/^\d{4}-\d{2}-\d{2}$/.test(l.start || '')) continue;
+      const k = addDaysKey(sundayOf(l.start), -(Math.min(...ns) - 1) * 7);
+      votes.set(k, (votes.get(k) || 0) + 1);
+    }
+    const ranked = [...votes.entries()].sort((a, b) => b[1] - a[1]);
+    // نقبل الاستنتاج فقط إن اتفقت عليه أغلب الدروس (لا تخمين عند التعارض)
+    const total = ranked.reduce((m, x) => m + x[1], 0);
+    if (ranked.length && ranked[0][1] * 2 > total) {
+      const week1 = ranked[0][0];
+      const mw = Math.max(1, maxWeek);
+      const lastEnd = lessons.reduce((m, l) => (l.end && l.end > m ? l.end : m), '');
+      cal = { week1, lastWeek: mw, lastDay: lastEnd || addDaysKey(week1, (mw - 1) * 7 + 4), maxWeek: mw, inferred: true };
+    } else cal = null;
+  }
+  planCalCache.set(plan, cal);
+  return cal;
+}
+
+/** رقم الأسبوع الدراسي لتاريخ وفق تقويم الخطة (0 إن وقع خارج أسابيع الفصل أو في يوم ليس من الأحد إلى الخميس داخل الفصل) */
+export function weekOfDate(cal, dateKey) {
+  if (!cal || !/^\d{4}-\d{2}-\d{2}$/.test(String(dateKey || ''))) return 0;
+  const [y1, m1, d1] = cal.week1.split('-').map(Number), [y, m, d] = dateKey.split('-').map(Number);
+  const diff = Math.round((Date.UTC(y, m - 1, d) - Date.UTC(y1, m1 - 1, d1)) / 86400000);
+  if (diff < 0) return 0;
+  const n = Math.floor(diff / 7) + 1;
+  const max = Math.max(cal.lastWeek || 0, cal.maxWeek || 0);
+  if (n > max) return 0;
+  const r = weekRange(cal, n, cal.maxWeek || 0);
+  return r && dateKey <= addDaysKey(r.start, 6) && !(n === cal.lastWeek && (cal.maxWeek || 0) <= cal.lastWeek && dateKey > cal.lastDay) ? n : 0;
 }

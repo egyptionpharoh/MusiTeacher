@@ -186,7 +186,7 @@ test('تعديل جدول المنبّه: ينعكس في الوقت، والإ�
   assert.equal(link.lessonTitle, 'أساسيات الإيقاع الموسيقي');
   const al = alertsForDay(prof, defaultSettings(), '2026-11-15', undefined, { links: linksForDay(ws, prof, '2026-11-15', SUN) });
   assert.equal(al.find((x) => x.eventKey === 'p1').due, zonedToMs('2026-11-15', '07:50', TZ), 'التنبيه يتبع الوقت المعدل في المنبّه');
-  assert.match(al.find((x) => x.eventKey === 'p1').body, /الدرس: أساسيات الإيقاع الموسيقي \(الحصة 1 من 2\)/);
+  assert.match(al.find((x) => x.eventKey === 'p1').body, /الدرس المقرر: أساسيات الإيقاع الموسيقي \(الحصة 1 من 2\)/);
   const cancelled = normalizeProfile({ ...prof, overrides: { '2026-11-15': { cancelled: { p1: true } } } });
   const c = conflicts(ws, cancelled, SUN);
   assert.equal(c.length, 1); assert.match(c[0].reason, /ملغاة/);
@@ -205,7 +205,7 @@ test('المنبّه يعمل بلا خطط، والحصة المؤجلة لا �
   assert.deepEqual(al.map((x) => x.min), [60], 'خطة تنبيه خاصة بالحصة المرتبطة (قبل 60 دقيقة)');
   ws = { ...ws, log: [{ id: 'p', assignmentId: a.id, status: 'postponed', at: 1 }] };
   al = alertsForDay(prof, defaultSettings(), SUN, undefined, { links: linksForDay(ws, prof, SUN, SUN) }).filter((x) => x.eventKey === 'p1');
-  assert.deepEqual(al.map((x) => x.min), [10, 2]); assert.ok(!/الدرس:/.test(al[0].body));
+  assert.deepEqual(al.map((x) => x.min), [10, 2]); assert.ok(!/الدرس المقرر/.test(al[0].body));
 });
 
 test('تذكير المساء: دروس الغد والمؤجل', () => {

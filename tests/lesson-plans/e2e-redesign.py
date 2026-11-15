@@ -11,8 +11,11 @@ async def seed_alarm(page, uid):
     await page.evaluate("""([uid, store]) => new Promise((res, rej) => { const r = indexedDB.open('musiteacher-class-alarm:'+uid, 1);
       r.onupgradeneeded = () => { const db = r.result; db.createObjectStore('kv'); db.createObjectStore('tones', { keyPath: 'id' }); };
       r.onsuccess = () => { const t = r.result.transaction('kv', 'readwrite'); t.objectStore('kv').put(JSON.parse(store), 'store'); t.oncomplete = () => { r.result.close(); res(1); }; t.onerror = () => rej(t.error); }; })""", [uid, STORE])
+# ساعة ثابتة: الأربعاء 11 نوفمبر 2026 الساعة 08:20 بتوقيت مسقط (الأسبوع الدراسي العاشر) حتى لا تعتمد النتائج على تاريخ التشغيل
+NOW='2026-11-11T04:20:00Z'
 async def newpage(b, mobile=False):
     ctx=await b.new_context(viewport={'width':390,'height':844} if mobile else {'width':1280,'height':900}, timezone_id='Asia/Muscat', permissions=['notifications'], accept_downloads=True)
+    await ctx.clock.install(time=NOW)
     page=await ctx.new_page(); errs=[]
     page.on('pageerror', lambda e: errs.append('PAGEERR '+str(e)))
     page.on('console', lambda m: errs.append(m.text) if m.type=='error' and '404' not in m.text and 'Failed to load resource' not in m.text else None)
@@ -91,7 +94,8 @@ async def main():
         ltxt=await page.inner_text('.ca-main')
         ok('auto-link classes listed (grade 7 hidden)', 'الصف الخامس – الشعبة 1' in ltxt and 'الصف السادس – الشعبة 1' in ltxt and 'السابع' not in ltxt, ltxt[:300])
         ok('today Wed: grade5 lesson part 3 of 3', 'الميزان الثنائي' in ltxt and 'الحصة 3 من 3' in ltxt)
-        ok('Thu extra session flagged review', 'يحتاج مراجعة' in ltxt)
+        ok('Thu 4th session of a 3-session lesson = continuation (not invented next lesson)', 'استكمال وتثبيت' in ltxt, ltxt[:600])
+        ok('ambiguous overlap later still flagged review', 'يحتاج مراجعة' in ltxt)
         await page.screenshot(path=f'{OUT}/05_link.png', full_page=True)
         # تصحيح أول حصة تحتاج مراجعة
         await page.locator('.lp-al-slot.is-review button').first.click(); await page.wait_for_selector('.ca-modal')
@@ -113,11 +117,37 @@ async def main():
         print('ALARM >>>', atxt.replace('\n',' / ')[:500])
         ok('alarm today shows auto lesson', 'الميزان الثنائي' in atxt and 'الحصة 3 من 3' in atxt)
         ok('alarm: no "no plan" note when plans exist', await page.locator('.ca-plan-note').count()==0)
+        ok('alarm: auto source label', 'تلقائي من الخطة' in atxt)
+        hero=await page.inner_text('.ca-hero')
+        ok('hero shows school week', 'الأسبوع الدراسي العاشر' in hero and 'الفصل الدراسي الأول' in hero, hero[:300])
+        nxt=await page.inner_text('.ca-next')
+        ok('next-lesson card shows lesson block', 'الدرس المقرر' in nxt and 'الميزان الثنائي' in nxt and 'الحصة 3 من 3' in nxt, nxt[:300])
+        ag=await page.inner_text('.ca-agenda')
+        print('AGENDA >>>', ag.replace('\n',' / ')[:400])
+        ok('agenda: today + tomorrow with lessons', 'دروسك القادمة' in ag and 'اليوم' in ag and 'غدًا' in ag and 'الميزان الثنائي' in ag and 'استكمال وتثبيت' in ag and 'الأزمنة الأساسية' not in ag, ag[:400])  # حصة السادس (7:30) انتهت قبل 8:20 فلا تظهر
+        await page.click('.ca-weekplan .ca-collapse'); await page.wait_for_timeout(300)
+        wpt=await page.inner_text('.ca-weekplan')
+        ok('week plan card: per class with week number', 'خطة الأسبوع لصفوفك – الأسبوع الدراسي العاشر' in wpt and 'الصف الخامس – الشعبة 1' in wpt and 'الصف السادس – الشعبة 1' in wpt, wpt[:400])
         await page.screenshot(path=f'{OUT}/07_alarm_today.png', full_page=True)
+        # التنبيه الفعلي: الحصة الثالثة (08:50) للصف الخامس — تنبيه «قبل 10 دقائق» عند 08:40
+        await page.clock.fast_forward('20:05'); await page.wait_for_selector('.ca-alarm', timeout=8000); await page.wait_for_timeout(300)
+        al=await page.inner_text('.ca-alarm')
+        print('ALERT >>>', al.replace('\n',' / ')[:400])
+        ok('alert: title + class + lesson block + week', 'حان موعد حصتك القادمة' in al and 'الصف الخامس – الشعبة 1' in al and 'الميزان الثنائي' in al and 'الحصة 3 من 3' in al and 'الأسبوع العاشر' in al and 'الحصة الثالثة' in al, al)
+        ok('alert lesson block prominent', await page.locator('.ca-alarm .ca-lesson-block strong:has-text("الميزان الثنائي")').count()==1)
+        href=await page.get_attribute('.ca-alarm .ca-lesson-open', 'href')
+        ok('alert has open-lesson link', bool(href) and 'tab=time' in href and 'lesson=m' in href, href)
+        await page.screenshot(path=f'{OUT}/07b_alert.png')
+        await page.click('.ca-alarm >> text=تم، شكرًا'); await page.wait_for_timeout(300)
+        if href:
+            p2=await ctx.new_page(); await p2.goto(BASE+href); await p2.wait_for_selector('.lp-root'); await p2.wait_for_timeout(600)
+            sel=await p2.eval_on_selector('select[aria-label="الدرس"]', 'e => e.options[e.selectedIndex] ? e.options[e.selectedIndex].text : ""')
+            ok('open-lesson link opens «موعد الدرس» on that lesson', 'الميزان الثنائي' in sel, sel)
+            await p2.screenshot(path=f'{OUT}/07c_open_lesson.png', full_page=True); await p2.close()
         # يوم الخميس من المنبّه (الحصة المصححة/المراجعة)
         await page.click('[aria-label="اليوم التالي"]'); await page.wait_for_timeout(400)
         thu=await page.inner_text('.ca-timeline')
-        ok('alarm Thu reflects correction made in plans', 'حددتَ أنه لا يوجد درس' in thu or 'يحتاج مراجعة' in thu, thu[:300])
+        ok('alarm Thu: 4th grade-5 session shown as continuation', 'استكمال وتثبيت' in thu, thu[:300])
         # تصحيح من المنبّه: الحصة 6/1 الخميس
         btns=page.locator('.ca-ev-record:has-text("الدرس")')
         n=await btns.count(); ok('alarm has correction buttons', n>0, n)
@@ -125,8 +155,16 @@ async def main():
             await btns.first.click(); await page.wait_for_selector('.ca-modal')
             await page.locator('.ca-modal .lp-correct-opt').first.click()
             await page.click('.ca-modal-foot >> text=حفظ لهذه الحصة'); await page.wait_for_timeout(600)
-            thu2=await page.inner_text('.ca-timeline'); ok('alarm correction applied', 'مصحّح' in thu2, thu2[:300])
+            thu2=await page.inner_text('.ca-timeline'); ok('alarm manual edit applied + labelled', 'عدّلته يدويًا' in thu2, thu2[:300])
         await page.screenshot(path=f'{OUT}/08_alarm_thu.png', full_page=True)
+        # الجوال: بطاقات «دروسك القادمة» و«خطة الأسبوع» بلا تمرير أفقي
+        await page.set_viewport_size({'width':390,'height':844}); await page.locator('.ca-card-head button.ca-btn.is-ghost:has-text("اليوم")').click(); await page.wait_for_timeout(400)
+        ovf=await page.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth')
+        ok('alarm mobile: no horizontal overflow with agenda/week plan', ovf<=1, ovf)
+        agm=await page.inner_text('.ca-agenda')
+        ok('manual edit on Thu does not steal Wed session (still 3 of 3)', 'الحصة 3 من 3' in agm, agm[:300])
+        await page.locator('.ca-agenda').screenshot(path=f'{OUT}/08m_agenda.png')
+        await page.set_viewport_size({'width':1280,'height':900})
         ok('no runtime errors (teacherA)', not errs, errs[:5])
         st=await page.evaluate("""() => new Promise(r => { const q = indexedDB.open('musiteacher-class-alarm:teacherA'); q.onsuccess = () => { const t = q.result.transaction('kv'); const g = t.objectStore('kv').get('store'); g.onsuccess = () => r(g.result.settings); }; })""")
         ok('alarm notifications default ON', st['enabled'] and st['system'] and st['visual'] and st['sound'] and st['planReminders']['on'], st)

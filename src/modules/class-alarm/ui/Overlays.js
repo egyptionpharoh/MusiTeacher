@@ -6,9 +6,27 @@ import { dayStatus } from '../core/schedule.js';
 import { zonedParts, fmtTime, fmtDate, clock, durationWords } from '../core/time.js';
 import { keepAwake } from './runtime';
 
-export function AlarmOverlay({ ringing, now, onAck, onSnooze, onMute, muted }) {
+const SRC_LABEL = { auto: 'تلقائي من خطتك', edited: 'عدّلته يدويًا', manual: 'ربط يدوي' };
+
+/** بطاقة «الدرس المقرر» — أهم ما في التنبيه: اسم الدرس بخط كبير، وموقع الحصة منه، والأسبوع الدراسي */
+export function LessonBlock({ lesson, href, compact = false }) {
+  if (!lesson) return null;
+  if (lesson.review) return <div className={`ca-lesson-block is-review${compact ? ' is-compact' : ''}`}><span className="ca-lesson-k">الدرس المقرر</span><strong>غير محدد</strong><small>توزيع الدروس على حصص هذا الأسبوع يحتاج مراجعتك من «اليوم».</small></div>;
+  return (
+    <div className={`ca-lesson-block${compact ? ' is-compact' : ''}`}>
+      <span className="ca-lesson-k">الدرس المقرر{lesson.source && <i className={`ca-src is-${lesson.source}`}>{SRC_LABEL[lesson.source]}</i>}</span>
+      <strong>{lesson.title}</strong>
+      <small>{[lesson.part, lesson.week ? `${lesson.week}${lesson.semester ? ` – ${lesson.semester}` : ''}` : ''].filter(Boolean).join(' • ')}</small>
+      {href && <a className="ca-btn is-ghost is-sm ca-lesson-open" href={href} target="_blank" rel="noopener noreferrer"><Icon n="note" size={14} />فتح الدرس في خطتي</a>}
+    </div>
+  );
+}
+
+export function AlarmOverlay({ ringing, now, onAck, onSnooze, onMute, muted, hrefFor }) {
   if (!ringing.length) return null;
   const a = ringing[ringing.length - 1];
+  const lines = (a.body || '').split('\n').slice(a.what ? 1 : 0).filter((l) => !(a.lesson && (/^الدرس المقرر:/.test(l) || /^الأسبوع الدراسي:/.test(l))));
+  const href = a.lesson && !a.lesson.review && hrefFor ? hrefFor(a.lesson) : '';
   const toStart = a.startMs ? a.startMs - now : 0;
   const canSnooze = a.type !== 'end' && a.type !== 'test' && a.type !== 'digest' && toStart > 70000;
   return (
@@ -17,7 +35,8 @@ export function AlarmOverlay({ ringing, now, onAck, onSnooze, onMute, muted }) {
         <div className="ca-alarm-bell" aria-hidden="true"><Icon n="bell" size={40} /></div>
         <h2 id="ca-alarm-title">{a.title}</h2>
         <p className="ca-alarm-what">{a.what || ''}</p>
-        <div id="ca-alarm-body" className="ca-alarm-body">{a.body.split('\n').slice(a.what ? 1 : 0).map((l, i) => <p key={i}>{l}</p>)}</div>
+        <LessonBlock lesson={a.lesson} href={href} />
+        <div id="ca-alarm-body" className="ca-alarm-body">{lines.map((l, i) => <p key={i}>{l}</p>)}</div>
         {a.type !== 'end' && a.startMs && a.startMs > now && <div className="ca-alarm-count"><span>تبدأ بعد</span><strong>{clock(toStart)}</strong></div>}
         {ringing.length > 1 && <p className="ca-muted ca-small">+ {ringing.length - 1} تنبيه آخر</p>}
         <div className="ca-alarm-actions">
@@ -30,7 +49,7 @@ export function AlarmOverlay({ ringing, now, onAck, onSnooze, onMute, muted }) {
   );
 }
 
-export function DisplayMode({ profile, settings, now, onClose }) {
+export function DisplayMode({ profile, settings, now, onClose, linksFor }) {
   const [lock, setLock] = useState(null);
   useEffect(() => {
     let wl = null, alive = true;
@@ -58,6 +77,7 @@ export function DisplayMode({ profile, settings, now, onClose }) {
           <span className="ca-display-label">الحصة القادمة</span>
           <strong>{n.title}{n.cls ? ` – ${n.cls}` : ''}</strong>
           <span>{n.type === 'lesson' ? `الحصة ${n.label} • ` : ''}{fmtTime(n.start, h24)}{n.room ? ` • ${n.room}` : ''}</span>
+          {(() => { const k = linksFor ? linksFor(st.today).get(n.key) : null; return k && (k.lessonTitle || k.review) ? <span className="ca-display-lesson">{k.lessonTitle ? <>الدرس المقرر: <b>{k.lessonTitle}</b></> : 'الدرس المقرر: يحتاج مراجعة'}</span> : null; })()}
           <div className="ca-display-count">{clock(n.startMs - now)}</div>
           <span className="ca-muted">{durationWords(n.startMs - now)}</span>
           {n.note && <p className="ca-prep"><Icon n="note" size={18} /> {n.note}</p>}

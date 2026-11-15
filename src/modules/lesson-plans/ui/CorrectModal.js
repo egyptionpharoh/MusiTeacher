@@ -11,6 +11,7 @@ export default function CorrectModal({ ws, dateKey, event, link, onSave, onClose
   const l = event.lesson || {};
   const groups = lessonChoices(ws, l.grade);
   const candIds = new Set((link && link.candidates || []).map((c) => `${c.planId}|${c.lessonId}`));
+  const autoIds = new Set(link && !link.overridden && link.state === 'sure' ? (link.lessons && link.lessons.length ? link.lessons : [link]).map((c) => `${c.planId}|${c.lessonId}`) : []);
   const cur = link && link.overridden ? (link.lessonId ? `${link.planId}|${link.lessonId}` : 'none') : link && link.state === 'sure' ? `${link.planId}|${link.lessonId}` : '';
   const [val, setVal] = useState(cur);
   const save = () => {
@@ -19,7 +20,7 @@ export default function CorrectModal({ ws, dateKey, event, link, onSave, onClose
     else { const [planId, lessonId] = val.split('|'); onSave({ planId, lessonId }); }
   };
   return (
-    <Modal title="تصحيح درس الحصة" onClose={onClose}
+    <Modal title="تعديل درس الحصة" onClose={onClose}
       footer={<><button type="button" className="ca-btn" onClick={save} disabled={!val}><Icon n="check" />حفظ لهذه الحصة</button><button type="button" className="ca-btn is-ghost" onClick={onClose}>إلغاء</button></>}>
       <p className="ca-small"><b>{formatDateAr(dateKey, { day: true })}</b> • {event.type === 'lesson' ? `الحصة ${event.label}` : 'حصة استثنائية'}{event.cls ? ` • ${event.cls}` : ''}</p>
       {link && link.reason && link.review && <div className="ca-notice is-warn"><Icon n="warn" /><span>{link.reason}</span></div>}
@@ -33,16 +34,16 @@ export default function CorrectModal({ ws, dateKey, event, link, onSave, onClose
               return (
                 <label key={v} className={`lp-correct-opt${candIds.has(v) ? ' is-cand' : ''}`}>
                   <input type="radio" name="lp-correct" value={v} checked={val === v} onChange={() => setVal(v)} />
-                  <span><b>{x.title || 'درس بلا اسم'}</b>{candIds.has(v) && <i className="lp-st is-warn">محتمل</i>}<small className="ca-muted">{x.start ? <bdi>{formatRangeAr(x.start, x.end, { days: false })}</bdi> : 'بلا فترة'}</small></span>
+                  <span><b>{x.title || 'درس بلا اسم'}</b>{candIds.has(v) && <i className="lp-st is-warn">محتمل</i>}{autoIds.has(v) && <i className="lp-st is-ok">التوزيع التلقائي</i>}<small className="ca-muted">{x.start ? <bdi>{formatRangeAr(x.start, x.end, { days: false })}</bdi> : 'بلا فترة'}</small></span>
                 </label>
               );
             })}
           </fieldset>
         ))}
         <label className="lp-correct-opt"><input type="radio" name="lp-correct" value="none" checked={val === 'none'} onChange={() => setVal('none')} /><span><b>لا يوجد درس من الخطة في هذه الحصة</b><small className="ca-muted">مثل: مراجعة، نشاط، اختبار</small></span></label>
-        {link && link.overridden && <label className="lp-correct-opt"><input type="radio" name="lp-correct" value="auto" checked={val === 'auto'} onChange={() => setVal('auto')} /><span><b>إلغاء التصحيح والعودة للربط التلقائي</b></span></label>}
+        {link && link.overridden && <label className="lp-correct-opt"><input type="radio" name="lp-correct" value="auto" checked={val === 'auto'} onChange={() => setVal('auto')} /><span><b>إلغاء التعديل والعودة للتوزيع التلقائي</b></span></label>}
       </div>
-      <p className="ca-small ca-muted">التصحيح يخص هذه الحصة فقط، ولا يغيّر الخطة ولا الجدول.</p>
+      <p className="ca-small ca-muted">التعديل يخص هذه الحصة فقط (تقديم درس أو تأجيله أو استكماله)، ولا يغيّر ملف الخطة ولا الجدول. تبقى بقية الحصص على التوزيع التلقائي وتُعاد ترقيمها حوله.</p>
     </Modal>
   );
 }

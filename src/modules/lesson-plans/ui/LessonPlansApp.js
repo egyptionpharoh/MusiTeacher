@@ -8,7 +8,7 @@ import { normalizeStore } from '../../class-alarm/core/model.js';
 import { zonedParts } from '../../class-alarm/core/time.js';
 import { normalizeWorkspace, emptyWorkspace, gradeNum } from '../core/model.js';
 import { conflicts, classesFromProfile } from '../core/track.js';
-import { loadWorkspace, saveWorkspace, wipeWorkspace, PLANS_CHANNEL } from './storage';
+import { loadWorkspace, saveWorkspace, wipeWorkspace, PLANS_CHANNEL, saveSelection } from './storage';
 import LessonTimeView from './LessonTimeView';
 import SuggestedView from './SuggestedView';
 import SettingsView, { SETTINGS_TABS, GradesPicker } from './SettingsView';
@@ -82,6 +82,8 @@ export default function LessonPlansApp({ plansData, getToken, getUserId, apiBase
       const go = LEGACY[t] || (t === 'settings' ? ['settings', sec] : TABS.some((x) => x.id === t) ? [t] : null);
       if (go) { setTab(go[0]); if (go[1] && SETTINGS_TABS.some((x) => x.id === go[1])) setSection(go[1]); }
       if (q.get('record')) setRecord(q.get('record'));
+      // رابط «فتح الدرس» من منبّه الحصص: يفتح «موعد الدرس» على هذا الدرس من خطة المعلم
+      if (q.get('lesson') && q.get('grade') && q.get('semester')) { saveSelection(id, { semester: q.get('semester'), grade: q.get('grade'), lesson: q.get('lesson') }); setTab('time'); }
     })();
     return () => { alive = false; };
   }, [getUserId, reloadAlarm]);

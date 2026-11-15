@@ -7,7 +7,7 @@ import { resolveDay } from '../../class-alarm/core/schedule.js';
 import { addDays, fmtTime } from '../../class-alarm/core/time.js';
 import { gradeNum, classKeyOf } from '../core/model.js';
 import { classesFromProfile } from '../core/track.js';
-import { linksForDay } from '../core/links.js';
+import { linksForDay, partText } from '../core/links.js';
 import { withOverride, plansOfGrade } from '../core/auto.js';
 import { formatDateAr } from '../core/calendar.js';
 import CorrectModal from './CorrectModal';
@@ -39,13 +39,14 @@ export default function AutoLinkView(props) {
   }, [ws, profile, today, hasSchedule, on, grades]);
 
   const review = rows.filter((r) => r.link && r.link.review).length;
+  const myOv = profile ? (ws.overrides || []).filter((o) => o.profileId === profile.id).length : 0;
   const sure = rows.filter((r) => r.link && r.link.lessonTitle).length;
   const shown = onlyReview ? rows.filter((r) => r.link && r.link.review) : rows;
   const byDay = shown.reduce((m, r) => { (m[r.dateKey] = m[r.dateKey] || []).push(r); return m; }, {});
   const h24 = false;
 
   const saveFix = (r, choice) => {
-    update((w) => withOverride(w, { profileId: profile.id, dateKey: r.dateKey, slotKey: r.e.key, classKey: '', ...choice }));
+    update((w) => withOverride(w, { profileId: profile.id, dateKey: r.dateKey, slotKey: r.e.key, classKey: classKeyOf((r.e.lesson || {}).grade, (r.e.lesson || {}).section), ...choice }));
     notify(choice.lessonId === null ? 'أُعيدت الحصة للربط التلقائي.' : 'حُفظ التصحيح لهذه الحصة.');
     setFix(null);
   };
@@ -76,7 +77,11 @@ export default function AutoLinkView(props) {
               })}
               {!classes.length && <p className="ca-muted ca-small">لا توجد في جدولك حصص للصفوف المختارة.</p>}
             </div>
-            <p className="ca-small ca-muted">خلال {DAYS} يومًا القادمة: {sure} حصة بدرس محدد • {review} تحتاج مراجعة.</p>
+            <p className="ca-small ca-muted">خلال {DAYS} يومًا القادمة: {sure} حصة بدرس محدد • {review} تحتاج مراجعة. الدروس القادمة لكل حصة تظهر في «منبّه الحصص الذكي».</p>
+            {myOv > 0 && (
+              <div className="ca-row ca-wrap"><span className="ca-small ca-muted">لديك {myOv} تعديل يدوي على دروس الحصص (لا تغيّر ملف الخطة).</span>
+                <button type="button" className="ca-btn is-ghost is-sm" onClick={() => { if (window.confirm('إلغاء كل التعديلات اليدوية وإعادة توليد التوزيع التلقائي من الخطة؟')) { update((w) => ({ ...w, overrides: w.overrides.filter((o) => o.profileId !== profile.id) })); notify('أُعيد توليد التوزيع التلقائي من الخطة.'); } }}><Icon n="x" />إعادة التوزيع التلقائي</button></div>
+            )}
           </>
         )}
       </section>
@@ -98,7 +103,7 @@ export default function AutoLinkView(props) {
                     <span className="lp-al-cls">{r.e.cls || '—'}</span>
                     <span className="lp-al-lesson">
                       {!r.link ? <i className="ca-muted">لا توجد خطة لهذا الصف</i>
-                        : r.link.lessonTitle ? <><b>{r.link.lessonTitle}</b>{r.link.part ? <small> • الحصة {r.link.part}{r.link.sessions ? ` من ${r.link.sessions}` : ''}</small> : null}{r.link.source === 'manual' && <i className="lp-st">ربط يدوي</i>}{r.link.overridden && <i className="lp-st is-info">مصحّح</i>}</>
+                        : r.link.lessonTitle ? <><b>{r.link.lessonTitle}</b>{partText(r.link) ? <small> • {partText(r.link)}</small> : null}{r.link.source === 'manual' && <i className="lp-st">ربط يدوي</i>}{r.link.overridden ? <i className="lp-st is-info">عدّلته يدويًا</i> : r.link.source === 'auto' && <i className="lp-st is-ok">تلقائي</i>}</>
                           : r.link.review ? <><span className="lp-st is-warn">يحتاج مراجعة</span> <small className="ca-muted">{r.link.reason}</small></>
                             : <i className="ca-muted">{r.link.reason || 'لا يوجد درس مخطط'}</i>}
                     </span>

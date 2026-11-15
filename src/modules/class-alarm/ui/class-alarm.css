@@ -419,3 +419,41 @@ button.ca-ev-record { border: 0; background: none; font-family: inherit; cursor:
 .ca-plan-note a { color: var(--ca-brand); font-weight: 800; }
 .dark .ca-plan-note a { color: var(--ca-mist); }
 .ca-next-lesson { margin: 0; font-size: 1rem; color: var(--ca-next); font-weight: 700; }
+
+/* 📚 الدرس المقرر (التنبيه + الحصة القادمة) */
+.ca-lesson-block { display: grid; gap: .2rem; justify-items: center; margin: .8rem auto .2rem; padding: .8rem 1rem; max-width: 30rem; border-radius: 16px; background: var(--ca-next-bg); border: 1.5px solid color-mix(in srgb, var(--ca-next) 35%, transparent); text-align: center; }
+.ca-lesson-block strong { font-size: clamp(1.25rem, 3.6vw, 1.6rem); font-weight: 900; line-height: 1.35; color: var(--ca-next); overflow-wrap: anywhere; }
+.ca-lesson-block small { color: var(--ca-ink-2); font-weight: 700; }
+.ca-lesson-k { display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; font-weight: 800; color: var(--ca-ink-2); }
+.ca-lesson-block.is-review { background: var(--ca-warn-bg); border-color: color-mix(in srgb, var(--ca-warn) 40%, transparent); }
+.ca-lesson-block.is-review strong { color: var(--ca-warn); }
+.ca-lesson-block.is-compact { margin: .5rem 0; justify-items: start; text-align: start; padding: .6rem .8rem; }
+.ca-lesson-block.is-compact strong { font-size: 1.12rem; }
+.ca-lesson-open { margin-top: .25rem; text-decoration: none; }
+.ca-src { font-style: normal; font-size: .72rem; font-weight: 800; padding: .05rem .5rem; border-radius: 999px; background: var(--ca-ok-bg); color: var(--ca-ok); white-space: nowrap; }
+.ca-src.is-edited, .ca-src.is-manual { background: var(--ca-now-bg); color: var(--ca-now); }
+.ca-src.is-review { background: var(--ca-warn-bg); color: var(--ca-warn); }
+.ca-ev-why { flex: 1 1 100%; color: var(--ca-ink-2); font-weight: 600; font-size: .78rem; }
+.ca-hero-chips .ca-chip-week { background: rgba(242, 182, 50, .22); border-color: rgba(242, 182, 50, .55); }
+.ca-display-lesson { font-size: clamp(1.1rem, 2.6vw, 1.8rem) !important; color: #fde68a !important; }
+
+/* 📋 الدروس القادمة + 🗓️ خطة الأسبوع */
+.ca-ag-day + .ca-ag-day { margin-top: .8rem; }
+.ca-ag-head { font-weight: 900; margin-bottom: .4rem; display: flex; gap: .5rem; align-items: baseline; flex-wrap: wrap; }
+.ca-ag-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .45rem; }
+.ca-ag-item { display: flex; gap: .8rem; align-items: flex-start; padding: .6rem .75rem; border: 1.5px solid var(--ca-line); border-radius: 14px; background: var(--ca-surface-2); }
+.ca-ag-item.is-now { border-color: var(--ca-now); background: var(--ca-now-bg); }
+.ca-ag-time { display: grid; min-width: 5.2rem; }
+.ca-ag-time small { color: var(--ca-ink-2); font-weight: 700; }
+.ca-ag-main { display: grid; gap: .2rem; flex: 1; min-width: 0; }
+.ca-ag-cls { font-weight: 800; display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
+.ca-wp { display: grid; gap: 1rem; margin-top: .6rem; }
+.ca-wp-cls h4 { margin: 0 0 .35rem; font-size: 1rem; }
+.ca-wp-cls ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+.ca-wp-cls li { display: flex; flex-wrap: wrap; gap: .3rem .7rem; align-items: center; padding: .45rem .65rem; border-radius: 12px; background: var(--ca-surface-2); }
+.ca-wp-cls li.is-review { background: var(--ca-warn-bg); }
+.ca-wp-when { font-weight: 800; font-size: .86rem; min-width: 11rem; }
+.ca-wp-cls li .ca-ev-lesson { flex: 1 1 14rem; }
+.ca-wp-cls .ca-notice { margin: .4rem 0 0; }
+.ca-wp-reset { justify-content: space-between; border-top: 1px dashed var(--ca-line); padding-top: .7rem; }
+@media (max-width: 560px) { .ca-ag-time { min-width: 4.4rem; } .ca-wp-when { min-width: 0; flex-basis: 100%; } }

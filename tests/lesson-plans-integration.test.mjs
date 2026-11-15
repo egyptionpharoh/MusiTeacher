@@ -93,17 +93,18 @@ const linkOf = (w, prof, k, slot) => linksForDay(w, prof, k, SUN).get(slot);
 test('درس أسبوعه 10 بلا عدد حصص: كل حصص الشعبة في ذلك الأسبوع له، مرقّمة حسب الحصص الفعلية (لا افتراض حصة واحدة)', () => {
   const prof = schedule(); const w = ws([{ id: 'A', title: 'الميزان الرباعي', weeks: 'العاشر' }]);
   assert.deepEqual(['2026-11-08|p1', '2026-11-09|p2', '2026-11-11|p3'].map((x) => { const [k, s] = x.split('|'); const l = linkOf(w, prof, k, s); return `${l.lessonTitle}:${l.part}`; }), ['الميزان الرباعي:1', 'الميزان الرباعي:2', 'الميزان الرباعي:3']);
-  const l = linkOf(w, prof, SUN, 'p3'); // الشعبة 2 لها حصة واحدة
-  assert.equal(l.part, 1);
+  const l = linkOf(w, prof, SUN, 'p3'); // الشعبة 2 لها حصة واحدة وعدد حصص الدرس غير مذكور: لا داعي لـ«الحصة 1»
+  assert.equal(l.lessonTitle, 'الميزان الرباعي'); assert.equal(l.part, null);
   assert.equal(linkOf(w, prof, '2026-11-15', 'p1').state, 'none', 'خارج فترة الدرس: لا درس مخطط');
 });
 
-test('حصص أكثر من عدد حصص الدرس → «يحتاج مراجعة» ولا نفترض الدرس التالي', () => {
+test('حصص أكثر من عدد حصص الدرس → «استكمال وتثبيت» لنفس الدرس، ولا نفترض الدرس التالي', () => {
   const prof = schedule(); const w = ws([{ id: 'A', title: 'أ', weeks: 'العاشر', sessions: 2 }, { id: 'B', title: 'ب', weeks: 'الحادي عشر', sessions: 2 }]);
   assert.equal(linkOf(w, prof, '2026-11-09', 'p2').part, 2);
   const r = linkOf(w, prof, '2026-11-11', 'p3');
-  assert.equal(r.review, true); assert.equal(r.lessonTitle, '');
-  assert.deepEqual(r.candidates.map((c) => c.title), ['أ', 'ب']);
+  assert.equal(r.review, false); assert.equal(r.lessonTitle, 'أ', 'لا يُقدَّم الدرس «ب» قبل أسبوعه');
+  assert.equal(r.extra, true); assert.match(r.note, /استكمال/);
+  assert.equal(linkOf(w, prof, '2026-11-15', 'p1').lessonTitle, 'ب');
 });
 
 test('دروس متداخلة بعدد حصص معروف تُوزّع بالترتيب؛ وبدونه → مراجعة', () => {
@@ -165,10 +166,14 @@ test('المنبّه: التنبيه يحمل الدرس التلقائي، وا
   const prof = schedule();
   const w = ws([{ id: 'A', title: 'الميزان الرباعي', weeks: 'العاشر', sessions: 3 }]);
   const al = alertsForDay(prof, defaultSettings(), SUN, undefined, { links: linksForDay(w, prof, SUN, SUN) }).filter((x) => x.eventKey === 'p1');
-  assert.match(al[0].body, /الدرس: الميزان الرباعي \(الحصة 1 من 3\)/);
+  assert.match(al[0].body, /الدرس المقرر: الميزان الرباعي \(الحصة 1 من 3\)/);
+  assert.match(al[0].body, /الأسبوع الدراسي: العاشر – الفصل الدراسي الأول/);
+  assert.equal(al[0].lesson.title, 'الميزان الرباعي');
   const w2 = ws([{ id: 'A', title: 'أ', weeks: 'العاشر' }, { id: 'B', title: 'ب', weeks: 'العاشر' }]);
   const al2 = alertsForDay(prof, defaultSettings(), SUN, undefined, { links: linksForDay(w2, prof, SUN, SUN) }).filter((x) => x.eventKey === 'p1');
-  assert.ok(!/الدرس:/.test(al2[0].body));
+  assert.match(al2[0].body, /الدرس المقرر: غير محدد — توزيع الدروس على الحصص يحتاج مراجعتك/);
+  assert.ok(!/الدرس المقرر: [أب]/.test(al2[0].body), 'لا يُعرض درس غير مؤكد');
+  assert.equal(al2[0].lesson.review, true);
   assert.equal(alertsForDay(prof, defaultSettings(), SUN).length, alertsForDay(prof, defaultSettings(), SUN, undefined, { links: linksForDay(normalizeWorkspace({}), prof, SUN, SUN) }).length);
   const d = eveningDigest(w2, prof, SUN, '2026-11-07', { tomorrow: true, unlinked: true });
   assert.match(d.body, /تحتاج مراجعة/);
