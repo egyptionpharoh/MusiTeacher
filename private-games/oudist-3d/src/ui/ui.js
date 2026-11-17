@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { COURSES, PARTS, FINGER_AR, FINGER_SHORT, MAP_SEMIS, MAP_QUARTERS, noteName, placeNote, fingerFor, midiOf, arNum, intervalAr } from '../instrument/oud-data.js';
 import { OUD } from '../instrument/oud-model.js';
 import { EXERCISES, exById, stepText } from '../teaching/exercises.js';
+import { FingerFocus } from './focus.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === 'class') e.className = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v !== false && v != null) e.setAttribute(k, v === true ? '' : v); } for (const c of kids.flat()) e.append(c && c.nodeType ? c : document.createTextNode(c ?? '')); return e; };
@@ -58,6 +59,7 @@ export function buildUI(ctx) {
       el('button', { class: 'ibtn', title: 'تصغير', onclick: () => zoom(0.15) }, '－'),
       el('button', { class: 'ibtn', title: 'إعادة الكاميرا إلى وضعها الافتراضي', onclick: () => setView('default') }, '⟲'),
       el('button', { class: 'ibtn', title: 'إخفاء/إظهار اللوحات', id: 'btn-hide', onclick: () => toggleHidden() }, '👁'),
+      el('button', { class: 'ibtn ff-btn', id: 'btn-focus', title: 'وضع التركيز على الأصابع والأوتار (Finger Focus)', onclick: () => toggleFocus() }, '🎯 تركيز الأصابع'),
       btnPerf,
       el('button', { class: 'ibtn', title: 'الحقوق والمصادر', onclick: () => $('#credits').classList.toggle('hidden') }, 'ⓘ')));
   const sidebar = el('aside', { id: 'side' });
@@ -107,12 +109,12 @@ export function buildUI(ctx) {
     return t;
   }
   function setView(k) { const v = VIEWS[k]; Object.assign(cam.goal, { th: v.th, ph: v.ph, d: v.d }); cam.goal.t.set(...viewTarget(v.t)); }
-  function zoom(f) { cam.goal.d = clamp(cam.goal.d * (1 + f), 0.3, 4.5); }
+  function zoom(f) { if (focus.on) { focus.zoom(f); return; } cam.goal.d = clamp(cam.goal.d * (1 + f), 0.3, 4.5); }
 
   // ---------------- الأوضاع ----------------
   function setMode(m) {
     S.mode = m; Object.entries(modeBtns).forEach(([k, b]) => b.classList.toggle('on', k === m));
-    perf.stop(); clearHighlight(); guide.ex = null; lesson.playing = false;
+    perf.stop(); clearHighlight(); guide.ex = null; lesson.playing = false; if (m !== 'lesson' && focus.on) setFocus('off');
     sidebar.replaceChildren(); layout();
     if (m === 'identify') buildIdentify(); else if (m === 'free') buildFree(); else if (m === 'guided') buildGuided(); else buildLesson();
     chip.classList.add('hidden'); renderStrip();
@@ -124,6 +126,16 @@ export function buildUI(ctx) {
   function setNames(m) { S.names = m; syncChecks(); renderMap(); renderStrip(); }
   const short = (t) => (t || '').replace(' نصف بيمول', '½♭').replace(' نصف دييز', '½♯').replace(' بيمول', '♭').replace(' دييز', '♯');
   const nm = (midi, oct = true) => (S.names === 'none' ? '' : noteName(midi, S.names === 'latin' ? 'latin' : S.names === 'arabic' ? 'arabic' : 'solfege', oct && S.names !== 'arabic'));
+
+  // ---------- Finger Focus: وضع التركيز على الأصابع والأوتار ----------
+  const focus = new FingerFocus({ scene, oud, perf, rig: ctx.rig }, root, (midi, oct = true) => short(nm(midi, oct)));
+  const focusBtns = {};
+  function setFocus(v) {
+    focus.setView(v); Object.entries(focusBtns).forEach(([k, b]) => b.classList.toggle('on', k === v));
+    const tb = $('#btn-focus'); if (tb) tb.classList.toggle('on', focus.on);
+    if (focus.on && lesson.ex) focus.setPiece(lesson.ex.events);
+  }
+  function toggleFocus() { const was = focus.on; if (S.mode !== 'lesson') setMode('lesson'); setFocus(was ? 'off' : 'both'); }
 
   // ---------- تعرّف على العود ----------
   let hl = null;
@@ -223,25 +235,42 @@ export function buildUI(ctx) {
   }
 
   // ---------- التمرين اللحني ----------
-  const lesson = { ex: null, bpm: 70, loop: false, playing: false };
+  const lesson = { ex: null, bpm: 70, loop: false, playing: false, speed: 1, from: 0, to: 0 };
   const playBtn = el('button', { class: 'btn pri', onclick: () => (lesson.playing ? stopLesson() : playLesson()) }, '▶ تشغيل');
   const bpmLbl = el('span', {}, '');
   function buildLesson() {
-    const exSel = el('select', { onchange: () => pickLesson(exSel.value) }, EXERCISES.map((e) => el('option', { value: e.id }, `${e.title} — ${e.level}`)));
+    const grp = (g, list) => el('optgroup', { label: g }, list.map((e) => el('option', { value: e.id }, `${e.title} — ${e.level}`)));
+    const exSel = el('select', { id: 'ex-sel', onchange: () => pickLesson(exSel.value) }, grp('مقطوعات', EXERCISES.filter((e) => e.group === 'مقطوعة')), grp('مقامات وجمل شرقية', EXERCISES.filter((e) => e.group === 'شرقي')), grp('أساسيات', EXERCISES.filter((e) => !e.group)));
+    exSel.value = lesson.ex ? lesson.ex.id : EXERCISES[0].id;
+    const seg = (items, cur, on) => { const bs = {}; const d = el('div', { class: 'seg' }, items.map(([k, lbl, tip]) => (bs[k] = el('button', { class: 'segb' + (k === cur ? ' on' : ''), title: tip || '', onclick: () => { Object.entries(bs).forEach(([kk, b]) => b.classList.toggle('on', kk === k)); on(k); } }, lbl)))); d._bs = bs; return d; };
+    const viewSeg = seg([['off', 'طبيعي', 'العازف كاملًا'], ['fingers', 'الأصابع', 'تكبير اليد اليسرى على الزند'], ['both', 'اليدان معًا', 'الزند والريشة في شاشة واحدة']], focus.view, (k) => setFocus(k));
+    Object.assign(focusBtns, viewSeg._bs);
+    const speedSeg = seg([['0.5', '½ بطيء'], ['0.75', '¾'], ['1', 'عادي']], String(lesson.speed), (k) => { lesson.speed = +k; if (lesson.playing) playLesson(); });
+    const trk = el('input', { type: 'checkbox', onchange: (e) => focus.setTrack(e.target.checked) }); trk.checked = focus.track;
+    lesson.fromSel = el('select', { class: 'mini', onchange: () => { lesson.from = +lesson.fromSel.value; if (lesson.to < lesson.from) { lesson.to = lesson.from; lesson.toSel.value = lesson.to; } } });
+    lesson.toSel = el('select', { class: 'mini', onchange: () => { lesson.to = +lesson.toSel.value; if (lesson.to < lesson.from) { lesson.from = lesson.to; lesson.fromSel.value = lesson.from; } } });
     const about = el('p', { class: 'hint', id: 'ex-about' });
     const bpm = el('input', { type: 'range', min: 40, max: 110, step: 2, oninput: (e) => { lesson.bpm = +e.target.value; bpmLbl.textContent = `السرعة: ${arNum(lesson.bpm)} نبضة/دقيقة`; } });
     const loop = el('input', { type: 'checkbox', onchange: (e) => { lesson.loop = e.target.checked; } });
     sidebar.append(el('h2', {}, 'تمرين لحني'), exSel, about,
       el('div', { class: 'btnrow' }, playBtn, el('button', { class: 'btn', onclick: () => stopLesson() }, '■ إيقاف')),
-      bpmLbl, bpm, el('label', { class: 'row' }, loop, 'تكرار التمرين'),
+      sec('🎯 تركيز الأصابع', true, viewSeg,
+        el('label', { class: 'row' }, trk, 'تتبّع: تلوين الوتر والإصبع وإظهار النغمة التالية'),
+        el('label', {}, 'سرعة العرض'), speedSeg),
+      bpmLbl, bpm,
+      el('div', { class: 'row looprow' }, el('label', { class: 'row' }, loop, 'تكرار'), el('span', {}, 'من النغمة'), lesson.fromSel, el('span', {}, 'إلى'), lesson.toSel),
       sec('الأسماء', true, namesSel(), labelsChk()));
     lesson.bpmInput = bpm;
     pickLesson(exSel.value);
   }
-  function pickLesson(id) { stopLesson(); lesson.ex = exById(id); lesson.bpm = lesson.ex.bpm; if (lesson.bpmInput) lesson.bpmInput.value = lesson.bpm; bpmLbl.textContent = `السرعة: ${arNum(lesson.bpm)} نبضة/دقيقة`; const a = $('#ex-about'); if (a) a.textContent = lesson.ex.about; S.stripHi = -1; renderStrip(); }
+  function pickLesson(id) { stopLesson(); lesson.ex = exById(id); lesson.bpm = lesson.ex.bpm;
+    { const n = lesson.ex.events.length, opts = () => lesson.ex.events.map((e, i) => el('option', { value: i }, `${arNum(i + 1)} · ${short(nm(e.midi, false)) || ''}`)); lesson.from = 0; lesson.to = n - 1;
+      if (lesson.fromSel) { lesson.fromSel.replaceChildren(...opts()); lesson.toSel.replaceChildren(...opts()); lesson.fromSel.value = 0; lesson.toSel.value = n - 1; } }
+    focus.setPiece(lesson.ex.events);
+    { const sel = $('#ex-sel'); if (sel && sel.value !== id) sel.value = id; } if (lesson.bpmInput) lesson.bpmInput.value = lesson.bpm; bpmLbl.textContent = `السرعة: ${arNum(lesson.bpm)} نبضة/دقيقة`; const a = $('#ex-about'); if (a) a.textContent = lesson.ex.about; S.stripHi = -1; renderStrip(); }
   function playLesson() {
     if (!lesson.ex) return; audio.init(); audio.resume();
-    lesson.list = perf.playSequence(lesson.ex.events, lesson.bpm, 0.7); lesson.playing = true; playBtn.textContent = '❚❚ إيقاف مؤقت';
+    lesson.list = perf.playSequence(lesson.ex.events, lesson.bpm * lesson.speed, 0.9, lesson.from, lesson.to); lesson.playing = true; playBtn.textContent = '❚❚ إيقاف مؤقت';
   }
   function stopLesson() { perf.stop(); lesson.playing = false; playBtn.textContent = '▶ تشغيل'; S.stripHi = -1; renderStrip(); }
 
@@ -250,7 +279,7 @@ export function buildUI(ctx) {
     const ex = S.mode === 'lesson' ? lesson.ex : S.mode === 'guided' ? guide.ex : null;
     if (!ex) { strip.replaceChildren(); return; }
     strip.replaceChildren(el('div', { class: 'ns-title' }, '🎼 ', ex.title), el('div', { class: 'ns-row' }, ex.events.map((e, i) => el('div', { class: 'nt' + (i === S.stripHi ? ' on' : '') + (e.beats >= 2 ? ' long' : ''), 'data-i': i },
-      el('b', {}, short(nm(e.midi, false)) || '•'), el('small', {}, COURSES[e.course].ar), el('small', {}, e.finger ? FINGER_SHORT[e.finger] : 'مطلق'), el('span', { class: 'ar' }, e.risha === 'down' ? '↓' : '↑')))));
+      el('b', {}, short(nm(e.midi, false)) || '•'), el('small', {}, COURSES[e.course].ar), el('small', {}, e.finger ? FINGER_SHORT[e.finger] : 'مطلق'), el('span', { class: 'ar' }, e.slur ? '⌒' : e.risha === 'down' ? '↓' : '↑')))));
     const on = strip.querySelector('.nt.on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
   }
 
@@ -261,7 +290,7 @@ export function buildUI(ctx) {
   const project = (p, elx) => { v.copy(p).project(camera); const ok = v.z < 1 && v.x > -1.1 && v.x < 1.1 && v.y > -1.1 && v.y < 1.1; elx.style.display = ok ? '' : 'none'; if (ok) elx.style.transform = `translate(${(v.x * 0.5 + 0.5) * innerWidth}px, ${(-v.y * 0.5 + 0.5) * innerHeight}px) translate(-50%, -50%)`; };
   let lastNote = null;
   function updateLabels() {
-    const on = S.labels3d && !S.hidden && !S.clean && S.mode !== 'identify';
+    const on = S.labels3d && !S.hidden && !S.clean && S.mode !== 'identify' && !focus.on;
     labels.style.display = on ? '' : 'none'; if (!on) return;
     const camD = camera.position.distanceTo(oud.toWorld(new THREE.Vector3(0, 0.35, 0)));
     const showCourses = camD < 1.25;
@@ -337,11 +366,11 @@ export function buildUI(ctx) {
   audio.onstate = (st) => { if (st === 'failed') { status.textContent = 'المتصفح لا يدعم الصوت'; status.classList.remove('hidden'); } };
 
   function frame(dt) {
-    updateViewOffset(dt); updateLabels();
+    updateViewOffset(dt); updateLabels(); focus.frame(dt);
     if (S.mode === 'lesson' && lesson.playing && !perf.playing && perf.seqEnd == null) { if (lesson.loop) playLesson(); else stopLesson(); }
     if (S.mode === 'lesson' && lesson.playing && perf.seqEnd != null && perf.t > perf.seqEnd + 0.6) { perf.seqEnd = null; if (lesson.loop) playLesson(); else stopLesson(); }
   }
   layout(); setMode(qs.get('mode') || 'free');
   if (qs.get('view') && VIEWS[qs.get('view')]) setTimeout(() => setView(qs.get('view')), 0);
-  return { setMode, setView, zoom, frame, S, setNames, selectPart, playCell, switchPerformer, guide, lesson, playLesson, stopLesson, cellFromHit, pickAt };
+  return { focus, setFocus, pickLesson, setMode, setView, zoom, frame, S, setNames, selectPart, playCell, switchPerformer, guide, lesson, playLesson, stopLesson, cellFromHit, pickAt };
 }

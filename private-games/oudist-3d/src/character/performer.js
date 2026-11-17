@@ -26,7 +26,7 @@ export class Performer {
     this.onEvent = null; this.dir = 'down'; this.speedK = 1;
     this.restTip = player.restState().R.tip.slice(); this.tip = this.restTip.slice(); this.flex = 0;
     this.lastCourse = 3; this.stats = { plucks: 0, syncErrMs: [] };
-    this.handCourse = 3; this.handPos = 2; this.holds = {};
+    this.handCourse = 3; this.handPos = 2; this.posShift = 0; this.holds = {}; this.lastL = null;
   }
   // ---------- تخطيط اليد اليسرى ----------
   // لكل نغمة: نافذة التحضير (متى يبدأ الإصبع حركته قبل الصوت)، ومتى يغادر الإصبع نغمته السابقة.
@@ -60,7 +60,7 @@ export class Performer {
   /** نغمة واحدة: { course, semis, finger, risha: 'down'|'up', vel, dur (ث) } عند الزمن T (ساعة المؤدّي) */
   schedule(n, T) {
     const note = { ...n, T, dur: n.dur ?? 0.9, midi: n.midi ?? midiOf(n.course, n.semis), vel: n.vel ?? 0.72, id: (this._id = (this._id || 0) + 1), sounded: false, plucked: false, tSched: this.t };
-    if (!note.risha) { note.risha = this.dir; this.dir = this.dir === 'down' ? 'up' : 'down'; }
+    if (!note.risha && !note.slur) { note.risha = this.dir; this.dir = this.dir === 'down' ? 'up' : 'down'; }
     this.notes.push(note); this.notes.sort((a, b) => a.T - b.T);
     this.planStrokes(); this.planLeft();
     return note;
@@ -68,10 +68,10 @@ export class Performer {
   /** نقرة المستخدم: تُعزف بعد زمن حركة قصير جدًا */
   playNow(n) { this.audio && this.audio.init(); this.audio && this.audio.resume(); return this.schedule({ dur: 1.4, ...n }, this.t + LEAD); }
   /** تشغيل تمرين: events بالضربات، bpm، بدءًا من الآن + مهلة */
-  playSequence(events, bpm, delay = 0.6, from = 0) {
+  playSequence(events, bpm, delay = 0.6, from = 0, to = null) {
     this.stop(); const beat = 60 / bpm, t0 = this.t + delay;
-    const evs = events.slice(from), s0 = evs.length ? evs[0].start : 0;
-    const list = evs.map((e, i) => this.schedule({ course: e.course, semis: e.semis, finger: e.finger, risha: e.risha, midi: e.midi, vel: 0.7, dur: e.beats * beat * 0.94, idx: from + i }, t0 + (e.start - s0) * beat));
+    const evs = events.slice(from, to == null ? undefined : to + 1), s0 = evs.length ? evs[0].start : 0;
+    const list = evs.map((e, i) => this.schedule({ course: e.course, semis: e.semis, finger: e.finger, risha: e.risha, slur: !!e.slur, pos: e.pos || 0, midi: e.midi, vel: e.slur ? 0.42 : 0.7, dur: e.beats * beat * 0.94, idx: from + i }, t0 + (e.start - s0) * beat));
     if (this.audio && this.audio.prewarm) this.audio.prewarm(list.map((n) => [n.course, n.midi, n.finger === 0, n.vel]));
     this.seqEnd = list.length ? list[list.length - 1].T + list[list.length - 1].dur : this.t;
     return list;
@@ -86,7 +86,7 @@ export class Performer {
 
   // ---------- مسار الريشة ----------
   planStrokes() {
-    this.strokes = this.notes.filter((n) => !n.plucked || n.T > this.t - 0.4).map((n) => ({ T: n.T, course: n.course, d: n.risha === 'up' ? -1 : 1, vel: n.vel, id: n.id }));
+    this.strokes = this.notes.filter((n) => !n.slur && (!n.plucked || n.T > this.t - 0.4)).map((n) => ({ T: n.T, course: n.course, d: n.risha === 'up' ? -1 : 1, vel: n.vel, id: n.id }));
   }
   // الإطارات المفتاحية لضربة: [زمن، موضع الطرف (محلي)]
   strokeKeys(s, gapBefore) {
@@ -125,7 +125,7 @@ export class Performer {
         if (A && A.ctx) { const when = A.now + Math.max(0, n.T - t); A.pluck(n.course, n.midi, n.finger === 0, n.vel, when); n.audioWhen = when; }
       }
       if (!n.plucked && t >= n.T) {
-        n.plucked = true; this.oud.pluck(n.course, n.vel); this.stats.plucks++; this.activeNotes++; this.lastEventT = t; this.lastCourse = n.course;
+        n.plucked = true; this.oud.pluck(n.course, n.vel); if (!n.slur) this.stats.plucks++; this.activeNotes++; this.lastEventT = t; this.lastCourse = n.course;
         this.onEvent && this.onEvent({ type: 'on', ...n });
       }
       if (n.plucked && !n.done && t >= (n.relT ?? (n.T + n.dur))) {
@@ -144,9 +144,11 @@ export class Performer {
     // الوتر الذي تعمل عليه الكف ووضعها على الزند: من أحدث نغمة مضغوطة بدأ تحضيرها (الأوتار المطلقة لا تحرّك الكف)
     { let hn = null, pn = null;
       for (const n of this.notes) { if (n.finger > 0 && t >= n.T - prepOf(n) - 0.06) { if (!hn || n.T > hn.T) hn = n; if (n.finger === 1 && (!pn || n.T > pn.T)) pn = n; } }
-      if (hn) this.handCourse = hn.course;
+      if (hn) { this.handCourse = hn.course; this.posShift = hn.pos || 0; }
+      if (this.posShift !== this._pos0) { this.holds = {}; this._pos0 = this.posShift; }   // انتقلت اليد إلى وضع آخر: لا إصبع يبقى في موضعه القديم
       if (pn) this.handPos = pn.semis < 2 ? pn.semis : 2; }
-    const L = { f: {}, course: this.handCourse, shift: POS_K * (OUD.stopY(this.handPos) - OUD.stopY(2)) };
+    // وضع أعلى على الزند (posShift > 0): تنتقل الكف كلها؛ وإلا فالتراجع إلى نصف الوضع كما كان
+    const L = { f: {}, course: this.handCourse, shift: this.posShift > 0 ? OUD.stopY(2 + this.posShift) - OUD.stopY(2) : POS_K * (OUD.stopY(this.handPos) - OUD.stopY(2)) };
     for (let f = 1; f <= 4; f++) {
       let best = null;
       for (const n of this.notes) { if (n.finger !== f) continue; if (t < n.T - prepOf(n) || t > releaseOf(n) + 0.07) continue; if (!best || n.T > best.T) best = n; }
@@ -212,7 +214,7 @@ export class Performer {
     }
     const xMid = OUD.courseX(this.lastCourse, OUD.yPluck);
     this.flex = clamp((this.tip[0] - xMid) / 0.095 / (Math.PI / 180), -12, 12);
-    this.p.dt = dt; this.p.pose({ L, R: { tip: this.tip, flex: this.flex } });
+    this.lastL = L; this.p.dt = dt; this.p.pose({ L, R: { tip: this.tip, flex: this.flex } });
   }
   restAt(tip) { return [tip[0], tip[1], OUD.zStr(OUD.yPluck) + 0.008]; }
   /** حالة اليدين عند تبديل الشخصية: تبقى كما هي (التوقيت لا يتغير) */

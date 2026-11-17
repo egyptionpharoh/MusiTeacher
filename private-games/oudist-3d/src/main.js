@@ -120,7 +120,7 @@ function applyCam(k = 1) {
   camera.position.set(c.t.x + dd * Math.sin(c.ph) * Math.sin(c.th), c.t.y + dd * Math.cos(c.ph), c.t.z + dd * Math.sin(c.ph) * Math.cos(c.th));
   camera.lookAt(c.t); camera.updateMatrixWorld(true);
 }
-const ui = buildUI({ scene, camera, renderer, canvas, oud, risha, perf, audio, cam, performer: { get: () => cur && cur.g, set: setPerformer }, player: () => player });
+const ui = buildUI({ scene, camera, renderer, canvas, oud, risha, perf, audio, cam, performer: { get: () => cur && cur.g, set: setPerformer }, player: () => player, rig: () => rig });
 function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener('resize', resize); resize();
 
@@ -133,7 +133,7 @@ function tick(dt, draw = true) {
   oud.update(dt);
   if (life) life.update(dt, { active: perf.activeNotes, sinceNote: perf.sinceNote() });
   ui.frame(dt);
-  if (draw && !window.__noRender) renderer.render(scene, camera); else scene.updateMatrixWorld(true);
+  if (draw && !window.__noRender) { if (!(ui.focus && ui.focus.render(renderer, scene))) renderer.render(scene, camera); } else scene.updateMatrixWorld(true);
 }
 // ساعة الحركة تتبع ساعة الصوت حين يعمل الصوت: فلا تتأخر الريشة عن الصوت ولو هبط معدل الإطارات على جهاز ضعيف
 let prevA = null;

@@ -179,8 +179,47 @@ function texFace(outline) {
     xa.save(); xa.translate(px, py); xa.beginPath(); xa.arc(0, 0, R, 0, Math.PI * 2); xa.fillStyle = '#000'; xa.fill();
     xa.strokeStyle = '#fff'; xa.lineCap = 'round'; xa.save(); xa.beginPath(); xa.arc(0, 0, R, 0, 7); xa.clip(); rosetteLattice(xa, R, rs.rings, 2); xa.restore();
     xa.lineWidth = 4; xa.beginPath(); xa.arc(0, 0, R - 1.5, 0, Math.PI * 2); xa.stroke(); xa.restore();
+    // خرطوشة العلامة: شريط خشبي مصمت في وسط الشمسية الكبيرة (جزء من النقش نفسه) تُثبَّت عليه لوحة الاسم الدقيقة — انظر brandPlate
+    if (rs === ROSES[0]) for (const [ctx, col] of [[x, '#e3c690'], [xa, '#fff']]) {
+      const hw = BRAND.w / 2 * S, hl = BRAND.len / 2 * S;
+      ctx.save(); ctx.translate(px, py - BRAND.dy * S); ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(-hw, -hl, hw * 2, hl * 2, hw); ctx.fill(); ctx.restore();
+    }
   }
   return { color: c, alpha: a };
+}
+// ---------------- العلامة MusiTeacher على الشمسية الكبيرة ----------------
+// كما في الأورج والأكورديون: الاسم جزء من سطح الآلة (لا لوحة عائمة). هنا على طريقة صنّاع العود الذين ينقشون اسمهم في قلب
+// الشمسية: خرطوشة خشبية رفيعة في وسط النقش، حروفها «تطعيم» داكن (أبنوس وخشب ورد) بألوان حلقة الشمسية نفسها.
+// الاسم بطول الأوتار (يُقرأ أفقيًا والعود في حِجر العازف) ويقع تحت الأوتار الوسطى. يُعطَّل بإضافة ?nobrand إلى الرابط.
+export const BRAND = { len: 0.070, w: 0.0128, dy: -0.005 };     // dy: إزاحة نحو الفرس حتى لا يقترب الاسم من طرف لوحة الأصابع
+function brandPlate() {
+  const W = 1024, H = Math.round(W * BRAND.w / BRAND.len), c = cnv(W, H), x = c.getContext('2d'), r = rng(23), rad = H / 2;
+  x.clearRect(0, 0, W, H);
+  x.save(); x.beginPath(); x.roundRect(0, 0, W, H, rad); x.clip();
+  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#ecd4a2'); g.addColorStop(0.5, '#e3c690'); g.addColorStop(1, '#d8b77c'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  for (let k = 0; k < 46; k++) { const yy = r() * H; x.strokeStyle = `rgba(150,100,45,${0.05 + r() * 0.13})`; x.lineWidth = 0.6 + r() * 1.6; x.beginPath(); x.moveTo(0, yy); x.lineTo(W, yy + (r() - 0.5) * 6); x.stroke(); }   // عروق الخشب بطول الشريط
+  x.restore();
+  // إطار التطعيم: خط أبنوس ثم خط ذهبي رفيع (ألوان حلقة الشمسية)
+  x.lineWidth = 9; x.strokeStyle = '#2a160a'; x.beginPath(); x.roundRect(5, 5, W - 10, H - 10, rad - 5); x.stroke();
+  x.lineWidth = 3; x.strokeStyle = '#b78a4a'; x.beginPath(); x.roundRect(15, 15, W - 30, H - 30, rad - 15); x.stroke();
+  // الاسم: Musi رفيع + Teacher عريض (كعلامة الأورج)، بلونَي الأبنوس وخشب الورد
+  const fam = '"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif', fs = Math.round(H * 0.56);
+  x.textBaseline = 'alphabetic';
+  x.font = `400 ${fs}px ${fam}`; const w1 = x.measureText('Musi').width;
+  x.font = `700 ${fs}px ${fam}`; const w2 = x.measureText('Teacher').width;
+  const nW = fs * 0.62, gap = fs * 0.18, total = nW + gap + w1 + w2 + 3, x0 = (W - total) / 2, base = H / 2 + fs * 0.35;
+  // الشعار: نوتتان موصولتان
+  { const s = fs / 112, nx = x0 + 4 * s, ny = base - 14 * s; x.save(); x.fillStyle = '#7a4317'; x.strokeStyle = '#7a4317'; x.lineWidth = 7 * s;
+    const head = (cx, cy) => { x.beginPath(); x.ellipse(cx, cy, 15 * s, 11 * s, -0.42, 0, Math.PI * 2); x.fill(); };
+    head(nx + 10 * s, ny); head(nx + 54 * s, ny - 10 * s);
+    x.beginPath(); x.moveTo(nx + 22 * s, ny - 4 * s); x.lineTo(nx + 22 * s, ny - 66 * s); x.moveTo(nx + 66 * s, ny - 14 * s); x.lineTo(nx + 66 * s, ny - 76 * s); x.stroke();
+    x.beginPath(); x.moveTo(nx + 19 * s, ny - 68 * s); x.lineTo(nx + 69 * s, ny - 78 * s); x.lineTo(nx + 69 * s, ny - 64 * s); x.lineTo(nx + 19 * s, ny - 54 * s); x.closePath(); x.fill(); x.restore(); }
+  // ظل خفيف فاتح تحت الحروف يوحي بحفر التطعيم في الخشب
+  x.shadowColor = 'rgba(255,240,205,.75)'; x.shadowBlur = 0; x.shadowOffsetY = 2;
+  x.font = `400 ${fs}px ${fam}`; x.fillStyle = '#2a160a'; x.fillText('Musi', x0 + nW + gap, base);
+  x.font = `700 ${fs}px ${fam}`; x.fillStyle = '#6b3a14'; x.fillText('Teacher', x0 + nW + gap + w1 + 3, base);
+  x.shadowColor = 'transparent';
+  return c;
 }
 function texEbony(w = 256, h = 1024, seed = 3) {
   const c = cnv(w, h), x = c.getContext('2d'), r = rng(seed); x.fillStyle = '#17100b'; x.fillRect(0, 0, w, h);
@@ -245,6 +284,14 @@ export function buildOud() {
     add(new THREE.Mesh(band, M.bindDark), 'face', 'face-edge');
     // حلقات الشمسيات البارزة قليلًا
     for (const rs of ROSES) { const t = new THREE.Mesh(new THREE.TorusGeometry(rs.r + 0.0006, 0.0009, 6, 64), M.binding); t.position.set(rs.x, rs.y, 0.0003); add(t, 'rose', 'rose-ring'); }
+    // لوحة الاسم الدقيقة فوق خرطوشة الشمسية الكبيرة: ملاصقة لسطح الوجه (0.2 مم)، بخامة الوجه نفسها فتأخذ إضاءته وظلال الأوتار
+    if (!(typeof location !== 'undefined' && new URLSearchParams(location.search).has('nobrand'))) {
+      const bt = tex(brandPlate()); bt.anisotropy = 8;
+      const bm = new THREE.MeshPhysicalMaterial({ map: bt, alphaTest: 0.5, roughness: 0.48, clearcoat: 0.35, clearcoatRoughness: 0.35, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+      const plate = new THREE.Mesh(new THREE.PlaneGeometry(BRAND.len, BRAND.w), bm);
+      plate.position.set(ROSES[0].x, ROSES[0].y + BRAND.dy, 0.0002); plate.rotation.z = Math.PI / 2;      // الاسم بطول الأوتار، وأعلاه نحو الأوتار الغليظة
+      add(plate, 'rose', 'rose-brand'); plate.castShadow = false;
+    }
     // أقراص شفافة للتعرّف على الشمسيات (لا تُرى)
     for (const rs of ROSES) { const d = new THREE.Mesh(new THREE.CircleGeometry(rs.r, 32), new THREE.MeshBasicMaterial({ visible: false })); d.position.set(rs.x, rs.y, 0.0005); d.userData.pickOnly = true; add(d, 'rose', 'rose-pick'); }
     const pgPick = new THREE.Mesh(new THREE.ShapeGeometry(new THREE.Shape([[-0.06, -0.02], [0.06, -0.02], [0.07, -0.1], [0.036, -0.172], [-0.036, -0.172], [-0.07, -0.1]].map((p) => new THREE.Vector2(p[0], p[1])))), new THREE.MeshBasicMaterial({ visible: false }));

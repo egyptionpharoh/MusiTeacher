@@ -83,3 +83,16 @@ body.panel-open #note-strip{right:326px}
 .tag3d{position:absolute;left:0;top:0;white-space:nowrap;font-size:11px;font-weight:700;padding:1px 6px;border-radius:999px;background:rgba(20,16,12,.72);color:#ffe9b0;border:1px solid rgba(224,181,98,.55);direction:rtl}
 .tag3d.note{font-size:13px;background:rgba(224,181,98,.92);color:#1d1814;border-color:#fff3d0}
 @media(max-width:520px){#topbar{gap:4px}.tools{flex-wrap:wrap;gap:4px;justify-content:center;width:100%}.tools .ibtn{padding:4px 8px;font-size:12px}.tabs{flex-wrap:wrap;justify-content:center;width:100%}.tab{padding:4px 7px;font-size:12px}#chip{top:auto;bottom:60px;font-size:13px;max-width:92vw;white-space:normal;text-align:center}}
+
+/* ---------- Finger Focus ---------- */
+.ibtn.ff-btn.on,.segb.on{background:var(--gold);color:#1d1711;border-color:var(--gold)}
+.seg{display:flex;gap:4px;margin:4px 0 8px}.segb{flex:1;background:#2b231c;color:#f3e7d3;border:1px solid #4a3d30;border-radius:9px;padding:7px 4px;font:inherit;font-size:13px;cursor:pointer}
+.looprow{flex-wrap:wrap;gap:6px;font-size:13px}select.mini{width:auto;min-width:74px;padding:3px 4px;font-size:12px}
+#ff{position:absolute;inset:0;pointer-events:none;z-index:4}
+.ff-div{position:absolute;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.ff-cap{position:absolute;font-size:12px;color:#f3e7d3;background:rgba(20,15,10,.62);border-radius:8px;padding:2px 8px}
+.ff-card{position:absolute;min-width:190px;max-width:min(430px,70vw);background:rgba(16,12,9,.86);border:2px solid var(--gold);border-radius:12px;padding:6px 12px 7px;direction:rtl;backdrop-filter:blur(4px)}
+.ff-name{display:block;font-size:26px;line-height:1.15}.ff-sub{font-size:13.5px;color:#f3e7d3}.ff-nextline{font-size:12px;color:#b9a98f;min-height:15px}
+.ff-tag{position:absolute;left:0;top:0;background:rgba(12,9,7,.9);color:#fff;border:2px solid #fff;border-radius:9px;padding:1px 8px;font-size:15px;font-weight:700;white-space:nowrap;direction:rtl}
+.ff-tag.nxt{opacity:.8;font-size:12.5px;border-style:dashed}
+body.ff-on #chip{display:none}
