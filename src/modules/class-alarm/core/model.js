@@ -15,6 +15,7 @@
 // Override= { muted, note, cancelled:{[periodId]:true}, changed:{[periodId]:{start,end}}, notes:{[periodId]:text}, extra:[Extra] }
 // Extra   = { id, kind:'lesson'|'meeting'|'activity', title, start, end, grade, section, room, note, plan }
 // AlertPlan = { before:[{ min, tone }], start:{ on, tone }, end:{ on, min, tone } }
+import { normalizeCalendar } from './calendar.js';
 import { DEFAULT_TZ, normHHMM, parseHHMM, toHHMM, isDateKey, safeTz } from './time.js';
 
 export const STORE_VERSION = 1;
@@ -227,9 +228,10 @@ export function normalizeStore(s) {
   const profiles = (Array.isArray(o.profiles) ? o.profiles : []).map(normalizeProfile).slice(0, 20);
   const ids = new Set();
   for (const p of profiles) { while (ids.has(p.id)) p.id = uid('s'); ids.add(p.id); }
-  if (!profiles.length) return { ...emptyStore(), settings: normalizeSettings(o.settings) };
+  const calendar = normalizeCalendar(o.calendar); // التقويم المدرسي (الأعوام والمواعيد) — null قبل أول تهيئة
+  if (!profiles.length) return { ...emptyStore(), settings: normalizeSettings(o.settings), calendar };
   const activeId = profiles.some((p) => p.id === o.activeId) ? o.activeId : profiles[0].id;
-  return { version: STORE_VERSION, activeId, profiles, settings: normalizeSettings(o.settings), updatedAt: +o.updatedAt || 0 };
+  return { version: STORE_VERSION, activeId, profiles, settings: normalizeSettings(o.settings), calendar, updatedAt: +o.updatedAt || 0 };
 }
 
 /** نسخة جدول لفصل جديد: نفس الحصص والتوقيت، بلا تعديلات أيام سابقة ولا إجازات */

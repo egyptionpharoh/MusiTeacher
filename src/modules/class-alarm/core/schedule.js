@@ -205,6 +205,8 @@ export function upcomingAlerts(profile, settings, now, ctx = {}) {
       if (d) out.push({ id: `${profile.id}|${k}|digest|${pr.time}`, due, type: 'digest', min: 0, tone: pr.tone || 'soft', eventKey: 'digest', dateKey: k, profileId: profile.id, startMs: null, endMs: null, title: d.title, body: d.body, what: '', when: '' });
     }
   }
+  // تذكيرات التقويم المدرسي (المواعيد الإدارية والتقويمية والمناسبات) — من store.calendar عبر ctx
+  if (settings.enabled && ctx.calendarAlerts) for (const k of [addDays(today, -1), today, addDays(today, 1)]) for (const a of ctx.calendarAlerts(k)) out.push({ ...a, profileId: profile.id });
   return out;
 }
 

@@ -9,6 +9,7 @@ import AlertsView from './AlertsView';
 import ExportView from './ExportView';
 import DataView from './DataView';
 import ImportWizard from './ImportWizard';
+import CalendarView from './CalendarView';
 import { AlarmOverlay, DisplayMode } from './Overlays';
 import { AlarmRuntime, askNotify, notifyPermission, registerSW, showSystemNotification, closeSystemNotification } from './runtime';
 import { TONES, CUSTOM_PREFIX, playTone, stopAll, unlockAudio, audioState, setCustomResolver, forgetCustom, inspectToneFile } from './audio';
@@ -21,16 +22,26 @@ import { withOverride } from '../../lesson-plans/core/auto.js';
 import { createApi } from './api';
 import { normalizeStore, normalizeProfile, normalizeSettings, emptyStore, cloneProfile, uid } from '../core/model.js';
 import { zonedParts } from '../core/time.js';
+import { normalizeCalendar, mergeSeed, calendarAlertsForDay, calendarHolidays } from '../core/calendar.js';
+import { SEED_PACKS } from '../core/calendarSeed.js';
 import './class-alarm.css';
 
 const TABS = [
   { id: 'today', label: 'اليوم', icon: 'sun' },
+  { id: 'calendar', label: 'التقويم المدرسي', icon: 'calendar' },
   { id: 'schedule', label: 'الجدول', icon: 'grid' },
   { id: 'alerts', label: 'التنبيهات', icon: 'bell' },
   { id: 'export', label: 'الطباعة والتقويم', icon: 'print' },
   { id: 'data', label: 'البيانات', icon: 'shield' },
 ];
 const ADHOC_KEY = 'mt-class-alarm:adhoc';
+/** أول تشغيل (أو نسخة بلا تقويم): تُستورد البيانات الأولية للتقويم المدرسي مرة واحدة، ثم تُدار كلها من الواجهة */
+function withCalendar(s) {
+  if (s.calendar) return s;
+  let cal = null;
+  for (const p of SEED_PACKS) cal = mergeSeed(cal, p).cal;
+  return { ...s, calendar: normalizeCalendar(cal) };
+}
 const TAB_ID = Math.random().toString(36).slice(2);
 
 export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/class-alarm', backHref = '/dashboard/tools', swScope = '/dashboard/tools/class-alarm', plansHref = '/dashboard/tools/plans' }) {
@@ -59,7 +70,10 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
   const notify = useCallback((text, kind = 'ok') => { setToast({ text, kind, k: Date.now() }); }, []);
   useEffect(() => { if (!toast) return undefined; const t = setTimeout(() => setToast(null), 4800); return () => clearTimeout(t); }, [toast]);
 
-  const profile = store ? store.profiles.find((p) => p.id === store.activeId) || store.profiles[0] : null;
+  const baseProfile = store ? store.profiles.find((p) => p.id === store.activeId) || store.profiles[0] : null;
+  // الإجازات المؤكدة في التقويم المدرسي تُضاف لإجازات الجدول في التشغيل والعرض فقط (لا تُكتب في الجدول نفسه)
+  const calHol = useMemo(() => (store ? calendarHolidays(store.calendar) : []), [store && store.calendar]); // eslint-disable-line react-hooks/exhaustive-deps
+  const profile = useMemo(() => (baseProfile && calHol.length ? { ...baseProfile, holidays: [...baseProfile.holidays, ...calHol.filter((h) => !baseProfile.holidays.some((x) => x.from === h.from && x.to === h.to))] } : baseProfile), [baseProfile, calHol]);
   const settings = store ? store.settings : null;
 
   // ---------- التحميل ----------
@@ -73,8 +87,10 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
       if (!alive) return;
       setUid(id);
       setPlansWs(ws ? normalizeWorkspace(ws) : null);
-      skipSave.current = !raw ? false : true;
-      setStore(normalizeStore(raw || emptyStore()));
+      const st = normalizeStore(raw || emptyStore());
+      const seeded = withCalendar(st);
+      skipSave.current = !raw || seeded !== st ? false : true;
+      setStore(seeded);
       setToneRecs(tn);
       try { setAdhoc((JSON.parse(localStorage.getItem(ADHOC_KEY) || '[]') || []).filter((a) => a.due > Date.now() - 120000)); } catch { /* */ }
       setPerm(notifyPermission());
@@ -94,7 +110,7 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
     bc.current = new BroadcastChannel('musiteacher-class-alarm');
     bc.current.onmessage = async (e) => {
       if (!e.data || e.data.from === TAB_ID) return;
-      if (e.data.type === 'store') { const raw = await loadStore(); if (raw) { skipSave.current = true; setStore(normalizeStore(raw)); } }
+      if (e.data.type === 'store') { const raw = await loadStore(); if (raw) { skipSave.current = true; setStore(withCalendar(normalizeStore(raw))); } }
       if (e.data.type === 'ack') { stopAll(); setRinging([]); }
       if (e.data.type === 'tones') setToneRecs(await listTones());
     };
@@ -129,6 +145,8 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
 
   const onStore = useCallback((fn) => setStore((s) => normalizeStore({ ...fn(s), updatedAt: Date.now() })), []);
   const onProfile = useCallback((fn) => setStore((s) => ({ ...s, updatedAt: Date.now(), profiles: s.profiles.map((p) => (p.id === s.activeId ? normalizeProfile({ ...fn(p), updatedAt: Date.now() }) : p)) })), []);
+  // التقويم المدرسي: كل تعديل دالة على التقويم الحالي (تُطبَّع وتُحفظ مع المخزن)
+  const onCalendar = useCallback((fn) => setStore((s) => ({ ...s, updatedAt: Date.now(), calendar: normalizeCalendar(fn(s.calendar)) || s.calendar })), []);
   const onSettings = useCallback((patch) => setStore((s) => ({ ...s, updatedAt: Date.now(), settings: normalizeSettings({ ...s.settings, ...patch }) })), []);
   const onOverride = useCallback((dateKey, fn) => onProfile((p) => {
     const overrides = { ...p.overrides };
@@ -204,7 +222,8 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
       weekPlan: (k) => { if (!weekCache.has(k)) weekCache.set(k, weekPlan(plansWs, profile, k, todayKey)); return weekCache.get(k); },
     };
   }, [profile, plansWs, todayKey, settings, uid]); // eslint-disable-line react-hooks/exhaustive-deps
-  stateRef.current = profile ? { profile, settings, adhoc, ctx: planCtx } : null;
+  const runCtx = useMemo(() => (store && store.calendar && profile ? { ...planCtx, calendarAlerts: (k) => calendarAlertsForDay(store.calendar, k, profile.tz, settings) } : planCtx), [planCtx, store && store.calendar, profile, settings]); // eslint-disable-line react-hooks/exhaustive-deps
+  stateRef.current = profile ? { profile, settings, adhoc, ctx: runCtx } : null;
   const ringRef = useRef([]);
   ringRef.current = ringing;
   const mutedRef = useRef(false);
@@ -224,7 +243,7 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
     if (!list.length) return;
     setAdhoc((a) => a.filter((x) => !list.some((m) => m.id === x.id)));
     const last = list[list.length - 1];
-    const repeats = s.repeat.on && last.type !== 'digest' && (s.visual || last.type === 'test') ? s.repeat.count : 0;
+    const repeats = s.repeat.on && last.type !== 'digest' && last.type !== 'calendar' && (s.visual || last.type === 'test') ? s.repeat.count : 0;
     const entries = list.map((a) => ({ ...a, ringsLeft: last.type === 'test' ? 0 : repeats, nextRingAt: t + s.repeat.every * 1000 }));
     if (s.visual || last.type === 'test') { setRingMuted(false); setRinging((r) => [...r.filter((x) => !entries.some((e) => e.id === x.id)), ...entries]); }
     let soundOk = false;
@@ -314,7 +333,7 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
     } catch (e) { notify(e.message, 'err'); }
   };
   const removeRemote = async () => { if (!window.confirm('حذف النسخة المحفوظة في حسابك؟ (تبقى بياناتك على هذا الجهاز)')) return; try { await api.remove(); onSettings({ sync: false }); notify('حُذفت النسخة من حسابك.'); } catch (e) { notify(e.message, 'err'); } };
-  const restore = (s) => setStore(normalizeStore({ ...s, settings: { ...s.settings, sync: settings ? settings.sync : false }, updatedAt: Date.now() }));
+  const restore = (s) => setStore(withCalendar(normalizeStore({ ...s, settings: { ...s.settings, sync: settings ? settings.sync : false }, updatedAt: Date.now() })));
 
   if (!store || !profile || uid === undefined) {
     return <div className="ca-root"><div className="ca-loading"><span className="ca-spin" />جارٍ تجهيز المنبه...</div></div>;
@@ -353,21 +372,22 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
         </nav>
 
         <main className="ca-main" role="tabpanel">
-          {tab === 'today' && <TodayView profile={profile} settings={settings} now={now} planCtx={planCtx} plansHref={plansHref} onOverride={onOverride} onGoto={setTab} onOpenImport={() => setImporting(true)} profilesCount={store.profiles.length} missed={missed} rt={rt} onDisplay={() => setDisplay(true)} onTest={test}
+          {tab === 'today' && <TodayView profile={profile} settings={settings} now={now} planCtx={planCtx} plansHref={plansHref} onOverride={onOverride} onGoto={setTab} onOpenImport={() => setImporting(true)} profilesCount={store.profiles.length} missed={missed} rt={rt} onDisplay={() => setDisplay(true)} onTest={test} calendar={store.calendar}
             onCopyFrom={() => { const src = [...store.profiles].filter((p) => p.id !== store.activeId).sort((a, b) => b.updatedAt - a.updatedAt)[0]; if (!src) return; const c = cloneProfile(src, { name: `${src.name} (نسخة)` }); onStore((s) => ({ ...s, profiles: [...s.profiles, c], activeId: c.id })); setTab('schedule'); notify(`نسخنا «${src.name}». عدّل الأوقات والأيام للفصل الجديد.`); }} />}
-          {tab === 'schedule' && <ScheduleView profile={profile} store={store} settings={settings} onProfile={onProfile} onStore={onStore} onImport={() => setImporting(true)} tones={tones} onPreview={preview} notify={notify} />}
-          {tab === 'alerts' && <AlertsView profile={profile} settings={settings} onProfile={onProfile} onSettings={onSettings} tones={tones} onPreview={preview} onAddTone={addTone} onDeleteTone={removeTone} onRenameTone={renameTone}
+          {tab === 'calendar' && store.calendar && <CalendarView cal={store.calendar} onCalendar={onCalendar} now={now} tz={profile.tz} todayKey={todayKey} h24={settings.h24} notify={notify} alarmSettings={settings} />}
+          {tab === 'schedule' && <ScheduleView profile={baseProfile} store={store} settings={settings} onProfile={onProfile} onStore={onStore} onImport={() => setImporting(true)} tones={tones} onPreview={preview} notify={notify} />}
+          {tab === 'alerts' && <AlertsView profile={baseProfile} settings={settings} onProfile={onProfile} onSettings={onSettings} tones={tones} onPreview={preview} onAddTone={addTone} onDeleteTone={removeTone} onRenameTone={renameTone}
             readiness={{ audio, perm, leader: rt.leader, worker: rt.worker }} onAskNotify={async () => { const p = await askNotify(); setPerm(p); if (p === 'granted') notify('تم السماح بالإشعارات.'); else if (p === 'denied') notify('رُفض الإذن. يمكنك تغييره من أيقونة القفل بجوار عنوان الموقع.', 'err'); }}
             onUnlock={() => unlockAudio().then(() => setAudio(audioState()))} onTest={test} now={now} hasPlans={!!planCtx.hasPlans} plansHref={plansHref} canInstall={!!installEvt} onInstall={async () => { installEvt.prompt(); await installEvt.userChoice.catch(() => {}); setInstallEvt(null); }} onGoto={setTab} />}
-          {tab === 'export' && <ExportView profile={profile} settings={settings} notify={notify} />}
+          {tab === 'export' && <ExportView profile={baseProfile} settings={settings} notify={notify} />}
           {tab === 'data' && <DataView store={store} settings={settings} onSettings={onSettings} tonesCount={toneRecs.length} notify={notify} onRestore={restore}
-            onWipe={async () => { await wipeAll(); setToneRecs([]); skipSave.current = false; setStore(emptyStore()); setTab('today'); notify('حُذفت كل البيانات من هذا الجهاز.'); }}
+            onWipe={async () => { await wipeAll(); setToneRecs([]); skipSave.current = false; setStore(withCalendar(normalizeStore(emptyStore()))); setTab('today'); notify('حُذفت كل البيانات من هذا الجهاز.'); }}
             sync={{ available: svc.sync && !!api, reason: svc.reason, state: syncState.state, at: syncState.at, error: syncState.error, push: pushNow, pull, remove: removeRemote }} />}
         </main>
         <p className="ca-foot">الوقت حسب {profile.tz === 'Asia/Muscat' ? 'توقيت سلطنة عُمان' : profile.tz} • {String(zp.hh).padStart(2, '0')}:{String(zp.mm).padStart(2, '0')}</p>
       </div>
 
-      {importing && <ImportWizard onClose={() => setImporting(false)} ai={api ? (payload, signal) => api.extract(payload, signal) : null} aiReady={svc.ai && !!api} activeProfile={profile}
+      {importing && <ImportWizard onClose={() => setImporting(false)} ai={api ? (payload, signal) => api.extract(payload, signal) : null} aiReady={svc.ai && !!api} activeProfile={baseProfile}
         onApply={(p, dest) => { onStore((s) => (dest === 'replace' ? { ...s, profiles: s.profiles.map((x) => (x.id === s.activeId ? { ...p, id: x.id } : x)) } : { ...s, profiles: [...s.profiles, p], activeId: p.id })); setImporting(false); setTab('schedule'); notify('اعتُمد الجدول. راجع بيانات المعلم والمدرسة وخطة التنبيه.'); }} />}
       {display && <DisplayMode profile={profile} settings={settings} now={now} linksFor={planCtx.linksFor} onClose={() => setDisplay(false)} />}
       <AlarmOverlay ringing={ringing} now={now} hrefFor={planCtx.hrefFor} onAck={ack} onSnooze={snooze} muted={ringMuted} onMute={() => { stopAll(); setRingMuted(true); }} />

@@ -10,7 +10,7 @@ export function decide(now, alerts, fired, graceMs = 90000) {
     if (!a || fired[a.id]) continue;
     if (a.due > now) continue;
     const late = now - a.due;
-    const tooLate = late > graceMs
+    const tooLate = late > (Number.isFinite(a.graceMs) ? a.graceMs : graceMs) // تذكيرات التقويم: مهلة أطول (تصدر عند فتح الأداة لاحقًا في اليوم نفسه)
       || (a.type === 'before' && Number.isFinite(a.startMs) && now >= a.startMs)
       || (a.type === 'start' && Number.isFinite(a.endMs) && now >= a.endMs)
       || (a.type === 'end' && Number.isFinite(a.endMs) && now >= a.endMs + 30000);

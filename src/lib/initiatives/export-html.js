@@ -45,6 +45,8 @@ export function outline(p) {
   add('ج', 'الموارد المطلوبة', [T(['المورد', 'التكلفة', 'البديل البسيط'], pl.resources.map((r) => [r.i, COST_SHORT[r.c] || '', r.alt || '—']), [44, 16, 40])]);
   add('ج', 'الشركاء المحتملون', [U(pl.partners), pl.partners.length ? P('الشراكات مقترحة وتتطلب التنسيق المسبق وموافقة إدارة المدرسة قبل الإعلان عنها.') : null]);
   add('ج', 'الموافقات والمتطلبات قبل التنفيذ', [U(pl.approvals)]);
+  add('ج', 'أساليب تعزيز الطلبة وتحفيزهم', [U(pl.boost)]);
+  if (pl.card) add('ج', `بطاقة التشجيع: «${pl.card.title}»`, [P(`${pl.card.subtitle ? `${pl.card.subtitle}: ` : ''}بطاقة صغيرة تحمل اسم المبادرة وعبارة «${pl.card.phrase}»، وفيها مساحة لاسم الطالب وصفه وسبب المنح (${pl.card.reasons.join('، ')}) والتاريخ وتوقيع المعلم.`), U(pl.card.tips, 'إرشادات استخدامها')]);
   add('د', 'مؤشرات الأداء وأدوات القياس', [T(['المؤشر', 'أداة القياس', 'القياس القبلي', 'المستهدف', 'النتيجة'], pl.kpis.map((k) => [k.k, k.tool, k.base || '', k.target || '', k.result || '']), [32, 24, 14, 14, 16]),
     P('تُحدَّد القيم المستهدفة بعد القياس القبلي وبما يناسب واقع المدرسة.')]);
   add('د', 'أساليب التقييم', [U(pl.evaluation)]);
@@ -171,6 +173,39 @@ export function posterHTML(p) {
 <div class="box"><h3>لمن؟ ومتى؟</h3><p>${esc(pl.audience)}<br>${esc(dates)}</p></div>
 ${pl.join ? `<div class="join">كيف تشارك؟ ${esc(pl.join)}</div>` : ''}</div>
 <div class="pf">${m.presenter ? `${esc(m.presenter)} · ` : ''}${esc(m.year || '')}</div></div>`, css);
+}
+
+/**
+ * بطاقات التشجيع للطباعة: 4 بطاقات في صفحة A4 أفقية (تُقص)، أو تُحفظ PDF للمشاركة الرقمية.
+ * opts: { school, logo, teacher } اختيارية — تُترك خانة التوقيع فارغة إن لم يُذكر المعلم.
+ */
+export function cardHTML(plan, opts = {}) {
+  const c = plan.card || { title: plan.title, subtitle: 'بطاقة تميز وتشجيع', phrase: 'تقديرًا لجهدك وتقدّمك… استمر!', reasons: ['الإتقان', 'التحسن', 'المثابرة', 'التعاون'] };
+  const d = DOMAIN[plan.domain] || {};
+  const color = d.color || '#b45309';
+  const css = `@page{size:A4 landscape;margin:8mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{background:#fff;line-height:1.45}.sheet{max-width:297mm;padding:0}
+@media screen{.sheet{padding:8mm}}
+.grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(2,91mm);gap:6mm}
+.card p,.card ul,.card li{margin:0}
+.card{position:relative;border:2.4px solid ${color};border-radius:6mm;padding:5mm 7mm 5.5mm;display:flex;flex-direction:column;gap:1.3mm;overflow:hidden;background:linear-gradient(180deg,#fffaf0,#fff 40%);break-inside:avoid}
+.card::before{content:'';position:absolute;inset:2mm;border:1px dashed color-mix(in srgb,${color} 45%,#f5c46b);border-radius:4.5mm;pointer-events:none}
+.top{display:flex;align-items:center;gap:4mm}.star{width:15mm;height:15mm;flex:none}
+.top h2{margin:0;border:0;background:none;padding:0;border-radius:0;font-size:22pt;color:${color};line-height:1.1}.top small{display:block;font-size:10.5pt;color:#8a5a12;font-weight:800}
+.top img{max-height:13mm;max-width:28mm;margin-inline-start:auto}
+.phrase{margin:0;font-size:13pt;font-weight:800;color:#3d2a12;text-align:center;background:#fff3d6;border-radius:3mm;padding:1.6mm}
+.f{display:flex;gap:2mm;align-items:baseline;font-size:11.5pt;font-weight:700}.f span{flex:none}.f i{flex:1;border-bottom:1.3px dotted #9a7b4f;min-height:5mm}
+.two{display:grid;grid-template-columns:1.6fr 1fr;gap:4mm}
+.why{font-size:11pt;font-weight:700}.why b{display:block;margin-bottom:1mm}.why ul{list-style:none;margin:0;padding:0 !important;display:flex;flex-wrap:wrap;gap:1mm 4mm}.why li{white-space:nowrap}.why li::before{content:'☐ ';font-size:12pt}
+.foot{margin-top:auto;display:flex;justify-content:space-between;font-size:8.5pt;color:#8b7355}`;
+  const star = `<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a"/><stop offset="1" stop-color="#d97706"/></linearGradient></defs><circle cx="12" cy="12" r="11.3" fill="${color}"/><path d="M12 4.2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.6l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8L12 4.2Z" fill="url(#g)" stroke="#fff" stroke-width=".6"/></svg>`;
+  const one = `<div class="card"><div class="top">${star}<div><h2>${esc(c.title)}</h2>${c.subtitle ? `<small>${esc(c.subtitle)}</small>` : ''}</div>${opts.logo ? `<img src="${opts.logo}" alt="">` : ''}</div>
+${c.phrase ? `<p class="phrase">${esc(c.phrase)}</p>` : ''}
+<div class="f"><span>الطالب/ـة:</span><i></i></div>
+<div class="two"><div class="f"><span>الصف:</span><i></i></div><div class="f"><span>التاريخ:</span><i></i></div></div>
+<div class="why"><b>سبب التكريم:</b><ul>${c.reasons.map((r) => `<li>${esc(r)}</li>`).join('')}<li>أخرى: ........</li></ul></div>
+<div class="f"><span>المعلم/ـة:</span><i>${opts.teacher ? esc(opts.teacher) : ''}</i></div>
+<div class="foot"><span>${esc(plan.title.split(':')[0])}${opts.school ? ` — ${esc(opts.school)}` : ''}</span><span>${esc(BRAND)}</span></div></div>`;
+  return doc(`بطاقات ${c.title}`, `<div class="grid">${one.repeat(4)}</div>`, css);
 }
 
 export const statusLabel = (id) => label(STATUSES, id);

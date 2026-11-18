@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { Icon, Modal, Field, Seg } from './parts';
 import { dayStatus, resolveDay, weekStats, alertsForDay, agenda, lessonInfo } from '../core/schedule.js';
 import { LessonBlock } from './Overlays';
+import { CalendarSoonCard } from './CalendarView';
 import { fmtTime, fmtDate, clock, durationWords, zonedParts, addDays, DAY_NAMES, normHHMM, parseHHMM, toHHMM, MIN } from '../core/time.js';
 import { EXTRA_KINDS, uid } from '../core/model.js';
 import CorrectModal from '../../lesson-plans/ui/CorrectModal';
@@ -30,7 +31,7 @@ function Ring({ pct, children, size = 220 }) {
   );
 }
 
-export default function TodayView({ profile, settings, now, planCtx = {}, plansHref = '/dashboard/tools/plans', onOverride, onGoto, onOpenImport, profilesCount, onCopyFrom, missed, rt, onDisplay, onTest }) {
+export default function TodayView({ profile, settings, now, planCtx = {}, plansHref = '/dashboard/tools/plans', onOverride, onGoto, onOpenImport, profilesCount, onCopyFrom, missed, rt, onDisplay, onTest, calendar }) {
   const [dateKey, setDateKey] = useState(null);
   const [act, setAct] = useState(null);        // حدث مختار لتعديل اليوم
   const [adding, setAdding] = useState(false);
@@ -122,6 +123,8 @@ export default function TodayView({ profile, settings, now, planCtx = {}, plansH
         <div className="ca-notice is-warn" role="status"><Icon n="warn" /><span>فات {missedToday.length === 1 ? 'تنبيه واحد' : `${missedToday.length} تنبيهات`} اليوم لأن الأداة كانت مغلقة أو الجهاز في وضع السكون (آخرها: {missedToday[missedToday.length - 1].what}). لم نُطلقها متأخرة حتى لا تربكك.</span></div>
       )}
       {!rt.leader && rt.locks && <div className="ca-notice"><Icon n="info" /><span>المنبه يعمل في تبويب آخر مفتوح لهذه الأداة؛ لن يرن هذا التبويب حتى لا تتكرر التنبيهات.</span></div>}
+
+      {isToday && calendar && <CalendarSoonCard cal={calendar} todayKey={today} onOpen={() => onGoto && onGoto('calendar')} />}
 
       {isToday && <AgendaCard profile={profile} now={now} planCtx={planCtx} h24={h24} plansHref={plansHref} />}
 

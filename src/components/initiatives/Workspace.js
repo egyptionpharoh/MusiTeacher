@@ -100,7 +100,7 @@ export default function Workspace({ project: p, tab, setTab, onChange, onDelete,
                 <button type="submit" className="in-primary" disabled={!!busy}><Icon d={EXTRA.rocket} /> طوّر الخطة</button>
               </form>
             )}
-            <PlanBody plan={p.plan} startDate={p.meta.startDate} aiReady={aiReady} regenBusy={busy && busy.startsWith('section:') ? busy.slice(8) : ''} onRegen={(k) => onRegen(k)} />
+            <PlanBody plan={p.plan} meta={p.meta} startDate={p.meta.startDate} aiReady={aiReady} regenBusy={busy && busy.startsWith('section:') ? busy.slice(8) : ''} onRegen={(k) => onRegen(k)} />
           </>)}
 
         {/* ------------------------------------------------ الجدول الزمني */}

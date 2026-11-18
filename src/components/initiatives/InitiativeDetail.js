@@ -3,10 +3,45 @@
 import { useState } from 'react';
 import { DOMAIN, LEADS, COSTS, SIZES, STAGES, TWEAKS, label, weeksLabel } from '@/lib/initiatives/taxonomy';
 import { timelineOf } from '@/lib/initiatives/schema';
-import { COST_SHORT } from '@/lib/initiatives/export-html';
+import { COST_SHORT, cardHTML } from '@/lib/initiatives/export-html';
+import { printHTML } from '@/lib/pd-workshops/browser';
 import { Icon, EXTRA, DomainIcon, CostTag, Section, List } from './parts';
 
-export function PlanBody({ plan, startDate, onRegen, regenBusy, aiReady }) {
+/** معاينة بطاقة التشجيع كما تُطبع (اسم المبادرة، العبارة، خانات الطالب والصف والتاريخ وسبب التكريم وتوقيع المعلم) */
+function CardPreview({ card, title }) {
+  return (
+    <div className="in-scard" role="img" aria-label={`نموذج ${card.subtitle || 'بطاقة التشجيع'}: ${card.title}`}>
+      <div className="in-scard-top">
+        <span className="in-scard-star"><Icon d={EXTRA.star} size={30} fill="currentColor" /></span>
+        <span><strong>{card.title}</strong>{card.subtitle && <small>{card.subtitle}</small>}</span>
+      </div>
+      {card.phrase && <p className="in-scard-phrase">{card.phrase}</p>}
+      <p className="in-scard-f"><span>الطالب/ـة:</span><i /></p>
+      <div className="in-scard-two"><p className="in-scard-f"><span>الصف:</span><i /></p><p className="in-scard-f"><span>التاريخ:</span><i /></p></div>
+      <div className="in-scard-why"><b>سبب التكريم:</b>{card.reasons.map((r) => <span key={r}>☐ {r}</span>)}</div>
+      <p className="in-scard-f"><span>المعلم/ـة:</span><i /></p>
+      <small className="in-scard-foot">{title.split(':')[0]}</small>
+    </div>
+  );
+}
+
+/** قسم «بطاقة التشجيع»: المعاينة + الطباعة (4 بطاقات في الصفحة، أو حفظ PDF للمشاركة الرقمية) + إرشادات الاستخدام */
+function CardSection({ plan, meta }) {
+  const [busy, setBusy] = useState(false);
+  const print = async () => { setBusy(true); try { await printHTML(cardHTML(plan, { school: meta && meta.school, logo: meta && meta.logo })); } finally { setBusy(false); } };
+  return (
+    <Section title={`بطاقة التشجيع: «${plan.card.title}»`} icon="star" accent id="in-student-card"
+      actions={<button type="button" className="in-mini" onClick={print} disabled={busy}>{busy ? <span className="in-spin is-sm" /> : <Icon d="print" size={13} />} اطبع البطاقات</button>}>
+      <p className="in-fine">تُمنح للطالب عند إتقان مهارة أو تحسّن ملحوظ أو جهد متميز؛ وسبب منحها المكتوب عليها هو ما يجعلها تعزيزًا حقيقيًا لا شهادة شكلية.</p>
+      <div className="in-scard-wrap">
+        <CardPreview card={plan.card} title={plan.title} />
+        <div className="in-scard-tips"><h4>كيف تستخدمها؟</h4><List items={plan.card.tips} /><p className="in-fine">تُطبع 4 بطاقات في صفحة A4 لتُقص، أو اختر «حفظ بصيغة PDF» من نافذة الطباعة لإرسالها رقميًا.</p></div>
+      </div>
+    </Section>
+  );
+}
+
+export function PlanBody({ plan, startDate, onRegen, regenBusy, aiReady, meta }) {
   const tl = timelineOf(plan.phases, startDate);
   const total = plan.phases.reduce((s, p) => s + p.w, 0) || 1;
   const R = (key) => (onRegen && aiReady ? (
@@ -52,6 +87,8 @@ export function PlanBody({ plan, startDate, onRegen, regenBusy, aiReady }) {
               {plan.partners.length > 0 && <><h4>الشركاء المحتملون</h4><List items={plan.partners} /><p className="in-fine">الشراكات مقترحة وتتطلب التنسيق وموافقة الإدارة.</p></>}
             </Section>
           </div>
+          {plan.boost && plan.boost.length > 0 && <Section title="أساليب تعزيز الطلبة وتحفيزهم" icon="heart"><List items={plan.boost} /></Section>}
+          {plan.card && <CardSection plan={plan} meta={meta} />}
           <Section title="مؤشرات الأداء والنجاح" icon="chart" actions={R('kpis')}>
             <table className="in-table"><thead><tr><th>المؤشر</th><th>أداة القياس</th></tr></thead><tbody>{plan.kpis.map((k, i) => <tr key={i}><td>{k.k}</td><td>{k.tool}</td></tr>)}</tbody></table>
             <p className="in-fine">لا نضع نسبًا مستهدفة جاهزة: يحددها الفريق بعد القياس القبلي.</p>

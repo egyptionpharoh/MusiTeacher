@@ -332,3 +332,23 @@ textarea.in-input { resize: vertical; line-height: 1.7; }
 .in-row-fields { flex: 1; min-width: 0; }
 .in-row-tools { display: flex; flex-direction: column; gap: .3rem; padding-top: 1.6rem; }
 @media (max-width: 640px) { .in-row-edit { flex-direction: column; } .in-row-tools { flex-direction: row; padding-top: 0; } }
+
+/* ⭐ بطاقة تشجيع الطالب (معاينة داخل تفاصيل المبادرة) */
+.in-scard-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: start; margin-top: .6rem; }
+.in-scard { position: relative; max-width: 26rem; width: 100%; justify-self: center; border: 2.5px solid var(--c); border-radius: 18px; padding: 1rem 1.15rem .7rem; display: grid; gap: .45rem; color: #3d2a12;
+  background: linear-gradient(180deg, #fffaf0, #fff 45%); box-shadow: 0 14px 30px -20px rgba(120, 60, 0, .55); }
+.in-scard::before { content: ''; position: absolute; inset: 6px; border: 1px dashed color-mix(in srgb, var(--c) 45%, #f5c46b); border-radius: 13px; pointer-events: none; }
+.in-scard-top { display: flex; align-items: center; gap: .7rem; }
+.in-scard-top strong { display: block; font-size: 1.45rem; font-weight: 900; color: var(--c); line-height: 1.15; }
+.in-scard-top small { display: block; font-size: .8rem; font-weight: 800; color: #8a5a12; }
+.in-scard-star { display: grid; place-items: center; width: 52px; height: 52px; flex: none; border-radius: 50%; background: var(--c); color: #fcd34d; box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .35); }
+.in-scard-phrase { margin: 0; text-align: center; font-weight: 800; background: #fff3d6; border-radius: 10px; padding: .35rem .5rem; }
+.in-scard-f { margin: 0; display: flex; gap: .35rem; align-items: baseline; font-weight: 700; font-size: .92rem; }
+.in-scard-f i { flex: 1; border-bottom: 1.5px dotted #b08d5c; min-height: 1.1rem; }
+.in-scard-two { display: grid; grid-template-columns: 1.5fr 1fr; gap: .7rem; }
+.in-scard-why { display: flex; flex-wrap: wrap; gap: .15rem .8rem; font-size: .85rem; font-weight: 700; }
+.in-scard-why b { flex-basis: 100%; }
+.in-scard-foot { text-align: center; color: #8b7355; font-size: .72rem; font-weight: 700; }
+.in-scard-tips h4 { margin-top: 0 !important; }
+.dark .in-scard { box-shadow: none; }
+@media (max-width: 760px) { .in-scard-wrap { grid-template-columns: 1fr; } }

@@ -26,6 +26,14 @@ export const newId = (p = 'p') => `${p}-${Date.now().toString(36)}-${Math.random
 export const slug = (s) => str(s, 80).toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 48) || 'x';
 
 /** مبادرة كاملة أو مختصرة (فكرة مولدة) بشكل مضمون. */
+/** بطاقة التشجيع: عنوان + عبارة + أسباب المنح (خانات اختيار) + نصائح التطبيق — null إن لم تُعرَّف */
+function cardOf(c) {
+  if (!c || typeof c !== 'object') return null;
+  const title = str(c.title, 60);
+  if (!title) return null;
+  return { title, subtitle: str(c.subtitle, 80), phrase: str(c.phrase, 160), reasons: list(c.reasons, 8, 40), tips: list(c.tips, 8, 300) };
+}
+
 export function normalizeInitiative(raw, source = 'library') {
   const r = raw && typeof raw === 'object' ? raw : {};
   const title = str(r.title, 160);
@@ -68,6 +76,8 @@ export function normalizeInitiative(raw, source = 'library') {
     outputs: list(r.outputs, 8, 300),
     sustain: list(r.sustain, 8, 300),
     approvals: list(r.approvals, 8, 300),
+    boost: list(r.boost, 10, 300),                                   // أساليب تعزيز الطلبة وتحفيزهم (اختياري)
+    card: cardOf(r.card),                                            // بطاقة تشجيع الطالب القابلة للطباعة (اختياري)
     join: str(r.join, 400),
     why: str(r.why, 400),
     survey: list(r.survey, 6, 200),                                  // للأفكار المولدة: لماذا هي مختلفة
