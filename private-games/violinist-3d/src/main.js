@@ -24,6 +24,7 @@ import { loadMorph, applyMaleMorph, addMaleFace } from './character/gender.js';
 import { CONFIG } from './config.js';
 import { POINTS_TEXT } from './ui/texts.js';
 import { ViolinSynth } from './audio/violin-synth.js';
+import { FingerFocus } from './ui/focus.js';
 import { EXERCISES, SCALE_LIST, FINGER_LABEL, STRINGS, L_STRING, buildTimeline, stateAt, gapSeconds } from './teaching/exercise.js';
 
 const $ = (s) => document.querySelector(s);
@@ -265,6 +266,12 @@ for (const k in POINT_VIEWS) POINTS[k] = { ...POINT_VIEWS[k], ...POINTS_TEXT[k] 
 const synth = new ViolinSynth();
 let playing = false, paused = false, tAnim = 0;
 let exIndex = 0, tl = buildTimeline(EXERCISES[0]), bpm = EXERCISES[0].bpm, beat = 0, schedNext = 0, loopOn = true, lastShownIdx = -2;
+// سرعة العرض (½ ¾ عادي) ومقطع التكرار «من النغمة … إلى …» — لوضع «تركيز الأصابع»
+let speedK = 1, segFrom = 0, segTo = Infinity;
+const segA = () => Math.max(0, Math.min(segFrom, tl.events.length - 1));
+const segB = () => Math.max(segA(), Math.min(segTo, tl.events.length - 1));
+const segStart = () => tl.events[segA()].b0;
+const segEnd = () => { const e = tl.events[segB()]; return e.b0 + e.beats; };
 const playBtn = $('#play');
 const modeEl = $('#mode');
 let lastState = null;
@@ -314,10 +321,11 @@ function scheduleAudio() {            // جدولة قبل الموعد بـ 0.4
   if (!synth.ready || anchor.src !== 'a') return;
   const sec = 60 / bpm, look = beat + 0.4 / sec;
   while (schedNext < tl.events.length && tl.events[schedNext].b0 < look) {
+    if (schedNext > segB()) break;                    // لا جدولة بعد نهاية مقطع التكرار
     const e = tl.events[schedNext++];
     const when = anchor.t + (e.b0 - anchor.b) * sec;
     const dur = Math.max(0.08, e.beats * sec - Math.min(e.beats * sec * 0.4, gapSeconds(bpm)));
-    synth.playNote({ hz: e.hz, when, dur, dir: e.bow });
+    if (!e.rest) synth.playNote({ hz: e.hz, when, dur, dir: e.bow });
   }
 }
 function stopSound() { synth.stopAll(); }
@@ -344,19 +352,21 @@ function manualGo(i, sound = true) {
   if (sound) {
     synth.unlock(); synth.stopAll();
     const dur = Math.max(0.9, e.beats * sec);
-    if (synth.ctx) synth.playNote({ hz: e.hz, when: synth.ctx.currentTime + 0.03, dur, dir: e.bow });
+    if (synth.ctx && !e.rest) synth.playNote({ hz: e.hz, when: synth.ctx.currentTime + 0.03, dur, dir: e.bow });
     manualAnim = { t0: performance.now(), dur, e };                // حركة القوس على طول النغمة نفسها ثم يثبت
   }
   $('#step-prev').disabled = manualIdx === 0; $('#step-next').disabled = manualIdx === tl.events.length - 1;
 }
 function setExercise(i) {
   exIndex = Math.max(0, Math.min(EXERCISES.length - 1, i));
-  tl = buildTimeline(EXERCISES[exIndex]); bpm = EXERCISES[exIndex].bpm; warmUp(tl);
+  tl = buildTimeline(EXERCISES[exIndex]); bpm = Math.max(30, Math.round(EXERCISES[exIndex].bpm * speedK)); warmUp(tl);
+  segFrom = 0; segTo = Infinity; fillSegment();
   $('#tempo').value = bpm; $('#tempo-out').textContent = bpm; $('#ex-select').value = String(exIndex);
   buildStrip(); lastShownIdx = -2; manualAnim = null;
   syncPickers();
   restartFrom(0, playing);
   if (manual) manualGo(0, false);
+  if (focus) focus.setPiece(tl.events);
 }
 // اختيار السلم والاتجاه: يُترجم إلى فهرس تمرين واحد في EXERCISES (المصدر الوحيد للنغمات)
 function syncPickers() {
@@ -398,7 +408,7 @@ function syncButtons() {
 function setPlaying(p) {
   if (!player) p = false;
   if (p && manual) setTrainMode('watch');
-  if (p) { synth.unlock(); playing = true; paused = false; if (beat >= tl.totalBeats) restartFrom(0, true); reanchor(); }
+  if (p) { synth.unlock(); playing = true; paused = false; if (beat >= segEnd() - 1e-6 || beat < segStart() - 1e-6) restartFrom(segStart(), true); reanchor(); }
   else { playing = false; paused = false; stopSound(); beat = 0; schedNext = 0; lastShownIdx = -2; applyPose(0, false); showNow(null); stripEl.querySelectorAll('i').forEach((el) => el.classList.remove('on', 'done')); lastState = null; }
   syncButtons(); needsRender = true;
 }
@@ -413,9 +423,15 @@ playBtn.addEventListener('click', () => { if (manual) setTrainMode('watch'); pau
 {
   const sel = $('#ex-select'), ssel = $('#scale-select');
   EXERCISES.forEach((e, i) => { if (e.group !== 'other') return; const o = document.createElement('option'); o.value = String(i); o.textContent = e.title; sel.appendChild(o); });
+  for (const [grp, label] of [['maqam', 'مقامات شرقية'], ['piece', 'مقطوعات']]) {   // teaching/exercise.js → MAQAMAT و PIECES
+    if (!EXERCISES.some((e) => e.group === grp)) continue;
+    const og = document.createElement('optgroup'); og.label = label;
+    EXERCISES.forEach((e, i) => { if (e.group !== grp) return; const o = document.createElement('option'); o.value = String(i); o.textContent = e.title; og.appendChild(o); });
+    sel.appendChild(og);
+  }
   sel.addEventListener('change', () => setExercise(+sel.value));
   SCALE_LIST.forEach((sc) => { const o = document.createElement('option'); o.value = sc.id; o.textContent = sc.title; ssel.appendChild(o); });
-  { const o = document.createElement('option'); o.value = 'other'; o.textContent = 'تمارين أخرى (أوتار مفتوحة ولحن)'; ssel.appendChild(o); }
+  { const o = document.createElement('option'); o.value = 'other'; o.textContent = EXERCISES.some((e) => e.group === 'piece' || e.group === 'maqam') ? 'مقامات شرقية ومقطوعات وتمارين أخرى' : 'تمارين أخرى (أوتار مفتوحة ولحن)'; ssel.appendChild(o); }
   ssel.addEventListener('change', () => pickScaleDir(ssel.value, (EXERCISES[exIndex].dir) || 'up'));
   document.querySelectorAll('[data-dir]').forEach((b) => b.addEventListener('click', () => pickScaleDir(ssel.value, b.dataset.dir)));
   document.querySelectorAll('[data-tmode]').forEach((b) => b.addEventListener('click', () => setTrainMode(b.dataset.tmode)));
@@ -425,12 +441,12 @@ playBtn.addEventListener('click', () => { if (manual) setTrainMode('watch'); pau
   $('#stop-bar').addEventListener('click', () => { if (manual) setTrainMode('watch'); else setPlaying(false); });
   stripEl.addEventListener('click', (ev) => { const t = ev.target.closest('i'); if (manual && t) manualGo(+t.dataset.i); });
   $('#tempo').addEventListener('input', (ev) => { advanceClock(); reanchor(); bpm = +ev.target.value; $('#tempo-out').textContent = bpm; });
-  $('#restart').addEventListener('click', () => { synth.unlock(); restartFrom(0, true); });
+  $('#restart').addEventListener('click', () => { synth.unlock(); restartFrom(segStart(), true); });
   $('#stop').addEventListener('click', () => setPlaying(false));
   $('#loop').addEventListener('change', (ev) => { loopOn = ev.target.checked; });
   $('#mute').addEventListener('click', (ev) => { const m = ev.currentTarget.getAttribute('aria-pressed') !== 'true'; ev.currentTarget.setAttribute('aria-pressed', String(m)); ev.currentTarget.textContent = m ? '🔇 الصوت مكتوم' : '🔊 الصوت يعمل'; synth.unlock(); synth.setMuted(m); });
-  $('#teach-toggle').addEventListener('click', () => { const t = $('#teach'), min = t.classList.toggle('min'); $('#teach-toggle').setAttribute('aria-expanded', String(!min)); $('#teach-toggle').textContent = min ? '▾' : '▴'; });
-  if (window.innerWidth <= 760 || window.innerHeight < 760) { $('#teach').classList.add('min'); $('#teach-toggle').textContent = '▾'; $('#teach-toggle').setAttribute('aria-expanded', 'false'); }
+  $('#teach-toggle').addEventListener('click', () => setTeachMin(!$('#teach').classList.contains('min')));
+  if (window.innerWidth <= 760 || window.innerHeight < 760) setTeachMin(true);
   buildStrip(); syncPickers();
 }
 
@@ -440,9 +456,10 @@ function advanceClock() {
   if (!playing || paused) return;
   if (anchor.src !== srcNow()) reanchor();
   beat = anchor.b + (nowSec() - anchor.t) * bpm / 60;
-  if (beat >= tl.totalBeats) {
-    if (loopOn) { anchor = { t: anchor.t + (tl.totalBeats - anchor.b) * 60 / bpm, b: 0, src: anchor.src }; beat = (nowSec() - anchor.t) * bpm / 60; schedNext = 0; lastShownIdx = -2; }
-    else { beat = tl.totalBeats - 1e-4; playing = false; paused = false; stopSound(); syncButtons(); modeEl.textContent = 'انتهى التمرين'; return; }
+  const b0 = segStart(), b1 = segEnd();                   // التمرين كاملًا أو المقطع المختار للتكرار
+  if (beat >= b1) {
+    if (loopOn) { anchor = { t: anchor.t + (b1 - anchor.b) * 60 / bpm, b: b0, src: anchor.src }; beat = b0 + (nowSec() - anchor.t) * bpm / 60; schedNext = segA(); lastShownIdx = -2; }
+    else { beat = b1 - 1e-4; playing = false; paused = false; stopSound(); syncButtons(); modeEl.textContent = 'انتهى التمرين'; return; }
   }
   scheduleAudio();
 }
@@ -450,6 +467,13 @@ setInterval(advanceClock, 20);
 
 // ---------- ربط الواجهة ----------
 const info = $('#info');
+// طيّ لوحة التمرين (يحدث تلقائيًا على الشاشات القصيرة): في حالة الطيّ يصبح زرّ الطيّ زرًّا واضحًا بعنوان، لا سهمًا صغيرًا في الركن
+function setTeachMin(min) {
+  const t = $('#teach'), b = $('#teach-toggle'); t.classList.toggle('min', min);
+  b.setAttribute('aria-expanded', String(!min));
+  b.textContent = min ? '▴ لوحة التمرين: السلالم والمقامات والمقطوعات' : '▾';
+  b.title = min ? 'إظهار لوحة التمرين واختيار السلم أو المقام أو المقطوعة' : 'طيّ لوحة التمرين';
+}
 function showPoint(k) {
   const p = POINTS[k];
   document.querySelectorAll('[data-point]').forEach(b => b.setAttribute('aria-pressed', b.dataset.point === k ? 'true' : 'false'));
@@ -458,7 +482,7 @@ function showPoint(k) {
   $('#info-text').textContent = p.text;
   const n = $('#info-note'); n.textContent = p.note || ''; n.classList.toggle('hidden', !p.note);
   info.classList.remove('hidden'); document.body.classList.add('has-info');
-  if (window.innerHeight < 760) { $('#teach').classList.add('min'); $('#teach-toggle').textContent = '▾'; $('#teach-toggle').setAttribute('aria-expanded', 'false'); }
+  if (window.innerHeight < 760) setTeachMin(true);
   updateShift();
   if (p.play && !playing) setPlaying(true);           // «القوس على الأوتار» يشغّل التمرين؛ بقية النقاط لا توقف تمرينًا جاريًا
   goTo(p.view, 3.6);
@@ -486,6 +510,7 @@ function setViewMode(on, save = true) {
   updateShift(); needsRender = true;
 }
 $('#mode-toggle').addEventListener('click', () => setViewMode(!viewMode));
+$('#teach-open').addEventListener('click', () => { setViewMode(false); setTeachMin(false); });
 function setPanelMin(min, save = true) {
   const p = $('#panel'); p.classList.toggle('min', min);
   const t = $('#panel-toggle'); t.setAttribute('aria-expanded', String(!min)); t.textContent = min ? '▾' : '▴';
@@ -494,7 +519,8 @@ function setPanelMin(min, save = true) {
 }
 $('#panel-toggle').addEventListener('click', () => setPanelMin(!$('#panel').classList.contains('min')));
 $('#reset-view').addEventListener('click', () => showView('reset'));
-if (!params.has('clean')) { if (store.get('mt-panelmin') === '1') setPanelMin(true, false); if (store.get('mt-viewmode') === '1') setViewMode(true, false); }
+// اللعبة تفتح دائمًا في وضع التعلّم (لوحة التمرين ظاهرة). كان وضع العرض يُستعاد من الزيارة السابقة فتختفي اللوحات دون أن يعرف المستخدم السبب.
+if (!params.has('clean')) { if (store.get('mt-panelmin') === '1') setPanelMin(true, false); }
 
 // ---------- ملء الشاشة (Fullscreen API؛ لا يمكن للصفحة محاكاة F11 نفسه) ----------
 const fsBtn = $('#fs-btn'), fsRoot = document.documentElement;
@@ -526,8 +552,8 @@ $('#help-close').addEventListener('click', () => toggleHelp(false));
 const nudge = (fn) => () => { fn(); follow = 8; clampGoal(); needsRender = true; firstInteraction(); };
 $('#rot-l').addEventListener('click', nudge(() => { goal.theta -= 0.4; }));
 $('#rot-r').addEventListener('click', nudge(() => { goal.theta += 0.4; }));
-$('#zoom-in').addEventListener('click', nudge(() => { zoomAbout(0.78, pickPt); }));
-$('#zoom-out').addEventListener('click', nudge(() => { zoomAbout(1 / 0.78, null); }));
+$('#zoom-in').addEventListener('click', nudge(() => { if (focus && focus.on) focus.zoom(-0.15); else zoomAbout(0.78, pickPt); }));
+$('#zoom-out').addEventListener('click', nudge(() => { if (focus && focus.on) focus.zoom(0.18); else zoomAbout(1 / 0.78, null); }));
 document.querySelectorAll('[data-tab]').forEach(t => t.addEventListener('click', () => {
   document.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-selected', x === t ? 'true' : 'false'));
   $('#panel').dataset.active = t.dataset.tab;
@@ -638,11 +664,62 @@ document.addEventListener('keydown', (e) => {
     case e.key === '-' || e.key === '_' || e.code === 'NumpadSubtract' || e.code === 'Minus': goal.r /= 0.88; break;
     case e.code === 'KeyR': showView('reset'); break;
     case e.code === 'KeyV': setViewMode(!viewMode); break;
+    case e.code === 'KeyF': toggleFocus(); break;
     case e.key === 'Escape': toggleHelp(false); handled = false; break;
     default: handled = false;
   }
   if (handled) { e.preventDefault(); follow = 10; firstInteraction(); clampGoal(); needsRender = true; }
 });
+
+// ---------- Finger Focus: وضع التركيز على الأصابع والأوتار (على نمط لعبة العود) ----------
+var focus = new FingerFocus({ scene, vf: () => vf, strings: () => violinMeshes.filter((m) => m.name === 'strings'), rig: () => player && player.rig }, document.body);
+const focusBtns = {};
+function setFocus(v) {
+  focus.setView(v); Object.entries(focusBtns).forEach(([k, b]) => b.setAttribute('aria-pressed', String(k === v)));
+  $('#ff-btn').setAttribute('aria-pressed', String(focus.on));
+  if (focus.on) focus.setPiece(tl.events);
+  updateShift(); needsRender = true;
+}
+function toggleFocus() {
+  if (focus.on) { setFocus('off'); return; }
+  setViewMode(false); setTeachMin(false);
+  const g = EXERCISES[exIndex].group;
+  if (g !== 'maqam' && g !== 'piece') { const i = EXERCISES.findIndex((e) => e.group === 'maqam'); if (i >= 0) { setExercise(i); syncPickers(); } }
+  setFocus('both');
+}
+function fillSegment() {
+  const a = $('#ff-from'), b = $('#ff-to'); if (!a) return;
+  const opts = () => tl.events.map((e, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = `${i + 1} · ${e.rest ? 'سكتة' : e.note.ar}`; return o; });
+  a.replaceChildren(...opts()); b.replaceChildren(...opts()); a.value = '0'; b.value = String(tl.events.length - 1);
+}
+{
+  // زر في الشريط
+  const ffBtn = document.createElement('button'); ffBtn.id = 'ff-btn'; ffBtn.type = 'button'; ffBtn.setAttribute('aria-pressed', 'false');
+  ffBtn.title = 'وضع التركيز على الأصابع والأوتار (Finger Focus)'; ffBtn.textContent = '🎯 تركيز الأصابع';
+  ffBtn.addEventListener('click', toggleFocus); $('#play').after(ffBtn);
+  // قسم في لوحة التمرين
+  const sec = document.createElement('div'); sec.className = 'ffsec'; sec.id = 'ff-sec';
+  sec.innerHTML = `<h3>🎯 تركيز الأصابع</h3>
+    <div class="seg" id="ff-view"><button type="button" data-ffv="off" title="العازف كاملًا">طبيعي</button><button type="button" data-ffv="fingers" title="تكبير اليد اليسرى على الأوتار">الأصابع</button><button type="button" data-ffv="both" title="الأصابع والقوس في شاشة واحدة">اليدان معًا</button></div>
+    <label class="row"><input type="checkbox" id="ff-track" checked> تتبّع: تلوين الوتر والإصبع وإظهار النغمة التالية</label>
+    <div class="ffspeed"><span>سرعة العرض</span><div class="seg" id="ff-speed"><button type="button" data-ffs="0.5">½ بطيء</button><button type="button" data-ffs="0.75">¾</button><button type="button" data-ffs="1" aria-pressed="true">عادي</button></div></div>
+    <div class="looprow"><span>تكرار المقطع من النغمة</span><select id="ff-from" class="mini"></select><span>إلى</span><select id="ff-to" class="mini"></select></div>`;
+  $('#teach .ctrls').prepend(sec);
+  sec.querySelectorAll('[data-ffv]').forEach((b) => { focusBtns[b.dataset.ffv] = b; b.setAttribute('aria-pressed', String(b.dataset.ffv === 'off')); b.addEventListener('click', () => setFocus(b.dataset.ffv)); });
+  $('#ff-track').addEventListener('change', (ev) => { focus.setTrack(ev.target.checked); needsRender = true; });
+  sec.querySelectorAll('[data-ffs]').forEach((b) => b.addEventListener('click', () => {
+    sec.querySelectorAll('[data-ffs]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    advanceClock(); reanchor(); speedK = +b.dataset.ffs; bpm = Math.max(30, Math.round(EXERCISES[exIndex].bpm * speedK)); $('#tempo').value = bpm; $('#tempo-out').textContent = bpm;
+  }));
+  const segChange = () => {
+    segFrom = +$('#ff-from').value; segTo = +$('#ff-to').value;
+    if (segTo < segFrom) { if (document.activeElement === $('#ff-from')) { segTo = segFrom; $('#ff-to').value = String(segTo); } else { segFrom = segTo; $('#ff-from').value = String(segFrom); } }
+    loopOn = true; $('#loop').checked = true;
+    if (playing) restartFrom(segStart(), true);
+  };
+  $('#ff-from').addEventListener('change', segChange); $('#ff-to').addEventListener('change', segChange);
+  fillSegment(); focus.setPiece(tl.events);
+}
 
 // ---------- العرض ----------
 function render() {
@@ -650,6 +727,7 @@ function render() {
   const c = renderer.domElement;
   const dpr = renderer.getPixelRatio();
   if (c.width !== Math.round(W * dpr) || c.height !== Math.round(H * dpr)) renderer.setSize(W, H, false);
+  if (focus && focus.render(renderer, scene)) return;          // وضع «تركيز الأصابع»: لوحتان بكاميرتين قريبتين
   camera.fov = cam.fov * 180 / Math.PI;
   camera.aspect = W / H;
   camera.position.set(...cam.pos);
@@ -685,6 +763,7 @@ function frame(now) {
     if (el >= manualAnim.dur) manualAnim = null;
   }
   if (face) { face.update(dt, { playing: (playing && !paused) || manual, st: curSt || ((playing || manual) ? lastState : null) }); moving = true; }
+  if (focus && focus.on) { focus.frame(dt, curSt || ((playing || manual) ? lastState : null)); moving = true; }
   if (moving || needsRender) {
     cam.target = cur.target.slice();
     cam.pos = resolveCollisions(camPos(cur));

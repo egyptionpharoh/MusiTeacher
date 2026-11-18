@@ -85,6 +85,50 @@ function texMaple(seed) {
   return c;
 }
 
+// ---------- العلامة MusiTeacher ----------
+// كما في العود والأورج والأكورديون: الاسم جزء من سطح الآلة. على الكمان كُتب كنقش صغير محروق في الورنيش على الصدر،
+// في الحوض العلوي من جهة وتر مي بجوار لوحة الأصابع (لا تحتها): الحوض السفلي يغطيه الذقن وزر الذقن، وهذا الموضع يُرى
+// في المشهد العادي ولا يصله القوس (يعمل قرب الفرس) ولا اليد اليسرى (في الوضع الأول عند الرقبة) ولا الأوتار.
+// يُقرأ من جهة الفرس نحو الرأس.
+// الشريط يلتصق بانحناء الصدر نفسه (نفس دالة القوس arch) فيأخذ إضاءة الورنيش وظلاله. يُعطَّل بـ ?nobrand
+export const VBRAND = { cx: 0.052, cy: 0.124, len: 0.05, w: 0.0102, rot: Math.PI / 2 };
+function texBrand() {
+  const W = 1024, H = Math.round(W * VBRAND.w / VBRAND.len), c = cnv(W, H), x = c.getContext('2d');
+  x.clearRect(0, 0, W, H);
+  const fam = '"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif', fs = Math.round(H * 0.62);
+  x.textBaseline = 'alphabetic';
+  x.font = `400 ${fs}px ${fam}`; const w1 = x.measureText('Musi').width;
+  x.font = `700 ${fs}px ${fam}`; const w2 = x.measureText('Teacher').width;
+  const nW = fs * 0.62, gap = fs * 0.2, total = nW + gap + w1 + w2 + 3, x0 = (W - total) / 2, base = H / 2 + fs * 0.36;
+  const ink = 'rgba(48,18,4,0.86)', ink2 = 'rgba(70,26,6,0.92)';
+  // الشعار: نوتتان موصولتان (نفس شعار العود والأورج)
+  { const k = fs / 112, nx = x0 + 4 * k, ny = base - 14 * k; x.save(); x.fillStyle = ink2; x.strokeStyle = ink2; x.lineWidth = 7 * k;
+    const head = (cx, cy) => { x.beginPath(); x.ellipse(cx, cy, 15 * k, 11 * k, -0.42, 0, Math.PI * 2); x.fill(); };
+    head(nx + 10 * k, ny); head(nx + 54 * k, ny - 10 * k);
+    x.beginPath(); x.moveTo(nx + 22 * k, ny - 4 * k); x.lineTo(nx + 22 * k, ny - 66 * k); x.moveTo(nx + 66 * k, ny - 14 * k); x.lineTo(nx + 66 * k, ny - 76 * k); x.stroke();
+    x.beginPath(); x.moveTo(nx + 19 * k, ny - 68 * k); x.lineTo(nx + 69 * k, ny - 78 * k); x.lineTo(nx + 69 * k, ny - 64 * k); x.lineTo(nx + 19 * k, ny - 54 * k); x.closePath(); x.fill(); x.restore(); }
+  // حافة فاتحة رفيعة تحت الحروف توحي بالحفر في الورنيش
+  x.shadowColor = 'rgba(255,205,140,.45)'; x.shadowBlur = 0; x.shadowOffsetY = Math.max(1, fs * 0.025);
+  x.font = `400 ${fs}px ${fam}`; x.fillStyle = ink; x.fillText('Musi', x0 + nW + gap, base);
+  x.font = `700 ${fs}px ${fam}`; x.fillStyle = ink2; x.fillText('Teacher', x0 + nW + gap + w1 + 3, base);
+  return c;
+}
+// ارتفاع سطح الصدر المقوّس عند (px, py): نفس بناء plate() — t = نسبة البعد عن المركز إلى بعد الحافة في الاتجاه نفسه
+function topHeight(outline, cen, px, py, h) {
+  const ang = Math.atan2(py - cen[1], px - cen[0]), d = Math.hypot(px - cen[0], py - cen[1]);
+  let best = null;
+  for (let j = 0; j < outline.length; j++) {
+    const a = outline[j], b = outline[(j + 1) % outline.length];
+    const aa = Math.atan2(a[1] - cen[1], a[0] - cen[0]), ab = Math.atan2(b[1] - cen[1], b[0] - cen[0]);
+    let da = ab - aa; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+    let dt = ang - aa; if (dt > Math.PI) dt -= 2 * Math.PI; if (dt < -Math.PI) dt += 2 * Math.PI;
+    if (Math.abs(da) < 1e-9 || dt / da < 0 || dt / da > 1) continue;
+    const u = dt / da, ra = Math.hypot(a[0] - cen[0], a[1] - cen[1]), rb = Math.hypot(b[0] - cen[0], b[1] - cen[1]); best = ra + (rb - ra) * u; break;
+  }
+  const t = Math.min(1, d / (best || 1));
+  return h * Math.pow(Math.max(0, 1 - t * t), 0.85);
+}
+
 // ---------- violin ----------
 // opt.srK: معامل ارتفاع مسند الكتف (1 = الأصل). يُضبط حسب طول رقبة العازفة كما يفعل العازفون فعلًا.
 function buildViolin(R, frame, opt = {}) {
@@ -110,6 +154,17 @@ function buildViolin(R, frame, opt = {}) {
     return g;
   };
   add(plate(0, VN.archTop, 1), matTop, { name: 'vtop' });
+  if (!(typeof location !== 'undefined' && new URLSearchParams(location.search).has('nobrand'))) {
+    const B = VBRAND, cs = Math.cos(B.rot), sn = Math.sin(B.rot);
+    const g = grid(48, 6, (i, j) => {
+      const u = (i / 48 - 0.5) * B.len, v = (0.5 - j / 6) * B.w;
+      const px = B.cx + u * cs - v * sn, py = B.cy + u * sn + v * cs;
+      return [px, py, topHeight(outline, cen, px, py, VN.archTop) + 0.00025];
+    });
+    for (let v = 0; v < g.t.length / 2; v++) { const i = Math.floor(v / 7), j = v % 7; g.t[v * 2] = i / 48; g.t[v * 2 + 1] = 1 - j / 6; }
+    const bm = add(g, { color: [1, 1, 1], tex: R.texture(texBrand()), rough: 0.3, spec: 0.7 }, { name: 'vbrand', cast: false });
+    if (bm && bm.material) Object.assign(bm.material, { transparent: true, alphaTest: 0.02, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+  }
   add(plate(-VN.ribs, VN.archBack, -1), matBack, { name: 'vback' });
   // ribs
   const ribs = grid(n, 2, (i, j) => { const p = outline[i % n]; return [p[0] * 0.988, 0.015 + (p[1] - 0.015) * 0.992, -VN.ribs * j / 2]; }, { us: 6, vs: 0.15 });

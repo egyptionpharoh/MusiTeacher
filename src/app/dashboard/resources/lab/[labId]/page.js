@@ -9,6 +9,48 @@ import { getGame, publicGameInfo, GAME_CATEGORIES } from '@/data/virtualGames';
 import '@/components/virtual-lab/virtual-lab.css';
 
 const REFRESH_MS = 20 * 60 * 1000;
+
+// ---------- العلامة المائية (هوية المستخدم فوق اللعبة) ----------
+// كانت 80 نسخة من البريد تغطي الشاشة كلها. الآن: ثلاث علامات صغيرة باهتة في هوامش المشهد (بعيدًا عن وسطه حيث الآلة والعازف)،
+// تنتقل بهدوء بين مواضع آمنة كل دقيقة (يصعّب قصّها من لقطة الشاشة دون أن يزعج الطالب)، ولا تلتقط النقر أبدًا.
+// المواضع بالنسبة المئوية من مساحة اللعبة: كلها في الهامش الأيسر بين 15% و66% من الارتفاع (العازف والآلة في الوسط،
+// وأدوات التحكم أعلى ويمين، ولوحات النغمة الحالية أسفل اليسار)، وتتبدّل ارتفاعاتها فقط.
+const WM_SLOTS = [
+  [{ x: 2, y: 20 }, { x: 2.5, y: 42 }, { x: 2, y: 62 }],
+  [{ x: 2.5, y: 26 }, { x: 2, y: 48 }, { x: 3, y: 66 }],
+  [{ x: 2, y: 15 }, { x: 3, y: 36 }, { x: 2, y: 56 }],
+];
+const WM_MOVE_MS = 60 * 1000, WM_FADE_MS = 1200;
+function Watermark({ who }) {
+  const [step, setStep] = useState(0);
+  const [fade, setFade] = useState(false);
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    let t2;
+    const t = setInterval(() => { setFade(true); t2 = setTimeout(() => { setStep((s) => s + 1); setFade(false); }, WM_FADE_MS); }, WM_MOVE_MS);
+    return () => { clearInterval(t); clearTimeout(t2); };
+  }, []);
+  useEffect(() => {
+    const on = () => setNarrow(window.innerWidth < 700);
+    on(); window.addEventListener('resize', on);
+    return () => window.removeEventListener('resize', on);
+  }, []);
+  const slots = WM_SLOTS[step % WM_SLOTS.length].slice(0, narrow ? 2 : 3);
+  const text = `${who ? `${who} · ` : ''}MusiTeacher`;
+  return (
+    <div className="vlp-wm-lite" aria-hidden="true"
+      style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', userSelect: 'none', zIndex: 2 }}>
+      {slots.map((p, i) => (
+        <span key={i} style={{
+          position: 'absolute', left: `${p.x}%`, top: `${p.y}%`, transform: 'rotate(-12deg)', transformOrigin: 'left center',
+          whiteSpace: 'nowrap', direction: 'ltr', fontSize: 'clamp(10px, 0.8vw, 13px)', fontWeight: 500, letterSpacing: '0.02em',
+          color: 'rgba(255,255,255,0.9)', textShadow: '0 0 2px rgba(0,0,0,0.9)', opacity: fade ? 0 : 0.16,
+          transition: `opacity ${WM_FADE_MS}ms ease`,
+        }}>{text}</span>
+      ))}
+    </div>
+  );
+}
 const MSG = {
   unauthenticated: 'انتهت جلسة الدخول. سجّل الدخول من جديد ثم أعد المحاولة.',
   forbidden: 'هذه الألعاب متاحة للمشتركين فقط. جدّد اشتراكك أو تواصل مع الإدارة.',
@@ -123,14 +165,12 @@ export default function LabPlayerPage() {
         </div>
       </div>
 
-      <div className="vlp-stage" ref={stageRef}>
+      <div className="vlp-stage" ref={stageRef} style={{ position: 'relative' }}>
         {state === 'ready' && (
           <>
             <iframe ref={frameRef} className="vlp-frame" src={src} title={game.title} sandbox={sandbox}
               allow="autoplay; fullscreen; pointer-lock; accelerometer; gyroscope; midi" referrerPolicy="same-origin" />
-            <div className="vlp-wm" aria-hidden="true"><div>
-              {Array.from({ length: 80 }).map((_, i) => <span key={i}>{who ? `${who} · ` : ''}MusiTeacher</span>)}
-            </div></div>
+            <Watermark who={who} />
           </>
         )}
         {(state === 'loading' || state === 'idle') && (

@@ -181,6 +181,9 @@ button:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
 .ctrls input[type=range]{width:100%;accent-color:var(--accent);direction:ltr}
 .ctrls output{min-width:2.2em;text-align:center;color:var(--accent-2);font-weight:700;direction:ltr}
 #teach.min .strip,#teach.min .ctrls,#teach.min .exline,#teach.min #audio-note{display:none}
+#teach.min #teach-toggle{position:static;display:block;width:100%;height:auto;margin:0 0 8px;padding:7px 10px;border-radius:10px;background:var(--accent,#d4a373);color:#1d1711;font-weight:700;font-size:.85rem;line-height:1.3}
+body.mode-view #teach.min #teach-toggle{display:none}
+#teach.min #teach-toggle:hover{filter:brightness(1.08);background:var(--accent,#d4a373);color:#1d1711}
 #teach-toggle{position:absolute;top:8px;left:8px;width:28px;height:28px;border-radius:50%;color:var(--muted);font-size:.9rem}
 #teach-toggle:hover{background:rgba(255,255,255,.08);color:var(--ink)}
 #audio-note{margin-top:8px;font-size:.76rem;color:var(--muted);line-height:1.5}
@@ -225,6 +228,35 @@ body.mode-view .now{min-height:0;gap:10px}
 body.mode-view .now .big{font-size:1.35rem;min-width:60px;padding:6px 8px}
 body.mode-view .now .meta{font-size:.82rem}
 body.mode-view .now .meta span:nth-child(n+3){display:none}
+/* ---------- Finger Focus ---------- */
+#ff-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:.84rem;font-weight:700;color:var(--accent-2);white-space:nowrap;cursor:pointer}
+#ff-btn:hover{background:rgba(212,163,115,.16)}#ff-btn[aria-pressed="true"],.ffsec .seg button[aria-pressed="true"]{background:var(--accent,#d4a373);color:#1d1711;border-color:var(--accent,#d4a373)}
+.ffsec{grid-column:1/-1;flex:1 1 100%;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px;background:rgba(255,255,255,.03)}
+.ffsec h3{margin:0 0 6px;font-size:.92rem;color:var(--accent-2)}
+.ffsec .seg{display:flex;gap:4px;margin:2px 0 6px}.ffsec .seg button{flex:1;padding:6px 4px;border-radius:9px;font-size:.8rem}
+.ffsec .row{display:flex;align-items:center;gap:6px;font-size:.8rem;margin:2px 0 6px}
+.ffspeed{display:flex;align-items:center;gap:8px;font-size:.8rem}.ffspeed .seg{flex:1}
+.looprow{display:flex;flex-wrap:wrap;align-items:center;gap:5px;font-size:.78rem}select.mini{width:auto;min-width:80px;padding:3px 4px;font-size:.78rem}
+#ff{position:fixed;inset:0;pointer-events:none;z-index:4}
+.ff-div{position:absolute;height:3px;background:linear-gradient(90deg,transparent,var(--accent,#d4a373),transparent)}
+.ff-cap{position:absolute;font-size:12px;color:#f3e7d3;background:rgba(20,15,10,.62);border-radius:8px;padding:2px 8px}
+.ff-card{position:absolute;min-width:200px;max-width:min(460px,60vw);background:rgba(16,12,9,.86);border:2px solid var(--accent,#d4a373);border-radius:12px;padding:6px 12px 7px;direction:rtl}
+.ff-name{display:block;font-size:24px;line-height:1.15}.ff-sub{font-size:13px;color:#f3e7d3}.ff-nextline{font-size:12px;color:#b9a98f;min-height:15px}
+.ff-tag{position:absolute;left:0;top:0;background:rgba(12,9,7,.9);color:#fff;border:2px solid #fff;border-radius:9px;padding:1px 8px;font-size:14px;font-weight:700;white-space:nowrap;direction:ltr}
+.ff-tag.nxt{opacity:.85;font-size:12px;border-style:dashed}
+.ff .hidden,.ff-tag.hidden,.ff-card.hidden{display:none}
+body.ff-on #panel,body.ff-on #info,body.ff-on #hint,body.ff-on .top h1,body.ff-on .top p{display:none!important}
+@media (min-width:761px) and (max-width:1420px){#ff-btn{padding:8px 10px}}
+/* لوحة التمرين لا تتجاوز ارتفاع الشاشة: تمرير داخلي عند الحاجة. قسم التركيز يُظهر أزرار العرض فقط حتى يُفعَّل الوضع */
+#teach{max-height:calc(100vh - 2*var(--gutter,12px));overflow-y:auto;overscroll-behavior:contain}
+body:not(.ff-on) .ffsec .row,body:not(.ff-on) .ffsec .ffspeed,body:not(.ff-on) .ffsec .looprow{display:none}
+body.ff-on #teach h2,body.ff-on #audio-note{display:none}
+body.ff-on .now{min-height:0}
+/* وضع العرض: زر واضح للعودة إلى لوحة التمرين، وتسمية زر العين ظاهرة دائمًا */
+#teach-open{display:none}
+body.mode-view #teach-open{display:block;width:100%;margin-top:7px;padding:7px 10px;border-radius:10px;background:var(--accent,#d4a373);color:#1d1711;font-weight:700;font-size:.85rem;border:0;cursor:pointer}
+body.mode-view #teach-open:hover{filter:brightness(1.08)}
+body.mode-view #mode-toggle .lbl{display:inline!important}
 @media (max-width:760px){
   body.mode-view .bar{bottom:calc(14px + env(safe-area-inset-bottom))}
   body.mode-view #teach{bottom:calc(26px + var(--bar-h,46px) + env(safe-area-inset-bottom));left:var(--gutter);right:auto}
@@ -305,6 +337,7 @@ body.mode-view .now .meta span:nth-child(n+3){display:none}
 
 <section id="teach" aria-label="التمرين والصوت">
   <button id="teach-toggle" aria-expanded="false" aria-controls="teach" title="إظهار/إخفاء لوحة التمرين">▴</button>
+  <button id="teach-open" type="button" title="الخروج من وضع العرض وإظهار لوحة التمرين واختيار المقامات والمقطوعات">▴ لوحة التمرين</button>
   <h2>التمرين والنغمة الحالية</h2>
   <div class="now silent" id="now" aria-live="polite">
     <div class="big" id="now-note">—<small id="now-ar">لم يبدأ</small></div>
