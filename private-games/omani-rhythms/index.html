@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>إيقاعات الفنون العُمانية – MusiTeacher</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="29" fill="#7a1f1f"/>
+        <circle cx="32" cy="32" r="21.5" fill="#f3e3c2" stroke="#c8962e" stroke-width="3"/>
+        <circle cx="32" cy="32" r="25.6" fill="none" stroke="#e8c877" stroke-width="2.2" stroke-dasharray="2.2 3.1"/>
+        <g fill="#7a1f1f"><circle cx="21" cy="36" r="4.6"/><rect x="24.4" y="19" width="2.4" height="17" rx="1.2"/><circle cx="37.5" cy="27" r="4.6"/><rect x="31.9" y="27" width="2.4" height="17" rx="1.2"/><path d="M26 19 L33 43 L35 43 L28 19 z" opacity=".9"/></g>
+        <circle cx="46" cy="38" r="2.4" fill="#0f5f4f"/><circle cx="46" cy="30" r="1.7" fill="#0f5f4f" opacity=".7"/>
+      </svg>
+      <div><h1>إيقاعات الفنون العُمانية</h1><p>Omani Traditional Rhythms <span>· MusiTeacher</span></p></div>
+    </div>
+    <nav id="nav" aria-label="أقسام اللعبة"></nav>
+  </header>
+  <main id="main"><div class="boot"><div class="spin"></div><p>جارٍ تجهيز الآلات والأصوات…</p></div></main>
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+<canvas id="gl" aria-hidden="true"></canvas>
+<script type="importmap">
+{ "imports": { "three": "./_shared/3d/vendor/three/three.module.js", "three/addons/": "./_shared/3d/vendor/three/addons/" } }
+</script>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
