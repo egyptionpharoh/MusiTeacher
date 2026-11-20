@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="same-origin">
+<meta name="theme-color" content="#113f67">
+<title>MusiTeacher Games — مكتبة الألعاب الموسيقية</title><meta name="description" content="ألعاب موسيقية تعليمية تفاعلية من MusiTeacher">
+<link rel="icon" href="/assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/mtg.css?v=mwoklspi"></head>
+<body><header class="top"><div class="top-in">
+  <a class="brand" href="/" aria-label="MusiTeacher Games — المكتبة"><img src="/assets/logo.png" alt=""><b>MusiTeacher <span>Games</span></b></a>
+  <span class="sp"></span></div></header>
+<section class="hero"><h1>العب وتعلّم الموسيقى</h1>
+  <p>اختر لعبتك، ثم اكتب رمز اللعبة الذي أرسله لك معلمك — وابدأ فورًا. لا تحتاج إلى حساب أو كلمة مرور.</p></section>
+<nav class="tools" aria-label="التصنيفات">
+  <button class="chip on" data-cat="all" aria-pressed="true">كل الألعاب (22)</button>
+  <button class="chip" data-cat="keys" aria-pressed="false">آلات المفاتيح (3)</button>
+  <button class="chip" data-cat="strings" aria-pressed="false">الآلات الوترية (8)</button>
+  <button class="chip" data-cat="scales" aria-pressed="false">السلالم والمقامات (4)</button>
+  <button class="chip" data-cat="percussion" aria-pressed="false">الآلات الإيقاعية (4)</button>
+  <button class="chip" data-cat="notation" aria-pressed="false">التدوين والقراءة (3)</button>
+  <label class="sr" for="q">ابحث عن لعبة</label><input id="q" class="search" type="search" placeholder="ابحث عن لعبة…" autocomplete="off">
+</nav>
+<main class="grid">
+  <article class="gcard" data-cat="keys" data-text="عازفة الأكورديون ثلاثية الأبعاد أكورديون منفاخ باص عازفة آلة مفاتيح">
+    <a class="pic" href="/games/accordion-3d" tabindex="-1" aria-hidden="true"><img src="/covers/accordion-3d.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">آلات المفاتيح</span>
+      <h2>عازفة الأكورديون ثلاثية الأبعاد</h2><p>أكورديون بيانو (34 مفتاحًا / 48 باص) تعزف عليه عازفة ثلاثية الأبعاد بصوت أكورديون حقيقي: منفاخ يتمدد مع الأداء، ويد يمنى على المفاتيح ويسرى على أزرار الباص، مع وضع التعرّف على الأجزاء والعزف الحر والتدريبات ووضع المعلم.</p>
+      <a class="btn go" href="/games/accordion-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="keys" data-text="الأورج الافتراضي ثلاثي الأبعاد أورج لوحة مفاتيح دو الوسطى أصابع عازف عازفة آلة مفاتيح">
+    <a class="pic" href="/games/organ-3d" tabindex="-1" aria-hidden="true"><img src="/covers/organ-3d.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">آلات المفاتيح</span>
+      <h2>الأورج الافتراضي ثلاثي الأبعاد</h2><p>أورج إلكتروني بـ61 مفتاحًا (دو٢ إلى دو٧) يعزف عليه عازف أو عازفة ثلاثيا الأبعاد بأصابع مرتبطة بالمفتاح والصوت: تعرّف على أجزاء الآلة، وعزف حر بالفأرة واللمس ولوحة المفاتيح، وأسماء النغمات عربية أو لاتينية، وتمارين لليد اليمنى واليسرى واليدين معًا بالإيقاع واللحن، ووضع المعلم مع نموذج عرض.</p>
+      <a class="btn go" href="/games/organ-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="strings" data-text="عازفة الكمان ثلاثية الأبعاد كمان سلالم قوس عازفة وضعية العزف">
+    <a class="pic" href="/games/violinist-3d" tabindex="-1" aria-hidden="true"><img src="/covers/violinist-3d.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الوترية</span>
+      <h2>عازفة الكمان ثلاثية الأبعاد</h2><p>عازفة ثلاثية الأبعاد تؤدي سلالم دو وفا وصول على الكمان بصوت حقيقي، مع التحكم في الكاميرا وعرض وضعية الجلوس والإمساك بالقوس وأصابع اليد اليسرى.</p>
+      <a class="btn go" href="/games/violinist-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="strings" data-text="آلة الكمان الافتراضية كمان أوتار آلة وترية">
+    <a class="pic" href="/games/virtual-violin" tabindex="-1" aria-hidden="true"><img src="/covers/virtual-violin.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الوترية</span>
+      <h2>آلة الكمان الافتراضية</h2><p>كمان تعليمي بتسجيلات كمان حقيقية: تسميات النغمات وأرقام الأصابع وأشرطة المبتدئين ومواضع ثابتة وتنغيم حر، بثلاث شدّات للقوس.</p>
+      <a class="btn go" href="/games/virtual-violin">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="scales" data-text="سُلّم صول الكبير على الكمان كمان سلم صول سلالم">
+    <a class="pic" href="/games/violin-scales" tabindex="-1" aria-hidden="true"><img src="/covers/violin-scales.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">السلالم والمقامات</span>
+      <h2>سُلّم صول الكبير على الكمان</h2><p>لعبة ثلاثية الأبعاد تربط النوتة على المدرج برقم الإصبع وموضعه على زند الكمان وبالصوت: سلم صول الكبير في الوضع الأول، أوكتاف أو أوكتافان.</p>
+      <a class="btn go" href="/games/violin-scales">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="strings" data-text="عازف العود ثلاثي الأبعاد عود عازف عازفة ريشة أوتار مقامات آلة شرقية زند">
+    <a class="pic" href="/games/oudist-3d" tabindex="-1" aria-hidden="true"><img src="/covers/oudist-3d.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الوترية</span>
+      <h2>عازف العود ثلاثي الأبعاد</h2><p>عازف أو عازفة ثلاثيا الأبعاد بالزي العماني يعزفان على عود عربي حقيقي الشكل: اليد اليسرى تضغط الأوتار في مواضع النغمات على زند بلا دساتين، واليمنى تضرب بالريشة نزولًا وصعودًا في لحظة الصوت نفسها. تعرّف على أجزاء العود، وعزف حر من خريطة الزند، وتعلّم موجّه خطوة بخطوة، وتمارين لحنية بأسماء الأوتار والنغمات.</p>
+      <a class="btn go" href="/games/oudist-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="strings" data-text="العود الافتراضي عود آلة شرقية أوتار">
+    <a class="pic" href="/games/virtual-oud" tabindex="-1" aria-hidden="true"><img src="/covers/virtual-oud.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الوترية</span>
+      <h2>العود الافتراضي</h2><p>عود عربي تعليمي بستة أوتار مزدوجة، يدعم أرباع التون والمقامات، مع أسماء النغمات وأرقام الأصابع وقوة الريشة.</p>
+      <a class="btn go" href="/games/virtual-oud">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="strings" data-text="آلة العود — مجسم تعليمي عود أجزاء الآلة مجسم">
+    <a class="pic" href="/games/oud-3d" tabindex="-1" aria-hidden="true"><img src="/covers/oud-3d.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الوترية</span>
+      <h2>آلة العود — مجسم تعليمي</h2><p>مجسم ثلاثي الأبعاد لآلة العود بتسمية الأجزاء، مع تدوير وتكبير وحفظ صورة عالية الدقة.</p>
+      <a class="btn go" href="/games/oud-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="scales" data-text="مقامات العود ثلاثية الأبعاد عود مقامات راست عجم نهاوند كرد">
+    <a class="pic" href="/games/oud-maqamat" tabindex="-1" aria-hidden="true"><img src="/covers/oud-maqamat.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">السلالم والمقامات</span>
+      <h2>مقامات العود ثلاثية الأبعاد</h2><p>لعبة ثلاثية الأبعاد على زند العود: مقامات العجم والنهاوند والراست والكرد وحجاز كار كرد، مع النوتة والوتر والإصبع واتجاه الريشة والصوت.</p>
+      <a class="btn go" href="/games/oud-maqamat">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="strings" data-text="القانون الافتراضي قانون آلة شرقية">
+    <a class="pic" href="/games/virtual-qanun" tabindex="-1" aria-hidden="true"><img src="/covers/virtual-qanun.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الوترية</span>
+      <h2>القانون الافتراضي</h2><p>قانون عربي تعليمي: 26 درجة بأوتار ثلاثية، وعُرَب بأرباع التون، وضبط العُرَب على المقام.</p>
+      <a class="btn go" href="/games/virtual-qanun">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="strings" data-text="آلة القانون — مجسم تعليمي قانون أجزاء الآلة مجسم">
+    <a class="pic" href="/games/qanun-3d" tabindex="-1" aria-hidden="true"><img src="/covers/qanun-3d.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الوترية</span>
+      <h2>آلة القانون — مجسم تعليمي</h2><p>مجسم تعليمي ثلاثي الأبعاد لآلة القانون: تدوير وتكبير وتسمية الأجزاء وتنزيل صورة PNG.</p>
+      <a class="btn go" href="/games/qanun-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="strings" data-text="الجيتار الكلاسيكي — مجسم تعليمي جيتار أجزاء الآلة مجسم">
+    <a class="pic" href="/games/guitar-3d" tabindex="-1" aria-hidden="true"><img src="/covers/guitar-3d.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الوترية</span>
+      <h2>الجيتار الكلاسيكي — مجسم تعليمي</h2><p>جيتار كلاسيكي ثلاثي الأبعاد بتسمية أجزائه (مفتاح الضبط، الأنف، الدساتين، فتحة الصوت، الفرس).</p>
+      <a class="btn go" href="/games/guitar-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="scales" data-text="سلالم البيانو ثلاثية الأبعاد بيانو سلالم مفاتيح">
+    <a class="pic" href="/games/piano-scales" tabindex="-1" aria-hidden="true"><img src="/covers/piano-scales.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">السلالم والمقامات</span>
+      <h2>سلالم البيانو ثلاثية الأبعاد</h2><p>لعبة ثلاثية الأبعاد على لوحة مفاتيح البيانو: سلالم دو وصول وفا الكبيرة باليد اليمنى أو اليسرى أو باليدين، مع أرقام الأصابع والنوتة والصوت.</p>
+      <a class="btn go" href="/games/piano-scales">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="scales" data-text="سلالم الأكورديون ثلاثية الأبعاد أكورديون سلالم مفاتيح">
+    <a class="pic" href="/games/accordion-scales" tabindex="-1" aria-hidden="true"><img src="/covers/accordion-scales.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">السلالم والمقامات</span>
+      <h2>سلالم الأكورديون ثلاثية الأبعاد</h2><p>لعبة ثلاثية الأبعاد للأكورديون: سلالم دو وصول وفا الكبيرة باليد اليمنى، مع باص اليسرى على أزرار ستراديلا واتجاه المنفاخ والنوتة والصوت.</p>
+      <a class="btn go" href="/games/accordion-scales">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="percussion" data-text="الإكسليفون ثلاثي الأبعاد إكسليفون سلالم آلة إيقاعية">
+    <a class="pic" href="/games/xylophone" tabindex="-1" aria-hidden="true"><img src="/covers/xylophone.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الإيقاعية</span>
+      <h2>الإكسليفون ثلاثي الأبعاد</h2><p>لعبة ثلاثية الأبعاد للإكسليفون: سلم دو الكبير بمطرقتين متحركتين مع النوتة والصوت، ووضع عزف حر يكتب نغمات الطالب على المدرج.</p>
+      <a class="btn go" href="/games/xylophone">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="percussion" data-text="عالم الآلات الإيقاعية الشرقية إيقاع دف رق طبلة مزهر بندير كاسر رحماني دم تك نبر آلة إيقاعية">
+    <a class="pic" href="/games/percussion-3d" tabindex="-1" aria-hidden="true"><img src="/covers/percussion-3d.svg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الإيقاعية</span>
+      <h2>عالم الآلات الإيقاعية الشرقية</h2><p>خمس آلات إيقاعية ثلاثية الأبعاد بمظهر واقعي وأصوات مسجّلة: الدف (الرق) والطبلة والمزهر والكاسر والرحماني. استكشاف الآلة وأجزائها، وسماع الدُم والتك في مواضعهما على الرقمة بضربات قوية وخفيفة، ومشاهدة مواضع النبر في أنماط إيقاعية بسيطة، ثم العزف مع النمط بالنقر أو اللمس أو لوحة المفاتيح مع متابعة التوقيت.</p>
+      <a class="btn go" href="/games/percussion-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="percussion" data-text="آلات الباند – Interactive Band Instruments باند آلات الباند كاستنيت مثلث جلاجل إكسيليفون طبل دف صنوج كلافس ماراكاس إيقاع band">
+    <a class="pic" href="/games/band-3d" tabindex="-1" aria-hidden="true"><img src="/covers/band-3d.svg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الإيقاعية</span>
+      <h2>آلات الباند – Interactive Band Instruments</h2><p>عالم آلات الباند ثلاثي الأبعاد: الكاستنيت والمثلث والجلاجل والإكسيليفون المعدني والطبل الكبير والدف والصنوج، مع الطبل الصغير والكلافس والقالب الخشبي والماراكاس. لكل آلة تعريفها وأجزاؤها وطريقة العزف عليها من دليل المعلم، وصوتها المسجّل، وتجربة عزف بحسب طبيعتها، ثم «عزف الباند» لمدوّنة جماعية يمكن أداء أحد أدوارها.</p>
+      <a class="btn go" href="/games/band-3d">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="percussion" data-text="إيقاعات الفنون العُمانية فنون عمانية إيقاع كاسر رحماني رزحة برعة عيالة مديمة حمبورة ويلية كيذا طبل النساء تراث دم تك">
+    <a class="pic" href="/games/omani-rhythms" tabindex="-1" aria-hidden="true"><img src="/covers/omani-rhythms.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">الآلات الإيقاعية</span>
+      <h2>إيقاعات الفنون العُمانية</h2><p>مكتبة فنون عُمانية تقليدية (الرزحة، الكيذا، المديمة، الحمبورة، العيالة، الوِيلية، البرعة، طبل النساء) بمدوّناتها من أدلة المعلم، واستوديو لتفكيك الإيقاع: تشغيل كل آلة وحدها أو كتمها أو تغيير مستواها مع مؤشر متحرك على المدوّنة ومجسّمات ثلاثية الأبعاد، ووضع للمعلم وتحديات للطالب، وقسم للمصادر والتراخيص.</p>
+      <a class="btn go" href="/games/omani-rhythms">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="keys" data-text="Oriental Maestro — الأورج الشرقي والبيانو الغربي أورج بيانو مقامات ربع تون إيقاعات مقسوم سيكاه عود قانون">
+    <a class="pic" href="/games/oriental-organ-piano" tabindex="-1" aria-hidden="true"><img src="/covers/oriental-organ-piano.jpg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">آلات المفاتيح</span>
+      <h2>Oriental Maestro — الأورج الشرقي والبيانو الغربي</h2><p>أورج افتراضي تعليمي بوضعين: بيانو غربي وأورج شرقي بأرباع التون والمقامات وأسماء الدرجات من كتاب المنهج، و20 صوتًا (عينات مسجلة ونمذجة فيزيائية)، وإيقاعات مصرية وعربية وخليجية وغربية، مع الطبقة والتقسيم والمؤثرات وأدوات تعليمية.</p>
+      <a class="btn go" href="/games/oriental-organ-piano">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="notation" data-text="مسابقة التدوين والإملاء اللحني تدوين إملاء لحني قراءة صولفائية قراءة إيقاعية مدرج إيمي باري">
+    <a class="pic" href="/games/melodic-dictation" tabindex="-1" aria-hidden="true"><img src="/covers/melodic-dictation.svg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">التدوين والقراءة</span>
+      <h2>مسابقة التدوين والإملاء اللحني</h2><p>تدوين النغمات على المدرج وقراءتها صولفائيًا وإيقاعيًا (إيمي باري)، مع إملاء لحني بمستويات وتمارين مستندة إلى أدلة المعلم، وحفظ النوتات واستيرادها.</p>
+      <a class="btn go" href="/games/melodic-dictation">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="notation" data-text="مسابقة التدوين والإملاء الإيقاعي إيقاع إملاء إيقاعي تدوين إيقاعي قراءة إيقاعية إيمي باري مسابقة">
+    <a class="pic" href="/games/rhythm-dictation" tabindex="-1" aria-hidden="true"><img src="/covers/rhythm-dictation.svg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">التدوين والقراءة</span>
+      <h2>مسابقة التدوين والإملاء الإيقاعي</h2><p>استماع إلى الأنماط الإيقاعية وتمييزها وتدوينها: إملاء إيقاعي بمستويات متدرجة وفق دروس الأدلة، وتصحيح مبني على الإيقاع المسموع، ومسابقة بين المجموعات، وتدوين وقراءة حرة، ونماذج الإملاء من دليل الصف الثامن.</p>
+      <a class="btn go" href="/games/rhythm-dictation">▶ العب الآن</a></div></article>
+  <article class="gcard" data-cat="notation" data-text="طريقة أداء الموازين الإيقاعية ميزان موازين إشارات الميزان مايسترو قيادة نبر قوي نبر ضعيف 2/4 3/4 4/4">
+    <a class="pic" href="/games/time-signatures" tabindex="-1" aria-hidden="true"><img src="/covers/time-signatures.svg" alt="" loading="lazy"></a>
+    <div class="body"><span class="cat">التدوين والقراءة</span>
+      <h2>طريقة أداء الموازين الإيقاعية</h2><p>مايسترو ثلاثية الأبعاد تؤدي إشارات اليد للموازين الثنائي والثلاثي والرباعي كما في أدلة المعلم: مشاهدة بالسرعة العادية والبطيئة وخطوة بخطوة، ونبض مسموع متزامن مع نقطة كل نبضة، ومسار اليد ونقاط النبضات، وزوايا كاميرا منها «من الخلف» لتقليد الحركة باليد اليمنى، وأنشطة وتحدٍّ.</p>
+      <a class="btn go" href="/games/time-signatures">▶ العب الآن</a></div></article>
+  <p class="empty" id="empty" hidden>لا توجد لعبة بهذا الاسم.</p>
+</main>
+<p class="foot">© MusiTeacher Games – All Rights Reserved – 2026</p>
+<script src="/assets/library.js" defer></script></body></html>

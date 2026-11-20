@@ -1,0 +1,93 @@
+/* ===================== مصنع الوسائل التعليمية (المعاينة) ===================== */
+#print-root { position: fixed; inset: 0; z-index: 50; background: #121019; color: #f3f0fa; font-family: "Cairo", "Segoe UI", Tahoma, sans-serif; }
+#print-root[hidden] { display: none; }
+.pf-ui { display: grid; grid-template-columns: 340px minmax(0, 1fr); height: 100%; }
+.pf-side { overflow: auto; padding: 12px; background: #1c1926; border-inline-end: 1px solid #332d45; }
+.pf-side h4 { margin: 12px 0 6px; color: #e9c46a; font-size: .95rem; }
+.pf-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; font-size: .88rem; }
+.pf-row label, .pf-ids label { display: flex; gap: 4px; align-items: center; font-size: .86rem; }
+.pf-tpl { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .pf-tpl button { display: grid; grid-template-columns: auto 1fr; gap: 0 6px; text-align: start; padding: 6px 8px; align-items: center; }
+.pf-tpl button span { grid-row: span 2; font-size: 1.2rem; } .pf-tpl button b { font-size: .8rem; line-height: 1.4; } .pf-tpl button small { font-size: .7rem; color: #a59fbd; } .pf-tpl button.on small { color: #4a3b12; }
+.pf-ids { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; margin-bottom: 6px; }
+.pf-field { display: flex; flex-direction: column; gap: 3px; font-size: .84rem; color: #a59fbd; margin-bottom: 6px; } .pf-field input, .pf-field textarea, .pf-field select { width: 100%; }
+.pf-main { display: flex; flex-direction: column; min-width: 0; }
+.pf-top { display: flex; gap: 10px; align-items: center; padding: 10px 14px; border-bottom: 1px solid #332d45; flex-wrap: wrap; } .pf-status { color: #a59fbd; font-size: .9rem; }
+.pf-tip { margin: 0; padding: 6px 14px; color: #a59fbd; font-size: .82rem; }
+.pf-preview { flex: 1; overflow: auto; padding: 18px; background: #2a2734; }
+.pf-pages { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.pf-pages .pg { box-shadow: 0 6px 24px rgba(0,0,0,.45); }
+.pf-pages .pg.over { outline: 3px solid #f4a261; }
+body.pf-open #app { visibility: hidden; }
+
+/* ===================== الصفحة المطبوعة ===================== */
+.pg { position: relative; background: #fff; color: #111; overflow: hidden; display: flex; flex-direction: column; gap: 3mm; direction: rtl; font-family: "Cairo", "Segoe UI", Tahoma, sans-serif; font-size: 11pt; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; break-after: page; page-break-after: always; break-inside: avoid; }
+.pg:last-child { break-after: auto; page-break-after: auto; }
+.pg .ph { display: flex; justify-content: space-between; align-items: flex-end; gap: 6mm; border-bottom: .6mm solid #2ec4b6; padding-bottom: 2mm; flex: none; }
+.pg.bw .ph { border-bottom-color: #111; }
+.pg .ph h1 { margin: 0; font-size: 17pt; font-weight: 800; line-height: 1.25; } .pg .ph p { margin: 0; color: #555; font-size: 9.5pt; }
+.pg .ph .who { display: flex; flex-direction: column; gap: 1mm; font-size: 10pt; color: #333; white-space: nowrap; }
+.pg.A5 { font-size: 10pt; } .pg.A5 .ph h1 { font-size: 14pt; }
+.pfoot { position: absolute; bottom: 4mm; left: 10mm; right: 10mm; display: flex; justify-content: space-between; font-size: 7.5pt; color: #8a8a8a; }
+.pfoot .brand { direction: ltr; unicode-bidi: isolate; letter-spacing: .2px; }
+.pg .sec { margin: 1mm 0 0; font-size: 11.5pt; color: #333; flex: none; }
+.pg .note { margin: 0; font-size: 9pt; color: #555; }
+.pg .blank { display: inline-block; border-bottom: .35mm dotted #777; height: 6mm; vertical-align: bottom; }
+.pg svg.nt { display: inline-block; vertical-align: middle; }
+/* جدول */
+.tbl { width: 100%; border-collapse: collapse; } .tbl th { background: #f1eee6; font-size: 9.5pt; padding: 1.5mm; border: .3mm solid #bbb; } .pg.bw .tbl th { background: #fff; border-color: #111; }
+.tbl td { border: .3mm solid #ccc; padding: 1mm 2mm; text-align: center; vertical-align: middle; font-size: 11pt; } .pg.bw .tbl td { border-color: #555; background: #fff !important; }
+.tbl td.sy { width: 30mm; } .tbl td.rs { background: repeating-linear-gradient(135deg, #f4f4f8 0 2mm, #fff 2mm 4mm); }
+.pg.bw .tbl td.rs { background: repeating-linear-gradient(135deg, #fff 0 2mm, #f2f2f2 2mm 4mm) !important; }
+/* مربعات الزمن */
+.bxs { display: inline-flex; gap: 1mm; vertical-align: middle; margin-inline-start: 2mm; direction: ltr; }
+.bx { display: inline-block; border: .35mm solid #333; border-radius: .8mm; position: relative; overflow: hidden; }
+.bx i { position: absolute; inset: 0 auto 0 0; background: #f5c066; } .bx.r i { background: repeating-linear-gradient(135deg, #9fb0cc 0 1mm, #fff 1mm 2mm); }
+.bx.bw i { background: #444; } .bx.r.bw i { background: repeating-linear-gradient(135deg, #555 0 .5mm, #fff .5mm 1.5mm); }
+/* بطاقات */
+.cards { display: grid; justify-content: center; } .card { position: relative; border: .4mm dashed #888; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1mm; padding: 2mm; overflow: hidden; break-inside: avoid; }
+.card::before { content: ''; position: absolute; inset: 2.5mm; border: .5mm solid var(--c, #333); border-radius: 3mm; pointer-events: none; }
+.pg.bw .card::before { border-color: #111; } .card .cs { display: flex; align-items: center; justify-content: center; } .card .cn { font-weight: 800; font-size: 13pt; } .card .cv { color: #444; font-size: 10.5pt; }
+.pg.A5 .card .cn { font-size: 11pt; }
+/* شجرة الأزمنة */
+.tree { display: flex; flex-direction: column; gap: 2mm; } .trw { display: flex; align-items: stretch; gap: 3mm; }
+.trw .tl { width: 30mm; display: flex; flex-direction: column; justify-content: center; } .trw .tl small { color: #666; font-size: 8.5pt; }
+.trw .tb { position: relative; display: flex; direction: ltr; border: .4mm solid #333; border-radius: 1.5mm; overflow: hidden; }
+.trw .tc { display: flex; align-items: center; justify-content: flex-start; padding-left: 1mm; border-right: .35mm solid #555; box-sizing: border-box; } .trw .tc:last-of-type { border-right: 0; }
+.trw .tc.r { background: repeating-linear-gradient(135deg, #fff 0 1.5mm, #eceff5 1.5mm 3mm); }
+.tbeat { position: absolute; top: 0; bottom: 0; border-left: .35mm dashed #c08a1c; } .pg.bw .tbeat { border-left-color: #111; }
+/* شرائط */
+.strips { display: flex; flex-direction: column; gap: 4mm; } .strip { display: flex; align-items: center; gap: 0; direction: ltr; border-bottom: .2mm solid #eee; }
+.strip .num { width: 6mm; font-weight: 800; color: #888; } .strip .tsig { display: flex; flex-direction: column; font: 800 12pt/1 "Cairo", serif; padding: 0 2mm; }
+.strip .msr { flex: 1; display: flex; align-items: center; justify-content: space-evenly; border-right: .5mm solid #111; height: 100%; padding: 0 2mm; position: relative; }
+.strip .msr:last-child { border-right-width: 1.4mm; } .strip .msr::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; border-top: .35mm solid #777; }
+.strip .gap { height: 16mm; border: .45mm dashed #2ec4b6; border-radius: 2mm; background: #fff; position: relative; } .pg.bw .strip .gap { border-color: #111; }
+.strip .beat { flex: 1; height: 70%; border: .3mm dashed #bbb; margin: 0 1mm; border-radius: 1mm; background: #fff; position: relative; }
+/* ترتيب / صوت وصمت / أسماء / ملخص / تقويم */
+.row { display: flex; gap: 3mm; justify-content: center; flex-wrap: wrap; }
+.obox { display: flex; flex-direction: column; align-items: center; gap: 2mm; border: .3mm solid #ccc; border-radius: 2mm; padding: 2mm; } .obox .sq { width: 9mm; height: 9mm; border: .45mm solid #111; border-radius: 1mm; }
+.lines { margin: 0; padding-inline-start: 7mm; } .lines li { border-bottom: .3mm dotted #888; height: 9mm; }
+.legend { display: flex; gap: 8mm; font-size: 10pt; } .legend .sw { display: inline-block; width: 6mm; height: 4mm; border: .3mm solid #333; vertical-align: middle; } .legend .sw.s { background: #f5c066; } .legend .sw.r { background: repeating-linear-gradient(135deg, #fff 0 1mm, #9fb0cc 1mm 2mm); }
+.pg.bw .legend .sw.s { background: #fff; }
+.ssline { display: flex; align-items: center; gap: 2mm; direction: ltr; border: .3mm solid #ddd; border-radius: 2mm; padding: 1mm 2mm; } .ssline .num { font-weight: 800; color: #888; width: 5mm; } .ssline .ss { flex: 1; display: flex; justify-content: center; } .ssline .cnt { direction: rtl; font-size: 9pt; color: #555; white-space: nowrap; }
+.nb { display: grid; grid-template-columns: 45mm 1fr; grid-template-rows: auto 1fr; gap: 1mm 4mm; border: .35mm solid #ccc; border-radius: 2.5mm; padding: 2mm 3mm; margin-bottom: 3mm; overflow: hidden; }
+.nb .nn { grid-row: span 2; font-size: 20pt; font-weight: 800; display: flex; align-items: center; justify-content: center; border-inline-end: .3mm dashed #bbb; }
+.pg.A5 .nb { grid-template-columns: 32mm 1fr; } .pg.A5 .nb .nn { font-size: 15pt; }
+.nb .sb { display: flex; gap: 2mm; align-items: center; } .nb .sylb { min-width: 14mm; height: 10mm; border: .4mm solid #333; border-radius: 1.5mm; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13pt; padding: 0 2mm; } .nb .hint { font-size: 8.5pt; color: #777; }
+.nb .nr { display: flex; align-items: center; direction: ltr; } .nb .rline { flex: 1; border-top: .4mm solid #555; margin: 8mm 0; }
+.sumgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2mm; } .si { display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; border: .45mm solid var(--c, #333); border-radius: 2.5mm; padding: 1.5mm; } .si span { font-size: 9pt; color: #444; }
+.pg.bw .si { border-color: #111; background: #fff !important; } .pg.bw .tc { background: #fff !important; }
+.tips { margin: 0; padding-inline-start: 6mm; font-size: 10pt; line-height: 1.7; }
+.quiz { margin: 0; padding-inline-start: 7mm; display: flex; flex-direction: column; gap: 3mm; } .quiz li { display: flex; align-items: center; gap: 3mm; flex-wrap: wrap; min-height: 14mm; border-bottom: .2mm solid #eee; }
+.quiz .ans { color: #555; } .quiz .draw { width: 26mm; height: 16mm; border: .4mm dashed #888; border-radius: 2mm; } .quiz .or { color: #555; }
+
+/* ===================== الطباعة الفعلية ===================== */
+@media print {
+  html, body { background: #fff !important; overflow: visible !important; height: auto !important; }
+  body > #app { display: none !important; }
+  #print-root { position: static !important; background: #fff !important; }
+  .pf-side, .pf-top, .pf-tip { display: none !important; }
+  .pf-ui { display: block !important; height: auto !important; } .pf-main, .pf-preview { display: block !important; overflow: visible !important; padding: 0 !important; background: #fff !important; }
+  .pf-pages { display: block !important; transform: none !important; margin: 0 !important; gap: 0 !important; }
+  .pf-pages .pg { box-shadow: none !important; outline: none !important; margin: 0 !important; }
+  #mt-ip-mark { background: none !important; color: #b5b5b5 !important; }
+}

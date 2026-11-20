@@ -1,10 +1,10 @@
 // معالجات خادم MusiTeacher Games. تستقبل deps (الإعدادات + الجسر) كي تُختبر محليًا بلا إنترنت.
 import {
   config, getGame, normalizeCode, signSession, verifySession, readCookie, cookieName, setCookieHeader,
-  clearCookieHeader, makeLimiter, clientKey, resolveGameFile, securityHeaders, injectHtml, traceOf, MIME, GAMES_DIR,
+  clearCookieHeader, makeLimiter, clientKey, registry, resolveGameFile, securityHeaders, injectHtml, traceOf, MIME, GAMES_DIR,
   SESSION_MAX_SEC, RECHECK_SEC, send, sendJson, readJson, queryOf, sameOrigin,
 } from './core.mjs';
-import { makeBridge } from './bridge.mjs';
+import { makeBridge, BRIDGE_DETAIL } from './bridge.mjs';
 import fs from 'node:fs';
 
 const now = () => Math.floor(Date.now() / 1000);
@@ -66,7 +66,7 @@ export function makeHandlers(deps = {}) {
       const r = await bridgeOf(cfg).verify(game.id, code, client);
       if (!r.ok) {
         const e = publicError(r.error);
-        if (r.error && !STUDENT_MSG[r.error]) console.error('[mtg/enter] bridge:', r.error);
+        if (r.error && !STUDENT_MSG[r.error]) console.error('[mtg/enter] bridge:', r.error, r.detail || '', BRIDGE_DETAIL[r.detail] || '', r.status || '');
         return sendJson(res, e === 'rate-limited' ? 429 : e === 'unavailable' ? 503 : 401, { ok: false, error: e, message: STUDENT_MSG[e] });
       }
       const s = issue(res, game, cfg, String(r.sid), Number(r.exp) || now() + 3600);
@@ -88,11 +88,13 @@ export function makeHandlers(deps = {}) {
       // إعادة التحقق من MusiTeacher دوريًا: يسري إلغاء المعلم للرمز أو انتهاء اشتراكه
       if (now() - (p.chk || 0) >= RECHECK_SEC) {
         const r = await bridgeOf(cfg).check(game.id, p.s);
-        if (!r.ok && r.error !== 'unreachable' && r.error !== 'not-configured') {
+        // الجلسة تنتهي فقط بجواب قاطع من MusiTeacher (أُلغي الرمز / انتهى / توقف الإصدار)؛ أي عطل تقني مؤقت لا يقطع لعب الطالب
+        if (!r.ok && ['invalid', 'expired', 'release-stopped'].includes(r.error)) {
           res.setHeader('Set-Cookie', clearCookieHeader(game.id, cfg.secure));
           const e = publicError(r.error === 'invalid' ? 'expired' : r.error);
           return sendJson(res, 200, { ok: false, ended: true, error: e, message: STUDENT_MSG[e] });
         }
+        if (!r.ok && r.detail) console.error('[mtg/session] bridge:', r.error, r.detail, BRIDGE_DETAIL[r.detail] || '');
         if (r.ok) issue(res, game, cfg, p.s, Math.min(Number(r.exp) || p.exp, p.exp + RECHECK_SEC * 4));
         // إن تعذّر الوصول إلى MusiTeacher مؤقتًا لا نقطع لعب الطالب؛ تبقى الجلسة حتى انتهائها
       }
@@ -148,5 +150,33 @@ export function makeHandlers(deps = {}) {
     fs.createReadStream(info.file, { start, end }).pipe(res);
   }
 
-  return { enter, session, play };
+  /**
+   * GET /api/health — فحص جاهزية الربط بنقرة واحدة (لا يكشف أي سر):
+   * إعدادات هذا المشروع + هل MusiTeacher المنشور يرد على مسار التحقق بالسر الصحيح + هل يقبل الإصدار الحالي.
+   * يستخدم طلب «check» برقم مشاركة وهمي: لا يُحسب محاولة فاشلة ولا يكتب شيئًا في قاعدة البيانات.
+   */
+  const healthLimit = makeLimiter(20, 60 * 1000);
+  async function health(req, res) {
+    if (!healthLimit(clientKey(req))) return sendJson(res, 429, { ok: false });
+    const cfg = cfgOf();
+    const checks = {
+      release: cfg.release ? 'ok' : 'GAMES_RELEASE فارغ',
+      sessionSecret: cfg.sessionSecret ? 'ok' : 'GAMES_SESSION_SECRET غير موجود أو أقصر من 24 حرفًا',
+      bridgeSecret: !cfg.bridgeSecretRaw ? 'STUDENT_GAMES_BRIDGE_SECRET غير موجود' : cfg.bridgeSecret ? 'ok' : BRIDGE_DETAIL['bridge-secret-short'],
+      musiteacherUrl: cfg.musiteacherUrl ? 'ok' : 'MUSITEACHER_URL غير موجود',
+    };
+    const b = bridgeOf(cfg);
+    let bridge = 'لم يُفحص';
+    try {
+      const r = await b.check('health-probe', 'health-probe');
+      if (r.detail) bridge = BRIDGE_DETAIL[r.detail] || r.detail;
+      else if (r.error === 'release-stopped') bridge = `MusiTeacher لا يقبل الإصدار «${cfg.release}» — أضفه واجعله «الحالي» من /dashboard/student-games`;
+      else if (r.error === 'invalid' || r.ok === false) bridge = 'ok';
+    } catch (e) { bridge = 'خطأ: ' + (e && e.message); }
+    const ok = Object.values(checks).every((v) => v === 'ok') && bridge === 'ok';
+    return sendJson(res, ok ? 200 : 503, { ok, release: cfg.release || null, musiteacher: b.host ? b.host() : '', checks, bridge, games: registry().games.filter((g) => g.status === 'published').length },
+      { 'Cache-Control': 'no-store' });
+  }
+
+  return { enter, session, play, health };
 }

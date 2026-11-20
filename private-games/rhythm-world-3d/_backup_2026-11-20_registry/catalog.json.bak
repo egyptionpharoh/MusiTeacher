@@ -1,0 +1,203 @@
+{
+ "generatedAt": "2026-11-20T06:00:42.391Z",
+ "games": [
+  {
+   "id": "accordion-3d",
+   "title": "عازفة الأكورديون ثلاثية الأبعاد",
+   "category": "keys",
+   "cover": "/covers/accordion-3d.jpg",
+   "link": "/games/accordion-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:53.763Z"
+  },
+  {
+   "id": "organ-3d",
+   "title": "الأورج الافتراضي ثلاثي الأبعاد",
+   "category": "keys",
+   "cover": "/covers/organ-3d.jpg",
+   "link": "/games/organ-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:53.795Z"
+  },
+  {
+   "id": "violinist-3d",
+   "title": "عازفة الكمان ثلاثية الأبعاد",
+   "category": "strings",
+   "cover": "/covers/violinist-3d.jpg",
+   "link": "/games/violinist-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:53.953Z"
+  },
+  {
+   "id": "virtual-violin",
+   "title": "آلة الكمان الافتراضية",
+   "category": "strings",
+   "cover": "/covers/virtual-violin.jpg",
+   "link": "/games/virtual-violin",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:53.968Z"
+  },
+  {
+   "id": "violin-scales",
+   "title": "سُلّم صول الكبير على الكمان",
+   "category": "scales",
+   "cover": "/covers/violin-scales.jpg",
+   "link": "/games/violin-scales",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:53.979Z"
+  },
+  {
+   "id": "oudist-3d",
+   "title": "عازف العود ثلاثي الأبعاد",
+   "category": "strings",
+   "cover": "/covers/oudist-3d.jpg",
+   "link": "/games/oudist-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.008Z"
+  },
+  {
+   "id": "virtual-oud",
+   "title": "العود الافتراضي",
+   "category": "strings",
+   "cover": "/covers/virtual-oud.jpg",
+   "link": "/games/virtual-oud",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.011Z"
+  },
+  {
+   "id": "oud-3d",
+   "title": "آلة العود — مجسم تعليمي",
+   "category": "strings",
+   "cover": "/covers/oud-3d.jpg",
+   "link": "/games/oud-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.014Z"
+  },
+  {
+   "id": "oud-maqamat",
+   "title": "مقامات العود ثلاثية الأبعاد",
+   "category": "scales",
+   "cover": "/covers/oud-maqamat.jpg",
+   "link": "/games/oud-maqamat",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.026Z"
+  },
+  {
+   "id": "virtual-qanun",
+   "title": "القانون الافتراضي",
+   "category": "strings",
+   "cover": "/covers/virtual-qanun.jpg",
+   "link": "/games/virtual-qanun",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.029Z"
+  },
+  {
+   "id": "qanun-3d",
+   "title": "آلة القانون — مجسم تعليمي",
+   "category": "strings",
+   "cover": "/covers/qanun-3d.jpg",
+   "link": "/games/qanun-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.040Z"
+  },
+  {
+   "id": "guitar-3d",
+   "title": "الجيتار الكلاسيكي — مجسم تعليمي",
+   "category": "strings",
+   "cover": "/covers/guitar-3d.jpg",
+   "link": "/games/guitar-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.043Z"
+  },
+  {
+   "id": "piano-scales",
+   "title": "سلالم البيانو ثلاثية الأبعاد",
+   "category": "scales",
+   "cover": "/covers/piano-scales.jpg",
+   "link": "/games/piano-scales",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.054Z"
+  },
+  {
+   "id": "accordion-scales",
+   "title": "سلالم الأكورديون ثلاثية الأبعاد",
+   "category": "scales",
+   "cover": "/covers/accordion-scales.jpg",
+   "link": "/games/accordion-scales",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.070Z"
+  },
+  {
+   "id": "xylophone",
+   "title": "الإكسليفون ثلاثي الأبعاد",
+   "category": "percussion",
+   "cover": "/covers/xylophone.jpg",
+   "link": "/games/xylophone",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.085Z"
+  },
+  {
+   "id": "percussion-3d",
+   "title": "عالم الآلات الإيقاعية الشرقية",
+   "category": "percussion",
+   "cover": "/covers/percussion-3d.svg",
+   "link": "/games/percussion-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.156Z"
+  },
+  {
+   "id": "band-3d",
+   "title": "آلات الباند – Interactive Band Instruments",
+   "category": "percussion",
+   "cover": "/covers/band-3d.svg",
+   "link": "/games/band-3d",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.223Z"
+  },
+  {
+   "id": "omani-rhythms",
+   "title": "إيقاعات الفنون العُمانية",
+   "category": "percussion",
+   "cover": "/covers/omani-rhythms.jpg",
+   "link": "/games/omani-rhythms",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.275Z"
+  },
+  {
+   "id": "oriental-organ-piano",
+   "title": "Oriental Maestro — الأورج الشرقي والبيانو الغربي",
+   "category": "keys",
+   "cover": "/covers/oriental-organ-piano.jpg",
+   "link": "/games/oriental-organ-piano",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.537Z"
+  },
+  {
+   "id": "melodic-dictation",
+   "title": "مسابقة التدوين والإملاء اللحني",
+   "category": "notation",
+   "cover": "/covers/melodic-dictation.svg",
+   "link": "/games/melodic-dictation",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.570Z"
+  },
+  {
+   "id": "rhythm-dictation",
+   "title": "مسابقة التدوين والإملاء الإيقاعي",
+   "category": "notation",
+   "cover": "/covers/rhythm-dictation.svg",
+   "link": "/games/rhythm-dictation",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.610Z"
+  },
+  {
+   "id": "time-signatures",
+   "title": "طريقة أداء الموازين الإيقاعية",
+   "category": "notation",
+   "cover": "/covers/time-signatures.svg",
+   "link": "/games/time-signatures",
+   "version": 1,
+   "updatedAt": "2026-11-20T00:43:54.619Z"
+  }
+ ]
+}

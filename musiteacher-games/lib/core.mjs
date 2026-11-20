@@ -28,7 +28,8 @@ export function config(env = process.env) {
     release: (env.GAMES_RELEASE || '').trim(),                         // معرّف الإصدار الفصلي، مثل 2026-S2
     sessionSecret: secret.length >= 24 ? secret : '',                  // سر توقيع الجلسات (24 حرفًا على الأقل)
     musiteacherUrl: (env.MUSITEACHER_URL || '').replace(/\/+$/, ''),   // عنوان المنصة الأم (للتحقق خادم ↔ خادم فقط)
-    bridgeSecret: env.STUDENT_GAMES_BRIDGE_SECRET || '',               // السر المشترك مع MusiTeacher
+    bridgeSecretRaw: env.STUDENT_GAMES_BRIDGE_SECRET || '',
+    bridgeSecret: (env.STUDENT_GAMES_BRIDGE_SECRET || '').length >= 24 ? env.STUDENT_GAMES_BRIDGE_SECRET : '', // السر المشترك مع MusiTeacher (24 حرفًا على الأقل، نفس شرط MusiTeacher)
     secure: env.NODE_ENV === 'production' || !!env.VERCEL,
   };
 }

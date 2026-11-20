@@ -136,3 +136,23 @@ test('تقوية: صفحة اللعبة تحمل قفل النطاق أولًا 
   assert.match(html, /<meta name="mtg-t" content="[0-9a-f]{10}">/);
   assert.match(html, /data-t="[0-9a-f]{10}"/);
 });
+
+test('الجلسة لا تنقطع بعطل تقني مؤقت في MusiTeacher، وتنتهي فقط بجواب قاطع', async () => {
+  const { makeHandlers: mk } = await import('../lib/handlers.mjs');
+  const mkCfg = { ...cfg };
+  let answer = { ok: false, error: 'server-error', detail: 'mt-server-error' };
+  const hb = mk({ config: mkCfg, bridge: { verify: async () => ({ ok: true, sid: 'sid-9', exp: Math.floor(Date.now() / 1000) + 3600 }), check: async () => answer }, gamesDir: dir, getGame: (id) => GAMES[id] || null });
+  const srv = http.createServer((q, s) => { const u = new URL(q.url, 'http://x'); if (u.pathname === '/api/enter') return hb.enter(q, s); if (u.pathname === '/api/session') return hb.session(q, s); s.end(); });
+  await new Promise((r) => srv.listen(0, r)); const b2 = `http://localhost:${srv.address().port}`;
+  const e = await fetch(b2 + '/api/enter', { method: 'POST', headers: { 'content-type': 'application/json', origin: b2 }, body: JSON.stringify({ game: 'demo', code: '482915' }) });
+  const c = e.headers.get('set-cookie').split(';')[0];
+  const { signSession, verifySession, readCookie, cookieName } = await import('../lib/core.mjs');
+  const p = verifySession(readCookie(c, cookieName('demo')), 'demo', cfg.release, cfg.sessionSecret);
+  const old = `${cookieName('demo')}=` + signSession({ ...p, chk: 0 }, cfg.sessionSecret);   // إجبار إعادة الفحص
+  const s1 = await (await fetch(b2 + '/api/session?game=demo', { headers: { cookie: old } })).json();
+  assert.equal(s1.ok, true, 'عطل تقني ← الطالب يكمل');
+  answer = { ok: false, error: 'invalid' };
+  const s2 = await (await fetch(b2 + '/api/session?game=demo', { headers: { cookie: old } })).json();
+  assert.equal(s2.ok, false); assert.equal(s2.ended, true, 'رمز أُلغي ← تنتهي الجلسة');
+  srv.close();
+});

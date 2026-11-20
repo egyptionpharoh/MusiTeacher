@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-20T00:43:54.693Z",
+ "generatedAt": "2026-11-20T07:07:32.463Z",
  "source": "MusiTeacher",
  "shared": {
   "hash": "79372c881429b64d",
@@ -66,6 +66,12 @@
    "bytes": 228207,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 13,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/accordion-3d.jpg"
   },
   {
@@ -107,6 +113,12 @@
    "bytes": 239619,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 14,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/organ-3d.jpg"
   },
   {
@@ -146,6 +158,12 @@
    "bytes": 8472420,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 35,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/violinist-3d.jpg"
   },
   {
@@ -183,6 +201,12 @@
    "bytes": 1830010,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 2
+   },
+   "refProblems": [],
    "cover": "/covers/virtual-violin.jpg"
   },
   {
@@ -220,6 +244,12 @@
    "bytes": 1438236,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/violin-scales.jpg"
   },
   {
@@ -262,6 +292,12 @@
    "bytes": 304719,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 15,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/oudist-3d.jpg"
   },
   {
@@ -299,6 +335,12 @@
    "bytes": 110172,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/virtual-oud.jpg"
   },
   {
@@ -337,6 +379,12 @@
    "bytes": 149657,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/oud-3d.jpg"
   },
   {
@@ -377,6 +425,12 @@
    "bytes": 1445862,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/oud-maqamat.jpg"
   },
   {
@@ -413,6 +467,12 @@
    "bytes": 94329,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/virtual-qanun.jpg"
   },
   {
@@ -451,6 +511,12 @@
    "bytes": 1358465,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/qanun-3d.jpg"
   },
   {
@@ -487,8 +553,28 @@
    "syncedAt": "2026-11-20T00:43:54.043Z",
    "files": 1,
    "bytes": 27485,
-   "warnings": [],
+   "warnings": [
+    "مرجع مكسور في index.html: https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js (يعتمد على موقع خارجي)",
+    "مرجع مكسور في index.html: https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js (يعتمد على موقع خارجي)"
+   ],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [
+    {
+     "file": "index.html",
+     "ref": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+     "problem": "يعتمد على موقع خارجي"
+    },
+    {
+     "file": "index.html",
+     "ref": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js",
+     "problem": "يعتمد على موقع خارجي"
+    }
+   ],
    "cover": "/covers/guitar-3d.jpg"
   },
   {
@@ -526,6 +612,12 @@
    "bytes": 1406282,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/piano-scales.jpg"
   },
   {
@@ -563,6 +655,12 @@
    "bytes": 1427012,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/accordion-scales.jpg"
   },
   {
@@ -600,6 +698,12 @@
    "bytes": 1414211,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 0,
+    "html": 1,
+    "inlineScripts": 1
+   },
+   "refProblems": [],
    "cover": "/covers/xylophone.jpg"
   },
   {
@@ -646,6 +750,12 @@
    "bytes": 1090733,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 7,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/percussion-3d.svg"
   },
   {
@@ -693,6 +803,12 @@
    "bytes": 1656956,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 5,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/band-3d.svg"
   },
   {
@@ -742,6 +858,12 @@
    "bytes": 1472039,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 7,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/omani-rhythms.jpg"
   },
   {
@@ -785,6 +907,12 @@
    "bytes": 6684526,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 11,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/oriental-organ-piano.jpg"
   },
   {
@@ -827,6 +955,12 @@
    "bytes": 771661,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 8,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/melodic-dictation.svg"
   },
   {
@@ -867,6 +1001,12 @@
    "bytes": 790942,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 5,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/rhythm-dictation.svg"
   },
   {
@@ -911,7 +1051,65 @@
    "bytes": 191442,
    "warnings": [],
    "needsUpdate": false,
+   "hardened": {
+    "js": 9,
+    "html": 0,
+    "inlineScripts": 0
+   },
+   "refProblems": [],
    "cover": "/covers/time-signatures.svg"
+  },
+  {
+   "id": "rhythm-world-3d",
+   "title": "عالم الإيقاع ثلاثي الأبعاد",
+   "description": "العلامات والسكتات الإيقاعية شخصيات ثلاثية الأبعاد تعرّف بنفسها بالعربية: تدوير وتكبير، وسماع الزمن بالصوت والصمت، ووضع عرض للمعلم، ومعمل للعلاقات الزمنية، واستوديو لترتيب الإيقاع والتصفيق معه، وإيقاع أسماء الطلاب، وإنشاء وسائل تعليمية مطبوعة (بطاقات وأوراق عمل) بحسب الصف.",
+   "category": "notation",
+   "grade": null,
+   "tags": [
+    "إيقاع",
+    "علامات إيقاعية",
+    "سكتات",
+    "نوار",
+    "بلانش",
+    "روند",
+    "كروش",
+    "دوبل كروش",
+    "تاتي",
+    "تفاتيفي",
+    "القيم الزمنية",
+    "أسماء",
+    "وسائل تعليمية",
+    "طباعة",
+    "ثلاثي الأبعاد"
+   ],
+   "entry": "index.html",
+   "settings": {
+    "threeD": true,
+    "needsAudio": true,
+    "markCorner": "bottom-left",
+    "allowPrint": true
+   },
+   "allowDownloads": false,
+   "origin": {
+    "platform": "MusiTeacher",
+    "path": "private-games/rhythm-world-3d",
+    "page": "/dashboard/resources/lab/rhythm-world-3d",
+    "hash": "bce87c9748b322da"
+   },
+   "clonePath": "games/rhythm-world-3d",
+   "link": "/games/rhythm-world-3d",
+   "status": "published",
+   "version": 1,
+   "sourceHash": "bce87c9748b322da",
+   "sharedHash": "79372c881429b64d",
+   "syncedAt": "2026-11-20T07:07:19.678Z",
+   "files": 32,
+   "bytes": 344171,
+   "warnings": [],
+   "needsUpdate": false,
+   "hardened": false,
+   "refProblems": [],
+   "cover": "/covers/rhythm-world-3d.svg"
   }
  ]
 }

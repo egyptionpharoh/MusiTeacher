@@ -29,6 +29,10 @@
     "api/session.js": {
       "includeFiles": "data/registry.json",
       "maxDuration": 15
+    },
+    "api/health.js": {
+      "includeFiles": "data/registry.json",
+      "maxDuration": 15
     }
   },
   "headers": [

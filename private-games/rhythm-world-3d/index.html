@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>عالم الإيقاع ثلاثي الأبعاد – MusiTeacher</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./src/ui/style.css">
+<link rel="stylesheet" href="./src/print/print.css">
+<script type="importmap">{ "imports": { "three": "./_shared/3d/vendor/three/three.module.js", "three/addons/": "./_shared/3d/vendor/three/addons/" } }</script>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="brand"><span class="logo">♫</span><div><h1>عالم الإيقاع</h1><small>Rhythm World 3D · MusiTeacher</small></div></div>
+    <nav id="modes">
+      <button data-mode="explore" class="on">🎭 الشخصيات</button>
+      <button data-mode="present">📽 وضع العرض</button>
+      <button data-mode="lab">⚖ معمل الأزمنة</button>
+      <button data-mode="studio">🥁 استوديو الإيقاع</button>
+      <button data-mode="names">🧒 أسماؤنا والإيقاع</button>
+    </nav>
+    <div class="tools">
+      <label class="grade">الصف <select id="grade"></select></label>
+      <button id="btn-print" class="accent">🖨 إنشاء وسيلة تعليمية للطباعة</button>
+      <button id="btn-src" title="المصادر والتراخيص">📚</button>
+    </div>
+  </header>
+  <main id="main" data-mode="explore">
+    <aside id="side"></aside>
+    <section id="stage">
+      <div id="view">
+        <canvas id="scene"></canvas>
+        <div id="labels"></div>
+        <div id="caption" hidden></div>
+        <div id="bigname" hidden></div>
+        <div id="viewtools">
+          <button data-v="in" title="تكبير">＋</button><button data-v="out" title="تصغير">－</button>
+          <button data-v="left" title="تدوير">⟲</button><button data-v="right" title="تدوير">⟳</button>
+          <button data-v="reset" title="إعادة ضبط العرض">⌂</button><button data-v="full" title="ملء الشاشة">⛶</button>
+        </div>
+        <div id="nogl" hidden>تعذّر تشغيل العرض ثلاثي الأبعاد على هذا الجهاز؛ بقية الأقسام (المعمل، الأسماء، الطباعة) تعمل.</div>
+      </div>
+      <div id="panel2d" hidden></div>
+      <div id="bar"></div>
+    </section>
+  </main>
+  <aside id="sources" hidden></aside>
+</div>
+<div id="print-root" hidden></div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
