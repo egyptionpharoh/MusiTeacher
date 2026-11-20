@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>آلات الباند – MusiTeacher</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./src/style.css">
+<script type="importmap">{ "imports": { "three": "./_shared/3d/vendor/three/three.module.js", "three/addons/": "./_shared/3d/vendor/three/addons/" } }</script>
+</head>
+<body>
+<header id="top">
+  <div class="brand"><span class="note">♫</span><div><h1>آلات الباند</h1><small>Interactive Band Instruments · MusiTeacher</small></div></div>
+  <nav>
+    <button id="nav-home" class="on">الآلات</button>
+    <button id="nav-band">عزف الباند</button>
+    <button id="nav-src" aria-expanded="false">📚 المصادر والمراجع</button>
+  </nav>
+</header>
+<main id="app" class="home">
+  <section id="home"><p class="lead">اختر آلة لاستكشافها وسماع صوتها الحقيقي وتجربة العزف عليها.</p><div id="cards"></div></section>
+  <aside id="panel"></aside>
+  <section id="stage">
+    <div id="view">
+      <canvas id="scene"></canvas>
+      <div id="labels"></div>
+      <div id="hint"></div>
+      <div id="loading" hidden>جارٍ تحميل التسجيلات…</div>
+      <div id="nogl" hidden>تعذّر تشغيل العرض ثلاثي الأبعاد على هذا الجهاز.</div>
+    </div>
+    <div id="bar"></div>
+  </section>
+  <aside id="sources" aria-label="المصادر والمراجع"></aside>
+</main>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

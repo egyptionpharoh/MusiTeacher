@@ -1,0 +1,5 @@
+tests
+scripts
+data/*.md
+*.bat
+README*.md

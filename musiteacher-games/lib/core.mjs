@@ -1,0 +1,222 @@
+// =====================================================================
+//  MusiTeacher Games — النواة المشتركة لخوادم المشروع (بلا أي مكتبة خارجية: node:crypto و node:fs فقط)
+//  - جلسة الطالب: كوكي موقّع HMAC لكل لعبة (لا حسابات ولا بيانات شخصية)
+//  - تقديم ملفات الألعاب المحمية من مجلد games/ (خارج public) بأمان
+// =====================================================================
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+export const GAMES_DIR = path.join(ROOT, 'games');
+export const COOKIE_PREFIX = 'mtg_';
+/** أقصى عمر لجلسة الطالب قبل أن يُطلب الرمز من جديد (حتى لو بقي الرمز صالحًا) */
+export const SESSION_MAX_SEC = 8 * 60 * 60;
+/** كل كم دقيقة نعيد سؤال MusiTeacher: هل ما زال الرمز صالحًا؟ (إلغاء المعلم يسري خلالها) */
+export const RECHECK_SEC = 15 * 60;
+
+const ID_RE = /^[a-z0-9][a-z0-9-]{0,62}$/;
+export const isValidId = (id) => typeof id === 'string' && ID_RE.test(id) && id !== '_shared';
+
+// ---------------------------------------------------------------------
+//  الإعدادات (متغيرات البيئة في Vercel) — لا تُكتب أي قيمة سرية داخل الكود
+// ---------------------------------------------------------------------
+export function config(env = process.env) {
+  const secret = env.GAMES_SESSION_SECRET || '';
+  return {
+    release: (env.GAMES_RELEASE || '').trim(),                         // معرّف الإصدار الفصلي، مثل 2026-S2
+    sessionSecret: secret.length >= 24 ? secret : '',                  // سر توقيع الجلسات (24 حرفًا على الأقل)
+    musiteacherUrl: (env.MUSITEACHER_URL || '').replace(/\/+$/, ''),   // عنوان المنصة الأم (للتحقق خادم ↔ خادم فقط)
+    bridgeSecret: env.STUDENT_GAMES_BRIDGE_SECRET || '',               // السر المشترك مع MusiTeacher
+    secure: env.NODE_ENV === 'production' || !!env.VERCEL,
+  };
+}
+
+// ---------------------------------------------------------------------
+//  سجل الألعاب المنسوخة (يولّده scripts/sync-games.mjs)
+// ---------------------------------------------------------------------
+let registryCache = null;
+export function registry() {
+  if (!registryCache) {
+    try { registryCache = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'registry.json'), 'utf8')); }
+    catch { registryCache = { games: [] }; }
+  }
+  return registryCache;
+}
+export function resetRegistryCache() { registryCache = null; }
+export function getGame(id) {
+  if (!isValidId(id)) return null;
+  const g = registry().games.find((x) => x.id === id);
+  return g && g.status === 'published' ? g : null;
+}
+
+// ---------------------------------------------------------------------
+//  الرمز: 6 أرقام، مع قبول الأرقام العربية (٠١٢…) والفارسية وتجاهل المسافات
+// ---------------------------------------------------------------------
+export function normalizeCode(raw) {
+  const s = String(raw ?? '').replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06F0)).replace(/[\s\-_.]/g, '');
+  return /^\d{6}$/.test(s) ? s : null;
+}
+
+// ---------------------------------------------------------------------
+//  جلسة الطالب الموقّعة
+// ---------------------------------------------------------------------
+const b64u = (buf) => Buffer.from(buf).toString('base64url');
+const hmac = (data, secret) => crypto.createHmac('sha256', secret).update(data).digest('base64url');
+
+export function cookieName(gameId) { return COOKIE_PREFIX + gameId.replace(/-/g, '_'); }
+
+/** payload: { g: لعبة, s: معرّف المشاركة, r: الإصدار, exp: انتهاء الجلسة, chk: آخر تحقق من MusiTeacher } */
+export function signSession(payload, secret) {
+  const body = b64u(JSON.stringify(payload));
+  return `${body}.${hmac(body, secret)}`;
+}
+export function verifySession(token, gameId, release, secret, nowSec = Math.floor(Date.now() / 1000)) {
+  if (!token || !secret || typeof token !== 'string') return null;
+  const [body, sig] = token.split('.');
+  if (!body || !sig) return null;
+  const good = hmac(body, secret);
+  const a = Buffer.from(sig), b = Buffer.from(good);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+  let p; try { p = JSON.parse(Buffer.from(body, 'base64url').toString('utf8')); } catch { return null; }
+  if (!p || p.g !== gameId || p.r !== release || typeof p.exp !== 'number' || p.exp <= nowSec) return null;
+  return p;
+}
+export function readCookie(header, name) {
+  if (!header) return null;
+  for (const part of String(header).split(';')) {
+    const i = part.indexOf('='); if (i < 0) continue;
+    if (part.slice(0, i).trim() === name) return part.slice(i + 1).trim();
+  }
+  return null;
+}
+export function setCookieHeader(gameId, value, { secure, maxAge }) {
+  return `${cookieName(gameId)}=${value}; Path=/; Max-Age=${Math.max(0, Math.floor(maxAge))}; HttpOnly; SameSite=Lax${secure ? '; Secure' : ''}`;
+}
+export const clearCookieHeader = (gameId, secure) => setCookieHeader(gameId, '', { secure, maxAge: 0 });
+
+// ---------------------------------------------------------------------
+//  حد بسيط للمحاولات داخل نسخة الخادم (خط أول؛ الحد الحقيقي في MusiTeacher عبر قاعدة البيانات)
+// ---------------------------------------------------------------------
+export function makeLimiter(max, windowMs, now = () => Date.now()) {
+  const hits = new Map();
+  return (key) => {
+    const t = now(), w = hits.get(key);
+    if (!w || t - w.start > windowMs) { hits.set(key, { start: t, n: 1 }); if (hits.size > 5000) hits.clear(); return true; }
+    w.n += 1; return w.n <= max;
+  };
+}
+export function clientKey(req) {
+  const h = req.headers || {};
+  const ip = String(h['x-real-ip'] || (h['x-forwarded-for'] || '').split(',')[0] || (req.socket && req.socket.remoteAddress) || 'unknown').trim();
+  return crypto.createHash('sha256').update('mtg:' + ip).digest('hex').slice(0, 32);   // لا نرسل عنوان IP نفسه
+}
+
+// ---------------------------------------------------------------------
+//  ملفات الألعاب: قائمة بيضاء للامتدادات + منع التسلل والروابط الرمزية + ملفات مخفية
+// ---------------------------------------------------------------------
+export const MIME = {
+  '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
+  '.glb': 'model/gltf-binary', '.gltf': 'model/gltf+json', '.bin': 'application/octet-stream', '.fbx': 'application/octet-stream',
+  '.wasm': 'application/wasm', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp',
+  '.gif': 'image/gif', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg',
+  '.wav': 'audio/wav', '.m4a': 'audio/mp4', '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.otf': 'font/otf',
+  '.hdr': 'application/octet-stream', '.ktx2': 'image/ktx2', '.mp4': 'video/mp4', '.webm': 'video/webm',
+};
+
+export function resolveGameFile(root, gameId, rel, entry = 'index.html') {
+  let base = path.join(root, gameId);
+  let segs = String(rel || '').split('/').filter(Boolean);
+  if (!segs.length) segs = [entry];
+  if (segs[0] === '_shared') { base = path.join(root, '_shared'); segs = segs.slice(1); if (!segs.length) return null; }
+  const clean = [];
+  for (const raw of segs) {
+    let s; try { s = decodeURIComponent(raw); } catch { return null; }
+    if (!s || s === '.' || s === '..' || s.startsWith('.') || /[\\/:\0*?"<>|]/.test(s)) return null;
+    clean.push(s);
+  }
+  const full = path.resolve(base, ...clean);
+  if (!full.startsWith(base + path.sep)) return null;
+  let real, realBase;
+  try { real = fs.realpathSync(full); realBase = fs.realpathSync(base); } catch { return null; }
+  if (!real.startsWith(realBase + path.sep)) return null;
+  const st = fs.statSync(real);
+  const ext = path.extname(real).toLowerCase();
+  if (!st.isFile() || !MIME[ext]) return null;
+  return { file: real, size: st.size, mtimeMs: st.mtimeMs, ext };
+}
+
+export function securityHeaders(extra = {}) {
+  return {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Robots-Tag': 'noindex, nofollow, noarchive',
+    'Content-Security-Policy': "frame-ancestors 'self'",
+    'Referrer-Policy': 'same-origin',
+    'Cross-Origin-Resource-Policy': 'same-origin',
+    'Content-Disposition': 'inline',
+    ...extra,
+  };
+}
+
+const MARK = '© MusiTeacher Games – All Rights Reserved – 2026';
+const CORNER = { 'top-left': 'top:8px;left:8px', 'top-right': 'top:8px;right:8px', 'bottom-left': 'bottom:6px;left:8px', 'bottom-right': 'bottom:6px;right:8px' };
+/**
+ * قفل النطاق: أول سكربت في كل صفحة لعبة. لا تعمل اللعبة إلا داخل صفحتها الرسمية على نفس الموقع.
+ * إن حُفظت الصفحة بـ Save As وفُتحت من الجهاز (file://) أو رُفعت على موقع آخر ← تتوقف وتظهر رسالة.
+ * (يمكن لخبير حذفه من نسخة محفوظة يدويًا؛ هو طبقة ردع ترفع كلفة إعادة الاستخدام، وليس حماية مطلقة.)
+ */
+export function guardScript(gameId, host) {
+  const g = JSON.stringify(gameId), h = JSON.stringify(String(host || '').toLowerCase().replace(/[^a-z0-9.:-]/g, ''));
+  return `<script>(function(){var g=${g},h=${h},k=false;try{var L=location,T=window.top;k=(L.protocol==='https:'||L.hostname==='localhost'||L.hostname==='127.0.0.1')&&L.host===h&&T!==window&&T.location.host===h&&T.document.body.getAttribute('data-game')===g}catch(e){k=false}` +
+    `if(!k){try{window.stop()}catch(e){}document.documentElement.innerHTML='<div style="font-family:Tahoma,sans-serif;direction:rtl;text-align:center;padding:3em;color:#113f67;background:#f3f8fb;min-height:100vh"><h2>هذه اللعبة تعمل فقط من MusiTeacher Games</h2><p>افتحها من الرابط الذي أرسله معلمك.</p></div>';throw new Error('mtg-guard')}})();</script>`;
+}
+/** بصمة تتبّع لكل جلسة: إن ظهرت نسخة منشورة خارج الموقع نعرف من أي رمز مشاركة خرجت. */
+export function traceOf(sid) { return crypto.createHash('sha256').update('trace:' + String(sid)).digest('hex').slice(0, 10); }
+
+/** نفس ما تحقنه المنصة الأم: علامة الملكية + ردع النسخ والطباعة (ردع فقط، ليس حماية حقيقية) + قفل النطاق + بصمة التتبع */
+export function injectHtml(html, game, ctx = {}) {
+  const s = game.settings || {};
+  const corner = s.markCorner || 'bottom-left';
+  const markCss = corner !== 'none' ? `#mt-ip-mark{position:fixed;${CORNER[corner] || CORNER['bottom-left']};z-index:2147483000;font:600 10px/1.2 Tajawal,Arial,sans-serif;color:#fff;background:rgba(0,0,0,.38);padding:3px 8px;border-radius:999px;pointer-events:none;user-select:none;direction:ltr}` : '';
+  const printCss = s.allowPrint ? '' : '@media print{html{display:none!important}}';
+  const blocked = s.allowPrint ? "k==='s'||k==='u'" : "k==='s'||k==='p'||k==='u'";
+  const trace = ctx.trace ? `<!-- mtg:${ctx.trace} --><meta name="mtg-t" content="${ctx.trace}">` : '';
+  const head = (ctx.host ? guardScript(game.id, ctx.host) : '') + trace +
+    `<meta name="robots" content="noindex,nofollow,noarchive"><style>${markCss}${printCss}img{-webkit-user-drag:none}</style>` +
+    `<script>(function(){var b=function(e){e.preventDefault()};addEventListener('contextmenu',b);addEventListener('dragstart',b);` +
+    `addEventListener('keydown',function(e){var k=(e.key||'').toLowerCase();if((e.ctrlKey||e.metaKey)&&(${blocked}))e.preventDefault();});})();</script>`;
+  let out = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, (m) => m + head) : head + html;
+  if (markCss) { const mk = `<div id="mt-ip-mark" aria-hidden="true" data-t="${ctx.trace || ''}">${MARK}${ctx.trace ? ' · #' + ctx.trace.slice(0, 6) : ''}</div>`; const i = out.toLowerCase().lastIndexOf('</body>'); out = i >= 0 ? out.slice(0, i) + mk + out.slice(i) : out + mk; }
+  return out;
+}
+
+// ---------------------------------------------------------------------
+//  أدوات HTTP صغيرة متوافقة مع Vercel (req,res) ومع خادم التطوير المحلي
+// ---------------------------------------------------------------------
+export function send(res, status, body, headers = {}) {
+  res.statusCode = status;
+  for (const [k, v] of Object.entries(headers)) res.setHeader(k, v);
+  res.end(body);
+}
+export function sendJson(res, status, obj, headers = {}) {
+  send(res, status, JSON.stringify(obj), { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...securityHeaders(), ...headers });
+}
+export async function readJson(req, limit = 4096) {
+  if (req.body !== undefined && req.body !== null) {
+    if (typeof req.body === 'object' && !Buffer.isBuffer(req.body)) return req.body;
+    try { return JSON.parse(String(req.body)); } catch { return null; }
+  }
+  const chunks = []; let n = 0;
+  for await (const c of req) { n += c.length; if (n > limit) return null; chunks.push(c); }
+  try { return JSON.parse(Buffer.concat(chunks).toString('utf8') || 'null'); } catch { return null; }
+}
+export function queryOf(req) { return new URL(req.url, 'http://x').searchParams; }
+/** طلب من نفس الموقع (حماية CSRF بسيطة لنقطتي الدخول والجلسة) */
+export function sameOrigin(req) {
+  const origin = req.headers.origin;
+  if (!origin) return true;
+  try { return new URL(origin).host === (req.headers['x-forwarded-host'] || req.headers.host); } catch { return false; }
+}

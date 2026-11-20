@@ -7,6 +7,8 @@ import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
 import { getGame, publicGameInfo, GAME_CATEGORIES } from '@/data/virtualGames';
 import '@/components/virtual-lab/virtual-lab.css';
+// زر «مشاركة اللعبة مع الطلاب»: رابط النسخة الطلابية في MusiTeacher Games + رمز الدخول (لا يغيّر شيئًا في اللعبة الأصلية)
+import ShareGameButton from '@/components/student-games/ShareGameButton';
 
 const REFRESH_MS = 20 * 60 * 1000;
 
@@ -156,6 +158,7 @@ export default function LabPlayerPage() {
           </div>
         </div>
         <div className="vlp-btns">
+          {(isSubscribed || isAdmin) && game.status === 'available' && <ShareGameButton game={game} />}
           <button type="button" className="vlp-btn" onClick={reload} disabled={state !== 'ready'}>↻ إعادة تحميل</button>
           <button type="button" className={`vlp-btn${isFull ? ' on' : ''}`} onClick={fullscreen} disabled={state !== 'ready'}
             aria-pressed={isFull} title={isFull ? 'العودة إلى الحجم العادي (Esc)' : 'تكبير اللعبة إلى ملء الشاشة'}>

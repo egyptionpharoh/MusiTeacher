@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oriental Maestro – الأورج الشرقي والبيانو الغربي | MusiTeacher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/organ.css?v=3.0.0">
+</head>
+<body>
+<!-- شاشة البداية: المتصفح لا يسمح بالصوت قبل لمسة المستخدم -->
+<div id="splash" class="splash">
+  <div class="splash-card">
+    <div class="brand-big">Oriental <b>Maestro</b></div>
+    <p class="splash-sub">الأورج الشرقي والبيانو الغربي — MusiTeacher</p>
+    <button id="btnPower" class="power" type="button">⏻ تشغيل الأورج</button>
+    <p class="splash-hint">لوحة مفاتيح حقيقية الإحساس: أصوات مسجلة، أرباع التون، مقامات، وإيقاعات عربية وغربية.</p>
+  </div>
+</div>
+
+<div id="app" class="app" hidden>
+  <!-- الشريط العلوي -->
+  <header class="topbar">
+    <div class="brand">Oriental <b>Maestro</b></div>
+    <div class="mode-switch" role="radiogroup" aria-label="وضع الآلة">
+      <button type="button" class="mode-btn" data-mode="western" role="radio">🎹 البيانو الغربي <small>Western Piano</small></button>
+      <button type="button" class="mode-btn" data-mode="eastern" role="radio">🪕 الأورج الشرقي <small>Oriental Organ</small></button>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="tb" id="btnPanels" aria-pressed="true" title="إظهار/إخفاء لوحة التحكم">🎛️ <span>لوحة التحكم</span></button>
+      <button type="button" class="tb" id="btnTeach" aria-pressed="false" title="الأدوات التعليمية">🎓 <span>أدوات تعليمية</span></button>
+      <button type="button" class="tb" id="btnHelp" title="طريقة الاستخدام">❔</button>
+      <button type="button" class="tb" id="btnInfo" title="نظام التسمية والمصادر والتراخيص">ⓘ</button>
+      <button type="button" class="tb" id="btnFull" title="ملء الشاشة" aria-pressed="false">⛶</button>
+    </div>
+  </header>
+
+  <!-- كل لوحات التحكم في منطقة قابلة للتمرير؛ لوحة المفاتيح تبقى ظاهرة أسفل الشاشة دائمًا -->
+  <div class="controls" id="controls">
+  <!-- جسم الأورج -->
+  <section class="organ" id="organ">
+    <!-- الأصوات -->
+    <div class="panel voices-panel">
+      <div class="panel-title"><span>الأصوات</span><small id="voiceModeHint"></small></div>
+      <div class="parts" role="tablist" aria-label="الجزء الذي تختار صوته">
+        <button type="button" class="part-tab" data-part="upper" role="tab">الرئيسي</button>
+        <button type="button" class="part-tab" data-part="layer" role="tab">الطبقة <i class="led" id="ledLayer"></i></button>
+        <button type="button" class="part-tab" data-part="lower" role="tab">اليد اليسرى <i class="led" id="ledSplit"></i></button>
+      </div>
+      <div class="voice-grid" id="voiceGrid"></div>
+      <button type="button" class="link-btn" id="btnAllVoices">كل الأصوات ▾</button>
+      <div class="voice-info" id="voiceInfo"></div>
+    </div>
+
+    <!-- الشاشة والتحكم -->
+    <div class="panel center-panel">
+      <div class="lcd" id="lcd" aria-live="polite">
+        <div class="lcd-row lcd-top">
+          <span id="lcdMode"></span><span id="lcdVoice"></span>
+        </div>
+        <div class="lcd-note"><span id="lcdNote">—</span><small id="lcdNoteSub"></small></div>
+        <div class="lcd-row lcd-bottom">
+          <span id="lcdRhythm"></span><span id="lcdTempo"></span><span id="lcdMaqam"></span>
+        </div>
+        <div class="lcd-steps" id="lcdSteps" aria-hidden="true"></div>
+        <div class="lcd-status" id="lcdStatus"></div>
+      </div>
+      <div class="knobs">
+        <label class="knob"><span>الصوت العام</span><input type="range" id="kMaster" min="0" max="100" value="80"><b id="vMaster">80</b></label>
+        <label class="knob"><span>الرئيسي</span><input type="range" id="kUpper" min="0" max="100" value="85"><b id="vUpper">85</b></label>
+        <label class="knob"><span>الطبقة</span><input type="range" id="kLayer" min="0" max="100" value="60"><b id="vLayer">60</b></label>
+        <label class="knob"><span>اليسرى</span><input type="range" id="kLower" min="0" max="100" value="70"><b id="vLower">70</b></label>
+        <label class="knob"><span>الإيقاع</span><input type="range" id="kDrums" min="0" max="100" value="75"><b id="vDrums">75</b></label>
+        <label class="knob"><span>الصدى</span><input type="range" id="kReverb" min="0" max="100" value="35"><b id="vReverb">35</b></label>
+        <label class="knob"><span>الكورس</span><input type="range" id="kChorus" min="0" max="100" value="0"><b id="vChorus">0</b></label>
+        <label class="knob"><span>الرجفة</span><input type="range" id="kMod" min="0" max="100" value="0"><b id="vMod">0</b></label>
+      </div>
+      <div class="func-row">
+        <button type="button" class="fbtn" id="btnLayer" aria-pressed="false">طبقة<small>Layer</small></button>
+        <button type="button" class="fbtn" id="btnSplit" aria-pressed="false">تقسيم<small>Split</small></button>
+        <button type="button" class="fbtn" id="btnSplitPoint" title="انقر ثم اضغط المفتاح الذي يبدأ عنده الجزء الأيمن">نقطة التقسيم<small id="splitName">C4</small></button>
+        <button type="button" class="fbtn" id="btnSustain" aria-pressed="false">رنين<small>Sustain · مسافة</small></button>
+        <div class="stepper" title="تصوير الطبقة (Transpose) بأنصاف التون"><button type="button" id="trDown">−</button><span>تصوير <b id="trVal">0</b></span><button type="button" id="trUp">+</button></div>
+        <div class="stepper" title="أوكتاف الجزء المختار"><button type="button" id="ocDown">−</button><span>أوكتاف <b id="ocVal">0</b></span><button type="button" id="ocUp">+</button></div>
+        <button type="button" class="fbtn danger" id="btnPanic" title="إيقاف كل الأصوات (Esc)">⏹<small>إيقاف الكل</small></button>
+      </div>
+      <div class="memory-row">
+        <span class="mem-label">الذاكرة</span>
+        <button type="button" class="mem" data-slot="0">1</button><button type="button" class="mem" data-slot="1">2</button>
+        <button type="button" class="mem" data-slot="2">3</button><button type="button" class="mem" data-slot="3">4</button>
+        <button type="button" class="fbtn small" id="btnStore" aria-pressed="false" title="اضغط «حفظ» ثم رقم الذاكرة">حفظ</button>
+        <button type="button" class="fbtn small" id="btnMidi" title="توصيل لوحة مفاتيح MIDI حقيقية">🎹 MIDI</button>
+      </div>
+    </div>
+
+    <!-- الإيقاعات -->
+    <div class="panel rhythm-panel">
+      <div class="panel-title"><span>الإيقاعات</span><small id="rhythmMeter"></small></div>
+      <div class="rgroups" id="rhythmGroups"></div>
+      <div class="rhythm-grid" id="rhythmGrid"></div>
+      <div class="transport">
+        <button type="button" class="tbig" id="btnStart">▶ تشغيل</button>
+        <button type="button" class="fbtn" id="btnSync" aria-pressed="false" title="يبدأ الإيقاع مع أول مفتاح تضغطه">بدء متزامن<small>Sync</small></button>
+        <button type="button" class="fbtn" id="btnFill">حشوة<small>Fill</small></button>
+        <button type="button" class="fbtn" id="btnEnd">ختام<small>Ending</small></button>
+        <button type="button" class="fbtn" id="btnMetroOnly" aria-pressed="false" title="نقرات المترونوم وحدها بلا إيقاع">🔔 مترونوم<small>وحده</small></button>
+      </div>
+      <div class="tempo-row">
+        <button type="button" class="round" id="bpmDown">−</button>
+        <div class="bpm"><b id="bpmVal">100</b><small>BPM</small></div>
+        <button type="button" class="round" id="bpmUp">+</button>
+        <button type="button" class="fbtn small" id="btnTap">نقر السرعة</button>
+        <input type="range" id="bpmSlider" min="40" max="220" value="100" aria-label="السرعة">
+      </div>
+      <div class="rhythm-opts">
+        <label class="chk"><input type="checkbox" id="chkRiq"> رق مصاحب</label>
+        <label class="chk"><input type="checkbox" id="chkMetro"> مترونوم</label>
+        <label class="chk"><input type="checkbox" id="chkBass"> باص مع الإيقاع</label>
+        <select id="metroBeats" aria-label="ميزان المترونوم"><option value="2">2/4</option><option value="3">3/4</option><option value="4" selected>4/4</option><option value="6">6/8</option></select>
+      </div>
+      <div class="rhythm-info" id="rhythmInfo"></div>
+    </div>
+  </section>
+
+  <!-- الصف الشرقي: المقامات وأرباع التون -->
+  <section class="maqam-row" id="maqamRow">
+    <div class="maqam-select">
+      <label>المقام <select id="maqamSel"></select></label>
+      <button type="button" class="fbtn small" id="btnScaleUp">▲ اعزف صعودًا</button>
+      <button type="button" class="fbtn small" id="btnScaleDown">▼ هبوطًا</button>
+    </div>
+    <div class="qt" id="qtButtons" aria-label="أرباع التون لكل درجة"></div>
+    <label class="qc">ربع التون <input type="range" id="qcSlider" min="30" max="50" value="50"><b id="qcVal">50</b> سنت</label>
+    <div class="maqam-info" id="maqamInfo"></div>
+  </section>
+
+  <!-- الأدوات التعليمية (اختيارية) -->
+  <section class="teach" id="teach" hidden>
+    <div class="teach-group">
+      <span class="tg-title">أسماء المفاتيح</span>
+      <div class="seg" id="namesSeg">
+        <button type="button" data-names="western">غربية</button><button type="button" data-names="eastern">شرقية</button>
+        <button type="button" data-names="both">الاثنتان</button><button type="button" data-names="none">بلا</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="chkOctave" checked> رقم الأوكتاف</label>
+      <label class="chk"><input type="checkbox" id="chkFlats"> الأسود بالبيمول</label>
+      <label class="chk"><input type="checkbox" id="chkDegrees" checked> تلوين درجات المقام</label>
+      <label class="chk"><input type="checkbox" id="chkHints"> حروف لوحة الحاسوب</label>
+    </div>
+    <div class="teach-group">
+      <span class="tg-title">تدريبات</span>
+      <button type="button" class="fbtn small" data-quiz="find">🎯 أين النغمة؟</button>
+      <button type="button" class="fbtn small" data-quiz="ear">👂 ماذا سمعت؟</button>
+      <button type="button" class="fbtn small" data-quiz="qt">⚖️ سيكاه أم بوسليك؟</button>
+      <button type="button" class="fbtn small" id="btnHeritage">🏺 التراث العُماني والخليجي</button>
+      <button type="button" class="fbtn small" id="btnEditor">✍️ محرر الإيقاع</button>
+    </div>
+    <div class="teach-group">
+      <span class="tg-title">المسجّل</span>
+      <button type="button" class="fbtn small" id="recBtn">⏺ تسجيل</button>
+      <button type="button" class="fbtn small" id="recPlay" disabled>▶ استماع</button>
+      <button type="button" class="fbtn small" id="recClear" disabled>✕ مسح</button>
+      <span class="rec-info" id="recInfo"></span>
+    </div>
+    <div class="quiz" id="quizBox" hidden></div>
+  </section>
+  <footer class="foot" id="foot">
+    <button type="button" class="link-btn" id="footInfo">نظام التسمية ومصادر الأصوات والإيقاعات وتراخيصها</button>
+  </footer>
+  </div>
+
+  <!-- لوحة المفاتيح -->
+  <section class="kb-wrap" id="kbWrap">
+    <div class="kb-bar">
+      <div class="seg small" id="sizeSeg" title="عدد المفاتيح">
+        <button type="button" data-size="37">37</button><button type="button" data-size="49">49</button>
+        <button type="button" data-size="61">61</button><button type="button" data-size="76">76</button>
+      </div>
+      <button type="button" class="round sm" id="kbLeft" title="تحريك المفاتيح أوكتافًا للأسفل">◀</button>
+      <span class="kb-range" id="kbRange"></span>
+      <button type="button" class="round sm" id="kbRight" title="تحريك المفاتيح أوكتافًا للأعلى">▶</button>
+      <span class="kb-hint" id="kbHint">لوحة الحاسوب: Z…M و Q…P — مسافة = رنين</span>
+    </div>
+    <div class="kb-scroll" id="kbScroll">
+      <div class="keyboard" id="keyboard" dir="ltr"></div>
+    </div>
+  </section>
+</div>
+
+<dialog id="dlg" class="dlg"><div class="dlg-head"><h3 id="dlgTitle"></h3><button type="button" class="tb" id="dlgClose" aria-label="إغلاق">✕</button></div><div class="dlg-body" id="dlgBody"></div></dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+<script type="module" src="js/app.mjs?v=3.0.0"></script>
+</body>
+</html>

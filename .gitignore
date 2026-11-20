@@ -30,3 +30,5 @@ tests/lesson-plans/fixtures/*.pdf
 tests/lesson-plans/fixtures/*.docx
 # الكتاب التفاعلي الذكي: مخرجات اختبار الواجهة
 tests/interactive-book/_dist/
+
+.vercel

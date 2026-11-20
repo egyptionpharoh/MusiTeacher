@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>جيتار تعليمي ثلاثي الأبعاد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2127;--muted:#5b6370;--line:#e3e1db;--accent:#0b57d0;--bar:#faf9f6}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#fff;color:var(--ink);font-family:"Noto Naskh Arabic","Traditional Arabic",Arial,sans-serif}
+body{display:flex;flex-direction:column}
+header{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--bar)}
+.title{font-weight:700;font-size:18px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select{font:inherit;font-size:14px;padding:5px 12px;border:1px solid #cfccc4;border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
+button:hover,select:hover{border-color:#8f8b82}
+button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+#stage{position:relative;flex:1;min-height:480px;overflow:hidden;background:#fff}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+#stage canvas:active{cursor:grabbing}
+#overlay{position:absolute;inset:0;pointer-events:none}
+#overlay svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.lbl{position:absolute;transform:translateY(-50%);white-space:pre;text-align:right;font-weight:600;line-height:1.55;font-size:var(--fs,15px);color:var(--ink);transition:opacity .2s,color .15s}
+.lbl.hot{color:var(--accent)}
+.hint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:13px;color:var(--muted);background:rgba(255,255,255,.9);padding:4px 14px;border-radius:20px;border:1px solid var(--line);pointer-events:none;white-space:nowrap}
+#busy{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.7);font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <div class="title">الجيتار الكلاسيكي — نموذج تعليمي ثلاثي الأبعاد</div>
+  <div class="tools">
+    <button id="btnView">↺ الزاوية التعليمية</button>
+    <button id="btnLabels" aria-pressed="true">التسميات</button>
+    <button id="btnSpin" aria-pressed="false">تدوير تلقائي</button>
+    <select id="wood" aria-label="خشب الوجه">
+      <option value="cedar">وجه من خشب الأرز</option>
+      <option value="spruce">وجه من خشب التنّوب</option>
+    </select>
+    <button id="exp32" class="primary">تصدير PNG للكتاب ‎3:2</button>
+    <button id="exp43">تصدير PNG ‎4:3</button>
+  </div>
+</header>
+<main id="stage">
+  <div id="overlay"><svg></svg></div>
+  <div class="hint">اسحب للتدوير · العجلة للتكبير · مرّر المؤشر على أي جزء لإبراز اسمه</div>
+  <div id="busy">جارٍ تجهيز الصورة…</div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+'use strict';
+const V3 = THREE.Vector3;
+const C = h => new THREE.Color(h).convertSRGBToLinear();
+const deg = THREE.MathUtils.degToRad;
+
+/* ---------- Renderer / scene ---------- */
+const stage=document.getElementById('stage'), overlay=document.getElementById('overlay'), svg=overlay.querySelector('svg');
+const renderer=new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.1;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.setClearColor(0xffffff,1);
+stage.prepend(renderer.domElement);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(26,1,1,4000);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=.08; controls.enablePan=false;
+controls.minDistance=40; controls.maxDistance=1200; controls.autoRotateSpeed=1.4;
+
+(function(){
+  const pmrem=new THREE.PMREMGenerator(renderer), env=new THREE.Scene();
+  env.add(new THREE.Mesh(new THREE.BoxGeometry(60,60,60),new THREE.MeshBasicMaterial({color:new THREE.Color(.55,.55,.56),side:THREE.BackSide})));
+  const panel=(w,h,p,k)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:new THREE.Color(k,k,k),side:THREE.DoubleSide})); m.position.copy(p); m.lookAt(0,0,0); env.add(m);};
+  panel(30,30,new V3(0,29,0),5); panel(20,30,new V3(-29,5,10),2.6); panel(20,30,new V3(29,5,10),2.2); panel(40,12,new V3(0,8,29),2);
+  scene.environment=pmrem.fromScene(env,0.03).texture;
+})();
+scene.add(new THREE.HemisphereLight(0xffffff,0xe9e5dc,0.5));
+const key=new THREE.DirectionalLight(0xffffff,1.35); key.position.set(40,90,70); key.castShadow=true;
+key.shadow.mapSize.set(2048,2048); Object.assign(key.shadow.camera,{left:-75,right:75,top:75,bottom:-75,near:1,far:320});
+key.shadow.bias=-0.0004; key.shadow.normalBias=0.02; scene.add(key); scene.add(key.target);
+const fill=new THREE.DirectionalLight(0xffffff,0.5); fill.position.set(-60,25,45); scene.add(fill);
+const rim=new THREE.DirectionalLight(0xffffff,0.35); rim.position.set(0,40,-70); scene.add(rim);
+
+/* ---------- Wood textures ---------- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function makeWood(o){
+  const c=document.createElement('canvas'); c.width=512; c.height=2048; const g=c.getContext('2d'), r=rng(o.seed||3);
+  g.fillStyle=o.base; g.fillRect(0,0,512,2048);
+  for(let i=0;i<46;i++){g.globalAlpha=.05+r()*.09; g.fillStyle=r()<.5?o.dark:o.light; g.fillRect(r()*512,0,10+r()*90,2048);}
+  for(let i=0;i<o.lines;i++){
+    const x=r()*512, amp=o.wave*(0.3+r()), ph=r()*6.28, fr=0.0015+r()*0.004;
+    g.beginPath(); for(let y=0;y<=2048;y+=16){const xx=x+Math.sin(y*fr+ph)*amp; y?g.lineTo(xx,y):g.moveTo(xx,y);}
+    g.strokeStyle=r()<.72?o.dark:o.light; g.globalAlpha=o.alpha*(0.4+r()); g.lineWidth=0.6+r()*1.8; g.stroke();
+  }
+  g.globalAlpha=1;
+  const t=new THREE.CanvasTexture(c); t.encoding=THREE.sRGBEncoding; t.anisotropy=8; t.wrapS=t.wrapT=THREE.RepeatWrapping;
+  if(o.repeat){t.repeat.set(o.repeat[0],o.repeat[1]);} if(o.offset){t.offset.set(o.offset[0],o.offset[1]);}
+  return t;
+}
+const WOOD={
+  cedar:{base:'#b4663a',dark:'#7f3d1e',light:'#d48a55',lines:300,wave:1.4,alpha:.32,seed:11},
+  spruce:{base:'#e3c48f',dark:'#b98f55',light:'#f2dcb0',lines:320,wave:1.2,alpha:.30,seed:12}
+};
+const rosewood={base:'#4b2617',dark:'#24100a',light:'#6e3720',lines:420,wave:7,alpha:.45,seed:21};
+const neckWood={base:'#a3653b',dark:'#6d3b1d',light:'#c4844f',lines:260,wave:2,alpha:.3,seed:31};
+const ebony={base:'#1b1613',dark:'#0c0907',light:'#2e2620',lines:160,wave:2,alpha:.4,seed:41};
+
+const topMat=new THREE.MeshPhysicalMaterial({map:makeWood(Object.assign({repeat:[1/40,1/52],offset:[.5,.625]},WOOD.cedar)),roughness:.42,clearcoat:.7,clearcoatRoughness:.2});
+const ribMat=new THREE.MeshPhysicalMaterial({map:makeWood(Object.assign({repeat:[1/30,1/30]},rosewood)),roughness:.4,clearcoat:.7,clearcoatRoughness:.2});
+const backMat=new THREE.MeshPhysicalMaterial({map:makeWood(Object.assign({repeat:[1/40,1/52],offset:[.5,.625]},rosewood)),roughness:.4,clearcoat:.7,clearcoatRoughness:.2});
+const neckMat=new THREE.MeshPhysicalMaterial({map:makeWood(neckWood),roughness:.45,clearcoat:.5,clearcoatRoughness:.25});
+const headSideMat=new THREE.MeshPhysicalMaterial({map:makeWood(Object.assign({repeat:[1/8,1/22]},neckWood)),roughness:.45,clearcoat:.5});
+const headFaceMat=new THREE.MeshPhysicalMaterial({map:makeWood(Object.assign({repeat:[1/9,1/22],offset:[.5,0]},rosewood,{base:'#2a160d'})),roughness:.38,clearcoat:.8,clearcoatRoughness:.15});
+const fbMat=new THREE.MeshStandardMaterial({map:makeWood(Object.assign({repeat:[1/8,1/50],offset:[.5,0]},ebony)),roughness:.55});
+const bridgeMat=new THREE.MeshStandardMaterial({map:makeWood(rosewood),roughness:.5});
+const boneMat=new THREE.MeshStandardMaterial({color:C('#efe8d6'),roughness:.4});
+const fretMat=new THREE.MeshStandardMaterial({color:C('#d8d6cf'),metalness:1,roughness:.22});
+const brassMat=new THREE.MeshStandardMaterial({color:C('#c9a04a'),metalness:1,roughness:.3});
+const ivoryMat=new THREE.MeshStandardMaterial({color:C('#f1e6c8'),roughness:.32});
+const nylonMat=new THREE.MeshStandardMaterial({color:C('#ebe4d0'),roughness:.3});
+const woundMat=new THREE.MeshStandardMaterial({color:C('#cfcfcf'),metalness:.9,roughness:.32});
+const holeMat=new THREE.MeshStandardMaterial({roughness:1,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-3});
+const rosetteMat=new THREE.MeshStandardMaterial({roughness:.5,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+
+/* rosette mosaic and dark sound-hole textures */
+(function(){
+  const R=6.6, c=document.createElement('canvas'); c.width=c.height=1024; const g=c.getContext('2d'), s=512/R, o=512;
+  const band=(r1,r2,col,a0,a1)=>{g.beginPath(); g.arc(o,o,r2*s,a0||0,a1||Math.PI*2); g.arc(o,o,r1*s,a1||Math.PI*2,a0||0,true); g.closePath(); g.fillStyle=col; g.fill();};
+  band(4.4,6.6,'#2a1a10');
+  band(4.55,4.68,'#e9dcc0'); band(6.12,6.25,'#e9dcc0');
+  const pal=['#2b1a10','#e8dcc0','#8a3e1c','#2e6a47','#e8dcc0','#c98b45'];
+  const rings=[[4.85,5.1],[5.1,5.35],[5.35,5.6],[5.6,5.85]], N=150;
+  rings.forEach((rr,k)=>{for(let j=0;j<N;j++){const a0=j/N*Math.PI*2, a1=(j+1)/N*Math.PI*2; band(rr[0],rr[1],pal[(j+k*2+(j>>1))%pal.length],a0,a1);}});
+  band(4.76,4.82,'#c98b45'); band(5.9,5.96,'#c98b45');
+  const t=new THREE.CanvasTexture(c); t.encoding=THREE.sRGBEncoding; t.anisotropy=8; rosetteMat.map=t;
+  const h=document.createElement('canvas'); h.width=h.height=256; const hg=h.getContext('2d'); const gr=hg.createRadialGradient(128,150,10,128,128,128);
+  gr.addColorStop(0,'#2a190e'); gr.addColorStop(.7,'#120a05'); gr.addColorStop(1,'#050302'); hg.fillStyle=gr; hg.fillRect(0,0,256,256);
+  const ht=new THREE.CanvasTexture(h); ht.encoding=THREE.sRGBEncoding; holeMat.map=ht;
+})();
+
+/* ---------- Helpers ---------- */
+const instrument=new THREE.Group(); scene.add(instrument);
+function finish(m,parent,part){m.castShadow=m.receiveShadow=true; if(part!=null) m.userData.part=part; parent.add(m); return m;}
+function box(w,h,d,mat,x,y,z,parent,part){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); return finish(m,parent,part);}
+function mesh(geo,mat,x,y,z,parent,part){const m=new THREE.Mesh(geo,mat); m.position.set(x,y,z); return finish(m,parent,part);}
+const cylX=(r,h,s)=>{const g=new THREE.CylinderGeometry(r,r,h,s||24); g.rotateZ(Math.PI/2); return g;};
+const cylZ=(r,h,s)=>{const g=new THREE.CylinderGeometry(r,r,h,s||32); g.rotateX(Math.PI/2); return g;};
+function rod(a,b,r,mat,parent){
+  const d=new V3().subVectors(b,a), len=d.length();
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,10),mat);
+  m.position.copy(a).addScaledVector(d,.5); m.quaternion.setFromUnitVectors(new V3(0,1,0),d.normalize());
+  return finish(m,parent);
+}
+function anchor(parent,pos,normal){const o=new THREE.Object3D(); o.position.copy(pos); o.userData.n=normal.clone().normalize(); parent.add(o); return o;}
+
+/* ---------- Classical-guitar dimensions (cm): scale 65, 12 frets clear of the body, 19 frets ---------- */
+const NUT=49.0, SCALE=65, SAD=-15.95, FB_END=5.2, FB_T=0.65, BODY_D=9.2;
+const fretY=n=>NUT-SCALE*(1-Math.pow(2,-n/12));
+const fbW=y=>5.2+(NUT-y)/32.5*1.0;
+const HOLE_Y=2.6, HOLE_R=4.42;
+
+/* --- body (sound box) — part 6 --- */
+const half=[[0,16.5],[5,16.2],[9.5,15.0],[12.6,12.6],[14.0,9.0],[13.6,5.5],[12.4,2.5],[11.75,0],[12.2,-3.0],[14.6,-7.5],[17.0,-12.5],[18.2,-18],[18.2,-22.5],[17.2,-26.5],[14.6,-29.6],[10.5,-31.4],[5.5,-32.0],[0,-32.1]];
+const ring=[]; half.forEach(p=>ring.push(new V3(p[0],p[1],0)));
+for(let i=half.length-2;i>0;i--) ring.push(new V3(-half[i][0],half[i][1],0));
+const outline=new THREE.CatmullRomCurve3(ring,true,'centripetal').getSpacedPoints(220);
+const bodyShape=new THREE.Shape(outline.slice(0,-1).map(p=>new THREE.Vector2(p.x,p.y)));
+const bodyGeo=new THREE.ExtrudeGeometry(bodyShape,{depth:BODY_D,bevelEnabled:true,bevelThickness:.3,bevelSize:.3,bevelSegments:3,steps:1});
+mesh(bodyGeo,[backMat,ribMat],0,0,-BODY_D-0.35,instrument,6);
+mesh(new THREE.ShapeGeometry(bodyShape,64),topMat,0,0,0,instrument,6);
+/* sound hole + rosette — part 5 */
+mesh(new THREE.RingGeometry(HOLE_R,6.6,160,1),rosetteMat,0,HOLE_Y,0.01,instrument,5);
+mesh(new THREE.CircleGeometry(HOLE_R,96),holeMat,0,HOLE_Y,0.012,instrument,5);
+
+/* --- neck with Spanish heel --- */
+(function(){
+  const y0=14, y1=50.2, nY=110, nA=28, pos=[], uv=[], idx=[];
+  const depth=y=>{let b=2.1+(NUT-y)/32.5*0.35; if(y>48) b=b+(1.6-b)*Math.min(1,(y-48)/2.2); const h=Math.pow(Math.min(Math.max((21.5-y)/5,0),1),1.8); return b+(BODY_D+0.4-b)*h;};
+  for(let i=0;i<=nY;i++){const y=y0+(y1-y0)*i/nY, w=fbW(Math.min(y,NUT))/2, d=depth(y);
+    for(let j=0;j<=nA;j++){const a=Math.PI*j/nA; pos.push(w*Math.cos(a),y,-d*Math.sin(a)); uv.push(j/nA,i/nY);}}
+  for(let i=0;i<nY;i++) for(let j=0;j<nA;j++){const a=i*(nA+1)+j, b=a+1, c=a+nA+1, d=c+1; idx.push(a,c,b,b,c,d);}
+  const cap=pos.length/3; pos.push(0,y1,-depth(y1)*0.5); uv.push(.5,1);
+  for(let j=0;j<nA;j++){const a=nY*(nA+1)+j; idx.push(cap,a,a+1);}
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2)); g.setIndex(idx); g.computeVertexNormals();
+  const m=finish(new THREE.Mesh(g,neckMat),instrument,null); m.material.side=THREE.DoubleSide;
+})();
+
+/* --- fingerboard (playing area) — part 4 --- */
+const fbShape=new THREE.Shape([new THREE.Vector2(-fbW(NUT)/2,NUT),new THREE.Vector2(-fbW(FB_END)/2,FB_END),new THREE.Vector2(fbW(FB_END)/2,FB_END),new THREE.Vector2(fbW(NUT)/2,NUT)]);
+mesh(new THREE.ExtrudeGeometry(fbShape,{depth:FB_T,bevelEnabled:false}),fbMat,0,0,0,instrument,4);
+/* --- frets — part 3 --- */
+for(let n=1;n<=19;n++){const y=fretY(n); mesh(cylX(0.1,fbW(y),12),fretMat,0,y,FB_T,instrument,3);}
+/* --- nut — part 2 --- */
+box(fbW(NUT)+0.05,0.6,1.13,boneMat,0,NUT+0.3,0.565,instrument,2);
+
+/* --- bridge with tie-block and saddle — part 7 --- */
+const BY=-16.7;
+box(18,2.9,0.5,bridgeMat,0,BY,0.25,instrument,7);
+box(9.2,2.9,0.9,bridgeMat,0,BY,0.45,instrument,7);
+box(9.0,0.95,0.08,boneMat,0,-17.55,0.93,instrument,7);
+box(7.6,0.32,1.1,boneMat,0,SAD,0.95,instrument,7);
+for(const x of [-7.2,7.2]) mesh(cylZ(0.45,0.05),boneMat,x,BY,0.52,instrument,7);
+
+/* --- headstock (pegbox) with slots and rollers — part 1, tuning keys — part 0 --- */
+const head=new THREE.Group(); head.position.set(0,49.6,0.3); head.rotation.x=deg(-13); instrument.add(head);
+(function(){
+  const s=new THREE.Shape(); s.moveTo(-2.75,0); s.lineTo(2.75,0); s.lineTo(3.55,2.5); s.lineTo(3.75,15.8);
+  s.quadraticCurveTo(3.85,18.6,1.6,19.0); s.quadraticCurveTo(0,20.2,-1.6,19.0); s.quadraticCurveTo(-3.85,18.6,-3.75,15.8); s.lineTo(-3.55,2.5); s.lineTo(-2.75,0);
+  for(const cx of [-1.8,1.8]){const h=new THREE.Path(); h.moveTo(cx+0.8,4.6); h.lineTo(cx+0.8,14.6); h.absarc(cx,14.6,0.8,0,Math.PI,false); h.lineTo(cx-0.8,4.6); h.absarc(cx,4.6,0.8,Math.PI,Math.PI*2,false); s.holes.push(h);}
+  const g=new THREE.ExtrudeGeometry(s,{depth:1.6,bevelEnabled:true,bevelThickness:.1,bevelSize:.1,bevelSegments:2,curveSegments:24});
+  mesh(g,[headFaceMat,headSideMat],0,0,-1.7,head,1);
+})();
+const ROLL_Y=[6.3,9.6,12.9], ROLL_Z=-0.9;
+for(const sx of [-1,1]){
+  for(const y of ROLL_Y){
+    mesh(cylX(0.42,2.9),ivoryMat,sx*1.8,y,ROLL_Z,head,1);
+    mesh(cylX(0.18,1.0),brassMat,sx*4.25,y,ROLL_Z,head,0);
+    const b=mesh(new THREE.SphereGeometry(1,28,18),ivoryMat,sx*5.4,y,ROLL_Z,head,0); b.scale.set(0.65,0.85,0.42);
+  }
+  box(0.12,11.5,1.2,brassMat,sx*3.76,9.6,ROLL_Z,head,0);
+}
+instrument.updateMatrixWorld(true);
+
+/* --- six nylon strings: 3 plain trebles, 3 wound basses (low E on the left) --- */
+const SR=[0.08,0.072,0.062,0.07,0.058,0.05];
+const nutX=i=>-2.15+0.86*i, sadX=i=>-2.9+1.16*i;
+const strX=(i,y)=>{const t=(NUT-y)/(NUT-SAD); return nutX(i)+(sadX(i)-nutX(i))*t;};
+const LAND=[[-2.2,12.9],[-1.8,9.6],[-1.35,6.3],[1.35,6.3],[1.8,9.6],[2.2,12.9]];
+for(let i=0;i<6;i++){
+  const mat=i<3?woundMat:nylonMat, r=SR[i];
+  const pTie=new V3(sadX(i),-17.05,0.8), pSad=new V3(sadX(i),SAD,1.5+r), pNut=new V3(nutX(i),NUT+0.3,1.13+r);
+  const pRoll=head.localToWorld(new V3(LAND[i][0],LAND[i][1],ROLL_Z+0.42+r));
+  rod(pTie,pSad,r,mat,instrument); rod(pSad,pNut,r,mat,instrument); rod(pNut,pRoll,r,mat,instrument);
+  mesh(cylX(0.13,0.55,10),mat,sadX(i),-17.6,1.0,instrument,7);
+  mesh(cylX(0.5,0.42,16),mat,LAND[i][0],LAND[i][1],ROLL_Z,head,1);
+}
+
+/* ---------- Labels: original wording of the hand-drawn book page ---------- */
+const LABELS=[
+  {side:'L', text:'مفتاح الضبط'},
+  {side:'L', text:'بيت المفاتيح'},
+  {side:'L', text:'الأنف'},
+  {side:'L', text:'الدساتين'},
+  {side:'R', text:'أماكن العزف'},
+  {side:'L', text:'فتحة الصوت'},
+  {side:'R', text:'الصندوق الصوتي'},
+  {side:'R', text:'الفرس'}
+];
+(function(){
+  LABELS[0].anchor=anchor(head,new V3(-5.4,12.9,ROLL_Z+0.42),new V3(0,0,1));
+  LABELS[1].anchor=anchor(head,new V3(-1.8,9.6,ROLL_Z+0.44),new V3(0,0,1));
+  LABELS[2].anchor=anchor(instrument,new V3(-2.5,NUT+0.3,1.14),new V3(0,0.4,1));
+  const y5=fretY(5); LABELS[3].anchor=anchor(instrument,new V3((strX(0,y5)+strX(1,y5))/2,y5,FB_T+0.1),new V3(0,0,1));
+  const yp=(fretY(9)+fretY(10))/2; LABELS[4].anchor=anchor(instrument,new V3((strX(4,yp)+strX(5,yp))/2,yp,FB_T+0.01),new V3(0,0,1));
+  LABELS[5].anchor=anchor(instrument,new V3(-3.4,HOLE_Y-1.6,0.03),new V3(0,0,1));
+  LABELS[6].anchor=anchor(instrument,new V3(12.25,-1.0,-4.95),new V3(1,0,0));
+  LABELS[7].anchor=anchor(instrument,new V3(7.6,BY,0.51),new V3(0,0,1));
+})();
+
+/* ---------- Framing ---------- */
+instrument.updateMatrixWorld(true);
+const PTS=[];
+instrument.traverse(o=>{if(!o.isMesh) return; const a=o.geometry.attributes.position, st=Math.max(1,Math.floor(a.count/80)), v=new V3();
+  for(let i=0;i<a.count;i+=st){v.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld); PTS.push(v.clone());}});
+const bb=new THREE.Box3().setFromPoints(PTS), center=bb.getCenter(new V3());
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(500,500),new THREE.ShadowMaterial({opacity:.12}));
+ground.rotation.x=-Math.PI/2; ground.position.y=bb.min.y-0.2; ground.receiveShadow=true; scene.add(ground);
+key.target.position.copy(center); controls.target.copy(center);
+const AZ=deg(25), EL=deg(8);
+const DEFAULT_DIR=new V3(Math.sin(AZ)*Math.cos(EL),Math.sin(EL),Math.cos(AZ)*Math.cos(EL));
+camera.position.copy(center).addScaledVector(DEFAULT_DIR,300);
+
+function fitCamera(aspect,fw,fh){
+  camera.aspect=aspect; camera.updateProjectionMatrix();
+  const dir=camera.position.clone().sub(controls.target); if(dir.lengthSq()<1e-6) dir.copy(DEFAULT_DIR); dir.normalize();
+  let d=camera.position.distanceTo(controls.target)||300; const v=new V3();
+  for(let it=0;it<6;it++){
+    camera.position.copy(controls.target).addScaledVector(dir,d); camera.lookAt(controls.target); camera.updateMatrixWorld(true);
+    let mx=0,my=0; for(const p of PTS){v.copy(p).project(camera); mx=Math.max(mx,Math.abs(v.x)); my=Math.max(my,Math.abs(v.y));}
+    d*=Math.max(mx/fw,my/fh);
+  }
+  camera.position.copy(controls.target).addScaledVector(dir,d); camera.lookAt(controls.target);
+}
+
+/* ---------- Label layout (screen & export share it) ---------- */
+function layout(W,Hh,sizes,gap){
+  camera.updateMatrixWorld(true);
+  const q=new THREE.Quaternion(), v=new V3();
+  let x0=1e9,x1=-1e9; for(let i=0;i<PTS.length;i+=2){v.copy(PTS[i]).project(camera); if(v.x<x0)x0=v.x; if(v.x>x1)x1=v.x;}
+  x0=(x0+1)/2*W; x1=(x1+1)/2*W;
+  const items=LABELS.map((L,i)=>{
+    const p=L.anchor.getWorldPosition(new V3());
+    const n=L.anchor.userData.n.clone().applyQuaternion(L.anchor.parent.getWorldQuaternion(q));
+    const vis=n.dot(camera.position.clone().sub(p).normalize())>0.02, s=p.clone().project(camera);
+    return {i,side:L.side,ax:(s.x+1)/2*W,ay:(1-s.y)/2*Hh,h:sizes[i].h,w:sizes[i].w,vis};
+  });
+  const m=W*0.03, wL=Math.max(...items.filter(o=>o.side==='L').map(o=>o.w)), wR=Math.max(...items.filter(o=>o.side==='R').map(o=>o.w));
+  const colL=Math.max(wL+m,Math.min(x0-W*0.06,W*0.44)), colR=Math.min(W-wR-m,Math.max(x1+W*0.06,W*0.56));
+  const top=Hh*0.04, bot=Hh*0.96;
+  for(const side of ['L','R']){
+    const a=items.filter(o=>o.side===side).sort((p,q2)=>p.ay-q2.ay);
+    a.forEach(o=>o.y=Math.min(Math.max(o.ay,top+o.h/2),bot-o.h/2));
+    for(let k=1;k<a.length;k++){const need=a[k-1].y+(a[k-1].h+a[k].h)/2+gap; if(a[k].y<need) a[k].y=need;}
+    const l=a[a.length-1]; if(l.y>bot-l.h/2) l.y=bot-l.h/2;
+    for(let k=a.length-2;k>=0;k--){const lim=a[k+1].y-(a[k].h+a[k+1].h)/2-gap; if(a[k].y>lim) a[k].y=lim;}
+  }
+  return {items,colL,colR};
+}
+function leader(o,lay,W,pad){
+  const L=o.side==='L', px=L?lay.colL+pad:lay.colR-pad;
+  let ex=L?px+W*0.02:px-W*0.02; ex=L?Math.min(ex,o.ax):Math.max(ex,o.ax);
+  return {px,ex};
+}
+
+/* ---------- Screen overlay ---------- */
+const NS='http://www.w3.org/2000/svg';
+LABELS.forEach(L=>{
+  L.el=document.createElement('div'); L.el.className='lbl'; L.el.textContent=L.text; overlay.appendChild(L.el);
+  L.path=document.createElementNS(NS,'path'); L.path.setAttribute('fill','none'); L.path.setAttribute('stroke-width','1.3'); L.path.setAttribute('stroke-linejoin','round'); svg.appendChild(L.path);
+  L.dot=document.createElementNS(NS,'circle'); L.dot.setAttribute('r','3.4'); L.dot.setAttribute('stroke','#fff'); L.dot.setAttribute('stroke-width','1.5'); svg.appendChild(L.dot);
+});
+let domS=LABELS.map(()=>({w:100,h:30})), fs=16, hot=-1, labelsOn=true;
+function measureDom(){
+  const W=stage.clientWidth; fs=Math.max(12,Math.min(18,W*0.0135));
+  overlay.style.setProperty('--fs',fs+'px');
+  domS=LABELS.map(L=>({w:L.el.offsetWidth,h:L.el.offsetHeight}));
+}
+function updateOverlay(){
+  const W=stage.clientWidth, Hh=stage.clientHeight, pad=fs*0.45, lay=layout(W,Hh,domS,Hh*0.02);
+  for(const o of lay.items){
+    const L=LABELS[o.i], {px,ex}=leader(o,lay,W,pad), col=o.i===hot?'#0b57d0':'#1d2127', op=o.vis?1:0.18;
+    if(o.side==='L'){L.el.style.right=(W-lay.colL)+'px'; L.el.style.left='auto';} else {L.el.style.left=lay.colR+'px'; L.el.style.right='auto';}
+    L.el.style.top=o.y+'px'; L.el.style.opacity=op; L.el.classList.toggle('hot',o.i===hot);
+    L.path.setAttribute('d',`M${px},${o.y}L${ex},${o.y}L${o.ax},${o.ay}`); L.path.setAttribute('stroke',col); L.path.style.opacity=op;
+    L.dot.setAttribute('cx',o.ax); L.dot.setAttribute('cy',o.ay); L.dot.setAttribute('fill',col); L.dot.style.opacity=op;
+  }
+}
+
+/* ---------- Hover ---------- */
+const ray=new THREE.Raycaster(), mouse=new THREE.Vector2(); let needPick=false;
+renderer.domElement.addEventListener('pointermove',e=>{const r=renderer.domElement.getBoundingClientRect(); mouse.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1); needPick=true;});
+renderer.domElement.addEventListener('pointerleave',()=>{hot=-1;});
+function pick(){needPick=false; ray.setFromCamera(mouse,camera); const h=ray.intersectObject(instrument,true); hot=(h.length&&h[0].object.userData.part!=null)?h[0].object.userData.part:-1;}
+
+/* ---------- Resize / UI ---------- */
+const FW=()=>labelsOn?0.36:0.8;
+function resize(refit){
+  const W=stage.clientWidth, Hh=stage.clientHeight;
+  renderer.setSize(W,Hh,false); camera.aspect=W/Hh; camera.updateProjectionMatrix();
+  if(refit) fitCamera(W/Hh,FW(),0.86);
+  measureDom();
+}
+window.addEventListener('resize',()=>resize(true));
+document.getElementById('btnView').onclick=()=>{camera.position.copy(controls.target).addScaledVector(DEFAULT_DIR,300); resize(true);};
+document.getElementById('btnLabels').onclick=e=>{labelsOn=!labelsOn; e.currentTarget.setAttribute('aria-pressed',labelsOn); overlay.style.display=labelsOn?'':'none'; resize(true);};
+document.getElementById('btnSpin').onclick=e=>{controls.autoRotate=!controls.autoRotate; e.currentTarget.setAttribute('aria-pressed',controls.autoRotate);};
+document.getElementById('wood').onchange=e=>{const old=topMat.map; topMat.map=makeWood(Object.assign({repeat:[1/40,1/52],offset:[.5,.625]},WOOD[e.target.value])); topMat.needsUpdate=true; old.dispose();};
+
+/* ---------- Export for print ---------- */
+const FAM='"Noto Naskh Arabic","Traditional Arabic",Arial,sans-serif';
+function drawLabels(g,W,Hh){
+  const fp=Hh*0.026, lh=fp*1.55, pad=fp*0.45, lw=Math.max(1.5,Hh*0.0011), dr=Hh*0.0034;
+  g.font=`600 ${fp}px ${FAM}`;
+  const sizes=LABELS.map(L=>({w:g.measureText(L.text).width,h:lh}));
+  const lay=layout(W,Hh,sizes,Hh*0.022);
+  g.lineCap='round'; g.lineJoin='round';
+  for(const o of lay.items){
+    g.globalAlpha=o.vis?1:0.18;
+    const {px,ex}=leader(o,lay,W,pad);
+    g.strokeStyle='#1d2127'; g.lineWidth=lw; g.beginPath(); g.moveTo(px,o.y); g.lineTo(ex,o.y); g.lineTo(o.ax,o.ay); g.stroke();
+    g.beginPath(); g.arc(o.ax,o.ay,dr,0,Math.PI*2); g.fillStyle='#1d2127'; g.fill(); g.lineWidth=lw*1.3; g.strokeStyle='#fff'; g.stroke();
+    g.font=`600 ${fp}px ${FAM}`; g.direction='rtl'; g.textAlign='right'; g.textBaseline='middle'; g.fillStyle='#1d2127';
+    g.fillText(LABELS[o.i].text,o.side==='L'?lay.colL:lay.colR+o.w,o.y);
+  }
+  g.globalAlpha=1;
+}
+async function exportPNG(EW,EH){
+  const busy=document.getElementById('busy'); busy.style.display='flex';
+  try{await document.fonts.load('600 48px "Noto Naskh Arabic"');}catch(e){}
+  await new Promise(r=>setTimeout(r,30));
+  const prev={pos:camera.position.clone(),pr:renderer.getPixelRatio()};
+  renderer.setPixelRatio(1); renderer.setSize(EW,EH,false);
+  fitCamera(EW/EH,FW(),0.88);
+  renderer.render(scene,camera);
+  const out=document.createElement('canvas'); out.width=EW; out.height=EH; const g=out.getContext('2d');
+  g.fillStyle='#fff'; g.fillRect(0,0,EW,EH); g.drawImage(renderer.domElement,0,0,EW,EH);
+  if(labelsOn) drawLabels(g,EW,EH);
+  renderer.setPixelRatio(prev.pr); camera.position.copy(prev.pos); resize(false); camera.lookAt(controls.target);
+  out.toBlob(b=>{const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`guitar-${labelsOn?'labeled':'blank'}-${EW}x${EH}.png`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); busy.style.display='none';},'image/png');
+}
+document.getElementById('exp32').onclick=()=>exportPNG(3600,2400);
+document.getElementById('exp43').onclick=()=>exportPNG(3200,2400);
+
+/* ---------- Start ---------- */
+resize(true);
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>measureDom());
+(function tick(){requestAnimationFrame(tick); controls.update(); if(needPick) pick(); renderer.render(scene,camera); if(labelsOn) updateOverlay();})();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>الأكورديون الافتراضي ثلاثي الأبعاد – MusiTeacher</title>
+<link rel="stylesheet" href="./src/ui/style.css">
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="loading"><div class="spin"></div><div>جارٍ تحميل العازفة والأكورديون…<span id="loading-pct"></span></div></div>
+<div id="nogl" class="hidden"><div id="nogl-msg"></div></div>
+<div id="ui"></div>
+<script src="./_shared/mt-sampler.js"></script>
+<script type="importmap">
+{ "imports": { "three": "./_shared/3d/vendor/three/three.module.js", "three/addons/": "./_shared/3d/vendor/three/addons/" } }
+</script>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

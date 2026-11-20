@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مسابقة التدوين والإملاء الإيقاعي — MusiTeacher · برمجة وتنفيذ: حسين الملك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20261104a">
+</head>
+<body>
+
+<!-- ======================= شاشة البداية: تسجيل المتسابقين ======================= -->
+<div id="splash">
+  <div class="splash-card">
+    <div class="splash-icons" aria-hidden="true"><span>🥁</span><span class="sp-note">♩ ♫ ♬</span><span>🪘</span></div>
+    <h1>مسابقة التدوين والإملاء الإيقاعي</h1>
+    <p class="splash-sub">استمع إلى النمط الإيقاعي، وأدرك وحداته الزمنية، ثم دوّنه بدقة.</p>
+    <div class="seg" role="radiogroup" aria-label="نوع المسابقة">
+      <button type="button" class="seg-btn on" data-pmode="solo" role="radio" aria-checked="true">متسابق واحد</button>
+      <button type="button" class="seg-btn" data-pmode="teams" role="radio" aria-checked="false">مجموعات / متسابقون</button>
+    </div>
+    <div id="playersBox"></div>
+    <button type="button" class="btn-add" id="btnAddPlayer" hidden>＋ إضافة مجموعة</button>
+    <button type="button" class="btn-start" id="btnStart">ابدأ ⚡</button>
+    <p class="splash-note">للحاسوب والسبورة الذكية: اضغط على العلامة لإضافتها، أو اسحبها بالفأرة إلى المازورة.</p>
+  </div>
+</div>
+
+<!-- ======================= اللعبة ======================= -->
+<div id="app" hidden>
+  <!-- ١) أنماط اللعب -->
+  <header class="topbar">
+    <nav class="tabs" role="tablist" aria-label="نمط اللعب">
+      <button type="button" class="tab" data-mode="free" role="tab" aria-selected="false"
+        data-tip="كوّن تمرينًا إيقاعيًا بنفسك واقرأه، بلا نقاط">✍️ التدوين والقراءة الإيقاعية</button>
+      <button type="button" class="tab" data-mode="dictation" role="tab" aria-selected="false"
+        data-tip="استمع إلى نمط إيقاعي ودوّنه — مسابقة بالنقاط">🎧 الإملاء الإيقاعي</button>
+    </nav>
+    <div class="top-tools">
+      <button type="button" class="icon-btn" id="btnHelp" aria-label="التعليمات" data-tip="إظهار تعليمات النمط الحالي">ℹ️</button>
+      <label class="vol" data-tip="مستوى صوت اللعبة"><span aria-hidden="true">🔊</span><input type="range" id="volume" min="0" max="1" step="0.05" value="0.8" aria-label="مستوى الصوت"></label>
+      <button type="button" class="icon-btn" id="btnTheme" aria-label="تبديل الإضاءة" data-tip="تبديل الخلفية بين الداكنة والفاتحة">🌙</button>
+      <button type="button" class="icon-btn" id="btnFull" aria-label="ملء الشاشة" aria-pressed="false" data-tip="ملء الشاشة">⛶</button>
+    </div>
+  </header>
+
+  <div class="coach" id="coach" hidden>
+    💡 أول مرة؟ مرّر مؤشر الفأرة على أي زر لتعرف وظيفته، واضغط ℹ️ لقراءة التعليمات.
+    <button type="button" class="coach-x" id="coachX" aria-label="إخفاء">✕</button>
+  </div>
+
+  <!-- لوحة النتائج والدور والوقت (المسابقة) -->
+  <section class="scorebar" id="scorebar" aria-live="polite">
+    <div class="players" id="players"></div>
+    <div class="qinfo" id="qinfo"></div>
+    <div class="timer" id="timer" hidden data-tip="الوقت المتبقي لهذا السؤال">⏱ <span id="timerVal">0</span></div>
+  </section>
+
+  <!-- التعليمات العامة (زر ℹ️) -->
+  <section class="help" id="help" hidden>
+    <div class="help-body" id="helpBody"></div>
+    <button type="button" class="btn ghost" id="btnHelpClose">فهمت 👍</button>
+  </section>
+
+  <!-- ٢) شجرة المستويات + تعليمات المستوى + إعدادات التمرين -->
+  <section class="levels-card" id="levelsCard">
+    <div class="src-switch" id="srcSwitch" role="radiogroup" aria-label="مصدر الأسئلة">
+      <button type="button" class="src-btn" data-src="levels" role="radio" data-tip="أسئلة جديدة في كل مرة من علامات المستوى المختار">🎯 أسئلة المستويات</button>
+      <button type="button" class="src-btn" data-src="guide" role="radio" id="srcGuide" data-tip="نماذج الإملاء الإيقاعي الجاهزة كما وردت في دليل المعلم للصف الثامن">📘 نماذج إيقاعية من دليل المعلم</button>
+    </div>
+    <h2 class="levels-title" id="levelsTitle">اختر المستوى</h2>
+    <div class="level-tree" id="levelTree" role="radiogroup" aria-label="المستويات"></div>
+    <div class="level-info" id="levelInfo" aria-live="polite"></div>
+
+    <details class="settings-wrap" id="settingsWrap">
+      <summary data-tip="الميزان وعدد الموازير والسرعة وصوت الإيقاع والوقت">⚙️ إعدادات التمرين <small id="settingsSummary"></small></summary>
+      <div class="settings" id="settings">
+        <label class="field no-guide"><span>الميزان</span>
+          <select id="sBeats"><option value="2">2/4</option><option value="3">3/4</option><option value="4">4/4</option></select></label>
+        <label class="field no-guide"><span>الموازير</span>
+          <select id="sMeasures"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+        <label class="field"><span>السرعة</span>
+          <input type="number" id="sBpm" min="40" max="160" step="2" inputmode="numeric"></label>
+        <label class="field wide"><span>صوت الإيقاع</span>
+          <select id="sVoice"></select></label>
+        <button type="button" class="btn small ghost" id="btnPreview" data-tip="معاينة قصيرة لصوت الآلة المختارة">▶ معاينة</button>
+        <label class="field dict-only"><span>الوقت</span>
+          <select id="sTimer"><option value="0">بدون</option><option value="30">30 ث</option><option value="60">60 ث</option><option value="90">90 ث</option></select></label>
+        <label class="field dict-only"><span>مرات الاستماع</span>
+          <select id="sPlays"><option value="0">بلا حد</option><option value="2">2</option><option value="3">3</option><option value="5">5</option></select></label>
+        <label class="field dict-only"><span>عدد الأسئلة</span>
+          <select id="sQuestions"><option>5</option><option>10</option><option>15</option><option>20</option></select></label>
+        <label class="check no-guide" data-tip="نقرة خشبية على كل وحدة (نوار)، والأولى أقوى"><input type="checkbox" id="sMetro"> نبض الوحدة (المترونوم) 🎧</label>
+        <label class="check" data-tip="يدان تصفقان مع كل ضربة، والضربة القوية أوضح"><input type="checkbox" id="sClap"> مساعد التصفيق 👏</label>
+        <label class="check" data-tip="إظهار أسماء العلامات ونطقها بطريقة إيمي باري أو إخفاؤها"><input type="checkbox" id="sNames" checked> إظهار الأسماء</label>
+        <label class="check dict-only" data-tip="مثل كتابة «كروش + كروش» بدل «تاتي»: الإيقاع المسموع واحد"><input type="checkbox" id="sEquiv" checked> قبول الكتابة المكافئة</label>
+      </div>
+    </details>
+  </section>
+
+  <!-- ٣) العلامات والأشكال الإيقاعية -->
+  <section class="palette-card">
+    <div class="palette-head">العلامات والأشكال الإيقاعية <small>(اضغط لإضافتها إلى المازورة المحددة، أو اسحبها)</small></div>
+    <div class="palette" id="palette"></div>
+  </section>
+
+  <!-- ٤) حقل الموازير -->
+  <section class="staff-card" id="staffCard">
+    <div class="staff-head">
+      <span id="staffTitle">إجابتك</span>
+      <span class="beatline" id="beatline" aria-hidden="true"></span>
+      <span class="staff-tools">
+        <button type="button" class="btn small ghost" id="btnDelSel" disabled data-tip="حذف الشكل المحدد (أو مفتاح Delete)">✕ حذف المحدد</button>
+        <button type="button" class="btn small ghost" id="btnUndo" data-tip="التراجع عن آخر تعديل (Ctrl+Z)">↶ تراجع</button>
+        <button type="button" class="btn small ghost red" id="btnClear" data-tip="مسح كل الموازير">🗑️ مسح الموازير</button>
+      </span>
+    </div>
+    <div class="staff-row">
+      <div class="staff" id="staff"></div>
+      <div class="clapper" id="clapper" hidden aria-hidden="true">
+        <svg viewBox="0 0 140 100" class="hands">
+          <g class="hand left"><g transform="translate(46 58) rotate(-8)" fill="#f8cfa6" stroke="#8a5a3b" stroke-width="2.4" stroke-linejoin="round"><rect x="-5" y="-30" width="10" height="26" rx="5"/><rect x="-16" y="-27" width="10" height="27" rx="5"/><rect x="6" y="-27" width="10" height="27" rx="5"/><rect x="16" y="-20" width="9" height="22" rx="4.5"/><path d="M-18 -6 h44 v14 c0 14 -10 24 -22 24 c-12 0 -22 -10 -22 -24 z"/><path d="M-17 4 c-10 -6 -16 -2 -14 4 c3 7 9 11 14 12 z"/></g></g>
+          <g class="hand right"><g transform="translate(94 58) scale(-1 1) rotate(-8)" fill="#f8cfa6" stroke="#8a5a3b" stroke-width="2.4" stroke-linejoin="round"><rect x="-5" y="-30" width="10" height="26" rx="5"/><rect x="-16" y="-27" width="10" height="27" rx="5"/><rect x="6" y="-27" width="10" height="27" rx="5"/><rect x="16" y="-20" width="9" height="22" rx="4.5"/><path d="M-18 -6 h44 v14 c0 14 -10 24 -22 24 c-12 0 -22 -10 -22 -24 z"/><path d="M-17 4 c-10 -6 -16 -2 -14 4 c3 7 9 11 14 12 z"/></g></g>
+          <g class="burst"><path d="M70 4v10M52 9l6 8M88 9l-6 8M42 24l9 3M98 24l-9 3" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/></g>
+        </svg>
+        <div class="clap-label" id="clapLabel">مساعد التصفيق</div>
+      </div>
+    </div>
+    <div id="solutionWrap" hidden>
+      <div class="staff-head"><span id="solutionTitle">النمط الذي سُمِع</span>
+        <button type="button" class="btn small ghost" id="btnPlaySolution" data-tip="تشغيل النمط الصحيح">🔊 استمع للحل</button></div>
+      <div class="staff solution" id="solution"></div>
+      <div id="compareWrap" hidden>
+        <div class="staff-head"><span id="compareTitle"></span></div>
+        <div class="staff solution" id="compare"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ٥) أدوات التحكم والتشغيل والتقييم -->
+  <section class="actions" id="actions"></section>
+  <section class="feedback" id="feedback" hidden aria-live="polite"></section>
+
+  <!-- المصادر وحقوق المحتوى: عنصر منسدل صغير لا يشغل مساحة التمرين -->
+  <details class="sources" id="sources">
+    <summary>📚 المصدر وحقوق المحتوى</summary>
+    <div class="sources-body" id="sourcesBody"></div>
+  </details>
+  <footer class="foot">MusiTeacher · برمجة وتنفيذ: أ. حسين محمد سيد (حسين الملك)</footer>
+</div>
+
+<!-- ======================= النوافذ ======================= -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button type="button" class="modal-x" data-close aria-label="إغلاق">✕</button>
+    <h2 id="modalTitle"></h2>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+<canvas class="fireworks" id="fireworks" aria-hidden="true" hidden></canvas>
+
+<script src="js/rhythm.js?v=20261104a"></script>
+<script src="js/content.js?v=20261104a"></script>
+<script src="js/glyphs.js?v=20261104a"></script>
+<script src="js/audio.js?v=20261104a"></script>
+<script src="js/app.js?v=20261104a"></script>
+</body>
+</html>

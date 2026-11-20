@@ -1,0 +1,164 @@
+#!/usr/bin/env node
+// =====================================================================
+//  استنساخ ألعاب MusiTeacher إلى MusiTeacher Games (نسخ فقط — لا يكتب أي شيء داخل المنصة الأم أبدًا)
+//
+//    node scripts/sync-games.mjs              نسخ/تحديث كل الألعاب المتاحة
+//    node scripts/sync-games.mjs --only a,b   نسخ/تحديث ألعاب محددة فقط
+//    node scripts/sync-games.mjs --check      فحص فقط: أي نسخة طلابية تحتاج تحديثًا؟ (لا ينسخ شيئًا)
+//    --source <مجلد>                           مجلد MusiTeacher (الافتراضي: المجلد الأب)
+//
+//  التحديث لا يحدث تلقائيًا أبدًا: الفحص يكتشف، وأنت تقرر متى تنسخ.
+// =====================================================================
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { MIME } from '../lib/core.mjs';
+import { libraryPage, gamePage, coverSvg } from './pages.mjs';
+
+const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const args = process.argv.slice(2);
+const flag = (n) => args.includes(n);
+const opt = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };
+const SRC = path.resolve(opt('--source') || path.join(HERE, '..'));
+const OUT = path.resolve(opt('--out') || HERE);
+const CHECK = flag('--check');
+const ONLY = (opt('--only') || '').split(',').map((s) => s.trim()).filter(Boolean);
+
+const log = (...a) => console.log(...a);
+const SKIP_DIR = (n) => n.startsWith('.') || n.startsWith('_backup') || n === 'node_modules' || n === '__tests__';
+const KEEP_FILE = (n) => !n.startsWith('.') && !!MIME[path.extname(n).toLowerCase()];   // لا .md ولا .map ولا .bak ولا ملفات مخفية
+
+function walk(dir, base = dir, out = []) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, e.name);
+    if (e.isSymbolicLink()) continue;
+    if (e.isDirectory()) { if (!SKIP_DIR(e.name)) walk(full, base, out); }
+    else if (e.isFile() && KEEP_FILE(e.name)) out.push(path.relative(base, full).split(path.sep).join('/'));
+  }
+  return out.sort();
+}
+const sha = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
+/** بصمة المحتوى: تتغير إذا تغيّر أي ملف من ملفات اللعبة الأصلية (أو أضيف/حُذف) */
+function fingerprint(dir) {
+  if (!fs.existsSync(dir)) return { hash: null, files: [], bytes: 0 };
+  const files = walk(dir); const h = crypto.createHash('sha256'); let bytes = 0;
+  for (const f of files) { const b = fs.readFileSync(path.join(dir, f)); bytes += b.length; h.update(f + '\0' + sha(b) + '\n'); }
+  return { hash: h.digest('hex').slice(0, 16), files, bytes };
+}
+// إشارات إلى خدمات المنصة الأم داخل كود اللعبة (يجب ألا تعتمد النسخة الطلابية عليها)
+const RISKY = [
+  [/\/api\//, 'يستدعي واجهة /api/ — قد تكون من خدمات MusiTeacher'],
+  [/firebase/i, 'يذكر Firebase'],
+  [/mt_pg_/, 'يعتمد على كوكي جلسة MusiTeacher'],
+  [/["'`]\/play\//, 'يستخدم مسار /play/ الخاص بالمنصة الأم'],
+  [/window\.(parent|top)\b/, 'يتواصل مع الصفحة الأم (parent/top)'],
+];
+function scan(dir, files) {
+  const warn = new Set();
+  for (const f of files) {
+    if (!/\.(html|m?js|json|css)$/i.test(f)) continue;
+    const t = fs.readFileSync(path.join(dir, f), 'utf8');
+    for (const [re, msg] of RISKY) if (re.test(t)) warn.add(`${msg} (${f})`);
+  }
+  return [...warn].slice(0, 8);
+}
+function copyTree(from, to, files) {
+  fs.rmSync(to, { recursive: true, force: true });
+  for (const f of files) { const d = path.join(to, f); fs.mkdirSync(path.dirname(d), { recursive: true }); fs.copyFileSync(path.join(from, f), d); }
+}
+const mb = (n) => (n / 1048576).toFixed(1) + ' MB';
+
+async function main() {
+  const regFile = path.join(SRC, 'src', 'data', 'virtualGames.js');
+  if (!fs.existsSync(regFile)) { console.error(`✖ لم أجد سجل ألعاب MusiTeacher: ${regFile}`); process.exit(1); }
+  // يُقرأ السجل كنص ويُحمَّل كوحدة ESM (يعمل مع أي إصدار Node، دون تعديل package.json الخاص بالمنصة الأم)
+  const src = fs.readFileSync(regFile, 'utf8');
+  if (/^\s*import\s/m.test(src)) { console.error('✖ سجل الألعاب يستورد ملفات أخرى؛ حدّث sync-games.mjs'); process.exit(1); }
+  const { VIRTUAL_GAMES, GAME_CATEGORIES } = await import('data:text/javascript;base64,' + Buffer.from(src).toString('base64'));
+  const regPath = path.join(OUT, 'data', 'registry.json');
+  const prev = fs.existsSync(regPath) ? JSON.parse(fs.readFileSync(regPath, 'utf8')) : { games: [] };
+  const prevById = Object.fromEntries((prev.games || []).map((g) => [g.id, g]));
+  const srcGames = path.join(SRC, 'private-games');
+
+  const sharedFp = fingerprint(path.join(srcGames, '_shared'));
+  const rows = [], games = [];
+  for (const g of VIRTUAL_GAMES) {
+    const dir = path.join(srcGames, g.id);
+    const old = prevById[g.id];
+    const fp = fingerprint(dir);
+    const base = {
+      id: g.id, title: g.title, description: g.description, category: g.category, grade: g.grade || null, tags: g.tags || [],
+      entry: g.entry || 'index.html', settings: g.settings || {}, allowDownloads: !!(g.settings && g.settings.allowDownloads),
+      origin: { platform: 'MusiTeacher', path: `private-games/${g.id}`, page: `/dashboard/resources/lab/${g.id}`, hash: fp.hash },
+      clonePath: `games/${g.id}`, link: `/games/${g.id}`,
+    };
+    if (g.status !== 'available' || !fp.hash || !fp.files.includes(base.entry)) {
+      const why = g.status !== 'available' ? `حالتها في MusiTeacher: ${g.status}` : 'ملف التشغيل غير موجود';
+      games.push({ ...base, status: 'not-published', reason: why, version: old ? old.version : 0, syncedAt: old ? old.syncedAt : null });
+      rows.push([g.id, '—', why]); continue;
+    }
+    const sharedChanged = !!(old && old.sharedHash && old.sharedHash !== sharedFp.hash);
+    const outdated = !old || old.sourceHash !== fp.hash || sharedChanged || !fs.existsSync(path.join(OUT, 'games', g.id, base.entry));
+    const selected = !ONLY.length || ONLY.includes(g.id);
+    if (CHECK || !selected) {
+      games.push(old ? { ...old, ...base, origin: base.origin, needsUpdate: outdated } : { ...base, status: 'not-published', reason: 'لم تُنسخ بعد', version: 0, syncedAt: null, needsUpdate: true });
+      rows.push([g.id, old ? `v${old.version}` : '—', outdated ? (old ? '⚠ تحتاج تحديثًا (الأصل تغيّر)' : '⚠ لم تُنسخ بعد') : '✔ مطابقة للأصل']);
+      continue;
+    }
+    copyTree(dir, path.join(OUT, 'games', g.id), fp.files);
+    const warnings = scan(dir, fp.files);
+    const version = old ? (outdated ? old.version + 1 : old.version) : 1;
+    games.push({ ...base, status: 'published', version, sourceHash: fp.hash, sharedHash: sharedFp.hash,
+      syncedAt: outdated || !old ? new Date().toISOString() : old.syncedAt, files: fp.files.length, bytes: fp.bytes, warnings, needsUpdate: false });
+    rows.push([g.id, `v${version}`, `${outdated ? 'نُسخت' : 'بلا تغيير'} · ${fp.files.length} ملف · ${mb(fp.bytes)}${warnings.length ? ' · ⚠ ' + warnings.length + ' ملاحظة' : ''}`]);
+  }
+
+  if (!CHECK) {
+    // الموارد المشتركة (محرك ثلاثي الأبعاد + عينات صوتية) تُنسخ مرة واحدة وتخدم كل الألعاب
+    if (sharedFp.hash) copyTree(path.join(srcGames, '_shared'), path.join(OUT, 'games', '_shared'), sharedFp.files);
+    // حذف نسخ ألعاب لم تعد موجودة في MusiTeacher (فقط عند النسخ الكامل)
+    if (!ONLY.length && fs.existsSync(path.join(OUT, 'games'))) {
+      for (const d of fs.readdirSync(path.join(OUT, 'games'))) {
+        if (d !== '_shared' && !VIRTUAL_GAMES.some((g) => g.id === d)) { fs.rmSync(path.join(OUT, 'games', d), { recursive: true, force: true }); log(`  − حُذفت نسخة قديمة: ${d}`); }
+      }
+    }
+    // الأغلفة + الصفحات العامة
+    const pub = path.join(OUT, 'public');
+    fs.mkdirSync(path.join(pub, 'covers'), { recursive: true }); fs.mkdirSync(path.join(pub, 'games'), { recursive: true });
+    const logo = path.join(SRC, 'public', 'logo.png');
+    if (fs.existsSync(logo)) fs.copyFileSync(logo, path.join(pub, 'assets', 'logo.png'));
+    const published = games.filter((g) => g.status === 'published');
+    for (const g of published) {
+      const lab = path.join(SRC, 'public', 'lab-covers', `${g.id}.jpg`);
+      if (fs.existsSync(lab)) { fs.copyFileSync(lab, path.join(pub, 'covers', `${g.id}.jpg`)); g.cover = `/covers/${g.id}.jpg`; }
+      else { fs.writeFileSync(path.join(pub, 'covers', `${g.id}.svg`), coverSvg(g, GAME_CATEGORIES)); g.cover = `/covers/${g.id}.svg`; }
+    }
+    for (const f of fs.readdirSync(path.join(pub, 'games'))) {
+      const id = f.replace(/\.html$/, '');
+      if (!published.some((g) => g.id === id)) fs.rmSync(path.join(pub, 'games', f), { force: true });
+    }
+    for (const g of published) fs.writeFileSync(path.join(pub, 'games', `${g.id}.html`), gamePage(g, GAME_CATEGORIES));
+    fs.writeFileSync(path.join(pub, 'index.html'), libraryPage(published, GAME_CATEGORIES));
+    // كتالوج عام (بلا أي مسار داخلي أو بصمة): تقرؤه MusiTeacher لمعرفة الألعاب المنشورة وإصداراتها
+    const catalog = { generatedAt: new Date().toISOString(), games: published.map((g) => ({ id: g.id, title: g.title, category: g.category, cover: g.cover, link: g.link, version: g.version, updatedAt: g.syncedAt })) };
+    fs.writeFileSync(path.join(pub, 'catalog.json'), JSON.stringify(catalog, null, 1));
+  }
+
+  const registry = { generatedAt: new Date().toISOString(), source: 'MusiTeacher', shared: { hash: sharedFp.hash, files: sharedFp.files.length, bytes: sharedFp.bytes }, categories: GAME_CATEGORIES, games };
+  if (!CHECK) { fs.mkdirSync(path.dirname(regPath), { recursive: true }); fs.writeFileSync(regPath, JSON.stringify(registry, null, 1)); }
+
+  // تقرير مقروء
+  const total = games.filter((g) => g.status === 'published').reduce((s, g) => s + (g.bytes || 0), 0) + (sharedFp.bytes || 0);
+  const lines = [`# حالة النسخ الطلابية — ${new Date().toLocaleString('ar-EG')}`, '', '| اللعبة | الإصدار | الحالة |', '|---|---|---|', ...rows.map((r) => `| ${r.join(' | ')} |`), '',
+    `الحجم الكلي للنسخ: ${mb(total)} (الحد الآمن على Vercel نحو 200 MB).`];
+  const warned = games.filter((g) => g.warnings && g.warnings.length);
+  if (warned.length) lines.push('', '## ملاحظات تستحق المراجعة', ...warned.map((g) => `- ${g.id}: ${g.warnings.join('؛ ')}`));
+  const needs = games.filter((g) => g.needsUpdate);
+  if (CHECK) lines.push('', needs.length ? `⚠ ${needs.length} لعبة تحتاج تحديثًا. للتحديث: شغّل «تحديث-الألعاب-الطلابية.bat».` : '✔ كل النسخ الطلابية مطابقة لأصولها.');
+  fs.mkdirSync(path.join(OUT, 'data'), { recursive: true });
+  fs.writeFileSync(path.join(OUT, 'data', CHECK ? 'check-report.md' : 'sync-report.md'), lines.join('\n') + '\n');
+  log(lines.join('\n'));
+  if (total > 200 * 1048576) log('\n⚠ الحجم يقترب من حد Vercel لحزمة الدالة (250 MB). راجع الملفات الكبيرة.');
+}
+main().catch((e) => { console.error('✖ فشل النسخ:', e && e.stack || e); process.exit(1); });
