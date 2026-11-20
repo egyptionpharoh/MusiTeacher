@@ -32,3 +32,14 @@ tests/lesson-plans/fixtures/*.docx
 tests/interactive-book/_dist/
 
 .vercel
+
+# ===== تنظيف 2026-11-20 =====
+# مشروع MusiTeacher Games له مستودع Git مستقل داخل هذا المجلد؛ لا يُضمَّن هنا (يمنع رفعه مرتين أو كمستودع متداخل)
+musiteacher-games/
+# نسخ احتياطية محلية قبل التعديلات (تبقى على الجهاز للتراجع، ولا تُرفع إلى GitHub)
+backups/
+private-games/*/_backup_*/
+# مخلفات أدوات التنظيف والاختبار
+cleanup-report-*.txt
+*.zip
+*.rar

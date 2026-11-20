@@ -1,0 +1,10 @@
+# ما لا يحتاجه بناء/تشغيل MusiTeacher على Vercel (يقلّل حجم الرفع ووقت النشر)
+musiteacher-games
+backups
+tests
+docs
+tools/cleanup
+private-games/*/_backup_*
+cleanup-report-*.txt
+*.zip
+*.rar

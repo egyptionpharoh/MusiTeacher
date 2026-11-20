@@ -33,6 +33,10 @@
     "api/health.js": {
       "includeFiles": "data/registry.json",
       "maxDuration": 15
+    },
+    "api/offline.js": {
+      "includeFiles": "data/registry.json",
+      "maxDuration": 15
     }
   },
   "headers": [
@@ -66,11 +70,11 @@
       ]
     },
     {
-      "source": "/((?!g/|api/).*)",
+      "source": "/((?!g/|api/|sw\\.js).*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'self'"
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; frame-src 'self'; worker-src 'self'; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'self'"
         }
       ]
     },
@@ -89,6 +93,19 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=300"
+        }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
         }
       ]
     }

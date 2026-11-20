@@ -7,7 +7,7 @@ import { existsExactCase } from './vercel-router.mjs';
 
 const ASSET = /\.(m?js|css|json|html?|mp3|wav|ogg|m4a|png|jpe?g|gif|svg|webp|fbx|glb|gltf|bin|woff2?|ttf|otf|wasm)$/i;
 
-function refsOf(file, text) {
+export function refsOf(file, text) {
   const out = [];
   const add = (r, kind) => { if (r) out.push({ ref: r.trim(), kind }); };
   const ext = path.extname(file).toLowerCase();

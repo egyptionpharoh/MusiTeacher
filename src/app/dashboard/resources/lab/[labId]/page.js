@@ -9,6 +9,9 @@ import { getGame, publicGameInfo, GAME_CATEGORIES } from '@/data/virtualGames';
 import '@/components/virtual-lab/virtual-lab.css';
 // زر «مشاركة اللعبة مع الطلاب»: رابط النسخة الطلابية في MusiTeacher Games + رمز الدخول (لا يغيّر شيئًا في اللعبة الأصلية)
 import ShareGameButton from '@/components/student-games/ShareGameButton';
+import { fullscreenHint, deviceAdvice } from '@/components/virtual-lab/guides';
+import '@/components/virtual-lab/guides.css';
+import { GAME_DEVICES } from '@/data/gameDevices';
 
 const REFRESH_MS = 20 * 60 * 1000;
 
@@ -125,6 +128,19 @@ export default function LabPlayerPage() {
     document.addEventListener('fullscreenchange', on); on();
     return () => document.removeEventListener('fullscreenchange', on);
   }, []);
+  // تنبيه الأجهزة الصغيرة (مرة عند فتح اللعبة، لا يمنع اللعب) ثم إرشاد ملء الشاشة بعد جاهزية اللعبة
+  const fsRef = useRef(null);
+  const [advising, setAdvising] = useState(true);
+  useEffect(() => {
+    if (!game) return;
+    if (!deviceAdvice(GAME_DEVICES[game.id] || null, () => setAdvising(false))) setAdvising(false);
+  }, [game && game.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (state !== 'ready' || advising) return undefined;
+    let h = null;
+    const t = setTimeout(() => { h = fullscreenHint(fsRef.current, { within: '.vlp-top' }); }, 1500);
+    return () => { clearTimeout(t); if (h) h.hide(false); };
+  }, [state, advising]);
   const fullscreen = () => {
     const el = stageRef.current; if (!el) return;
     if (document.fullscreenElement) document.exitFullscreen();
@@ -160,7 +176,7 @@ export default function LabPlayerPage() {
         <div className="vlp-btns">
           {(isSubscribed || isAdmin) && game.status === 'available' && <ShareGameButton game={game} />}
           <button type="button" className="vlp-btn" onClick={reload} disabled={state !== 'ready'}>↻ إعادة تحميل</button>
-          <button type="button" className={`vlp-btn${isFull ? ' on' : ''}`} onClick={fullscreen} disabled={state !== 'ready'}
+          <button type="button" ref={fsRef} className={`vlp-btn${isFull ? ' on' : ''}`} onClick={fullscreen} disabled={state !== 'ready'}
             aria-pressed={isFull} title={isFull ? 'العودة إلى الحجم العادي (Esc)' : 'تكبير اللعبة إلى ملء الشاشة'}>
             {isFull ? '🗗 تصغير الشاشة' : '⛶ ملء الشاشة'}
           </button>

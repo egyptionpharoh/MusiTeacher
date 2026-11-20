@@ -19,6 +19,7 @@ import { MIME } from '../lib/core.mjs';
 import { libraryPage, gamePage, coverSvg } from './pages.mjs';
 import { loadTerser, hardenTree } from './harden.mjs';
 import { checkGame } from './check-refs.mjs';
+import { offlineManifest } from './offline-manifest.mjs';
 
 const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -82,6 +83,9 @@ async function main() {
   const src = fs.readFileSync(regFile, 'utf8');
   if (/^\s*import\s/m.test(src)) { console.error('✖ سجل الألعاب يستورد ملفات أخرى؛ حدّث sync-games.mjs'); process.exit(1); }
   const { VIRTUAL_GAMES, GAME_CATEGORIES } = await import('data:text/javascript;base64,' + Buffer.from(src).toString('base64'));
+  // تصنيف الأجهزة لكل لعبة (مصدر واحد مشترك مع MusiTeacher): src/data/gameDevices.js
+  const devFile = path.join(SRC, 'src', 'data', 'gameDevices.js');
+  const { GAME_DEVICES = {} } = fs.existsSync(devFile) ? await import('data:text/javascript;base64,' + Buffer.from(fs.readFileSync(devFile, 'utf8')).toString('base64')) : {};
   const regPath = path.join(OUT, 'data', 'registry.json');
   const prev = fs.existsSync(regPath) ? JSON.parse(fs.readFileSync(regPath, 'utf8')) : { games: [] };
   const prevById = Object.fromEntries((prev.games || []).map((g) => [g.id, g]));
@@ -139,6 +143,13 @@ async function main() {
       if (!fs.existsSync(gd)) continue;
       const probs = checkGame(gd, path.join(OUT, 'games', '_shared'), walk(gd));
       g.refProblems = probs;
+      // ملفات العمل دون إنترنت: نسخة اللعبة + ما تستعمله فعلًا من الموارد المشتركة (لا يُكشف إلا بجلسة رمز صالحة)
+      const om = offlineManifest(g.id, gd, path.join(OUT, 'games', '_shared'), walk(gd));
+      const cdn = om.external.filter((u) => !/fonts\.(googleapis|gstatic)\.com/.test(u));
+      g.offline = { files: om.files, shared: om.shared, external: cdn, bytes: om.bytes,
+        level: cdn.length ? 'adaptable' : 'ready' };   // ready: كل ما تحتاجه داخل المشروع · adaptable: تعتمد على موقع خارجي يُحفظ أثناء التجهيز
+      g.devices = GAME_DEVICES[g.id] || null;
+      if (!g.devices) g.warnings = [...(g.warnings || []), 'لا يوجد تصنيف أجهزة لهذه اللعبة في src/data/gameDevices.js (سيظهر تنبيه الهاتف احتياطيًا)'];
       if (probs.length) { broken += probs.length; g.warnings = [...(g.warnings || []), ...probs.map((x) => `مرجع مكسور في ${x.file}: ${x.ref} (${x.problem})`)]; }
     }
     log(broken ? `⚠ فحص المراجع: ${broken} مرجع مكسور — راجع data/sync-report.md` : '✔ فحص المراجع: كل الملفات التي تطلبها الألعاب موجودة بأسمائها الصحيحة.');
@@ -166,7 +177,8 @@ async function main() {
     for (const g of published) fs.writeFileSync(path.join(pub, 'games', `${g.id}.html`), gamePage(g, GAME_CATEGORIES));
     fs.writeFileSync(path.join(pub, 'index.html'), libraryPage(published, GAME_CATEGORIES));
     // كتالوج عام (بلا أي مسار داخلي أو بصمة): تقرؤه MusiTeacher لمعرفة الألعاب المنشورة وإصداراتها
-    const catalog = { generatedAt: new Date().toISOString(), games: published.map((g) => ({ id: g.id, title: g.title, category: g.category, cover: g.cover, link: g.link, version: g.version, updatedAt: g.syncedAt })) };
+    const catalog = { generatedAt: new Date().toISOString(), games: published.map((g) => ({ id: g.id, title: g.title, category: g.category, cover: g.cover, link: g.link, version: g.version, updatedAt: g.syncedAt,
+      devices: g.devices || null, offline: g.offline ? { level: g.offline.level, bytes: g.offline.bytes } : null })) };
     fs.writeFileSync(path.join(pub, 'catalog.json'), JSON.stringify(catalog, null, 1));
   }
 

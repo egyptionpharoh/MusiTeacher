@@ -8,6 +8,7 @@ import { makeBridge, BRIDGE_DETAIL } from './bridge.mjs';
 import fs from 'node:fs';
 
 const now = () => Math.floor(Date.now() / 1000);
+export const OFFLINE_MAX_SEC = 7 * 24 * 60 * 60;   // أقصى مدة للعب دون إنترنت قبل الحاجة لفتح اللعبة مع الإنترنت مرة أخرى
 
 // رسائل لطيفة للطالب (بلا أي تفاصيل تقنية)
 export const STUDENT_MSG = {
@@ -151,6 +152,53 @@ export function makeHandlers(deps = {}) {
   }
 
   /**
+   * GET /api/offline?game=<id> — قائمة ملفات «تجهيز اللعبة للعمل دون إنترنت».
+   * تُعطى فقط: بجلسة رمز صالحة لنفس اللعبة + تأكيد فوري من MusiTeacher أن الرمز ما زال صالحًا الآن.
+   * مدة الصلاحية دون إنترنت = الأقرب من (انتهاء الرمز / انتهاء اشتراك المعلم) و 7 أيام؛ تتجدد كلما فُتحت اللعبة مع الإنترنت.
+   */
+  const offLimit = makeLimiter(20, 10 * 60 * 1000);
+  async function offline(req, res) {
+    try {
+      const cfg = cfgOf();
+      const game = gameOf(queryOf(req).get('game'));
+      if (!game) return sendJson(res, 404, { ok: false, error: 'unavailable' });
+      const site = req.headers['sec-fetch-site'];
+      if (site && site !== 'same-origin') return sendJson(res, 403, { ok: false, error: 'unavailable' });
+      const p = sessionCookie(req, game, cfg);
+      if (!p) return sendJson(res, 401, { ok: false, error: 'session', message: 'افتح اللعبة بالرمز أولًا ثم جهّزها للعمل دون إنترنت.' });
+      if (!offLimit(p.s + ':' + clientKey(req))) return sendJson(res, 429, { ok: false, error: 'rate-limited', message: STUDENT_MSG['rate-limited'] });
+      if (!game.offline) return sendJson(res, 404, { ok: false, error: 'unsupported', message: 'هذه اللعبة لا تدعم العمل دون إنترنت حاليًا.' });
+      const r = await bridgeOf(cfg).check(game.id, p.s);
+      if (!r.ok) {
+        if (['invalid', 'expired', 'release-stopped'].includes(r.error)) {
+          res.setHeader('Set-Cookie', clearCookieHeader(game.id, cfg.secure));
+          const e = publicError(r.error === 'invalid' ? 'expired' : r.error);
+          return sendJson(res, 401, { ok: false, ended: true, error: e, message: STUDENT_MSG[e] });
+        }
+        if (r.detail) console.error('[mtg/offline] bridge:', r.error, r.detail, BRIDGE_DETAIL[r.detail] || '');
+        return sendJson(res, 503, { ok: false, error: 'unavailable', message: 'تعذّر التأكد من صلاحية الرمز الآن. حاول بعد قليل.' });
+      }
+      const until = Math.min(Number(r.exp) || 0, now() + OFFLINE_MAX_SEC);
+      if (until <= now()) return sendJson(res, 401, { ok: false, ended: true, error: 'expired', message: STUDENT_MSG.expired });
+      issue(res, game, cfg, p.s, Math.min(Number(r.exp) || p.exp, now() + SESSION_MAX_SEC));
+      const root = `/g/${encodeURIComponent(game.id)}/`;
+      const enc = (f) => f.split('/').map(encodeURIComponent).join('/');
+      console.info('[mtg/offline] prepare', game.id, traceOf(p.s));
+      return sendJson(res, 200, {
+        ok: true, game: game.id, title: game.title, version: game.version, release: cfg.release, until, bytes: game.offline.bytes,
+        level: game.offline.level, entry: playUrl(game),
+        files: game.offline.files.map((f) => root + enc(f)),
+        shared: game.offline.shared.map((f) => '_shared/' + enc(f)),
+        external: game.offline.external || [],
+        app: ['/', `/games/${encodeURIComponent(game.id)}`, '/assets/mtg.css', '/assets/shell.js', '/assets/library.js', '/assets/mtg-ui.js', '/assets/logo.png', '/catalog.json', game.cover].filter(Boolean),
+      });
+    } catch (e) {
+      console.error('[mtg/offline]', e && e.message);
+      return sendJson(res, 500, { ok: false, error: 'unavailable', message: STUDENT_MSG.unavailable });
+    }
+  }
+
+  /**
    * GET /api/health — فحص جاهزية الربط بنقرة واحدة (لا يكشف أي سر):
    * إعدادات هذا المشروع + هل MusiTeacher المنشور يرد على مسار التحقق بالسر الصحيح + هل يقبل الإصدار الحالي.
    * يستخدم طلب «check» برقم مشاركة وهمي: لا يُحسب محاولة فاشلة ولا يكتب شيئًا في قاعدة البيانات.
@@ -178,5 +226,5 @@ export function makeHandlers(deps = {}) {
       { 'Cache-Control': 'no-store' });
   }
 
-  return { enter, session, play, health };
+  return { enter, session, play, health, offline };
 }

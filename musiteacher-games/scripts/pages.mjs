@@ -1,4 +1,5 @@
 // توليد صفحات المشروع الثابتة (المكتبة + صفحة لكل لعبة + أغلفة بديلة) من سجل الألعاب.
+const V = Date.now().toString(36);   // يتغير مع كل نسخ ← المتصفح يجلب الملفات الجديدة
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const head = (title, desc) => `<!doctype html>
@@ -11,7 +12,7 @@ const head = (title, desc) => `<!doctype html>
 <link rel="icon" href="/assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/mtg.css?v=${Date.now().toString(36)}"></head>`;
+<link rel="stylesheet" href="/assets/mtg.css?v=${V}"></head>`;
 
 const topBar = (extra = '') => `<header class="top"><div class="top-in">
   <a class="brand" href="/" aria-label="MusiTeacher Games — المكتبة"><img src="/assets/logo.png" alt=""><b>MusiTeacher <span>Games</span></b></a>
@@ -21,6 +22,7 @@ export function libraryPage(games, cats) {
   const used = [...new Set(games.map((g) => g.category))].filter((c) => cats[c]);
   return `${head('MusiTeacher Games — مكتبة الألعاب الموسيقية', 'ألعاب موسيقية تعليمية تفاعلية من MusiTeacher')}
 <body>${topBar()}
+<p class="netbar" id="netbar" role="status" hidden></p>
 <section class="hero"><h1>العب وتعلّم الموسيقى</h1>
   <p>اختر لعبتك، ثم اكتب رمز اللعبة الذي أرسله لك معلمك — وابدأ فورًا. لا تحتاج إلى حساب أو كلمة مرور.</p></section>
 <nav class="tools" aria-label="التصنيفات">
@@ -29,22 +31,30 @@ export function libraryPage(games, cats) {
   <label class="sr" for="q">ابحث عن لعبة</label><input id="q" class="search" type="search" placeholder="ابحث عن لعبة…" autocomplete="off">
 </nav>
 <main class="grid">
-${games.map((g) => `  <article class="gcard" data-cat="${esc(g.category)}" data-text="${esc(g.title + ' ' + (g.tags || []).join(' '))}">
+${games.map((g) => `  <article class="gcard" data-id="${esc(g.id)}" data-version="${esc(g.version)}" data-cat="${esc(g.category)}" data-text="${esc(g.title + ' ' + (g.tags || []).join(' '))}">
     <a class="pic" href="/games/${g.id}" tabindex="-1" aria-hidden="true"><img src="${esc(g.cover)}" alt="" loading="lazy"></a>
     <div class="body"><span class="cat">${esc((cats[g.category] || {}).label || 'لعبة')}</span>
       <h2>${esc(g.title)}</h2><p>${esc(g.description)}</p>
+      <div class="badges">${deviceBadge(g.devices)}<span class="offbadge" hidden></span></div>
       <a class="btn go" href="/games/${g.id}">▶ العب الآن</a></div></article>`).join('\n')}
   <p class="empty" id="empty" hidden>لا توجد لعبة بهذا الاسم.</p>
 </main>
+<section class="saved" id="saved" aria-live="polite" hidden></section>
 <p class="foot">© MusiTeacher Games – All Rights Reserved – ${new Date().getFullYear()}</p>
-<script src="/assets/library.js" defer></script></body></html>
+<script src="/assets/mtg-ui.js?v=${V}" defer></script><script src="/assets/library.js?v=${V}" defer></script></body></html>
 `;
 }
 
+/** شارة الأجهزة الموصى بها في بطاقة اللعبة (من src/data/gameDevices.js بعد اختبار فعلي لكل لعبة) */
+const DEV = { desktop: ['🖥️', 'الأفضل على الحاسوب'], tablet: ['💻', 'حاسوب أو جهاز لوحي'], mobile: ['📱', 'يعمل على الهاتف أيضًا'] };
+function deviceBadge(d) { return DEV[d] ? `<span class="devbadge dev-${d}" title="الأجهزة الموصى بها"><i aria-hidden="true">${DEV[d][0]}</i>${DEV[d][1]}</span>` : ''; }
+
 export function gamePage(g, cats) {
   const cat = (cats[g.category] || {}).label || '';
+  const off = g.offline ? ` data-offline="${esc(g.offline.level)}" data-bytes="${g.offline.bytes | 0}"` : '';
   return `${head(`${g.title} — MusiTeacher Games`, g.description)}
-<body data-game="${esc(g.id)}">${topBar(`<span class="title-sm">${esc(g.title)}</span>
+<body data-game="${esc(g.id)}" data-version="${esc(g.version)}" data-devices="${esc(g.devices || '')}"${off}>${topBar(`<span class="title-sm">${esc(g.title)}</span>
+  <button class="btn ghost off-btn" id="off" type="button" hidden title="حفظ اللعبة للعمل دون إنترنت"><span class="ic" aria-hidden="true">⤓</span> <span class="lbl">العب دون إنترنت</span></button>
   <button class="btn ghost" id="fs" type="button" title="ملء الشاشة">⛶ <span class="lbl">ملء الشاشة</span></button>`)}
 <main class="gate"><div class="gate-card">
   <div class="pic"><img src="${esc(g.cover)}" alt=""></div>
@@ -56,13 +66,15 @@ export function gamePage(g, cats) {
     <p class="msg" id="msg" role="status" aria-live="polite"></p>
     <button class="btn sun wide" id="go" type="submit">▶ ابدأ اللعب</button>
     <p class="note">الرمز من معلمك. لا حاجة لحساب أو بريد أو كلمة مرور.</p>
+    ${g.devices ? `<p class="note devnote">${deviceBadge(g.devices)}</p>` : ''}
   </form></div></main>
 <section class="stage-wrap"><div class="stage" id="stage">
   <div class="banner" id="banner" role="status"></div>
   <iframe id="frame" title="${esc(g.title)}" allow="autoplay; fullscreen; accelerometer; gyroscope; midi"
     sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups allow-modals${g.allowDownloads ? ' allow-downloads' : ''}" referrerpolicy="same-origin"></iframe>
 </div></section>
-<script src="/assets/shell.js" defer></script></body></html>
+<div class="offbox" id="offbox" hidden></div>
+<script src="/assets/mtg-ui.js?v=${V}" defer></script><script src="/assets/shell.js?v=${V}" defer></script></body></html>
 `;
 }
 

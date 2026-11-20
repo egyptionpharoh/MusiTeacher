@@ -11,6 +11,6 @@
     "sync": "node scripts/sync-games.mjs",
     "check": "node scripts/sync-games.mjs --check",
     "dev": "node scripts/dev-server.mjs",
-    "test": "node --test tests/server.test.mjs tests/refs.test.mjs tests/bridge.test.mjs"
+    "test": "node --test tests/server.test.mjs tests/refs.test.mjs tests/bridge.test.mjs tests/offline.test.mjs"
   }
 }
