@@ -4,11 +4,13 @@
   "private": true,
   "type": "module",
   "description": "MusiTeacher Games — نسخ طلابية من ألعاب MusiTeacher بدخول برمز من المعلم",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "sync": "node scripts/sync-games.mjs",
     "check": "node scripts/sync-games.mjs --check",
     "dev": "node scripts/dev-server.mjs",
-    "test": "node --test tests/server.test.mjs"
+    "test": "node --test tests/server.test.mjs tests/refs.test.mjs"
   }
 }

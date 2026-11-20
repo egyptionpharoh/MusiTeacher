@@ -22,6 +22,15 @@ const publicError = (e) => (STUDENT_MSG[e] ? e : 'unavailable');
 
 function remaining(exp) { return Math.max(0, exp - now()); }
 
+/**
+ * رابط تشغيل اللعبة داخل الإطار: /g/<id>/<ملف الدخول> بالاسم الصريح (مثل /g/accordion-3d/index.html).
+ * السبب: المتصفح يحسب المسارات النسبية (./src/ui/style.css) من «مجلد» الرابط. لو كان الرابط /g/accordion-3d
+ * (بدون / في آخره) لصار المجلد /g/ وضاعت كل ملفات اللعبة (404 ثم خطأ MIME). الاسم الصريح يمنع ذلك مهما كانت إعدادات الاستضافة.
+ */
+export function playUrl(game) {
+  return `/g/${encodeURIComponent(game.id)}/` + String(game.entry || 'index.html').split('/').map(encodeURIComponent).join('/');
+}
+
 export function makeHandlers(deps = {}) {
   const cfgOf = () => deps.config || config();
   const bridgeOf = (cfg) => deps.bridge || makeBridge(cfg);
@@ -61,7 +70,7 @@ export function makeHandlers(deps = {}) {
         return sendJson(res, e === 'rate-limited' ? 429 : e === 'unavailable' ? 503 : 401, { ok: false, error: e, message: STUDENT_MSG[e] });
       }
       const s = issue(res, game, cfg, String(r.sid), Number(r.exp) || now() + 3600);
-      return sendJson(res, 200, { ok: true, play: `/g/${game.id}/`, expiresIn: remaining(s.exp) });
+      return sendJson(res, 200, { ok: true, play: playUrl(game), expiresIn: remaining(s.exp) });
     } catch (e) {
       console.error('[mtg/enter]', e && e.message);
       return sendJson(res, 500, { ok: false, error: 'unavailable', message: STUDENT_MSG.unavailable });
@@ -87,7 +96,7 @@ export function makeHandlers(deps = {}) {
         if (r.ok) issue(res, game, cfg, p.s, Math.min(Number(r.exp) || p.exp, p.exp + RECHECK_SEC * 4));
         // إن تعذّر الوصول إلى MusiTeacher مؤقتًا لا نقطع لعب الطالب؛ تبقى الجلسة حتى انتهائها
       }
-      return sendJson(res, 200, { ok: true, play: `/g/${game.id}/`, expiresIn: remaining(p.exp) });
+      return sendJson(res, 200, { ok: true, play: playUrl(game), expiresIn: remaining(p.exp) });
     } catch (e) {
       console.error('[mtg/session]', e && e.message);
       return sendJson(res, 200, { ok: false });
@@ -107,6 +116,8 @@ export function makeHandlers(deps = {}) {
     const isEntry = !rel || rel === (game.entry || 'index.html');
     const dest = req.headers['sec-fetch-dest'], site = req.headers['sec-fetch-site'];
     // فتح أي ملف من ملفات اللعبة مباشرة في تبويب (لعرض كوده أو حفظه) ← إلى صفحة اللعبة الرسمية
+    // طلب اللعبة بلا اسم ملف (/g/<id> أو /g/<id>/) داخل الإطار ← إلى رابطها الصريح حتى تصح المسارات النسبية
+    if (!rel && p && dest !== 'document') return send(res, 302, '', { Location: playUrl(game), 'Cache-Control': 'no-store' });
     if (dest === 'document' || (isEntry && !p)) {
       if (p && dest === 'document') console.warn('[mtg/abuse] direct-open', game.id, rel || 'entry', traceOf(p.s));
       return send(res, 302, '', { Location: `/games/${game.id}`, 'Cache-Control': 'no-store' });

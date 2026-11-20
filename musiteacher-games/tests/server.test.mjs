@@ -66,12 +66,15 @@ test('رمز خاطئ ← رسالة لطيفة بلا تفاصيل تقنية؛
 
 test('رمز صحيح ← جلسة؛ اللعبة وملفاتها تُفتح داخل الصفحة، والتحديث لا يطلب الرمز', async () => {
   const r = await enter('demo', '٤٨٢٩١٥'); const d = await r.json();
-  assert.equal(d.ok, true); assert.equal(d.play, '/g/demo/');
+  assert.equal(d.ok, true); assert.equal(d.play, '/g/demo/index.html');   // اسم الملف صريح: المسارات النسبية تُحسب من مجلد اللعبة
   const c = cookieOf(r); assert.match(c, /^mtg_demo=/);
   assert.match(r.headers.get('set-cookie'), /HttpOnly/); assert.match(r.headers.get('set-cookie'), /SameSite=Lax/);
   const s = await (await fetch(base + '/api/session?game=demo', { headers: { cookie: c } })).json();
   assert.equal(s.ok, true); assert.ok(s.expiresIn > 7 * 3600 && s.expiresIn <= 8 * 3600);   // جلسة حتى 8 ساعات
-  const page = await fetch(base + '/g/demo/', { headers: { cookie: c, ...iframe } });
+  // طلب اللعبة بلا اسم ملف داخل الإطار ← تحويل للرابط الصريح
+  const bare = await fetch(base + '/g/demo/', { redirect: 'manual', headers: { cookie: c, ...iframe } });
+  assert.equal(bare.status, 302); assert.equal(bare.headers.get('location'), '/g/demo/index.html');
+  const page = await fetch(base + '/g/demo/index.html', { headers: { cookie: c, ...iframe } });
   const html = await page.text();
   assert.equal(page.status, 200); assert.match(html, /DEMO-GAME/); assert.match(html, /mt-ip-mark/); assert.match(html, /noindex/);
   assert.equal(page.headers.get('content-security-policy'), "frame-ancestors 'self'");
@@ -127,7 +130,7 @@ test('تقوية: أي ملف يُفتح مباشرة في تبويب ← صفح
 
 test('تقوية: صفحة اللعبة تحمل قفل النطاق أولًا + بصمة تتبّع للجلسة', async () => {
   const c = cookieOf(await enter('demo', '482915'));
-  const html = await (await fetch(base + '/g/demo/', { headers: { cookie: c, ...iframe } })).text();
+  const html = await (await fetch(base + '/g/demo/index.html', { headers: { cookie: c, ...iframe } })).text();
   const guard = html.indexOf('mtg-guard'), game = html.indexOf('DEMO-GAME');
   assert.ok(guard > 0 && guard < game, 'قفل النطاق قبل أي محتوى للعبة');
   assert.match(html, /<meta name="mtg-t" content="[0-9a-f]{10}">/);

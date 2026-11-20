@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { MIME } from '../lib/core.mjs';
 import { libraryPage, gamePage, coverSvg } from './pages.mjs';
 import { loadTerser, hardenTree } from './harden.mjs';
+import { checkGame } from './check-refs.mjs';
 
 const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -130,6 +131,17 @@ async function main() {
       copyTree(path.join(srcGames, '_shared'), path.join(OUT, 'games', '_shared'), sharedFp.files);
       if (terser) { const h = await hardenTree(terser, path.join(OUT, 'games', '_shared'), sharedFp.files); log(`  الموارد المشتركة: صُغّر ${h.js} ملف JavaScript`); }
     }
+    // فحص المراجع: كل ملف تطلبه كل لعبة موجود في نسختها بنفس حالة الأحرف (كما على خوادم Vercel)
+    const walk = (d, b = '') => fs.readdirSync(path.join(d, b), { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(d, path.posix.join(b, e.name)) : [path.posix.join(b, e.name)]);
+    let broken = 0;
+    for (const g of games.filter((x) => x.status === 'published')) {
+      const gd = path.join(OUT, 'games', g.id);
+      if (!fs.existsSync(gd)) continue;
+      const probs = checkGame(gd, path.join(OUT, 'games', '_shared'), walk(gd));
+      g.refProblems = probs;
+      if (probs.length) { broken += probs.length; g.warnings = [...(g.warnings || []), ...probs.map((x) => `مرجع مكسور في ${x.file}: ${x.ref} (${x.problem})`)]; }
+    }
+    log(broken ? `⚠ فحص المراجع: ${broken} مرجع مكسور — راجع data/sync-report.md` : '✔ فحص المراجع: كل الملفات التي تطلبها الألعاب موجودة بأسمائها الصحيحة.');
     // حذف نسخ ألعاب لم تعد موجودة في MusiTeacher (فقط عند النسخ الكامل)
     if (!ONLY.length && fs.existsSync(path.join(OUT, 'games'))) {
       for (const d of fs.readdirSync(path.join(OUT, 'games'))) {

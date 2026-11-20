@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+// خادم تجربة محلي يحاكي Vercel (نفس المعالجات الحقيقية + نفس إعادة توجيه المسارات):
+//   node scripts/dev-server.mjs            ← http://localhost:5400
+// الإعدادات من ملف .env.local داخل مجلد musiteacher-games (انظر README-ar.md).
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ROOT, MIME } from '../lib/core.mjs';
+
+const envFile = path.join(ROOT, '.env.local');
+if (fs.existsSync(envFile)) for (const line of fs.readFileSync(envFile, 'utf8').split(/\r?\n/)) {
+  const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(line); if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+}
+const { makeHandlers } = await import('../lib/handlers.mjs');
+const h = makeHandlers();
+const PORT = +(process.env.PORT || 5400);
+const PUB = path.join(ROOT, 'public');
+// نفس سياسة الأمان المطبقة على Vercel لصفحات المكتبة وشاشة الرمز
+const CSP = ((JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8')).headers || []).find((h) => h.source.includes('?!g/')) || { headers: [] }).headers.find((x) => x.key === 'Content-Security-Policy');
+
+http.createServer(async (req, res) => {
+  try {
+    const u = new URL(req.url, 'http://x');
+    if (u.pathname === '/api/enter') return await h.enter(req, res);
+    if (u.pathname === '/api/session') return await h.session(req, res);
+    const g = /^\/g\/([^/]+)(?:\/(.*))?$/.exec(u.pathname);
+    if (g) {
+      if (g[2] === undefined) { res.writeHead(308, { Location: `/g/${g[1]}/` }); return res.end(); }
+      req.url = `/api/play?id=${encodeURIComponent(g[1])}` + (g[2] ? g[2].split('/').map((s) => '&p=' + encodeURIComponent(decodeURIComponent(s))).join('') : '');
+      return await h.play(req, res);
+    }
+    let f = path.join(PUB, decodeURIComponent(u.pathname));
+    if (u.pathname === '/') f = path.join(PUB, 'index.html');
+    else if (!path.extname(f) && fs.existsSync(f + '.html')) f += '.html';          // cleanUrls
+    if (f.startsWith(PUB) && fs.existsSync(f) && fs.statSync(f).isFile()) {
+      res.writeHead(200, { 'Content-Type': MIME[path.extname(f)] || 'application/octet-stream', 'Cache-Control': 'no-cache', 'X-Frame-Options': 'SAMEORIGIN', ...(CSP ? { 'Content-Security-Policy': CSP.value } : {}) });
+      return res.end(fs.readFileSync(f));
+    }
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('غير موجود');
+  } catch (e) { console.error(e); res.writeHead(500); res.end('خطأ'); }
+}).listen(PORT, () => console.log(`MusiTeacher Games (محلي) على http://localhost:${PORT}`));

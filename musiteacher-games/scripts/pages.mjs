@@ -59,7 +59,7 @@ export function gamePage(g, cats) {
   </form></div></main>
 <section class="stage-wrap"><div class="stage" id="stage">
   <div class="banner" id="banner" role="status"></div>
-  <iframe id="frame" title="${esc(g.title)}" allow="autoplay; fullscreen; pointer-lock; accelerometer; gyroscope; midi"
+  <iframe id="frame" title="${esc(g.title)}" allow="autoplay; fullscreen; accelerometer; gyroscope; midi"
     sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups allow-modals${g.allowDownloads ? ' allow-downloads' : ''}" referrerpolicy="same-origin"></iframe>
 </div></section>
 <script src="/assets/shell.js" defer></script></body></html>
