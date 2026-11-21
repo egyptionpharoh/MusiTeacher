@@ -6,7 +6,7 @@
 import { LESSONS } from './data/lessons.js';
 import { BANKS, bankFor, loadBanks, banksState } from './data/banks.js';
 import * as S from './core/store.js';
-import { normalize, uid, clone, problems, TYPES, shuffleOptions } from './core/model.js';
+import { normalize, uid, clone, problems, TYPES, shuffleOptions, toClassic } from './core/model.js';
 import { parseNames, mergeNames, shuffle, SOURCES } from './core/names.js';
 import { generate } from './core/ai.js';
 import { renderReview } from './ui/review.js';
@@ -16,9 +16,13 @@ import { h, toast, ask, prompt, modal, GRADE_NAME, SEM_NAME, plain, ago } from '
 
 const main = document.querySelector('main');
 const stepsEl = document.querySelector('.steps');
-const STEP_NAMES = ['الصف', 'الدرس', 'النشاط', 'الأسماء', 'ابدأ اللعب'];
-const ST_KEY = 'rz_state';
+// وضع الاستيراد: المكتبة مفتوحة فوق عجلة الاختيار (من «إعداد الاسئلة») لتمدّها بالأسئلة فقط —
+// ثلاث خطوات (الصف ← الدرس ← النشاط) ثم «استيراد إلى العجلة»؛ لا أسماء ولا لعب هنا.
+const IMPORT = new URLSearchParams(location.search).get('mode') === 'import' && window.parent !== window;
+const STEP_NAMES = IMPORT ? ['الصف', 'الدرس', 'اختر الأسئلة'] : ['الصف', 'الدرس', 'النشاط', 'الأسماء', 'ابدأ اللعب'];
+const ST_KEY = IMPORT ? 'rz_state_import' : 'rz_state';
 let st = (() => { try { return { step: 1, sem: 1, ...JSON.parse(sessionStorage.getItem(ST_KEY)) }; } catch { return { step: 1, sem: 1 }; } })();
+if (IMPORT && st.step > 3) st.step = 3;
 let view = st.view || 'flow';
 let playCtl = null;
 const saveSt = () => { try { sessionStorage.setItem(ST_KEY, JSON.stringify({ ...st, view })); } catch { /* ignore */ } };
@@ -48,6 +52,12 @@ const statusChips = (l) => { const s = lessonStatus(l); const [c, t] = STATUS_CH
 
 // ------------------------------------------------ التنقل
 function go(step, patch = {}) {
+  if (IMPORT && step > 3) {   // في وضع الاستيراد: «استخدم» واعتماد النشاط = إرسال أسئلته إلى العجلة
+    Object.assign(st, patch, { step: 3 }); view = 'flow';
+    const a = getActivity(st.actId); render();
+    if (a) importToWheel(a);
+    return;
+  }
   Object.assign(st, patch, { step }); view = 'flow';
   // لا لعب بلا أسماء/أسئلة حتى لو ضُغط رقم الخطوة 5 مباشرة
   if (step === 5) {
@@ -58,7 +68,7 @@ function go(step, patch = {}) {
 }
 function paintSteps() {
   stepsEl.innerHTML = '';
-  const can = [true, !!st.grade, !!st.lessonId || !!st.actId, !!st.actId, !!st.actId];
+  const can = [true, !!st.grade, !!st.lessonId || !!st.actId, !!st.actId, !!st.actId].slice(0, STEP_NAMES.length);
   STEP_NAMES.forEach((n, i) => stepsEl.append(h('button', { class: `${view === 'flow' && st.step === i + 1 ? 'on' : ''} ${st.step > i + 1 ? 'done' : ''}`, disabled: !can[i], onclick: () => go(i + 1) }, h('b', {}, i + 1), h('span', {}, n))));
 }
 function render() {
@@ -89,7 +99,7 @@ function viewGrade() {
     grid.append(h('button', { class: 'card gcard', onclick: () => go(2, { grade: g, lessonId: null, actId: null }) }, h('span', { class: 'num' }, g), h('b', {}, GRADE_NAME(g)), h('span', { class: 'mute small' }, `${ls.length} درسًا`), ready ? h('span', { class: 'chip ready', style: { alignSelf: 'flex-start' } }, `${ready} جاهز`) : null));
   }
   const rec = S.recent().map((r) => ({ r, a: getActivity(r.id) })).filter((x) => x.a).slice(0, 4);
-  main.append(h('h1', {}, 'مكتبة الدروس التفاعلية'), hint('اختر الصف، ثم الدرس، ثم النشاط… وأدخل أسماء الطلاب وابدأ اللعب.'), ...[banksNotice()].filter(Boolean), q, res);
+  main.append(h('h1', {}, 'مكتبة الدروس التفاعلية'), hint(IMPORT ? 'اختر الصف، ثم الدرس، ثم النشاط… واضغط «استيراد إلى العجلة» لتُضاف أسئلته إلى إعداد الأسئلة.' : 'اختر الصف، ثم الدرس، ثم النشاط… وأدخل أسماء الطلاب وابدأ اللعب.'), ...[banksNotice()].filter(Boolean), q, res);
   if (rec.length) main.append(h('h2', {}, '🕘 استخدمتها مؤخرًا'), h('div', { class: 'grid wide' }, rec.map(({ r, a }) => h('button', { class: 'card', onclick: () => useActivity(a) }, h('b', {}, a.title), h('div', { class: 'mute small' }, `${GRADE_NAME(a.grade)} · ${ago(r.at)}`)))));
   main.append(h('h2', {}, 'اختر الصف'), grid);
 }
@@ -126,7 +136,7 @@ function activityCard(a, { compact = false } = {}) {
   const outdated = a.origin === 'bank-edit' && b && (a.bankVersion || 0) < b.version;
   const originTxt = { bank: '📗 جاهز من محتوى المنصة', 'bank-edit': '✏️ معدّل من نشاط جاهز', ai: '🤖 مولّد ومراجَع', manual: '✍️ يدوي', classic: '🎡 من قالب كلاسيكي' }[a.origin] || '';
   const actions = h('div', { class: 'row' },
-    h('button', { class: 'btn pri sm', onclick: () => useActivity(a) }, '▶ استخدم'),
+    h('button', { class: 'btn pri sm', 'data-testid': 'rz-use', onclick: () => useActivity(a) }, IMPORT ? '⬇ استيراد إلى العجلة' : '▶ استخدم'),
     a.readonly ? h('button', { class: 'btn sm', onclick: () => editActivity(a, true) }, '✏️ نسخة للتعديل') : h('button', { class: 'btn sm', onclick: () => editActivity(a) }, '✏️ تعديل'),
     h('button', { class: 'btn sm', onclick: () => printMenu(a) }, '🖨 طباعة'),
     !compact && !a.readonly ? h('button', { class: 'btn sm', onclick: () => manageMenu(a) }, '⋯ المزيد') : null);
@@ -287,7 +297,7 @@ function viewReview() {
     d.origin === 'ai' ? h('div', { class: 'notice ok' }, 'الأسئلة مولّدة من محتوى الدرس، وتحت كل سؤال الجملة التي بُني عليها. تأكد منها قبل الاعتماد.') : null,
     h('div', { class: 'bar' }, h('b', {}, 'اسم النشاط:'), h('div', { class: 'grow' }, title)), body,
     h('div', { class: 'bar', style: { position: 'sticky', bottom: '0', background: 'var(--bg)', padding: '10px 0', borderTop: '1px solid var(--line)' } },
-      h('button', { class: 'btn ok big', onclick: approve }, '✅ اعتماد النشاط وحفظه'), h('span', { class: 'mute small' }, 'تُحفظ مسودتك تلقائيًا أثناء التعديل.'))].filter(Boolean));
+      h('button', { class: 'btn ok big', 'data-testid': 'rz-approve', onclick: approve }, IMPORT ? '✅ اعتماد النشاط واستيراده إلى العجلة' : '✅ اعتماد النشاط وحفظه'), h('span', { class: 'mute small' }, 'تُحفظ مسودتك تلقائيًا أثناء التعديل.'))].filter(Boolean));
   renderReview(body, d, { onChange: () => S.saveDraft(d.key, d), onRegenerate: regen });
 }
 
@@ -367,6 +377,22 @@ function useActivity(a) {
   st.grade = a.grade || st.grade; st.sem = a.sem || st.sem; st.lessonId = a.lessonId || null; st.actId = a.id; go(4);
 }
 
+/**
+ * إرسال أسئلة نشاط إلى عجلة الاختيار (وضع الاستيراد). الأسئلة نسخة جديدة بمعرّفات جديدة (imp_…)،
+ * فتعديلها أو حذفها في العجلة لا يغيّر النشاط الأصلي في المكتبة ولا قوالب أي معلم آخر.
+ */
+async function importToWheel(a) {
+  const qs = (a.questions || []).filter((q) => !problems(q).length);
+  if (!qs.length) { toast('هذا النشاط بلا أسئلة مكتملة. أنشئ أسئلة أو اختر نشاطًا آخر.', 3500); return; }
+  const skipped = (a.questions || []).length - qs.length;
+  const qn = (n) => (n === 1 ? 'سؤال واحد' : n === 2 ? 'سؤالين' : `${n} ${n % 100 >= 3 && n % 100 <= 10 ? 'أسئلة' : 'سؤالًا'}`);
+  const ok = await ask(`استيراد ${qn(qs.length)} من «${a.title}» إلى العجلة؟\nستُضاف إلى أسئلتك الحالية، ويمكنك تعديلها أو حذفها أو إضافة غيرها هناك.${skipped ? `\n(تُتجاهل ${skipped} أسئلة غير مكتملة.)` : ''}`, { ok: '⬇ استيراد' });
+  if (!ok) return;
+  const out = qs.map((q) => ({ ...toClassic(q, 'rz_import'), id: `imp_${uid()}` }));
+  S.touchRecent(a.id);
+  window.parent.postMessage({ type: 'rz-import', questions: out, title: a.title, lessonTitle: a.lessonTitle || '', origin: a.origin || '' }, location.origin);
+}
+
 // ------------------------------------------------ الطباعة والإدارة
 function printMenu(a) {
   let close;
@@ -415,7 +441,7 @@ function viewLibrary() {
       const list = S.activities().filter(match);
       body.append(list.length ? h('div', { class: 'grid wide' }, list.map((a) => activityCard(a))) : h('div', { class: 'empty' }, 'لا توجد أنشطة خاصة بعد. أنشئ نشاطًا من أي درس، أو انسخ نشاطًا جاهزًا وعدّله.'));
       const cl = S.classicTemplates().filter((t) => !t.id.startsWith('rz_')).filter((t) => !q.value.trim() || plain(t.name || '').includes(plain(q.value.trim())));
-      if (cl.length && !gsel.value) {
+      if (cl.length && !gsel.value && !IMPORT) {   // قوالب العجلة نفسها متاحة من «استرداد القوالب المحفوظة»
         body.append(h('h2', {}, '🎡 قوالب العجلة الكلاسيكية (كما هي)'), h('p', { class: 'mute small' }, 'قوالبك القديمة محفوظة ولم تتغير. يمكنك فتحها في العجلة الكلاسيكية، أو نسخ أسئلتها إلى المكتبة الجديدة.'),
           h('div', { class: 'grid wide' }, cl.map((t) => h('div', { class: 'card' }, h('h3', {}, t.name || 'قالب بلا اسم'), h('div', { class: 'mute small' }, `${(t.participants || []).length} متسابق · ${(t.questionRefs || []).length} سؤال`),
             h('div', { class: 'row', style: { marginTop: '8px' } }, h('button', { class: 'btn sm pri', onclick: () => S.openClassic(`/dashboard?templateId=${encodeURIComponent(t.id)}`) }, '▶ تشغيل'), h('button', { class: 'btn sm', onclick: () => S.openClassic(`/?templateId=${encodeURIComponent(t.id)}`) }, '✏️ تعديل في المعالج'),
@@ -432,7 +458,12 @@ function viewLibrary() {
 
 // ------------------------------------------------ تشغيل
 document.querySelector('#libBtn').addEventListener('click', () => { view = view === 'library' ? 'flow' : 'library'; render(); });
-document.querySelector('#classicBtn').addEventListener('click', () => S.openClassic('/'));
+if (IMPORT) {
+  // النافذة المنبثقة في العجلة لها عنوانها وزر الرجوع؛ لا نكرر ترويسة MusiTeacher أو زر الإغلاق هنا
+  document.querySelector('#classicBtn').remove();
+  document.querySelector('#homeBtn').style.display = 'none';
+  document.querySelector('.foot').textContent = 'تُضاف الأسئلة المستوردة إلى إعداد الأسئلة في العجلة كنسخة خاصة بك — الأصل في المكتبة لا يتغير.';
+} else document.querySelector('#classicBtn').addEventListener('click', () => S.openClassic('/'));
 document.querySelector('#homeBtn').addEventListener('click', () => go(1));
 window.addEventListener('error', (e) => console.error('[rz]', e.error || e.message));
 main.innerHTML = '<p class="hint"><span class="spinner"></span> جارٍ تحميل المكتبة…</p>';

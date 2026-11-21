@@ -112,8 +112,8 @@ function removeClassic(id) {
   save('edu_questions', classicQuestions().filter((q) => used.has(q.id)));
 }
 
-/** فتح العجلة الكلاسيكية (classic.html) على مسار معيّن — كما كان التطبيق القديم يتنقل داخليًا */
+/** فتح عجلة الاختيار (index.html) على مسار معيّن — كما كان التطبيق القديم يتنقل داخليًا */
 export function openClassic(path = '/') {
   try { sessionStorage.setItem('rz-launch', JSON.stringify({ path, at: Date.now() })); } catch { /* ignore */ }
-  location.href = new URL('../../classic.html', import.meta.url).href;
+  location.href = new URL('../../index.html', import.meta.url).href;   // العجلة عادت إلى index.html
 }

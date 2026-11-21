@@ -50,7 +50,7 @@ export function ask(message, { ok = 'نعم', cancel = 'إلغاء', danger = fa
   return new Promise((res) => {
     let close;
     const done = (v) => { res(v); close(); };
-    close = modal(h('div', {}, h('p', { style: { fontSize: '1.1rem' } }, message),
+    close = modal(h('div', {}, h('p', { style: { fontSize: '1.1rem', whiteSpace: 'pre-line' } }, message),
       h('div', { class: 'row end' }, h('button', { class: 'btn', onclick: () => done(false) }, cancel), h('button', { class: `btn ${danger ? 'danger' : 'pri'}`, onclick: () => done(true) }, ok))), { small: true, onClose: () => res(false) });
   });
 }
