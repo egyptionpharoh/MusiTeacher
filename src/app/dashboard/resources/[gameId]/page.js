@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { gamesConfig } from '../../../../lib/gamesConfig';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { getIdToken } from '@/modules/class-alarm/adapters/musiteacherClient';
 
 export default function GamePlayerPage() {
   const params = useParams();
@@ -32,6 +33,20 @@ export default function GamePlayerPage() {
     } else if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
     else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
   };
+
+  // 🔑 جسر الهوية: لعبة داخل الإطار (نفس الموقع فقط) تطلب رمز دخول المعلم لتستدعي خدمات المنصة على الخادم
+  // (مثل توليد الأسئلة في «عجلة الاختيار»). لا يُرسل الرمز إلا لإطار اللعبة نفسه وعلى نفس الأصل.
+  const frameRef = useRef(null);
+  useEffect(() => {
+    const onMsg = async (e) => {
+      if (e.origin !== window.location.origin || !e.data || e.data.type !== 'mt-token-request') return;
+      if (!frameRef.current || e.source !== frameRef.current.contentWindow) return;
+      const token = await getIdToken();
+      e.source.postMessage({ type: 'mt-token', nonce: e.data.nonce, token }, window.location.origin);
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
 
   // الألعاب المحمية (labId) تُفتح عبر مشغّل الجلسات الموقّعة؛ أي رابط قديم يُحوَّل إليه
   useEffect(() => {
@@ -73,8 +88,9 @@ export default function GamePlayerPage() {
 
       {/* مشغل اللعبة (iframe) */}
       <div className="flex-grow bg-black rounded-xl border border-gray-700 overflow-hidden shadow-[0_0_20px_rgba(0,210,255,0.1)]">
-        <iframe 
-          src={game.path} 
+        <iframe
+          ref={frameRef}
+          src={game.path}
           className="w-full h-full border-none"
           title={game.title}
           allow="autoplay; fullscreen"

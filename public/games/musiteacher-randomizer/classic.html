@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MusiTeacher Randomizer</title>
+    <!-- العجلة الكلاسيكية: نفس التطبيق السابق دون أي تعديل (كانت index.html). المسارات مطلقة لأن التطبيق يغيّر عنوان الصفحة. -->
+    <script>
+      // تمرير المسار المطلوب من «مكتبة الدروس» (مثل /dashboard?templateId=…) قبل تشغيل التطبيق، كما كان يتنقل داخليًا.
+      (function () {
+        var path = '/';
+        try {
+          var raw = sessionStorage.getItem('rz-launch');
+          if (raw) { sessionStorage.removeItem('rz-launch'); var o = JSON.parse(raw); if (o && typeof o.path === 'string' && /^\/(dashboard)?(\?templateId=[\w%.-]+)?$/.test(o.path)) path = o.path; }
+        } catch (e) { /* ignore */ }
+        history.replaceState(null, '', path);
+      })();
+    </script>
+    <script type="module" crossorigin src="/games/musiteacher-randomizer/assets/index-7H3NVY4Q.js"></script>
+    <link rel="stylesheet" crossorigin href="/games/musiteacher-randomizer/assets/index-JT2PT6OX.css">
+    <style>
+      #rz-back{position:fixed;bottom:12px;left:12px;z-index:99999;font:700 14px Tahoma,sans-serif;background:#0b1222;color:#fff;border:1px solid #22c3ff;border-radius:10px;padding:8px 12px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.4);direction:rtl}
+      #rz-back:hover{background:#16305c}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <a id="rz-back" href="/games/musiteacher-randomizer/index.html">📚 مكتبة الدروس التفاعلية</a>
+  </body>
+</html>
