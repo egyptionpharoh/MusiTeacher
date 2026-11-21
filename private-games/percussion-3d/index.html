@@ -13,17 +13,27 @@
     <h1>عالم الآلات الإيقاعية الشرقية <small>MusiTeacher</small></h1>
     <nav id="insts" aria-label="اختيار الآلة"></nav>
   </header>
-  <main>
-    <section id="stage">
-      <canvas id="scene"></canvas>
+  <main id="main">
+    <section id="stage" aria-label="مسرح الآلة ثلاثي الأبعاد">
+      <canvas id="scene" tabindex="0" aria-label="الآلة ثلاثية الأبعاد: اسحب للتدوير، وكبّر بالعجلة أو بإصبعين"></canvas>
       <div id="zlabels"></div>
+      <div id="tip" class="hidden" role="tooltip"></div>
+      <div id="modes" role="tablist" aria-label="وظائف اللعبة"></div>
+      <div id="partcard" class="hidden" aria-live="polite"></div>
+      <div id="tour" class="hidden"></div>
+      <div id="handnote" class="hidden"></div>
       <div id="loading"><div class="spin"></div><div>جارٍ تجهيز الآلة والأصوات…</div></div>
       <div id="nogl" class="hidden"></div>
-      <div id="pads"></div>
-      <div id="timeline" class="hidden"></div>
+      <div id="bottom">
+        <div id="timeline" class="hidden"></div>
+        <div id="pads"></div>
+      </div>
+      <button id="drawer-btn" type="button" aria-controls="panel" aria-expanded="true">☰ الشرح</button>
     </section>
-    <aside id="panel"></aside>
+    <aside id="panel" aria-label="الشرح"></aside>
   </main>
+  <div id="editor" class="hidden" role="dialog" aria-modal="true" aria-labelledby="ed-title"></div>
+  <div id="toast" class="hidden" role="status"></div>
 </div>
 <script type="importmap">
 { "imports": { "three": "./_shared/3d/vendor/three/three.module.js", "three/addons/": "./_shared/3d/vendor/three/addons/" } }

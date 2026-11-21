@@ -77,57 +77,88 @@ function render() {
   document.querySelector('#libBtn').classList.toggle('pri', view === 'library');
   if (view === 'library') return viewLibrary();
   if (view === 'review') return viewReview();
-  [null, viewGrade, viewLesson, viewActivity, viewNames, viewPlay][st.step]();
+  [null, viewPicker, viewPicker, viewActivity, viewNames, viewPlay][st.step]();
 }
 const hint = (t) => h('p', { class: 'hint' }, `💡 ${t}`);
 /** تنبيه عند تعذر تحميل الأنشطة الجاهزة (غير مسجل الدخول، أو انقطاع) — بقية الأداة تعمل */
 const banksNotice = () => (banksState.status === 'error' ? h('div', { class: 'notice warn' }, `الأنشطة الجاهزة غير متاحة الآن: ${banksState.error} `, h('button', { class: 'btn sm', onclick: async (e) => { e.currentTarget.disabled = true; await loadBanks(); render(); } }, '🔄 إعادة المحاولة')) : null);
 const back = (to, label = 'رجوع') => h('button', { class: 'btn sm', onclick: () => go(to) }, `→ ${label}`);
 
-// ------------------------------------------------ الخطوة 1: الصف (+ بحث في كل الدروس)
-function viewGrade() {
-  const res = h('div', { class: 'list' });
-  const q = h('input', { type: 'search', placeholder: '🔎 ابحث عن درس في كل الصفوف… (مثال: الكروش، الرزحة، الباند)', oninput: () => {
-    res.innerHTML = ''; const t = plain(q.value.trim()); if (t.length < 2) return;
-    const hits = allLessons().filter((l) => plain(l.title).includes(t)).slice(0, 30);
-    if (!hits.length) res.append(h('div', { class: 'empty' }, 'لا توجد دروس مطابقة.'));
-    hits.forEach((l) => res.append(lessonRow(l, true)));
-  } });
-  const grid = h('div', { class: 'grid' });
-  for (let g = 1; g <= 12; g++) {
-    const ls = allLessons().filter((l) => l.grade === g); const ready = ls.filter((l) => lessonStatus(l).status !== 'setup').length;
-    grid.append(h('button', { class: 'card gcard', onclick: () => go(2, { grade: g, lessonId: null, actId: null }) }, h('span', { class: 'num' }, g), h('b', {}, GRADE_NAME(g)), h('span', { class: 'mute small' }, `${ls.length} درسًا`), ready ? h('span', { class: 'chip ready', style: { alignSelf: 'flex-start' } }, `${ready} جاهز`) : null));
-  }
-  const rec = S.recent().map((r) => ({ r, a: getActivity(r.id) })).filter((x) => x.a).slice(0, 4);
-  main.append(h('h1', {}, 'مكتبة الدروس التفاعلية'), hint(IMPORT ? 'اختر الصف، ثم الدرس، ثم النشاط… واضغط «استيراد إلى العجلة» لتُضاف أسئلته إلى إعداد الأسئلة.' : 'اختر الصف، ثم الدرس، ثم النشاط… وأدخل أسماء الطلاب وابدأ اللعب.'), ...[banksNotice()].filter(Boolean), q, res);
-  if (rec.length) main.append(h('h2', {}, '🕘 استخدمتها مؤخرًا'), h('div', { class: 'grid wide' }, rec.map(({ r, a }) => h('button', { class: 'card', onclick: () => useActivity(a) }, h('b', {}, a.title), h('div', { class: 'mute small' }, `${GRADE_NAME(a.grade)} · ${ago(r.at)}`)))));
-  main.append(h('h2', {}, 'اختر الصف'), grid);
+// ------------------------------------------------ الخطوتان 1 و2: الصف والدرس في شاشة واحدة مختصرة
+//  قائمة منسدلة للصف (تحدّث الدروس فورًا) ← الفصل الدراسي (زران) ← قائمة الدروس الرأسية كما هي.
+//  البحث داخل الصف المختار أو في كل الصفوف (نطاق واضح)، و«استخدمتها مؤخرًا» صف مختصر في الأعلى.
+const gradeStats = (g) => {
+  const ls = allLessons().filter((l) => l.grade === g);
+  const ready = ls.filter((l) => lessonStatus(l).status !== 'setup').length;
+  return { total: ls.length, ready, sem: [1, 2].map((s) => ls.filter((l) => l.sem === s).length) };
+};
+const lessonsWord = (n) => (n === 0 ? 'لا دروس' : n === 1 ? 'درس واحد' : n === 2 ? 'درسان' : `${n} ${n % 100 >= 3 && n % 100 <= 10 ? 'دروس' : 'درسًا'}`);
+
+function viewPicker() {
+  const g = st.grade || 0;
+  // ---- الصف
+  const sel = h('select', { class: 'gsel', id: 'gradeSel', 'data-testid': 'grade-select', 'aria-label': 'اختر الصف الدراسي',
+    onchange: (e) => {
+      const v = +e.target.value || null; let sem = st.sem || 1;
+      if (v) { const x = gradeStats(v); if (!x.sem[sem - 1] && x.sem[2 - sem]) sem = sem === 1 ? 2 : 1; }   // افتح الفصل الذي فيه دروس
+      st.searchQ = ''; go(v ? 2 : 1, { grade: v, sem, lessonId: null, actId: null });
+    } },
+    g ? null : h('option', { value: '', selected: true }, '— اختر الصف الدراسي —'),
+    Array.from({ length: 12 }, (_, k) => { const n = k + 1; const x = gradeStats(n); return h('option', { value: n, selected: n === g }, `${GRADE_NAME(n)} — ${lessonsWord(x.total)}${x.ready ? ` · ${x.ready} جاهز` : ''}`); }));
+  const stats = g ? gradeStats(g) : null;
+  const gradeBox = h('div', { class: 'picker' },
+    h('label', { class: 'plabel', for: 'gradeSel' }, '📚 اختر الصف الدراسي'),
+    h('div', { class: 'prow' }, h('div', { class: 'pselwrap' }, sel)));
+  // ---- الفصل الدراسي
+  const semSeg = g ? h('div', { class: 'seg semseg', role: 'tablist', 'aria-label': 'الفصل الدراسي' }, [1, 2].map((s) => h('button', { role: 'tab', 'aria-selected': String(st.sem === s), 'data-testid': `sem-${s}`, class: st.sem === s ? 'on' : '', title: SEM_NAME(s), onclick: () => { st.sem = s; st.searchQ = ''; saveSt(); render(); } }, s === 1 ? 'الفصل الأول' : 'الفصل الثاني', h('span', { class: 'cnt' }, stats.sem[s - 1])))) : null;
+  // ---- البحث
+  const all = !g || !!st.searchAll;
+  const scope = g ? h('div', { class: 'seg scope', 'aria-label': 'نطاق البحث' },
+    h('button', { class: all ? '' : 'on', 'data-testid': 'scope-grade', onclick: () => { st.searchAll = false; saveSt(); paint(); q.focus(); } }, 'في هذا الصف'),
+    h('button', { class: all ? 'on' : '', 'data-testid': 'scope-all', onclick: () => { st.searchAll = true; saveSt(); paint(); q.focus(); } }, 'كل الصفوف')) : null;
+  const q = h('input', { type: 'search', 'data-testid': 'lesson-search', value: st.searchQ || '', oninput: () => { st.searchQ = q.value; saveSt(); paint(); } });
+  const head = h('div', { class: 'listhead' });
+  const listEl = h('div', { class: 'list' });
+  const paint = () => {
+    const allNow = !g || !!st.searchAll;
+    if (scope) [...scope.children].forEach((b, k) => b.classList.toggle('on', k === (allNow ? 1 : 0)));
+    q.placeholder = allNow ? '🔎 ابحث عن درس في كل الصفوف… (مثال: الكروش، الرزحة، الباند)' : `🔎 ابحث في دروس ${GRADE_NAME(g)}…`;
+    listEl.innerHTML = ''; head.innerHTML = '';
+    const t = plain(q.value.trim());
+    if (t) {
+      const pool = allNow ? allLessons() : allLessons().filter((l) => l.grade === g);
+      const hits = pool.filter((l) => plain(l.title).includes(t)).sort((a, b) => a.grade - b.grade || a.sem - b.sem || a.n - b.n).slice(0, 40);
+      head.append(h('span', { class: 'mute small', 'data-testid': 'search-scope' }, `نتائج البحث ${allNow ? 'في كل الصفوف' : `في ${GRADE_NAME(g)} (الفصلان)`}: ${hits.length}`));
+      if (!hits.length) listEl.append(h('div', { class: 'empty', 'data-testid': 'no-results' }, `لا توجد دروس مطابقة لـ «${q.value.trim()}»${allNow ? '' : ` في ${GRADE_NAME(g)}`}.`,
+        !allNow ? h('div', { style: { marginTop: '8px' } }, h('button', { class: 'btn sm', onclick: () => { st.searchAll = true; saveSt(); paint(); } }, '🔎 ابحث في كل الصفوف')) : null));
+      hits.forEach((l) => listEl.append(lessonRow(l, allNow || l.sem !== st.sem)));
+      return;
+    }
+    if (!g) { listEl.append(h('div', { class: 'empty', 'data-testid': 'pick-grade' }, '⬆ اختر الصف الدراسي من القائمة لتظهر دروسه، أو ابحث عن درس في كل الصفوف.')); return; }
+    const ls = lessonsOf(g, st.sem);
+    head.append(h('b', {}, `${GRADE_NAME(g)} · ${SEM_NAME(st.sem)}`), h('span', { class: 'mute small' }, ` — ${lessonsWord(ls.length)}`));
+    if (!ls.length) listEl.append(h('div', { class: 'empty', 'data-testid': 'empty-sem' }, `لا توجد دروس في ${SEM_NAME(st.sem)} لـ${GRADE_NAME(g)} في الخطة.`, h('div', { class: 'mute small' }, 'جرّب الفصل الآخر، أو أضف درسًا غير موجود في القائمة.')));
+    ls.forEach((l) => listEl.append(lessonRow(l, false)));
+  };
+  // ---- استخدمتها مؤخرًا (صف مختصر)
+  const rec = S.recent().map((r) => ({ r, a: getActivity(r.id) })).filter((x) => x.a).slice(0, 6);
+  const recent = rec.length ? h('div', { class: 'recent', 'data-testid': 'recent' }, h('span', { class: 'rlabel' }, '🕘 استخدمتها مؤخرًا'),
+    h('div', { class: 'rrow' }, rec.map(({ r, a }) => h('button', { class: 'rcard', title: a.title, onclick: () => useActivity(a) }, h('b', {}, a.title), h('span', { class: 'mute small' }, `${GRADE_NAME(a.grade)} · ${ago(r.at)}`))))) : null;
+  const addBtn = g ? h('div', { class: 'bar' }, h('button', { class: 'btn sm', onclick: async () => {
+    const t = await prompt('اسم الدرس غير الموجود في القائمة'); if (!t) return;
+    const l = { id: uid('cl'), grade: g, sem: st.sem, n: 99, title: t, custom: true };
+    localStorage.setItem('rz_custom_lessons', JSON.stringify([...customLessons(), l])); toast('أُضيف الدرس'); go(3, { lessonId: l.id, actId: null });
+  } }, '+ درس غير موجود في القائمة')) : null;
+  // في وضع الاستيراد: عنوان النافذة وإرشادها ظاهران فوق المكتبة، فلا نكررهما هنا (مساحة أكبر للدروس)
+  main.append(...[IMPORT ? null : h('h1', { class: 'ptitle' }, 'مكتبة الدروس التفاعلية'),
+    IMPORT ? null : hint('اختر الصف، ثم الدرس، ثم النشاط… وأدخل أسماء الطلاب وابدأ اللعب.'),
+    banksNotice(), recent, gradeBox, semSeg, h('div', { class: 'psearch' }, h('div', { class: 'grow' }, q), scope), head, listEl, addBtn].filter(Boolean));
+  paint();
+  if (!g || st.step === 1) setTimeout(() => sel.focus(), 30);
 }
 function lessonRow(l, withGrade) {
-  return h('button', { class: 'card lesson', onclick: () => go(3, { grade: l.grade, sem: l.sem, lessonId: l.id, actId: null }) },
+  return h('button', { class: 'card lesson', 'data-testid': 'lesson-row', onclick: () => go(3, { grade: l.grade, sem: l.sem, lessonId: l.id, actId: null }) },
     h('span', { class: 'n' }, l.custom ? '✎' : l.n), h('span', { class: 't' }, l.title, withGrade ? h('div', { class: 'mute small' }, `${GRADE_NAME(l.grade)} · ${SEM_NAME(l.sem)}`) : null), statusChips(l));
-}
-
-// ------------------------------------------------ الخطوة 2: الدرس
-function viewLesson() {
-  const g = st.grade; const listEl = h('div', { class: 'list' });
-  const q = h('input', { type: 'search', placeholder: '🔎 ابحث في دروس هذا الصف…', oninput: () => paint() });
-  const seg = h('div', { class: 'seg' }, [1, 2].map((s) => h('button', { class: st.sem === s ? 'on' : '', onclick: () => { st.sem = s; saveSt(); render(); } }, SEM_NAME(s))));
-  const paint = () => {
-    listEl.innerHTML = ''; const t = plain(q.value.trim());
-    const ls = (t ? allLessons().filter((l) => l.grade === g) : lessonsOf(g, st.sem)).filter((l) => !t || plain(l.title).includes(t));
-    if (!ls.length) listEl.append(h('div', { class: 'empty' }, 'لا توجد دروس.'));
-    ls.forEach((l) => listEl.append(lessonRow(l, !!t)));
-  };
-  main.append(h('div', { class: 'bar' }, back(1, 'الصفوف'), h('h1', { class: 'grow', style: { margin: 0 } }, GRADE_NAME(g))),
-    hint('اختر الدرس. «جاهز» = له نشاط جاهز من محتوى المنصة أو أعددته سابقًا. «يحتاج إلى إعداد» = أنشئ له نشاطًا.'),
-    h('div', { class: 'bar' }, seg, h('div', { class: 'grow' }, q)), listEl,
-    h('div', { class: 'bar' }, h('button', { class: 'btn sm', onclick: async () => {
-      const t = await prompt('اسم الدرس غير الموجود في القائمة'); if (!t) return;
-      const l = { id: uid('cl'), grade: g, sem: st.sem, n: 99, title: t, custom: true };
-      localStorage.setItem('rz_custom_lessons', JSON.stringify([...customLessons(), l])); toast('أُضيف الدرس'); go(3, { lessonId: l.id, actId: null });
-    } }, '+ درس غير موجود في القائمة')));
-  paint();
 }
 
 // ------------------------------------------------ الخطوة 3: النشاط
@@ -461,6 +492,8 @@ document.querySelector('#libBtn').addEventListener('click', () => { view = view 
 if (IMPORT) {
   // النافذة المنبثقة في العجلة لها عنوانها وزر الرجوع؛ لا نكرر ترويسة MusiTeacher أو زر الإغلاق هنا
   document.querySelector('#classicBtn').remove();
+  // Esc داخل المكتبة يغلقها ويعود للعجلة (إلا إذا كانت نافذة داخلية مفتوحة، فتُغلق هي أولًا)
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !document.querySelector('.modal')) window.parent.postMessage({ type: 'rz-close' }, location.origin); });
   document.querySelector('#homeBtn').style.display = 'none';
   document.querySelector('.foot').textContent = 'تُضاف الأسئلة المستوردة إلى إعداد الأسئلة في العجلة كنسخة خاصة بك — الأصل في المكتبة لا يتغير.';
 } else document.querySelector('#classicBtn').addEventListener('click', () => S.openClassic('/'));

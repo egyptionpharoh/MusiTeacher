@@ -4,7 +4,7 @@
 import { sampleUrl } from '../data/instruments.js';
 
 export class AudioEngine {
-  constructor() { this.ctx = null; this.master = null; this.buffers = new Map(); this.loading = new Map(); this.rr = {}; this.voices = {}; this.volume = 0.9; this.log = []; }
+  constructor() { this.ctx = null; this.master = null; this.buffers = new Map(); this.loading = new Map(); this.rr = {}; this.voices = {}; this.pending = []; this.volume = 0.9; this.log = []; }
   ensure() {
     if (!this.ctx) {
       const C = window.AudioContext || window.webkitAudioContext; if (!C) return null;
@@ -56,9 +56,17 @@ export class AudioEngine {
     const vk = `${inst.id}_${stroke}`, prev = this.voices[vk];
     if (prev && prev.end > when) { try { prev.g.gain.setTargetAtTime(0, when, 0.03); prev.src.stop(when + 0.25); } catch (e) { /* انتهى */ } }
     this.voices[vk] = { src, g, end: when + buf.duration };
+    // كل مصدر مجدول يُحفظ حتى ينتهي، ليمكن إلغاء ما جُدول مسبقًا عند الإيقاف (لا ضربات «شبحية» بعد الإيقاف)
+    this.pending = this.pending.filter((v) => v.end > ctx.currentTime); this.pending.push({ src, g, end: when + buf.duration });
     src.start(when);
     this.log.push({ inst: inst.id, stroke, level, take, when, at: ctx.currentTime }); if (this.log.length > 400) this.log.shift();
     return when;
   }
-  stopAll() { if (!this.ctx) return; for (const k in this.voices) { const v = this.voices[k]; try { v.g.gain.setTargetAtTime(0, this.ctx.currentTime, 0.02); v.src.stop(this.ctx.currentTime + 0.15); } catch (e) { /* انتهى */ } } this.voices = {}; }
+  stopAll() {
+    if (!this.ctx) return; const t = this.ctx.currentTime;
+    for (const v of this.pending) { try { v.g.gain.cancelScheduledValues(t); v.g.gain.setTargetAtTime(0, t, 0.02); v.src.stop(t + 0.15); } catch (e) { /* انتهى */ } }
+    this.pending = []; this.voices = {};
+  }
+  /** زمن الصوت المسموع فعلًا الآن (بعد تأخير المخرج) — تُرسم عليه الحركة لتتزامن مع ما يُسمع */
+  get heardNow() { if (!this.ctx) return 0; return this.ctx.currentTime - (this.ctx.outputLatency || this.ctx.baseLatency || 0); }
 }

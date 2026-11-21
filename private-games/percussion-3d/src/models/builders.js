@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { skinTexture, woodTexture, inlayTexture, ropeTexture } from './textures.js';
 
-const part = (m, n, d) => { m.userData.part = { n, d }; m.castShadow = true; m.receiveShadow = true; return m; };
+const part = (m, n, d) => { if (n) m.userData.part = { n, d }; m.castShadow = true; m.receiveShadow = true; return m; };
 const mesh = (g, mat, n, d) => part(new THREE.Mesh(g, mat), n, d);
 const std = (o) => new THREE.MeshStandardMaterial(o);
 const brass = () => std({ color: 0xd2a23c, metalness: 1, roughness: 0.28 });
@@ -44,14 +44,14 @@ export function buildRiq() {
     g.add(band(ri, R, 0.008, 0.054, inl(Math.max(1, Math.round(postA * 3.2))), a0, postA, fn, fd));
     // زوجان من الصنوج في كل فتحة (علوي وسفلي) على مسمار رأسي
     const ac = k * Math.PI * 2 / SL, rc = (R + ri) / 2, cx = rc * Math.sin(ac), cz = rc * Math.cos(ac);
-    const pin = mesh(new THREE.CylinderGeometry(0.0012, 0.0012, 0.05, 8), std({ color: 0x8a8a8a, metalness: 1, roughness: 0.4 }), 'فتحات الإطار', 'فتحات في الإطار تُثبَّت فيها الصنوج النحاسية.'); pin.position.set(cx, 0.031, cz); g.add(pin);
+    const pin = mesh(new THREE.CylinderGeometry(0.0012, 0.0012, 0.05, 8), std({ color: 0x8a8a8a, metalness: 1, roughness: 0.4 }), 'محور الصنوج', 'مسمار رأسي يمرّ في فتحة الإطار، تُركَّب عليه أزواج الصنوج فتتحرك بحرية وترنّ.'); pin.position.set(cx, 0.031, cz); g.add(pin);
     for (const yc of [0.018, 0.044]) {
       const pair = new THREE.Group(); pair.position.set(cx, yc, cz);
       for (const s of [1, -1]) { const z = mesh(new THREE.SphereGeometry(0.03, 28, 6, 0, Math.PI * 2, 0, 0.5), brass(), 'الصنوج النحاسية', 'عشرة أزواج من الصنوج النحاسية تُثبَّت في فتحات الإطار، ويصدر منها صوت «التك» الرنّان.'); z.scale.set(1, 0.42, 1); z.rotation.x = s > 0 ? 0 : Math.PI; z.position.y = s * (0.0022 - 0.03 * 0.42 * (1 - 0.88)); z.material.side = THREE.DoubleSide; pair.add(z); }
       pair.userData.jingle = { y: yc, k: 0 }; jingles.push(pair); g.add(pair);
     }
   }
-  g.add(band(ri - 0.0005, ri, 0, H, inner));
+  g.add(band(ri - 0.0005, ri, 0, H, inner, 0, Math.PI * 2, fn, fd));   // الوجه الداخلي للإطار نفسه
   const head = makeHead(R - 0.001, H + 0.0006, skinTexture('fish', 11), 'الغشاء (جلد السمك)', 'غشاء من جلد السمك يُشدّ على الإطار؛ الدُم في وسطه والتك على حافته.');
   g.add(head);
   g.add(band(R, R + 0.0012, H - 0.011, H + 0.0006, skinMat(0xd9cfb8), 0, Math.PI * 2, 'الغشاء (جلد السمك)', 'الجلد ملصوق على حافة الإطار.'));

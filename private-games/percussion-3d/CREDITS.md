@@ -19,5 +19,23 @@
 ## النماذج ثلاثية الأبعاد والخامات
 مبنية برمجيًا داخل اللعبة (src/models) — لا نماذج ولا صور من أطراف خارجية. المقاسات تقريبية لمقاسات الآلات الحقيقية.
 
+## اليدان البشريتان (src/hands)
+ليستا رسمًا ولا أيقونة: هما يدا نموذج العازفة المشترك بين ألعاب MusiTeacher ثلاثية الأبعاد
+(`_shared/3d/models/character-girl.fbx` — المستخدم في عازفات الكمان والعود والأكورديون والأورغ)، بهيكله العظمي الحقيقي
+(مفاصل الأصابع والسُّلاميات) وزيّه المحتشم وخامات الجلد نفسها (`_shared/3d/character/outfit.js`, `materials.js`, `rig.js`, `hand.js`).
+تقصّ اللعبة الشبكة فلا يبقى إلا الساعدان والكفّان، ثم تحرّك العظام برمجيًا. لا نماذج جديدة من أطراف خارجية.
+
+## مدوّنات الضروب (src/data/rhythms.js)
+- الضروب العربية: الهيكل الأساسي (دُم/تك/سكتة) كما يتفق عليه:
+  - M. Frishkopf — Arab Durub charts (University of Alberta, 2009): https://sites.ualberta.ca/~michaelf/Theory/Durub%20chart%20rev%202009.pdf
+  - M. Frishkopf — UAlberta MENA Music Ensemble, Percussion pieces: https://www.artsrn.ualberta.ca/fwa_mediawiki/index.php/Percussion_pieces
+  - Organology (Middle Eastern rhythms)، Wikipedia (Maqsum/Baladi)، Maqam World (الموازين)، BabaYagaMusic (Valz/Darij).
+- الفنون العُمانية (مسارا الكاسر والرحماني): منقولة كما هي من نماذج أدلة المعلم للصفوف 5–8 (وزارة التربية والتعليم، سلطنة عُمان) — نفس بيانات لعبة «إيقاعات الفنون العُمانية».
+- التمارين المتدرجة: تمارين تعليمية من تصميم اللعبة، وليست ضروبًا تقليدية.
+- «دويك»: لم يُدرج تدوين مستقل له لعدم توفر مصدر موثّق متفق عليه (يذكره Frishkopf اسمًا آخر للمقسوم).
+
+## الأداء (src/data/performance.js)
+مواضع الضربات وهيئات الأصابع لكل آلة، مع درجة توثيق كل نقطة (من نص الدرس / ممارسة شائعة / تقريب تعليمي يحتاج مراجعة).
+
 ## المكتبات
 Three.js (MIT) من `_shared/3d/vendor/three`.

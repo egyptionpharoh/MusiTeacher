@@ -1,51 +1,61 @@
 // =====================================================================
-//  ساعة الإيقاع: تجدول ضربات النمط على ساعة الصوت نفسها (دقة عينة)، وتُبلّغ الواجهة بكل ضربة في لحظتها للحركة.
-//  مستقلة عن الآلة وعن النمط: تأخذ نمطًا مُحلَّلًا (rhythms.js) ودالة عزف.
+//  ساعة الإيقاع: جدولة الضربات على ساعة الصوت نفسها (لا على مؤقّتات الصفحة)، بوحدة الدوبل كروش.
+//  الموضع = u0 + (t − t0) ÷ مدة الوحدة. عند تغيير السرعة يُعاد تثبيت المرساة (t0, u0) على الموضع الحالي فلا قفز ولا تكرار.
+//  كل ضربة تُجدول مرة واحدة فقط (sched = رقم آخر ضربة مجدولة)، والإيقاف يلغي الصوت والحركة المجدولين.
 // =====================================================================
 export class Transport {
-  /** audio: AudioEngine · onStep(cell|null, index, time, loopNo): تُستدعى لحظة سماع الخانة */
-  constructor(audio, onStep) { this.audio = audio; this.onStep = onStep; this.playing = false; this.bpm = 84; this.loop = true; this.pattern = null; this.guide = 1; this.queue = []; }
-  get stepDur() { return 60 / this.bpm / this.pattern.div; }
-  setPattern(p) { const was = this.playing; this.stop(); this.pattern = p; this.bpm = p.bpm; if (was) this.start(); }
+  constructor(audio) {
+    this.audio = audio; this.piece = null; this.bpm = 90; this.loop = true; this.playing = false;
+    this.onHit = null;      // (hit, time, absIndex) عند جدولة ضربة
+    this.onPos = null;      // (pos|null) كل إطار
+    this.onEnd = null;
+    this.horizon = 0.3; this.timer = 0;
+  }
+  setPiece(pc) { const was = this.playing; if (was) this.stop(); this.piece = pc; if (pc && pc.bpm) this.bpm = pc.bpm; }
+  get unitDur() { return 60 / this.bpm / (this.piece ? (this.piece.meter[1] === 8 ? 2 : 4) : 4); }   // النبضة: النوار في x/4 والكروش في x/8
+  posAt(t) { return this.u0 + (t - this.t0) / this.unitDur; }
+  timeOf(u) { return this.t0 + (u - this.u0) * this.unitDur; }
+  start(lead = 0.12) {
+    if (!this.piece) return; const ctx = this.audio.ensure(); if (!ctx) return;
+    this.t0 = ctx.currentTime + lead; this.u0 = 0; this.sched = 0; this.playing = true; this.pump();
+    // مؤقّت مستقل عن رسم الإطارات: على الأجهزة البطيئة (أو عند تباطؤ الرسم) لا تضيع أي ضربة
+    clearInterval(this.timer); this.timer = setInterval(() => this.pump(), 25);
+  }
+  stop() { this.playing = false; clearInterval(this.timer); this.timer = 0; if (this.onPos) this.onPos(null); }
+  restart() { this.stop(); this.start(); }
   setBpm(b) {
-    if (this.playing) { const pos = this.position(); this.bpm = b; this.t0 = this.audio.now - pos * this.stepDur; this.next = Math.ceil(pos - 1e-6); this.queue = this.queue.filter((q) => q.time <= this.audio.now); }
+    if (this.playing) { const now = this.audio.now, p = this.posAt(now); this.bpm = b; this.t0 = now; this.u0 = p; }
     else this.bpm = b;
   }
-  /** الموضع الحالي بالخانات منذ البداية (كسري) */
-  position() { return this.playing ? (this.audio.now - this.t0) / this.stepDur : 0; }
-  start(lead = 0.12) {
-    if (!this.pattern || !this.audio.ensure()) return;
-    this.playing = true; this.t0 = this.audio.now + lead; this.next = 0; this.queue = [];
-    clearInterval(this.timer); this.timer = setInterval(() => this.schedule(), 25); this.schedule();
-  }
-  stop() { this.playing = false; clearInterval(this.timer); this.queue = []; }
-  schedule() {
+  /** الضربة رقم k (مطلقًا عبر التكرارات) */
+  hitAt(k) { const H = this.piece.hits, n = H.length; if (!n) return null; const loopNo = Math.floor(k / n); if (!this.loop && loopNo > 0) return null; const h = H[k % n]; return { h, u: loopNo * this.piece.total + h.u, loopNo }; }
+  pump() {
     if (!this.playing) return;
-    const horizon = this.audio.now + 0.2, n = this.pattern.total;
-    while (this.t0 + this.next * this.stepDur < horizon) {
-      const idx = this.next % n, loopNo = Math.floor(this.next / n);
-      if (!this.loop && loopNo >= 1) { this.endAt = this.t0 + this.next * this.stepDur; break; }
-      const time = this.t0 + this.next * this.stepDur, cell = this.pattern.cells[idx];
-      if (cell && this.guide > 0 && this.play) this.play(cell, time, this.guide);
-      this.queue.push({ cell, idx, time, loopNo }); this.next++;
+    const now = this.audio.now, until = now + this.horizon;
+    for (;;) {
+      const x = this.hitAt(this.sched); if (!x) break;
+      const t = this.timeOf(x.u); if (t > until) break;
+      if (t >= now - 0.02 && this.onHit) this.onHit(x.h, Math.max(t, now), this.sched, x.loopNo);
+      this.sched++;
     }
   }
-  /** تُستدعى كل إطار: تُطلق أحداث الخانات التي حان وقت سماعها */
-  frame() {
+  /** يُستدعى كل إطار */
+  frame(visualNow) {
     if (!this.playing) return;
-    const now = this.audio.now;
-    while (this.queue.length && this.queue[0].time <= now) { const q = this.queue.shift(); this.onStep(q.cell, q.idx, q.time, q.loopNo); }
-    if (this.endAt != null && now >= this.endAt) { this.endAt = null; this.stop(); this.onStep(null, -1, now, -1); }
+    this.pump();
+    const p = this.posAt(visualNow ?? this.audio.now);
+    if (!this.loop && p >= this.piece.total) { this.stop(); if (this.onEnd) this.onEnd(); return; }
+    if (this.onPos) this.onPos(p < 0 ? null : p % this.piece.total, Math.floor(Math.max(0, p) / this.piece.total));
   }
 }
-/**
- * حكم على ضربة المستخدم أمام النمط: أقرب خانة فيها ضربة، والفرق الزمني.
- * يعيد { idx, loopNo, dt (ث، سالب = مبكر), ok, strokeOk } أو null إن لم تكن هناك خانة قريبة.
- */
-export function judge(transport, stroke, tapTime, win = 0.16) {
-  const p = transport.pattern; if (!transport.playing || !p) return null;
-  const pos = (tapTime - transport.t0) / transport.stepDur, k = Math.round(pos); if (k < 0) return null;
-  const idx = ((k % p.total) + p.total) % p.total, cell = p.cells[idx], dt = (pos - k) * transport.stepDur;
-  if (!cell || Math.abs(dt) > Math.min(win, transport.stepDur * 0.45)) return null;
-  return { idx, loopNo: Math.floor(k / p.total), dt, strokeOk: cell.stroke === stroke, ok: cell.stroke === stroke && Math.abs(dt) <= 0.09 };
+
+/** تقييم ضربة المتعلم: أقرب ضربة في النمط إلى زمن النقر */
+export function judge(tr, stroke, t) {
+  if (!tr.playing || !tr.piece) return null;
+  const p = tr.posAt(t), tot = tr.piece.total, loopNo = Math.floor(p / tot), local = p - loopNo * tot;
+  let best = null;
+  for (const h of tr.piece.hits) for (const off of [-tot, 0, tot]) { const d = (local - (h.u + off)) * tr.unitDur; if (!best || Math.abs(d) < Math.abs(best.dt)) best = { h, dt: d, loopNo: loopNo + (off < 0 ? -1 : off > 0 ? 1 : 0) }; }
+  if (!best || Math.abs(best.dt) > 0.22) return null;
+  const want = best.h.k === 'D' ? 'dum' : 'tak', strokeOk = (stroke === 'ka' ? 'tak' : stroke) === want;
+  return { ...best, strokeOk, ok: strokeOk && Math.abs(best.dt) < 0.08 };
 }
