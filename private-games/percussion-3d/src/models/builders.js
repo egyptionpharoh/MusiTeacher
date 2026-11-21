@@ -59,6 +59,8 @@ export function buildRiq() {
 }
 
 // ---------------- المزهر: إطار أكبر وأعمق بلا صنوج، جلد ماعز مثبّت بمسامير ----------------
+/** زاوية موضع إمساك المزهر باليسرى (يجب أن تطابق support.ang للمزهر في data/performance.js) */
+const FRAME_HOLD_ANG = -0.7;
 export function buildMizhar() {
   const g = new THREE.Group(), R = 0.2, H = 0.095, ri = R - 0.011;
   const wood = std({ map: woodTexture('#8a5630', '#4f2b12', 8, [5, 1]), roughness: 0.5 });
@@ -67,7 +69,7 @@ export function buildMizhar() {
   g.add(head);
   g.add(band(R, R + 0.0016, H - 0.03, H + 0.0008, skinMat(0xc9b48c), 0, Math.PI * 2, 'الغشاء (جلد الماعز)', 'يُشدّ الجلد وينزل على جانب الإطار.'));
   for (let i = 0; i < 28; i++) { const a = i / 28 * Math.PI * 2, t = mesh(new THREE.SphereGeometry(0.0042, 12, 8), brass(), 'مسامير التثبيت', 'تثبّت الجلد على الإطار.'); t.scale.z = 0.5; t.position.set((R + 0.0018) * Math.sin(a), H - 0.022, (R + 0.0018) * Math.cos(a)); t.rotation.y = a; g.add(t); }
-  const th = mesh(new THREE.TorusGeometry(0.013, 0.0035, 8, 20), std({ color: 0x2c1408, roughness: 0.7 }), 'فتحة الإبهام', 'فتحة في الإطار تُمسَك منها الآلة.'); th.position.set(0, 0.04, -R - 0.0005); g.add(th);
+  const th = mesh(new THREE.TorusGeometry(0.013, 0.0035, 8, 20), std({ color: 0x2c1408, roughness: 0.7 }), 'فتحة الإبهام', 'فتحة في الإطار تُمسَك منها الآلة.'); th.position.set((R + 0.0005) * Math.sin(FRAME_HOLD_ANG), H - 0.038, (R + 0.0005) * Math.cos(FRAME_HOLD_ANG)); th.rotation.y = FRAME_HOLD_ANG; g.add(th);   // في موضع إمساك اليسرى
   return { group: g, head, R: R - 0.001, top: H, jingles: [], height: H };
 }
 

@@ -46,6 +46,8 @@ export const PERFORMANCE = {
   riq: {
     // الرق في المشهد موضوع أفقيًا أمام العازف (لتسهيل الرؤية)، واليسرى تمسك الإطار من جهة اليسار
     yawR: -0.5, yawL: 0.55, pitch: -0.12,
+    // آلة خفيفة: تُرفع عن الأرض وتميل نحو العازف، واليسرى تمسك الإطار عند عمود خشبي بين فتحتي صنوج
+    present: { lift: 0.12, tilt: 0.3 }, support: { kind: 'grip', ang: -0.63, rho: 0.9, thumb: 'wall' },
     strokes: {
       dum: { hand: 'R', rho: 0.08, ang: 0.6, shape: 'flat', where: 'وسط الرق', verified: 'source', ...MOTION.dum },
       tak: { hand: 'R', rho: 0.86, ang: 1.15, shape: 'tips', where: 'الحافة الخارجية قرب الإطار الخشبي', verified: 'source', jingles: true, ...MOTION.tak },
@@ -54,6 +56,8 @@ export const PERFORMANCE = {
   },
   tabla: {
     yawR: -0.55, yawL: 0.6, pitch: -0.15,
+    // آلة ثقيلة تبقى على الأرض: اليسرى مستندة على الحافة (ومنها تنقر الكا)
+    support: { kind: 'rim', ang: -1.35, rho: 0.9 },
     strokes: {
       dum: { hand: 'R', rho: 0.12, ang: 0.5, shape: 'flat', where: 'وسط الغشاء', verified: 'source', ...MOTION.dum },
       tak: { hand: 'R', rho: 0.9, ang: 1.2, shape: 'tips', where: 'حافة الطبلة', verified: 'source', ...MOTION.tak },
@@ -63,12 +67,15 @@ export const PERFORMANCE = {
   mizhar: {
     // الدرس: «تُنقر الدُم على الحافة، والتك في الوسط — عكس الدف والطبلة». نلتزم بنص الدرس، ونُحيل التعارض مع مراجع الدفوف الإطارية العامة إلى المراجعة.
     yawR: -0.45, yawL: 0.5, pitch: -0.1,
+    // آلة خفيفة: اليسرى تمسك الإطار والإبهام في «فتحة الإبهام» (FRAME_HOLD_ANG في builders.js)
+    present: { lift: 0.12, tilt: 0.3 }, support: { kind: 'grip', ang: -0.7, rho: 0.93, thumb: 'hole' },
     strokes: {
       dum: { hand: 'R', rho: 0.8, ang: 0.9, shape: 'flat', where: 'على الحافة', verified: 'source', review: true, ...MOTION.dum },
       tak: { hand: 'R', rho: 0.1, ang: 0.4, shape: 'tips', where: 'في الوسط', verified: 'source', review: true, ...MOTION.tak },
     },
   },
   kasir: {
+    support: { kind: 'side', ang: -1.3, drop: 0.11 },   // طبل طويل على الأرض: كفّ اليسرى مسنودة على جانبه تثبّته
     // الدليل: «الدُّم تُؤدّى بضمّ أصابع اليد، والتك بفتحها». مكانا الضربتين غير محدّدين في الدرس.
     yawR: -0.5, yawL: 0.5, pitch: -0.12,
     strokes: {
@@ -77,12 +84,21 @@ export const PERFORMANCE = {
     },
   },
   rahmani: {
+    support: { kind: 'side', ang: -1.3, drop: 0.13 },
     yawR: -0.5, yawL: 0.5, pitch: -0.12,
     strokes: {
       dum: { hand: 'R', rho: 0.15, ang: 0.4, shape: 'flat', where: 'وسط الجلد (تقريب)', verified: 'assumed', ...MOTION.dum, down: 0.095, reb: 0.15, lift: 0.055 },
       tak: { hand: 'R', rho: 0.72, ang: 0.95, shape: 'open', where: 'قرب الحافة (تقريب)', verified: 'assumed', ...MOTION.tak, down: 0.08, reb: 0.12 },
     },
   },
+};
+
+/** وظيفة اليد الأخرى (تُعرض في تبويب الضربات) */
+export const SUPPORT_AR = {
+  grip: 'تمسك الإطار: الإبهام على جدار الإطار الخارجي والأصابع ملتفّة فوق الحافة؛ تثبّت الآلة وتمتص ارتداد الضربات',
+  hole: 'تمسك الإطار والإبهام داخل «فتحة الإبهام»، والأصابع ملتفّة فوق الحافة',
+  rim: 'مستندة على حافة الطبلة تثبّتها، والبنصر والخنصر جاهزان لنقر «الكا»',
+  side: 'كفّها مسنودة على جانب الطبل تثبّته وتمنع ميله، دون أن تحمل وزنه',
 };
 
 export const VERIFIED_AR = { source: 'من نص الدرس', common: 'ممارسة شائعة في هذه الآلة', assumed: 'تقريب تعليمي — يحتاج مراجعة' };

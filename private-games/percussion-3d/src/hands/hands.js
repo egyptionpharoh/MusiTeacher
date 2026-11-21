@@ -79,11 +79,15 @@ export class Hands {
   }
 
   // ---------- قصّ الشبكات: الساعد والكف فقط ----------
-  crop(keepFore = 0.24, keepSkin = 0.1) {   // الجلد يُقصّ أقصر من الكمّ فلا يظهر تحت حافته
+  crop(keepFore = 0.24, keepSkin = 0.1, keepSleeve = 0.062) {   // الجلد يُقصّ أقصر من الكمّ فلا يظهر تحت حافته
     const rig = this.rig, keep = new Map();           // عظمة → جهة
     for (const s of ['L', 'R']) rig.b(s, 'lowerArm').traverse((b) => { if (b.isBone) keep.set(b, s); });
     const handB = new Set(); for (const s of ['L', 'R']) rig.b(s, 'hand').traverse((b) => { if (b.isBone) handB.add(b); });
     const wristP = { L: rig.wp('L', 'hand'), R: rig.wp('R', 'hand') };
+    // محور الساعد (من المرفق إلى المعصم): الكمّ الواسع المتدلّي في وضعية الراحة يُقصّ ما ابتعد عن المحور،
+    // وإلا دار مع الساعد فظهر كقطعة قماش مفرودة إلى الجانب
+    const axis = {}; for (const s of ['L', 'R']) axis[s] = new THREE.Line3(rig.wp(s, 'lowerArm').clone(), wristP[s].clone());
+    const cp = new THREE.Vector3();
     const w = new THREE.Vector4(), ix = new THREE.Vector4(), p = new THREE.Vector3();
     for (const m of rig.meshes) {
       const g = m.geometry, sw = g.attributes.skinWeight, si = g.attributes.skinIndex, n = g.attributes.position.count;
@@ -95,7 +99,8 @@ export class Hands {
         if (tot < 0.55) continue;
         const s = sideW.L > sideW.R ? 'L' : 'R';
         rig.vertexWorld(m, i, p);
-        if (handW >= 0.5 || p.distanceTo(wristP[s]) <= (m.name === 'Human' ? keepSkin : keepFore)) {   // الكف والأصابع كاملة، والساعد حتى حدّ القص
+        const nearAxis = m.name === 'Human' || axis[s].closestPointToPoint(p, true, cp).distanceTo(p) <= keepSleeve;
+        if (handW >= 0.5 || (nearAxis && p.distanceTo(wristP[s]) <= (m.name === 'Human' ? keepSkin : keepFore))) {   // الكف والأصابع كاملة، والساعد حتى حدّ القص
           ok[i] = 1;
           // الأوزان المتبقية لعظام العضد/الكتف تشدّ الرأس إلى جسم العازفة البعيد: نحصرها في عظام الساعد واليد
           for (let k = 0; k < 4; k++) { const b = m.skeleton.bones[ix.getComponent(k)]; w.setComponent(k, keep.has(b) ? w.getComponent(k) / tot : 0); }
@@ -150,12 +155,31 @@ export class Hands {
         this.rotWorld(F.bones[0], nrm, F.yawRest - tgt);
       }
       if (!a) continue;
-      if (f === 'thumb') { const axis = this.thumbAxis(s, pose); for (let j = 0; j < 3; j++) if (a[j]) this.rotWorld(F.bones[j], axis, a[j]); continue; }
+      if (f === 'thumb') {
+        if (pose.thumbAim) { this.aimThumb(s, pose.thumbAim, a, pose.z); continue; }
+        const axis = this.thumbAxis(s, pose); for (let j = 0; j < 3; j++) if (a[j]) this.rotWorld(F.bones[j], axis, a[j]); continue;
+      }
       // الزوايا المطلوبة مطلقة (0 = إصبع مستقيمة في مستوى الكف)؛ ندوّر بالفرق عن وضعية الراحة
       for (let j = 0; j < 3; j++) { const d = (a[j] || 0) - F.flexRest[j]; if (d) this.rotWorld(F.bones[j], lat, -d); }
     }
   }
   thumbAxis(s, pose) { return _v.copy(pose.y).multiplyScalar(0.6).add(pose.z.clone().multiplyScalar(S_THUMB * (s === 'L' ? -1 : 1))).normalize().clone(); }
+
+  /** يوجّه الإبهام نحو نقطة عالمية (إمساك الإطار أو إدخاله في فتحة الإبهام): يُدار المفصل القاعدي حتى يشير الإبهام إليها،
+   *  ثم تنثني السُّلاميتان الطرفيتان قليلًا (curl = [_, ث2, ث3]) ويُعاد التوجيه مرة لتعويض الانثناء */
+  aimThumb(s, target, curl, back) {
+    const F = this.side[s].fingers.thumb, b1 = F.bones[0];
+    for (let it = 0; it < 2; it++) {
+      const p1 = b1.getWorldPosition(new THREE.Vector3()), tip = this.tip(s, 'thumb');
+      const q = new THREE.Quaternion().setFromUnitVectors(tip.sub(p1).normalize(), target.clone().sub(p1).normalize());
+      b1.getWorldQuaternion(_q); _q2.copy(q).multiply(_q); b1.parent.getWorldQuaternion(_q).invert(); b1.quaternion.copy(_q.multiply(_q2)); b1.updateMatrixWorld(true);
+      if (it === 0 && curl) {
+        const p2 = F.bones[1].getWorldPosition(new THREE.Vector3()), p3 = F.bones[2].getWorldPosition(new THREE.Vector3());
+        const ax = new THREE.Vector3().crossVectors(p3.sub(p2).normalize(), back).normalize();
+        for (const j of [1, 2]) if (curl[j]) this.rotWorld(F.bones[j], ax, -curl[j]);
+      }
+    }
+  }
 
   /** دوران عظمة حول محور عالمي يمر بمفصلها */
   rotWorld(bone, axis, ang) {

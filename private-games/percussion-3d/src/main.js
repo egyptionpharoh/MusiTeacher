@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { INSTRUMENTS, instById, strokeAt } from './data/instruments.js';
-import { PERFORMANCE, SHAPE_AR, HAND_AR, VERIFIED_AR, anchorOf, soundOf } from './data/performance.js';
+import { PERFORMANCE, SHAPE_AR, HAND_AR, VERIFIED_AR, SUPPORT_AR, anchorOf, soundOf } from './data/performance.js';
 import { SOURCES, PENDING, EXERCISES, DURUB, catalog, buildPiece, strokeOfK } from './data/rhythms.js';
 import { loadMine, saveMine, storeError, newId, gridToPattern, patternToGrid } from './data/store.js';
 import { AudioEngine } from './audio/engine.js';
@@ -90,7 +90,7 @@ function perform(stroke, opt = {}) {
   const P = PERFORMANCE[S.inst.id]; if (!P.strokes[stroke]) stroke = stroke === 'ka' ? 'tak' : 'dum';
   const ctx = audio.ensure(); if (!ctx) return null;
   const level = opt.level || S.level, sp = P.strokes[stroke];
-  const loc = opt.target || anchorOf(S.inst, stroke, S.model.R), rho = Math.min(1, Math.hypot(loc.x, loc.z) / S.model.R);
+  const loc = opt.target || (performer ? performer.anchor(stroke) : anchorOf(S.inst, stroke, S.model.R)), rho = Math.min(1, Math.hypot(loc.x, loc.z) / S.model.R);
   const t = audio.hit(S.inst, soundOf(S.inst, stroke), level, { when: opt.when ?? ctx.currentTime, rho, gain: (opt.gain ?? 1) * (sp.gain ?? 1) });
   if (t == null) return null;
   if (performer && S.mode !== 'explore') { performer.slow = opt.slow || 1; performer.add(stroke, t, level, opt.target ? { x: loc.x, z: loc.z } : null); performer.slow = 1; }
@@ -277,6 +277,8 @@ function setMode(m, keepPiece) {
         h('div', { class: 'row' }, h('button', { class: 'btn ' + k, onclick: () => demo(k, 's', 1) }, '▶ شاهد الضربة'), h('button', { class: 'btn', onclick: () => demo(k, 's', 4) }, '🐢 ببطء'),
           h('button', { class: 'btn', onclick: () => demo(k, 's') }, 'قوية'), h('button', { class: 'btn', onclick: () => demo(k, 'w') }, 'خفيفة'))));
     }
+    if (P.support) body.push(acc('✋ اليد الأخرى', false, h('p', {}, SUPPORT_AR[P.support.thumb === 'hole' ? 'hole' : P.support.kind]),
+      h('p', { class: 'note' }, P.present ? 'الآلة خفيفة فتُرفع في يد العازف؛ تتنفّس اليد الحاملة مع الآلة وتمتص ارتداد كل ضربة دون أن تترك الإطار.' : 'الآلة ثقيلة فتبقى على الأرض، واليد تثبّتها فقط ولا تحمل وزنها.')));
     if (inst.zonesAssumed) body.push(h('div', { class: 'note warn' }, 'الدرس يذكر أن لكل من الدُم والتك مكانًا على هذا الطبل دون تحديده؛ الموضعان هنا تقريب تعليمي. أما هيئة اليد فمن دليل المعلم: «الدُّم بضمّ أصابع اليد، والتك بفتحها».'));
     if (Object.values(P.strokes).some((s) => s.review)) body.push(h('div', { class: 'note warn' }, 'نص الدرس: «تُنقر الدُم على الحافة، والتك في الوسط — عكس الدف والطبلة». التزمت اللعبة بنص الدرس، مع أن مراجع الدفوف الإطارية العامة تضع الدُم قرب الوسط؛ هذه النقطة معروضة للمراجعة الموسيقية.'));
     body.push(h('div', { class: 'note', html: 'لوحة المفاتيح: <kbd>D</kbd> أو <kbd>مسافة</kbd> دُم · <kbd>K</kbd> تك' + (hasKa() ? ' · <kbd>L</kbd> كا' : '') + ' · مع <kbd>Shift</kbd> ضربة خفيفة.' }));
@@ -441,16 +443,16 @@ dbtn.addEventListener('click', () => setDrawer(mainEl.classList.contains('closed
 setDrawer(params.get('drawer') ? params.get('drawer') === '1' : innerWidth > 900);
 
 // ---------- حلقة الرسم ----------
-function resize() { const w = stage.clientWidth, hh = stage.clientHeight; if (!w || !hh) return; const was = camera.aspect; renderer.setSize(w, hh, false); camera.aspect = w / hh; camera.updateProjectionMatrix(); if (S.model && (was < 1) !== (camera.aspect < 1)) resetView(); }
+function resize() { const w = stage.clientWidth, hh = stage.clientHeight; if (!w || !hh) return; const was = camera.aspect; renderer.setSize(w, hh, false); camera.aspect = w / hh; lastOff = -1; camera.updateProjectionMatrix(); if (S.model && (was < 1) !== (camera.aspect < 1)) resetView(); }
 new ResizeObserver(resize).observe(stage);
-const v3 = new THREE.Vector3(); let last = performance.now();
+const v3 = new THREE.Vector3(); let last = performance.now(), lastOff = -1; const bottomEl = $('#bottom');
 function frame(now) {
   const dtR = Math.min(0.5, (now - last) / 1000), dt = Math.min(0.05, dtR); last = now; requestAnimationFrame(frame);   // dtR: الزمن الحقيقي (للآثار المؤقتة حتى لو تباطأ الرسم)
   const tv = audio.heardNow;
   transport.frame(tv);
   if (S.fx.length) { const due = S.fx.filter((f) => f.t <= tv); if (due.length) { S.fx = S.fx.filter((f) => f.t > tv); due.forEach((f) => f.fn()); } }
   const m = S.model; if (!m) return;
-  if (performer) { if (performer.enabled === false) { for (const s of ['L', 'R']) if (!hands.side[s].hidden) hands.hide(s); } else performer.update(dt); }
+  if (performer) performer.update(dt);   // يحرّك اليدين، ويرفع الآلة المحمولة أو يعيدها إلى الأرض حسب الوضع
   // جولة تلقائية
   if (S.tour && S.tour.auto) { S.tour.timer += dt; if (S.tour.timer > 4.5) { S.tour.timer = 0; tourStep(S.tour.i + 1); } }
   // التمرير فوق الأجزاء: تلميح + هالة حمراء
@@ -462,8 +464,12 @@ function frame(now) {
   }
   const dmin = m.R * 1.6, dmax = Math.max(m.R, m.height) * 9; view.g.d = Math.max(dmin, Math.min(dmax, view.g.d));
   const k = 1 - Math.exp(-dt * 9); view.theta += (view.g.theta - view.theta) * k; view.phi += (view.g.phi - view.phi) * k; view.d += (view.g.d - view.d) * k;
-  const tgtY = S.mode === 'explore' ? m.height * 0.5 : m.top * 0.85 + 0.02; view.target.y += (tgtY - view.target.y) * k;
+  const lift = performer && performer.present ? performer.amt * performer.present.lift : 0;   // الآلة المحمولة مرفوعة في يد العازف
+  const tgtY = S.mode === 'explore' ? m.height * 0.5 : m.top * 0.85 + 0.02 + lift; view.target.y += (tgtY - view.target.y) * k;
   const dz = S.mode === 'explore' ? 0 : m.R * 0.25; view.target.z += (dz - view.target.z) * k;
+  // مركز المشهد في الجزء الظاهر فوق الشريط السفلي (المدوّنة والأزرار) لا خلفه — حتى تبقى الآلة واليدان مرئية
+  const bh = bottomEl.offsetHeight, offY = Math.round(Math.min(bh, stage.clientHeight * 0.55) * (S.mode === 'explore' ? 0.5 : 0.9));
+  if (offY !== lastOff) { lastOff = offY; const w0 = stage.clientWidth, h0 = stage.clientHeight; camera.aspect = w0 / (h0 + offY); if (offY > 0) camera.setViewOffset(w0, h0 + offY, 0, offY, w0, h0); else camera.clearViewOffset(); camera.updateProjectionMatrix(); }
   camera.position.set(view.target.x + view.d * Math.sin(view.phi) * Math.sin(view.theta), view.target.y + view.d * Math.cos(view.phi), view.target.z + view.d * Math.sin(view.phi) * Math.cos(view.theta)); camera.lookAt(view.target);
   S.hits = animateHead(m.head, S.hits, dtR);
   for (const r of S.ripples) { r.userData.t += dtR; const t = r.userData.t / 0.38; r.scale.setScalar(r.userData.r0 * (1 + 2.6 * t)); r.material.opacity = Math.max(0, 0.95 * (1 - t)); }
