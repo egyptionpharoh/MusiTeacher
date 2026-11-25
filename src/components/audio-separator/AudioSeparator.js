@@ -2,7 +2,6 @@
 // استوديو فصل الصوت بالذكاء الاصطناعي — واجهة المعلم.
 // الرفع مباشر إلى التخزين (نسبة رفع حقيقية)، ثم حالة المعالجة الحقيقية من الخادم، ثم الاستماع والتنزيل.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
 import './audio-separator.css';
@@ -485,8 +484,7 @@ export default function AudioSeparator() {
   return (
     <div className="as-root" dir="rtl">
       <div className="as-shell">
-        <Link href="/dashboard/tools" className="as-back"><Icon d={I.back} size={18} />أدوات المعلم</Link>
-
+        {/* الرجوع إلى «الأدوات» والشعار في شريط التنقل الموحد أعلى الصفحة (src/components/tools-nav) */}
         <header className="as-head">
           <h1>استوديو فصل الصوت بالذكاء الاصطناعي <span aria-hidden="true">🎧</span></h1>
           <p>افصل الغناء عن الموسيقى، أو استخرج الصوت البشري وحده، وحمّل النتيجة بجودة عالية.</p>

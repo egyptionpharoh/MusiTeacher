@@ -2,7 +2,6 @@
 // مبادرات تعليمية — مساعد يحوّل الإبداع التربوي إلى مبادرات مدرسية قابلة للتخطيط والتنفيذ والقياس.
 // أربع مساحات: استكشاف (المكتبة) · ابتكر (الذكاء الاصطناعي) · المحفوظة · مبادراتي (قيد التخطيط والتنفيذ).
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { DOMAINS, LEADS, COSTS, SIZES, STAGES, DURATIONS, NATURES, STATUSES, DOMAIN, label } from '@/lib/initiatives/taxonomy';
 import { libraryInitiatives, filterInitiatives, countsBy, randomInitiative, EMPTY_FILTERS } from '@/lib/initiatives/catalog';
@@ -12,7 +11,13 @@ import { api, ApiError, downloadBlob, printHTML, copyRich, safeFileName } from '
 import { Icon, EXTRA, InitiativeCard, StatusPill, Progress, Select, DomainIcon } from './parts';
 import InitiativeDetail from './InitiativeDetail';
 import Workspace from './Workspace';
+import ExcellenceFeature from '@/modules/excellence-cards/ui/ExcellenceFeature';
+import ExcellenceInitiative from '@/modules/excellence-cards/ui/ExcellenceInitiative';
+import { getUserId } from '@/modules/class-alarm/adapters/musiteacherClient';
 import './initiatives.css';
+
+// الاقتراح التعليمي الرئيسي «كوبون التميز» — يُفتح أيضًا برابط مباشر: ?initiative=excellence-coupon
+const SPECIAL_ID = 'excellence-coupon';
 
 const MSG = {
   unauthenticated: 'انتهت جلسة الدخول. حدّث الصفحة وسجّل الدخول من جديد.',
@@ -77,6 +82,7 @@ export default function InitiativesStudio() {
   const [req, setReq] = useState('');
   const [opts, setOpts] = useState({ domain: '', stage: '', audience: '', size: '', weeks: 0, cost: '', participants: 0, nature: '' });
   const [syncState, setSyncState] = useState('');               // '', 'syncing', 'ok', 'err'
+  const [special, setSpecial] = useState(false);                // «كوبون التميز» مفتوح
   const abortRef = useRef(null);
   const elapsed = useElapsed(!!busy && !busy.startsWith('export'));
 
@@ -89,6 +95,17 @@ export default function InitiativesStudio() {
   }, []);
   // ---------- الحفظ على الجهاز عند كل تغيير
   useEffect(() => { if (data) saveLocal(data); }, [data]);
+  // ---------- رابط مباشر إلى «كوبون التميز»
+  useEffect(() => { try { if (new URLSearchParams(window.location.search).get('initiative') === SPECIAL_ID) setSpecial(true); } catch { /* */ } }, []);
+  const openSpecial = (on) => {
+    setSpecial(on);
+    try {
+      const u = new URL(window.location.href);
+      if (on) u.searchParams.set('initiative', SPECIAL_ID); else u.searchParams.delete('initiative');
+      window.history.replaceState(window.history.state, '', u.pathname + u.search + u.hash);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } catch { /* */ }
+  };
   // ---------- العودة لأعلى الصفحة عند الانتقال
   useEffect(() => { try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch { /* */ } }, [space, openId, projectId]);
 
@@ -226,10 +243,17 @@ export default function InitiativesStudio() {
   const activeCount = D.projects.filter((p) => p.status === 'active').length;
 
   // ======================================================================================
+  if (special) {
+    return (
+      <div className="in-root" dir="rtl" data-space="amber">
+        <div className="in-shell"><ExcellenceInitiative getUserId={getUserId} onBack={() => { openSpecial(false); goSpace('explore'); }} /></div>
+      </div>
+    );
+  }
   return (
     <div className="in-root" dir="rtl" data-space={spaceColor}>
       <div className="in-shell">
-        <div className="in-topbar"><Link href="/dashboard/tools" className="in-back"><Icon d="back" size={16} /> الأدوات</Link></div>
+        {/* الرجوع إلى «الأدوات» والشعار في شريط التنقل الموحد أعلى الصفحة (src/components/tools-nav) */}
         <header className={`in-hero ${openId || projectId ? 'is-compact' : ''}`}>
           <div className="in-hero-text">
             <span className="in-kicker"><Icon d="spark" size={15} /> من الفكرة إلى التنفيذ والقياس</span>
@@ -278,6 +302,7 @@ export default function InitiativesStudio() {
             {/* -------------------------------------------- استكشاف */}
             {!opened && !project && space === 'explore' && (
               <>
+                {!hasFilters && <ExcellenceFeature onOpen={() => openSpecial(true)} />}
                 <section className="in-panel in-filters-panel">
                   <div className="in-search"><Icon d="search" /><input type="search" value={filters.q} onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))} placeholder="ابحث: القراءة، الطلبة، أولياء الأمور، بلا تكلفة…" aria-label="بحث في المبادرات" /></div>
                   <div className="in-domains" role="group" aria-label="المجالات">

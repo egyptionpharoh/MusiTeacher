@@ -41,6 +41,8 @@ const P = {
   swap: 'M7 7h13M16 3l4 4-4 4M17 17H4M8 13l-4 4 4 4',
   annotate: 'M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z',
   library: 'M4 19V5M8 19V5M12 19l3-14M16 19l4-14M3 21h18',
+  external: 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5',
+  globe: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9s1.3-6.3 3.8-9z',
 };
 
 export default function Icon({ name, size = 20, className = '', strokeWidth = 1.9 }) {

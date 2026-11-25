@@ -1,7 +1,6 @@
 'use client';
 // 📚 بنك أغلفة السجلات — استوديو لاختيار الغلاف وتخصيصه وتصديره Word حقيقيًا قابلًا للتعديل.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
 import CoverPage from './CoverPage';
 import { DESIGNS, STYLES, FONTS, getDesign, variantCount } from '@/lib/cover-studio/designs';
 import { RECORDS, RECORD_GROUPS, SUBJECTS, SEMESTERS, ROLES, GOVERNORATES, getRecord, defaultData } from '@/lib/cover-studio/records';
@@ -208,10 +207,12 @@ export default function CoverStudio() {
   return (
     <div className="cs-root" dir="rtl">
       <div className="cs-shell">
-        <div className="cs-topbar">
-          <Link href="/dashboard/tools" className="cs-back"><Icon d={I.back} />أدوات المعلم</Link>
-          {view === 'studio' && <button type="button" className="cs-back" onClick={() => setView('library')}><Icon d={I.grid} />كل التصميمات</button>}
-        </div>
+        {/* الرجوع إلى «الأدوات» والشعار في شريط التنقل الموحد أعلى الصفحة (src/components/tools-nav) */}
+        {view === 'studio' && (
+          <div className="cs-topbar">
+            <button type="button" className="cs-back" onClick={() => setView('library')}><Icon d={I.grid} />كل التصميمات</button>
+          </div>
+        )}
 
         <header className="cs-head">
           <h1><span aria-hidden="true">📚</span> بنك أغلفة السجلات</h1>

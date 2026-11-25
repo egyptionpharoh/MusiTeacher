@@ -87,6 +87,10 @@
 .vlp-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; background: var(--vl-bar); border: 1px solid var(--vl-card-border); border-radius: 1rem; padding: .7rem 1rem; box-shadow: var(--vl-shadow); margin-bottom: .75rem; }
 .vlp-id { display: flex; align-items: center; gap: .75rem; min-width: 0; }
 .vlp-logo { width: 2.4rem; height: 2.4rem; border-radius: .7rem; object-fit: contain; background: var(--vl-soft); padding: .15rem; flex: none; }
+/* الشعار رابط إلى الصفحة الرئيسية: نفس الحجم والشكل، مع إبراز خفيف عند المرور والتركيز */
+.vlp-home { display: inline-flex; flex: none; border-radius: .8rem; transition: transform .2s ease, box-shadow .2s ease; }
+.vlp-home:hover { transform: translateY(-1px) scale(1.05); box-shadow: 0 0 0 3px rgba(34, 211, 238, .28); }
+.vlp-home:focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
 .vlp-title { margin: 0; font-size: 1.1rem; font-weight: 800; line-height: 1.4; }
 .vlp-meta { margin: 0; font-size: .78rem; color: var(--vl-muted); font-weight: 600; }
 .vlp-btns { display: flex; gap: .5rem; flex-wrap: wrap; }

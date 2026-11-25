@@ -67,6 +67,16 @@ export function makeLibrary(uid) {
       t.objectStore('anns').put({ pages: {} }, book.id);
       return done(t);
     },
+    /** يحدّث بيانات وصفية للكتاب (الصف ونوعه «دليل معلم») دون لمس الملف أو الرسومات */
+    async setMeta(id, patch) {
+      const b = await get('books', id);
+      if (!b) return null;
+      if ('grade' in patch) b.grade = patch.grade ? Number(patch.grade) : null;
+      if ('kind' in patch) b.kind = patch.kind === 'guide' ? 'guide' : null;
+      b.updatedAt = Date.now();
+      await put('books', id, b);
+      return b;
+    },
     async rename(id, name) {
       const b = await get('books', id);
       if (!b) return;

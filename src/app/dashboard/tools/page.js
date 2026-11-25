@@ -1,21 +1,19 @@
 'use client';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { 
   FileSpreadsheet, FileText, Music, Mic, Presentation, 
-  CalendarDays, BookOpen, ClipboardList, Star, Crown, BookCopy, ArrowRight, Headphones, AlarmClock
+  CalendarDays, BookOpen, ClipboardList, Star, Crown, BookCopy, ArrowRight, Headphones, AlarmClock, ShieldCheck
 } from 'lucide-react';
 
 export default function TeacherToolsPage() {
-  const router = useRouter();
-  
   // تم إزالة قيود تسجيل الدخول وفتح جميع الأدوات
 
   // استخدام تدرجات لونية ثلاثية الأبعاد (3-Stop Gradients) لإضاءة مذهلة
   const toolsList = [
 { id: 'music-factory', name: 'مصنع الألحان (AI)', desc: 'من كلماتك إلى أغنية أو موسيقى تصويرية، مع برومبت احترافي لـ Suno', icon: <Music size={32} />, color: 'from-fuchsia-500 via-rose-500 to-orange-500', path: '/dashboard/tools/music-factory' },    
-    { id: 'interactive-book', name: 'الكتاب التفاعلي الذكي 📖', desc: 'حوّل أي PDF إلى كتاب تقلّب صفحاته وتشرح عليه أمام طلابك: رسم وتحديد، مؤشر ليزر، بحث، ووضع عرض للحصة', icon: <BookOpen size={32} />, color: 'from-amber-400 via-rose-500 to-violet-600', path: '/dashboard/tools/interactive-book' },
+    { id: 'interactive-book', name: 'الكتاب التفاعلي الذكي 📖', desc: 'حوّل أي PDF إلى كتاب تقلّب صفحاته وتشرح عليه أمام طلابك: رسم وتحديد، مؤشر ليزر، بحث، ووضع عرض للحصة، مع أدلة المعلم لكل صف', icon: <BookOpen size={32} />, color: 'from-amber-400 via-rose-500 to-violet-600', path: '/dashboard/tools/interactive-book' },
     { id: 'class-alarm', name: 'منبّه الحصص الذكي ⏰', desc: 'نظّم يومك الدراسي وتلقَّ تنبيهًا قبل كل حصة باسم الصف والشعبة، مع جدول أسبوعي أنيق باسمك', icon: <AlarmClock size={32} />, color: 'from-amber-400 via-orange-500 to-sky-600', path: '/dashboard/tools/class-alarm' },
+    { id: 'committee-advisor', name: 'مستشار المعلم في اللجان والامتحانات 🛡️', desc: 'اسأل عن مهامك وحقوقك ومسؤولياتك، وتعرّف على ما ينتظرك داخل اللجان والامتحانات — إجابات محددة المصدر من قاعدة معرفة محلية', icon: <ShieldCheck size={32} />, color: 'from-emerald-400 via-teal-500 to-sky-700', path: '/dashboard/tools/committee-advisor' },
     { id: 'covers', name: 'بنك أغلفة السجلات', desc: 'أغلفة وورد قابلة للتعديل', icon: <FileText size={32} />, color: 'from-violet-400 via-purple-500 to-fuchsia-500', path: '/dashboard/tools/covers' },
     { id: 'audio-separator', name: 'استوديو فصل الصوت بالذكاء الاصطناعي 🎧', desc: 'افصل الغناء عن الموسيقى، أو استخرج الصوت البشري وحده، وحمّل النتيجة بجودة عالية', icon: <Headphones size={32} />, color: 'from-amber-400 via-cyan-500 to-sky-600', path: '/dashboard/tools/audio-separator' },
     { id: 'radio', name: ' مولِّد الإذاعات المدرسية', desc: 'توليد متميز بالذكاء الاصطناعي', icon: <Mic size={32} />, color: 'from-pink-400 via-rose-500 to-red-500', path: '/dashboard/tools/radio' },
@@ -33,14 +31,8 @@ export default function TeacherToolsPage() {
       }}
     >
       
-      {/* زر العودة للوراء */}
-      <button 
-        onClick={() => router.back()}
-        className="absolute top-6 right-6 md:top-10 md:right-10 z-50 flex items-center gap-2 px-5 py-2.5 bg-white/20 dark:bg-white/5 border border-white/30 dark:border-white/10 rounded-full backdrop-blur-xl text-white dark:text-gray-400 hover:text-white dark:hover:text-white hover:bg-white/30 dark:hover:bg-white/10 hover:border-white/50 dark:hover:border-white/20 transition-all duration-300 shadow-lg group"
-      >
-        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
-        <span className="text-sm font-bold tracking-wide">العودة</span>
-      </button>
+      {/* زر «العودة» القديم كان يستخدم router.back() فيعيد المستخدم إلى آخر أداة زارها (حلقة تنقل).
+          أُزيل؛ شريط التنقل الموحد أعلى الصفحة (src/components/tools-nav) يوفّر «العودة للرئيسية» بمسار صريح. */}
 
       {/* تأثيرات بصرية للخلفية */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-900/20 blur-[150px] pointer-events-none"></div>
@@ -103,6 +95,13 @@ export default function TeacherToolsPage() {
             </CardWrapper>
           );
         })}
+      </div>
+
+      {/* رابط هادئ إلى «صندوق الاقتراحات السرية» */}
+      <div className="relative z-10 flex justify-center pb-10">
+        <Link href="/suggestions" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/30 dark:border-white/10 bg-white/15 dark:bg-white/5 backdrop-blur-xl text-white dark:text-gray-300 font-bold text-sm hover:bg-white/25 dark:hover:bg-white/10 hover:border-white/50 transition-all duration-300 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
+          <span aria-hidden="true">💬</span> لديك اقتراح أو ملاحظة أو مشكلة؟ اكتب لنا في صندوق الاقتراحات السرية
+        </Link>
       </div>
     </div>
   );

@@ -171,10 +171,12 @@ export default function LessonPlansApp({ plansData, getToken, getUserId, apiBase
   return (
     <div className="ca-root lp-root" dir="rtl">
       <div className="ca-shell">
-        <div className="ca-topbar">
-          <a href={backHref} className="ca-back"><Icon n="back" size={16} />أدوات المعلم</a>
-          {!hasSchedule && <a href={alarmHref} className="lp-link-chip is-off"><Icon n="bell" size={15} />لا يوجد جدول في «منبّه الحصص الذكي» بعد</a>}
-        </div>
+        {/* الرجوع إلى «الأدوات» والشعار في شريط التنقل الموحد أعلى الصفحة (src/components/tools-nav) */}
+        {!hasSchedule && (
+          <div className="ca-topbar">
+            <a href={alarmHref} className="lp-link-chip is-off"><Icon n="bell" size={15} />لا يوجد جدول في «منبّه الحصص الذكي» بعد</a>
+          </div>
+        )}
         <header className="ca-head lp-head">
           <h1><span className="ca-logo lp-logo" aria-hidden="true"><Icon n="calendar" size={26} /></span>مولد الخطط الفصلية</h1>
           <button type="button" className={`lp-gear${tab === 'settings' ? ' is-on' : ''}`} onClick={() => (tab === 'settings' ? setTab('time') : openSettings())} aria-label="الإعدادات" aria-pressed={tab === 'settings'} title="الإعدادات: صفوفي، خططي حسب الصف، الربط بجدولي"><span aria-hidden="true">⚙️</span><span className="lp-gear-t">الإعدادات</span></button>

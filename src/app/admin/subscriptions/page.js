@@ -45,7 +45,7 @@ export default function AdminSubscriptions() {
           'Authorization': `Bearer ${token}` // تمرير التوكن للحارس (الميدلوير) ليسمح بالعبور
         },
         body: JSON.stringify({
-          adminUid: user.uid, // الرقم السري الخاص بك لإثبات هويتك كمدير
+          // 🔐 لا نرسل uid: الخادم يعرف هوية المدير من التوكن الموقّع في الترويسة فقط
           targetEmail: email, // إيميل المعلم الذي قام بالدفع
           planType: plan // الباقة المطلوبة
         })
@@ -161,4 +161,4 @@ export default function AdminSubscriptions() {
       </div>
     </div>
   );
-}
+}

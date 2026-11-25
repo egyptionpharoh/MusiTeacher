@@ -1,0 +1,47 @@
+/* ===== شريط التنقل الموحد لأدوات المعلم (البادئة mt-toolsnav) =====
+   نفس فكرة هيدر «عالم الألعاب»: الشعار يعيد للرئيسية + زر رجوع صريح، مع ألوان مناسبة للوضعين.
+   يمتد بعرض الصفحة كاملًا فوق الأداة (يعوّض حشوة غلاف لوحة التحكم p-4 / md:p-8). */
+.mt-toolsnav {
+  --tn-bg: rgba(255, 255, 255, .86); --tn-line: rgba(15, 23, 42, .1); --tn-ink: #0f172a; --tn-ink2: #475569;
+  --tn-hover: rgba(15, 23, 42, .06); --tn-from: #0e7490; --tn-to: #1d4ed8; --tn-note: #0e7490; --tn-glow: none; --tn-focus: #2563eb;
+  position: relative; z-index: 40; margin: -1rem -1rem 1rem; font-family: 'Cairo', system-ui, sans-serif;
+  background: var(--tn-bg); border-bottom: 1px solid var(--tn-line); box-shadow: 0 6px 24px -14px rgba(15, 23, 42, .35);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+.dark .mt-toolsnav {
+  --tn-bg: rgba(15, 32, 39, .86); --tn-line: rgba(255, 255, 255, .08); --tn-ink: #e2e8f0; --tn-ink2: #94a3b8;
+  --tn-hover: rgba(255, 255, 255, .06); --tn-from: #22d3ee; --tn-to: #3b82f6; --tn-note: #22d3ee; --tn-glow: drop-shadow(0 0 8px rgba(34, 211, 238, .3)); --tn-focus: #22d3ee;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, .3);
+}
+@media (min-width: 768px) { .mt-toolsnav { margin: -2rem -2rem 2rem; } }
+.mt-toolsnav *, .mt-toolsnav *::before, .mt-toolsnav *::after { box-sizing: border-box; }
+.mt-toolsnav__in { max-width: 80rem; margin: 0 auto; min-height: 64px; padding: .5rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+@media (min-width: 768px) { .mt-toolsnav__in { padding: .5rem 1.5rem; } }
+.mt-toolsnav__start { display: flex; align-items: center; gap: .9rem; min-width: 0; }
+
+.mt-toolsnav__up { flex: none; display: inline-flex; align-items: center; gap: .45rem; min-height: 42px; padding: .4rem .95rem; border-radius: 12px;
+  border: 1px solid var(--tn-line); color: var(--tn-ink); font-weight: 800; font-size: .92rem; text-decoration: none; transition: background .2s, border-color .2s, color .2s; }
+.mt-toolsnav__up:hover { background: var(--tn-hover); border-color: var(--tn-from); }
+.mt-toolsnav__arrow { transition: transform .25s; }
+.mt-toolsnav__up:hover .mt-toolsnav__arrow { transform: translateX(3px); }
+
+.mt-toolsnav__crumbs { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; min-width: 0; font-size: .85rem; font-weight: 700; color: var(--tn-ink2); }
+.mt-toolsnav__crumbs li { display: flex; align-items: center; white-space: nowrap; }
+.mt-toolsnav__crumbs li + li::before { content: '›'; margin: 0 .45rem; opacity: .7; }
+.mt-toolsnav__crumbs a { color: var(--tn-ink2); text-decoration: none; border-radius: 6px; padding: .1rem .2rem; }
+.mt-toolsnav__crumbs a:hover { color: var(--tn-ink); text-decoration: underline; text-underline-offset: 3px; }
+.mt-toolsnav__crumbs [aria-current] { color: var(--tn-ink); font-weight: 800; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 720px) { .mt-toolsnav__crumbs { display: none; } }
+
+.mt-toolsnav__logo { flex: none; display: inline-flex; align-items: center; gap: .6rem; padding: .35rem .7rem; border-radius: 12px; text-decoration: none; transition: background .25s; }
+.mt-toolsnav__logo:hover { background: var(--tn-hover); }
+.mt-toolsnav__word { font-size: 1.25rem; font-weight: 800; letter-spacing: .12em; direction: ltr; color: transparent;
+  background: linear-gradient(90deg, var(--tn-from), var(--tn-to)); -webkit-background-clip: text; background-clip: text; filter: var(--tn-glow); transition: filter .3s; }
+.mt-toolsnav__logo:hover .mt-toolsnav__word { filter: drop-shadow(0 0 10px rgba(34, 211, 238, .45)); }
+.mt-toolsnav__note { color: var(--tn-note); transition: transform .3s; }
+.mt-toolsnav__logo:hover .mt-toolsnav__note { transform: scale(1.12); }
+@media (max-width: 420px) { .mt-toolsnav__word { font-size: 1.05rem; letter-spacing: .06em; } .mt-toolsnav__up { padding: .35rem .7rem; } }
+
+.mt-toolsnav a:focus-visible { outline: 3px solid var(--tn-focus); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .mt-toolsnav * { transition: none !important; } }
+@media print { .mt-toolsnav { display: none !important; } }

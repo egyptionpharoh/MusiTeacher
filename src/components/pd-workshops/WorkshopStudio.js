@@ -2,7 +2,6 @@
 // مشاغل الإنماء المهني — مساعد لصناعة برامج الإنماء المهني: من الفكرة التربوية إلى مادة تدريبية جاهزة.
 // المكتبة والمؤلف المحلي يعملان دائمًا؛ الذكاء الاصطناعي (عبر الخادم فقط) يضيف أفكارًا جديدة وصياغة أغنى.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { DOMAINS, DOMAIN, SPECS, AUDIENCES, DURATION_BANDS, FORMATS, LEVELS, DEPTHS, STYLES, STAGES, DURATIONS, label, bandOf } from '@/lib/pd-workshops/taxonomy';
 import { libraryIdeas, filterIdeas, sortIdeas, randomIdea, facetCounts, EMPTY_FILTERS } from '@/lib/pd-workshops/library';
@@ -229,7 +228,7 @@ export default function WorkshopStudio() {
     <div className="pd-root" dir="rtl">
       <div className="pd-shell">
         <div className="pd-topbar">
-          <Link href="/dashboard/tools" className="pd-back"><Icon d="back" size={16} /> الأدوات</Link>
+          {/* الرجوع إلى «الأدوات» والشعار في شريط التنقل الموحد أعلى الصفحة (src/components/tools-nav) */}
           {view !== 'explore' && <button type="button" className="pd-back" onClick={() => { setView('explore'); setEditing(false); }}><Icon d="grid" size={16} /> مكتبة الأفكار</button>}
           <button type="button" className={`pd-back ${view === 'mine' ? 'is-on' : ''}`} onClick={() => { setView('mine'); setEditing(false); }}>
             <Icon d="history" size={16} /> مشاغلي{history.length ? <span className="pd-count">{history.length}</span> : null}

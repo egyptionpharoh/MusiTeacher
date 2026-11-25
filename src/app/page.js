@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const { theme, changeTheme, isDark } = useTheme();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -598,6 +598,31 @@ export default function HomePage() {
           <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-green-700'}`}>الأدوات والألعاب التعليمية</h2>
           <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}> اضغط و اكتشف الكنوز التعليمية التي لا غنى عنها لأي معلم فنون/مهارات موسيقية.</p>
         </Link>
+
+        {/* صندوق الاقتراحات السرية: متاح للجميع دون تسجيل دخول */}
+        <Link href="/suggestions" className={`group relative block w-full h-full z-10 overflow-hidden rounded-2xl transition-all duration-300 ease-out transform pointer-events-auto
+          ${isDark 
+            ? 'p-8 duration-500 hover:-translate-y-3 bg-[#111827]/60 backdrop-blur-md border border-violet-500/20 hover:border-violet-400/60 hover:shadow-[0_0_30px_rgba(139,92,246,0.25)]' 
+            : 'p-6 hover:-translate-y-2 hover:scale-[1.05] bg-white border border-gray-200/60 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.12)] hover:border-violet-400'}`}>
+          <div className={isDark ? "block" : "flex justify-between items-start mb-5"}>
+            <div className={isDark ? "" : "w-12 h-12 rounded-xl bg-gradient-to-b from-violet-50/50 to-violet-100/50 border border-violet-100/50 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm"}>
+              <Lock size={isDark ? 48 : 22} className={`transition-colors ${isDark ? 'mb-6 drop-shadow-md text-violet-400' : 'text-violet-600'}`} />
+            </div>
+            {!isDark && (
+              <div className="w-8 h-8 rounded-full bg-gray-50/50 flex items-center justify-center opacity-0 translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+                <ArrowUpLeft size={16} className="text-gray-400 group-hover:text-violet-600 transition-colors" />
+              </div>
+            )}
+          </div>
+          <h2 className={`font-bold transition-colors ${isDark ? 'text-2xl mb-3 text-white' : 'text-lg mb-2 text-gray-900 group-hover:text-violet-700'}`}>صندوق الاقتراحات السرية</h2>
+          <p className={`leading-relaxed transition-colors font-medium ${isDark ? 'text-gray-400' : 'text-sm text-gray-500'}`}>مساحتك للتعبير بحرية: اقتراح، مشكلة، أو رأي تصل إلى إدارة المنصة دون ذكر اسمك.</p>
+        </Link>
+
+        {isAdmin && (
+          <Link href="/admin/suggestions" className={`z-10 text-center text-sm font-bold rounded-xl py-2.5 border transition-colors ${isDark ? 'border-violet-500/30 text-violet-300 hover:bg-violet-500/10' : 'border-violet-300 text-violet-700 hover:bg-violet-50'}`}>
+            📥 الرسائل والاقتراحات السرية (للمدير)
+          </Link>
+        )}
       </div>
 
       {/* الفوتر */}

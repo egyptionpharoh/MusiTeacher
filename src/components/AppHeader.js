@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Music, Settings } from 'lucide-react';
+import HomeLogoLink from './HomeLogoLink';
 
 export default function AppHeader() {
   return (
@@ -17,12 +18,13 @@ export default function AppHeader() {
 
         {/* الجهة اليسرى: الهوية + الإعدادات */}
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3 cursor-default">
-            <h2 className="text-xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">
+          {/* الشعار: الضغط عليه يعيد إلى الصفحة الرئيسية (نفس الشكل والحجم، مع إبراز خفيف عند المرور والتركيز) */}
+          <HomeLogoLink className="group/logo flex items-center gap-3 rounded-xl px-2 py-1 -mx-2 transition-all duration-300 hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70">
+            <span className="text-xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-[0_0_8px_rgba(34,211,238,0.3)] transition-all duration-300 group-hover/logo:drop-shadow-[0_0_14px_rgba(34,211,238,0.6)]">
               MusiTeacher
-            </h2>
-            <Music size={20} className="text-cyan-400" />
-          </div>
+            </span>
+            <Music size={20} className="text-cyan-400 transition-transform duration-300 group-hover/logo:scale-110" />
+          </HomeLogoLink>
           
           <div className="h-6 w-px bg-gray-700" /> 
           
@@ -33,4 +35,4 @@ export default function AppHeader() {
       </div>
     </header>
   );
-}
+}

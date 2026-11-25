@@ -2,6 +2,7 @@
 // مشغّل ألعاب استوديو الموسيقى الافتراضي: يطلب جلسة من الخادم (تحقق Firebase + الاشتراك) ثم يضع اللعبة في iframe من /play/<id>/.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import HomeLogoLink from '@/components/HomeLogoLink';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { auth } from '@/lib/firebase';
@@ -167,7 +168,7 @@ export default function LabPlayerPage() {
     <div className="vlp">
       <div className="vlp-top">
         <div className="vlp-id">
-          <img className="vlp-logo" src="/logo.png" alt="MusiTeacher" />
+          <HomeLogoLink className="vlp-home"><img className="vlp-logo" src="/logo.png" alt="" /></HomeLogoLink>
           <div style={{ minWidth: 0 }}>
             <h1 className="vlp-title">{game.title}</h1>
             <p className="vlp-meta">{back.place}{cat ? ` · ${cat.label}` : ''}{game.grade ? ` · ${game.grade}` : ''}</p>

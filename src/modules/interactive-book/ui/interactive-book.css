@@ -5,6 +5,11 @@
   --ib-accent: #2563eb; --ib-accent-2: #7c3aed; --ib-amber: #f59e0b;
   --ib-stage: radial-gradient(ellipse at 50% 35%, #dbe7f7 0%, #b8cbe6 55%, #93aed4 100%);
   --ib-hover: rgba(37, 99, 235, .1);
+  /* ألوان الصفحة نفسها (العنوان وزر الرجوع والخلفية) — تتبدّل مع الوضع الليلي */
+  --ib-page: radial-gradient(900px 420px at 88% -8%, rgba(124, 58, 237, .13), transparent 62%),
+             radial-gradient(800px 420px at 4% 0%, rgba(37, 99, 235, .12), transparent 60%), #f3f6fc;
+  --ib-head: #0f172a; --ib-head-sub: #475569; --ib-head-shadow: none;
+  --ib-pill: rgba(255, 255, 255, .85); --ib-pill-line: rgba(15, 23, 42, .14);
   font-family: 'Cairo', system-ui, sans-serif; color: var(--ib-ink);
 }
 .ib-app.ib-dark {
@@ -12,7 +17,14 @@
   --ib-card: rgba(15, 23, 42, .78); --ib-bar: rgba(10, 16, 32, .88); --ib-bar-txt: #e2e8f0;
   --ib-accent: #60a5fa; --ib-stage: radial-gradient(ellipse at 50% 35%, #1e2a44 0%, #0d1528 60%, #050913 100%);
   --ib-hover: rgba(96, 165, 250, .14);
+  --ib-page: radial-gradient(900px 420px at 88% -8%, rgba(124, 58, 237, .22), transparent 62%),
+             radial-gradient(800px 420px at 4% 0%, rgba(37, 99, 235, .2), transparent 60%), #070c18;
+  --ib-head: #f8fafc; --ib-head-sub: #cbd5e1; --ib-head-shadow: 0 2px 16px rgba(0, 0, 0, .35);
+  --ib-pill: rgba(255, 255, 255, .08); --ib-pill-line: rgba(255, 255, 255, .18);
 }
+/* الصفحة الرئيسية للأداة ترسم خلفيتها بنفسها (مثل أدوات المنبّه والمبادرات) بدل الاعتماد على خلفية لوحة التحكم الرمادية الثابتة */
+.ib-app.ib-page { min-height: 100vh; margin: -1rem; padding: 1rem; background: var(--ib-page); }
+@media (min-width: 768px) { .ib-app.ib-page { margin: -2rem; padding: 2rem; } }
 .ib-app *, .ib-app *::before, .ib-app *::after { box-sizing: border-box; }
 .ib-ic { flex-shrink: 0; display: block; }
 .ib-muted { color: var(--ib-muted); }
@@ -20,12 +32,13 @@
 /* ===== الصفحة الرئيسية للأداة ===== */
 .ib-home { max-width: 1180px; margin: 0 auto; padding: 8px 4px 40px; }
 .ib-home__head { display: flex; flex-direction: column; gap: 18px; margin-bottom: 22px; }
-.ib-backbtn { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.18); color: #fff; font: 700 .92rem 'Cairo', sans-serif; cursor: pointer; backdrop-filter: blur(10px); }
-.ib-backbtn:hover { background: rgba(255,255,255,.3); }
-.ib-home__title { display: flex; align-items: center; gap: 16px; color: #fff; }
+.ib-backbtn { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--ib-pill-line); background: var(--ib-pill); color: var(--ib-head); font: 700 .92rem 'Cairo', sans-serif; cursor: pointer; backdrop-filter: blur(10px); transition: background .2s, border-color .2s; }
+.ib-backbtn:hover { background: var(--ib-hover); border-color: var(--ib-accent); }
+.ib-backbtn:focus-visible { outline: 3px solid var(--ib-amber); outline-offset: 2px; }
+.ib-home__title { display: flex; align-items: center; gap: 16px; color: var(--ib-head); }
 .ib-home__logo { display: grid; place-items: center; width: 62px; height: 62px; border-radius: 18px; background: linear-gradient(135deg, #f59e0b, #ef4444 45%, #7c3aed); box-shadow: 0 10px 30px rgba(124,58,237,.35); color: #fff; }
-.ib-home__title h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; line-height: 1.3; text-shadow: 0 2px 16px rgba(0,0,0,.25); }
-.ib-home__title p { margin: 4px 0 0; opacity: .92; font-size: 1.02rem; }
+.ib-home__title h1 { margin: 0; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; line-height: 1.3; color: var(--ib-head); text-shadow: var(--ib-head-shadow); }
+.ib-home__title p { margin: 4px 0 0; color: var(--ib-head-sub); font-size: 1.02rem; }
 
 .ib-drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; min-height: 220px; padding: 28px 18px;
   border-radius: 24px; border: 2.5px dashed rgba(37, 99, 235, .45); background: var(--ib-card); backdrop-filter: blur(16px); cursor: pointer;
@@ -79,7 +92,8 @@
   background: linear-gradient(135deg, #2563eb, #4f46e5); color: #fff; font: 700 .92rem 'Cairo', sans-serif; cursor: pointer; transition: filter .2s, transform .1s; }
 .ib-btn:hover { filter: brightness(1.08); }
 .ib-btn:active { transform: scale(.98); }
-.ib-btn:disabled { opacity: .45; cursor: default; filter: none; }
+.ib-btn:disabled { opacity: 1; cursor: not-allowed; filter: none; background: #e2e8f0; color: #475569; box-shadow: none; }
+.ib-dark .ib-btn:disabled { background: rgba(255, 255, 255, .08); color: #94a3b8; }
 .ib-btn--ghost { background: transparent; color: var(--ib-ink); border: 1px solid var(--ib-line); }
 .ib-btn--wide { width: 100%; }
 
@@ -258,3 +272,81 @@
 @media (prefers-reduced-motion: reduce) {
   .ib-card, .ib-drop, .ib-mini { transition: none; }
 }
+
+/* ===== التبويبات: مكتبتي التفاعلية | أدلة المعلم الرقمية ===== */
+.ib-tabs { display: inline-flex; flex-wrap: wrap; gap: 6px; padding: 6px; margin-bottom: 18px; border-radius: 18px; background: var(--ib-card); backdrop-filter: blur(16px); box-shadow: 0 10px 30px rgba(15,23,42,.1); }
+.ib-tab { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 18px; border: 0; border-radius: 13px; background: transparent; color: var(--ib-ink); font: 800 .98rem 'Cairo', sans-serif; cursor: pointer; transition: background .2s, color .2s, box-shadow .2s; }
+.ib-tab:hover { background: var(--ib-hover); }
+.ib-tab.is-on { background: linear-gradient(135deg, #2563eb, #7c3aed); color: #fff; box-shadow: 0 8px 20px rgba(79,70,229,.35); }
+.ib-tab:focus-visible { outline: 3px solid var(--ib-amber); outline-offset: 2px; }
+
+/* ===== أدلة المعلم الرقمية ===== */
+.ib-guides__intro { margin-bottom: 14px; color: var(--ib-head); }
+.ib-guides__intro h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; font-size: 1.4rem; font-weight: 900; text-shadow: var(--ib-head-shadow); }
+.ib-guides__intro p { margin: 0; color: var(--ib-head-sub); }
+.ib-guides__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; align-items: start; }
+.ib-gpanel { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 24px 22px 20px; border-radius: 24px; background: var(--ib-card); backdrop-filter: blur(16px);
+  border: 1px solid var(--ib-line); box-shadow: 0 14px 40px rgba(15,23,42,.12); overflow: hidden; }
+.ib-gpanel::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #0ea5e9, #2563eb, #7c3aed); }
+.ib-gpanel:nth-child(2)::before { background: linear-gradient(90deg, #f59e0b, #ef4444, #7c3aed); }
+.ib-gpanel__icon { display: grid; place-items: center; width: 54px; height: 54px; border-radius: 16px; color: #fff; }
+.ib-gpanel__icon.is-link { background: linear-gradient(135deg, #0ea5e9, #2563eb); box-shadow: 0 8px 22px rgba(37,99,235,.35); }
+.ib-gpanel__icon.is-upload { background: linear-gradient(135deg, #f59e0b, #ef4444 50%, #7c3aed); box-shadow: 0 8px 22px rgba(239,68,68,.3); }
+.ib-gpanel h3 { margin: 0; font-size: 1.25rem; font-weight: 900; }
+.ib-gpanel__lead { margin: 0; color: var(--ib-muted); line-height: 1.7; }
+.ib-gpanel__fine { margin: 4px 0 0; color: var(--ib-muted); font-size: .78rem; line-height: 1.7; }
+.ib-field { display: flex; flex-direction: column; gap: 6px; font-weight: 700; font-size: .92rem; }
+.ib-select { min-height: 46px; padding: 8px 12px; border-radius: 13px; border: 1.5px solid var(--ib-line); background: rgba(255,255,255,.75); color: var(--ib-ink); font: 700 1rem 'Cairo', sans-serif; cursor: pointer; }
+.ib-dark .ib-select { background: rgba(255,255,255,.06); }
+.ib-dark .ib-select option { background: #0f172a; color: #e2e8f0; }
+.ib-select:focus-visible { outline: 3px solid var(--ib-amber); outline-offset: 1px; }
+.ib-select--sm { min-height: 34px; padding: 2px 8px; font-size: .8rem; border-radius: 10px; }
+.ib-glink { display: flex; flex-direction: column; gap: 6px; animation: ib-rise .3s ease; }
+.ib-btn--hero { min-height: 52px; font-size: 1.02rem; border-radius: 15px; text-decoration: none; background: linear-gradient(135deg, #0ea5e9, #2563eb 55%, #7c3aed); box-shadow: 0 10px 26px rgba(37,99,235,.35); }
+.ib-btn--hero:focus-visible { outline: 3px solid var(--ib-amber); outline-offset: 2px; }
+.ib-glink__site { display: flex; align-items: center; gap: 6px; margin: 0; font-size: .85rem; font-weight: 700; color: var(--ib-muted); }
+.ib-glink__hint { margin: 0; font-size: .85rem; color: var(--ib-muted); }
+.ib-glink__warn { margin: 0; padding: 8px 12px; border-radius: 12px; font-size: .85rem; background: rgba(245,158,11,.12); color: #92400e; border: 1px solid rgba(245,158,11,.35); }
+.ib-dark .ib-glink__warn { color: #fcd34d; }
+@keyframes ib-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.ib-gform { display: flex; flex-direction: column; gap: 12px; }
+.ib-gform__pick { min-height: 50px; border-style: dashed; border-width: 2px; font-size: 1rem; }
+.ib-gform__limit { margin: -4px 0 0; color: var(--ib-muted); font-size: .8rem; }
+.ib-gfile { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: var(--ib-hover); border: 1px solid var(--ib-line); }
+.ib-gfile > div { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ib-gfile b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ib-gfile small { color: var(--ib-muted); }
+.ib-check { display: flex; align-items: flex-start; gap: 10px; font-size: .88rem; line-height: 1.6; cursor: pointer; }
+.ib-check input { width: 20px; height: 20px; margin-top: 2px; accent-color: #2563eb; flex: none; }
+.ib-job--inline { width: 100%; }
+.ib-gform__err { margin: 0; color: #b91c1c; font-weight: 700; font-size: .88rem; }
+.ib-dark .ib-gform__err { color: #fca5a5; }
+
+.ib-myguides { border-top: 1px solid var(--ib-line); padding-top: 12px; }
+.ib-myguides h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 1rem; font-weight: 800; }
+.ib-count { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 99px; background: var(--ib-accent); color: #fff; font-size: .78rem; }
+.ib-myguides ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ib-myguides li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 13px; background: var(--ib-hover); }
+.ib-myguides__name { all: unset; flex: 1 1 140px; min-width: 0; cursor: pointer; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ib-myguides__name:hover { color: var(--ib-accent); }
+.ib-myguides__name:focus-visible { outline: 2px solid var(--ib-amber); outline-offset: 2px; border-radius: 4px; }
+.ib-myguides__acts { display: inline-flex; align-items: center; gap: 2px; color: var(--ib-ink); }
+.ib-myguides__acts .ib-tb { color: var(--ib-ink); }
+.ib-myguides__empty { margin: 0; font-size: .88rem; }
+.ib-gbadge { flex: none; padding: 2px 10px; border-radius: 99px; font-size: .75rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, #f59e0b, #ef4444); }
+
+/* شارة «دليل المعلم» وتصفية المكتبة */
+.ib-card__guide { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; margin: 0; padding: 2px 10px; border-radius: 99px; font-size: .75rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, #f59e0b, #ef4444); }
+.ib-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.ib-chip { min-height: 34px; padding: 4px 14px; border-radius: 99px; border: 1px solid var(--ib-line); background: transparent; color: var(--ib-ink); font: 700 .85rem 'Cairo', sans-serif; cursor: pointer; }
+.ib-chip.is-on { background: var(--ib-accent); border-color: var(--ib-accent); color: #fff; }
+.ib-chip:focus-visible { outline: 2px solid var(--ib-amber); outline-offset: 2px; }
+
+@media (max-width: 760px) {
+  .ib-tabs { display: flex; width: 100%; }
+  .ib-tab { flex: 1; justify-content: center; padding: 8px 10px; font-size: .9rem; }
+  .ib-guides__grid { grid-template-columns: 1fr; }
+  .ib-gpanel { padding: 20px 16px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .ib-glink { animation: none; } }

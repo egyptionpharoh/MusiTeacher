@@ -6,7 +6,7 @@ const entry = path.join(__dirname, 'ui-entry.js');
 const finish = () => {
   const css = fs.readFileSync(path.join(root, 'src/app/globals.css'), 'utf8').split('\n').filter((l) => !/^@import/.test(l)).join('\n');
   fs.writeFileSync(path.join(out, 'globals.css'), css);
-  fs.writeFileSync(path.join(out, 'index.html'), '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الكتاب التفاعلي الذكي</title><link rel="stylesheet" href="/globals.css"><link rel="stylesheet" href="/ui-entry.css"></head><body><main style="padding:1rem"><div id="root"></div></main><script type="module" src="/ui-entry.js"></script></body></html>');
+  fs.writeFileSync(path.join(out, 'index.html'), '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الكتاب التفاعلي الذكي</title><link rel="stylesheet" href="/globals.css"><link rel="stylesheet" href="/ui-entry.css"><style>body{margin:0}.mt-dash-main{padding:1rem}@media (min-width:768px){.mt-dash-main{padding:2rem}}</style></head><body><div id="root"></div><script type="module" src="/ui-entry.js"></script></body></html>');
   console.log('built');
 };
 let esbuild = null; try { esbuild = require('esbuild'); } catch { /* */ }

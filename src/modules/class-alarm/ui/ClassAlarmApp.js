@@ -347,8 +347,8 @@ export default function ClassAlarmApp({ getToken, getUserId, apiBase = '/api/cla
     <div className="ca-root" dir="rtl">
       <div className="ca-shell">
         <div className="ca-topbar">
-          <a href={backHref} className="ca-back"><Icon n="back" size={16} />أدوات المعلم</a>
-          <span className={`ca-status is-${status.k}`} role="status"><i aria-hidden="true" />{status.t}</span>
+          {/* الرجوع إلى «الأدوات» والشعار في شريط التنقل الموحد أعلى الصفحة (src/components/tools-nav) */}
+          <span className={`ca-status is-${status.k}`} role="status" style={{ marginInlineStart: 'auto' }}><i aria-hidden="true" />{status.t}</span>
         </div>
         <header className="ca-head">
           <div>
