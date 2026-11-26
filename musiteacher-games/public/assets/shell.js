@@ -36,6 +36,9 @@
   }
 
   function start(play) {
+    // إعدادات يرسلها المعلم مع الرابط بعد # (مثل مسابقة «رالي النغم») تُمرَّر إلى اللعبة كما هي
+    var h = location.hash || '';
+    if (h.length > 1 && h.length < 12000 && /^#[\w=&-]+$/.test(h)) play = String(play).split('#')[0] + h;
     B.classList.add('playing');
     if (frame.getAttribute('src') !== play) frame.setAttribute('src', play);
     frame.addEventListener('load', hintSoon, { once: true });

@@ -33,4 +33,6 @@ export const GAME_DEVICES = {
   'accordion-scales': 'mobile',
   'xylophone': 'mobile',
   'oud-maqamat': 'mobile',
+  // لوحات خيارات وأزرار لمس كبيرة، لكن عالم ثلاثي الأبعاد كامل: الأفضل حاسوب/سبورة ذكية أو لوحي
+  'nagham-rally-3d': 'tablet',
 };

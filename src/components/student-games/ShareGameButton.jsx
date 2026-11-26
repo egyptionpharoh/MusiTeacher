@@ -41,7 +41,7 @@ export function whatsappText(title, link, code) {
   return `🎵 لعبة «${title}» — MusiTeacher Games\n1) افتح الرابط: ${link}\n2) اكتب رمز اللعبة: ${code}\nثم اضغط «ابدأ اللعب».`;
 }
 
-export default function ShareGameButton({ game, className = 'vlp-btn' }) {
+export default function ShareGameButton({ game, className = 'vlp-btn', linkSuffix = '' }) {
   const [open, setOpen] = useState(false);
   if (!game) return null;
   return (
@@ -49,12 +49,13 @@ export default function ShareGameButton({ game, className = 'vlp-btn' }) {
       <button type="button" className={className} onClick={() => setOpen(true)} title="رابط ورمز للطلاب — بلا حسابات">
         🔗 مشاركة اللعبة مع الطلاب
       </button>
-      {open && <ShareDialog game={game} onClose={() => setOpen(false)} />}
+      {open && <ShareDialog game={game} linkSuffix={linkSuffix} onClose={() => setOpen(false)} />}
     </>
   );
 }
 
-export function ShareDialog({ game, onClose }) {
+// linkSuffix (اختياري): إعدادات تضيفها اللعبة إلى رابط الطلاب بعد # (مثل مسابقة المعلم في «رالي النغم»). فارغ لبقية الألعاب.
+export function ShareDialog({ game, onClose, linkSuffix = '' }) {
   const [st, setSt] = useState('loading');            // loading | ready | error
   const [data, setData] = useState(null);
   const [err, setErr] = useState('');
@@ -77,7 +78,8 @@ export function ShareDialog({ game, onClose }) {
 
   const note = (m) => { setFlash(m); setTimeout(() => setFlash(''), 1800); };
   const share = data && data.share;
-  const link = (share && share.link) || (data && data.link);
+  const baseLink = (share && share.link) || (data && data.link);
+  const link = baseLink && linkSuffix ? `${baseLink.split('#')[0]}#${linkSuffix}` : baseLink;
   const atEnd = share && data && data.subscriptionEnd && Math.abs(new Date(share.expiresAt) - new Date(data.subscriptionEnd)) < 864e5;
 
   return (

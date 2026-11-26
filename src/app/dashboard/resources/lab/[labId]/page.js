@@ -9,12 +9,15 @@ import { auth } from '@/lib/firebase';
 import { getGame, publicGameInfo, GAME_CATEGORIES } from '@/data/virtualGames';
 import '@/components/virtual-lab/virtual-lab.css';
 // زر «مشاركة اللعبة مع الطلاب»: رابط النسخة الطلابية في MusiTeacher Games + رمز الدخول (لا يغيّر شيئًا في اللعبة الأصلية)
-import ShareGameButton from '@/components/student-games/ShareGameButton';
+import ShareGameButton, { ShareDialog } from '@/components/student-games/ShareGameButton';
 import { fullscreenHint, deviceAdvice } from '@/components/virtual-lab/guides';
 import '@/components/virtual-lab/guides.css';
 import { GAME_DEVICES } from '@/data/gameDevices';
 
 const REFRESH_MS = 20 * 60 * 1000;
+// ألعاب تحتاج جسرًا مع الصفحة الأم (مضافة بالاسم فقط): رمز الدخول لخدمات المعلم (مثل أسئلة الدروس)،
+// ومشاركة مسابقة المعلم مع الطلاب عبر نظام المشاركة نفسه. لا يتغير شيء لبقية الألعاب.
+const BRIDGE_GAMES = new Set(['nagham-rally-3d']);
 
 // ---------- العلامة المائية (هوية المستخدم فوق اللعبة) ----------
 // كانت 80 نسخة من البريد تغطي الشاشة كلها. الآن: ثلاث علامات صغيرة باهتة في هوامش المشهد (بعيدًا عن وسطه حيث الآلة والعازف)،
@@ -82,6 +85,30 @@ export default function LabPlayerPage() {
   const [isFull, setIsFull] = useState(false);
   const stageRef = useRef(null);
   const frameRef = useRef(null);
+  const [shareHash, setShareHash] = useState('');
+  const [shareOpen, setShareOpen] = useState(false);
+  const bridged = !!(game && BRIDGE_GAMES.has(game.id));
+  const canShare = !!(isSubscribed || isAdmin);
+  // الجسر: يقبل الرسائل من إطار هذه اللعبة فقط وعلى نفس الأصل
+  useEffect(() => {
+    if (!bridged) return undefined;
+    const onMsg = async (e) => {
+      if (e.origin !== window.location.origin || !e.data || !frameRef.current || e.source !== frameRef.current.contentWindow) return;
+      const t = e.data.type;
+      const okHash = (h) => (typeof h === 'string' && h.length < 12000 && /^[\w=&-]*$/.test(h) ? h : '');
+      if (t === 'mt-token-request') {
+        const cu = auth && auth.currentUser;
+        let token = null; try { token = cu ? await cu.getIdToken() : null; } catch { token = null; }
+        e.source.postMessage({ type: 'mt-token', nonce: e.data.nonce, token }, window.location.origin);
+      } else if (t === 'mt-share-state') setShareHash(okHash(e.data.hash));
+      else if (t === 'mt-share-open') {
+        setShareHash(okHash(e.data.hash));
+        if (canShare) { setShareOpen(true); e.source.postMessage({ type: 'mt-share-ack' }, window.location.origin); }
+      }
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, [bridged, canShare]);
 
   const open = useCallback(async (silent) => {
     if (!game) return;
@@ -175,7 +202,7 @@ export default function LabPlayerPage() {
           </div>
         </div>
         <div className="vlp-btns">
-          {(isSubscribed || isAdmin) && game.status === 'available' && <ShareGameButton game={game} />}
+          {(isSubscribed || isAdmin) && game.status === 'available' && <ShareGameButton game={game} linkSuffix={bridged ? shareHash : ''} />}
           <button type="button" className="vlp-btn" onClick={reload} disabled={state !== 'ready'}>↻ إعادة تحميل</button>
           <button type="button" ref={fsRef} className={`vlp-btn${isFull ? ' on' : ''}`} onClick={fullscreen} disabled={state !== 'ready'}
             aria-pressed={isFull} title={isFull ? 'العودة إلى الحجم العادي (Esc)' : 'تكبير اللعبة إلى ملء الشاشة'}>
@@ -202,6 +229,7 @@ export default function LabPlayerPage() {
             <button type="button" className="vlp-btn primary" onClick={() => open(false)}>إعادة المحاولة</button></div></div>
         )}
       </div>
+      {shareOpen && bridged && <ShareDialog game={game} linkSuffix={shareHash} onClose={() => setShareOpen(false)} />}
       <p className="vlp-hint">{game.description}</p>
       <p className="vlp-ip">{mark}</p>
     </div>
