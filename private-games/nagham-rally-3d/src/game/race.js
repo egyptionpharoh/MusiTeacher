@@ -29,6 +29,7 @@ export async function prepareImages(ch) {
   return { cue, opts };
 }
 
+const C_UP = 2.8, C_HOLD = 3.8, C_DOWN = 2.8;   // الكاميرا السينمائية: زمن الصعود والتحليق والهبوط (ث)
 export class Race {
   constructor(app) {
     this.app = app; this.state = 'idle';
@@ -49,7 +50,9 @@ export class Race {
     this.replaysLeft = 0; this.gapT = 2.2; this.boostT = 0; this.finishZ = null; this.crashT = 0; this.ended = false;
     this.prep = []; this.prepare(0); this.prepare(1);
     if (this.finishObj) { A.scene.remove(this.finishObj); this.finishObj = null; }
-    A.world.reset();
+    // «رحلة عُمان»: المحطة الحالية يحددها main.js قبل بدء الدور (world.syncTurn)
+    const W = A.world; this.travel = null; this.cine = null; W.veil(0); W.reset();
+    this.gateNext = true;
     const veh = A.vehicle; veh.root.position.set(this.x, 0, 0); veh.root.rotation.set(0, Math.PI, 0);
     if (veh.setPlate) veh.setPlate(settings.plate !== false ? this.who : '');
     this.camPos.set(this.x, 6, 14);
@@ -113,7 +116,9 @@ export class Race {
     }
     const ch = P.ch;
     const dist = Math.max(120, this.vC * this.S.answerTime);
-    const J = new Junction(this.app.scene, ch, this.z - dist, { approach: dist + 40 });
+    // أول سؤال في محطة لها بوابة ولاية: الاختيارات تُعلَّق على البوابة العُمانية (تنويع بصري فقط؛ قواعد المفترق كما هي)
+    const W = this.app.world, gate = this.gateNext && W.T && W.T.gate; this.gateNext = false;
+    const J = new Junction(this.app.scene, ch, this.z - dist, { approach: dist + 40, style: gate ? 'gate' : null, name: gate ? W.T.name.replace('مسقط – ', '') : '', night: W.night });
     await J.ready;
     if (tok !== this.tok || this.state !== 'drive') { J.dispose(); return; }
     // المسافة الفعلية بعد التجهيز (السائق تقدّم قليلًا أثناءه)
@@ -167,6 +172,11 @@ export class Race {
     }
     A.ui.question(null, 0, 0, null, null, true);
     this.oldJ.push(J); this.j = null;
+    // «رحلة عُمان»: عند بلوغ نصيب المحطة من الأسئلة تبدأ المحطة التالية على الطريق أمام السائق
+    const W = A.world;
+    const nextStop = W.journey ? W.answered() : -1;
+    if (nextStop >= 0 && this.state === 'drive' && this.idx < this.list.length - 1) { W.beginTravel(nextStop, this.z); this.gateNext = true; }   // المحطة التالية تُبنى على الطريق أمام السائق (بلا ستار ولا توقف)
+    this._planCine();
   }
 
   // ------------------------------------------------------------------ كل إطار
@@ -177,7 +187,7 @@ export class Race {
     if (this.state === 'countdown') {
       this.cd -= dt; const n = Math.ceil(this.cd);
       if (n !== this.lastCd && n >= 0) { this.lastCd = n; A.ui.countdown(n); A.audio.beep(n === 0); }
-      if (this.cd <= 0) { this.state = 'drive'; A.ui.countdown(-1); this.gapT = 1.0; }
+      if (this.cd <= 0) { this.state = 'drive'; A.ui.countdown(-1); this.gapT = 1.0; this._planCine(); }
       veh.update(dt, 0, 0); A.driver.updateHands(0, 0);
       this._camera(dt); A.world.update(this.z, A.camera, dt);
       return;
@@ -241,6 +251,7 @@ export class Race {
   }
   end(reason) {
     const A = this.app; this.state = 'over';
+    this.travel = null; A.world.veil(0); if (this.cine && this.cine.out) this._applyCam(); this.cine = null;
     A.audio.engine(0, A.vehicle.kind, false); A.audio.stopQuestion(); A.fx.stars(false);
     if (A.radio) A.radio.stop(0.4);
     const played = this.results.filter((r) => !r.skipped);
@@ -252,6 +263,7 @@ export class Race {
   /** يوقف الجولة ويزيل البوابات (quiet: دون تغيير الواجهة) */
   stop() {
     this.tok++; this.state = 'idle';
+    this.travel = null; if (this.app.world) this.app.world.veil(0);
     for (const J of this.oldJ) J.dispose(); if (this.j) this.j.dispose(); this.oldJ = []; this.j = null;
     if (this.finishObj) { this.app.scene.remove(this.finishObj); this.finishObj = null; }
     this.app.audio.stopQuestion(); this.app.audio.engine(0, 'car', false); this.app.fx.stars(false);
@@ -263,6 +275,7 @@ export class Race {
     else if (!on && this.state === 'paused') { this.state = this._prev; this.app.audio.ctx && this.app.audio.ctx.resume(); }
   }
 
+  speedOf(level) { return CRUISE[level || 1] || 16; }
   // ------------------------------------------------------------------ الكاميرا
   setCam(mode) { if (!CAMS.includes(mode)) return; this.camMode = mode; if (this.state !== 'idle') this._applyCam(); }
   /** منظور السائق: تُخفى الخوذة (الكاميرا داخلها) ويقترب المستوى القريب، ويصغر الشريط السفلي للواجهة */
@@ -278,7 +291,50 @@ export class Race {
     document.body.classList.toggle('pov', pov);
     if (A.ui && A.ui.camState) A.ui.camState(force || this.camMode);
   }
+  /** الكاميرا السينمائية: عند معلم بارز تنتقل تلقائيًا إلى لقطة درون أو لقطة جانبية قصيرة ثم تعود بسلاسة إلى منظور القيادة.
+   *  لا تبدأ والمفترق قريب (أقل من ١٠٠ م)، وتنسحب فورًا إذا اقترب (٥٨ م) حتى يرى الطالب الطريق والمسارات عند الاختيار. */
+  /** بعد الإجابة (أو عند الانطلاق): إن كان أمام السائق معلم له لقطة سينمائية، يؤجَّل السؤال التالي حتى تنتهي اللقطة — فلا تعمل الكاميرا السينمائية أثناء أي سؤال */
+  _planCine() {
+    if (this.S.cine === false || this.state !== 'drive' || this.finishZ != null || this.idx >= this.list.length - 1) return;
+    const W = this.app.world, o = W.cineAhead(this.z); if (!o) return;
+    const wait = Math.max(0, this.z - o.position.z - W.cineRange(o)) / Math.max(8, this.vC);
+    this.gapT = Math.max(this.gapT, wait + C_UP + C_HOLD + C_DOWN + 0.3);
+  }
+  /** الكاميرا السينمائية (درون): صعود تدريجي ناعم، ثم تحليق هادئ يُظهر المعلم ومحيطه، ثم هبوط تدريجي إلى منظور القيادة.
+   *  تعمل فقط في الاستراحة بين سؤالين (لا سؤال ظاهر)، ولكل معلم لقطة واحدة في المسابقة. */
+  _cine(dt) {
+    const A = this.app, W = A.world; let c = this.cine;
+    const ok = this.state === 'drive' && this.S.cine !== false && this.finishZ == null;
+    if (!c) {
+      if (!ok || this.j) return null;
+      const o = W.cineTarget(this.z); if (!o) return null;
+      W.cineSeen.add(o.userData.ckey);
+      if (this.gapT < 90) this.gapT = Math.max(this.gapT, C_UP + C_HOLD + C_DOWN + 0.3);
+      c = this.cine = { o, type: o.userData.cine, k: 0, t: 0, down: 0, k0: 1, pos: new THREE.Vector3(), look: new THREE.Vector3() };
+    }
+    c.t += dt;
+    const o = c.o, ox = o.position.x, oz = o.position.z, mid = Math.abs(ox) < 3, sg = mid ? 1 : Math.sign(ox), h = o.userData.half || 12, ly = o.userData.lookY || 9;
+    const ss = (u) => { u = clamp(u, 0, 1); return u * u * u * (u * (u * 6 - 15) + 10); };       // تسارع وتباطؤ ناعمان في الطرفين
+    if (!c.down && (c.t > C_UP + C_HOLD || !ok || this.j || this.z - oz < -h * 0.3)) { c.down = c.t; c.k0 = c.k; }
+    if (!c.down) c.k = ss(c.t / C_UP);
+    else { const u = (c.t - c.down) / C_DOWN; c.k = c.k0 * (1 - ss(u)); if (u >= 1) { if (c.out) this._applyCam(); this.cine = null; return null; } }
+    const sway = Math.sin(c.t * 0.42), bob = Math.sin(c.t * 0.6) * 0.7, sea = o.position.y < 0;
+    if (c.type === 'side') { c.pos.set(-sg * 10, 3.2 + bob * 0.3, this.z + 8.5); c.look.set(ox * 0.5, 5, this.z - 5 + (oz - this.z) * 0.7); }
+    else { c.pos.set((mid ? 38 : -sg * (sea ? 6 : 13)) + sway * 2.2, (sea ? 20 : 24) + Math.min(h, 60) * 0.16 + bob, this.z + 30 - c.t * 0.8); c.look.set(ox * 0.6, ly * 0.55, Math.min(this.z - 14, oz + (this.z - oz) * 0.35)); }
+    return c;
+  }
   _camera(dt) {
+    const c = this._cine(dt);
+    if (!c) return this._camBase(dt);
+    const cam = this.app.camera, out = c.k > 0.1;
+    if (this.camMode === 'pov' && out !== !!c.out) { c.out = out; this._applyCam(out ? 'chase' : undefined); }   // خارج المركبة تظهر الخوذة وما يُخفى في منظور السائق
+    this._camBase(dt);
+    const e = c.k;
+    cam.position.lerp(c.pos, e); cam.up.lerp(new THREE.Vector3(0, 1, 0), e).normalize();
+    cam.lookAt(this.camLook.clone().lerp(c.look, e));
+    cam.fov += (56 - cam.fov) * e; cam.updateProjectionMatrix();
+  }
+  _camBase(dt) {
     const A = this.app, cam = A.camera, veh = A.vehicle, C = veh.camera;
     if (this.camMode === 'pov' && this.state !== 'crash') return this._pov(dt);
     const vp = veh.root.position;

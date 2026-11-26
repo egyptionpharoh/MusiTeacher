@@ -31,7 +31,7 @@ export class RoadsideRadio {
       // أغانٍ وأناشيد يضيفها مالك المنصة (اختياري)
       try {
         const r = await fetch('./assets/audio/national/manifest.json', { cache: 'no-cache' });
-        if (r.ok) { const m = await r.json(); for (const s of (m.clips || [])) if (s && s.file) this.clips.push({ title: s.title || s.file, url: `./assets/audio/national/${s.file}`, start: +s.start || 0 }); }
+        if (r.ok) { const m = await r.json(); for (const s of (m.clips || [])) if (s && s.file) this.clips.push({ title: s.title || s.file, url: `./assets/audio/national/${s.file}`, start: +s.start || 0, station: s.station || null }); }
       } catch (e) { /* لا ملف أغانٍ: نكتفي بالإيقاعات */ }
       // ترتيب متناوب: إيقاع ثم أغنية (إن وُجدت)…
       const songs = this.clips.filter((c) => c.url), beats = this.clips.filter((c) => !c.url);
@@ -107,7 +107,10 @@ export class RoadsideRadio {
   }
   async start(spot) {
     const A = this.app.audio, ctx = A.ctx;
-    const clip = this.clips[this.i++ % this.clips.length];
+    // مقطع خاص بالمحطة الحالية (إن سجّله المعلم في manifest.json بحقل station) له الأولوية؛ وإلا فالمقاطع العامة بالتناوب
+    const env = this.app.world.env, mine = this.clips.filter((c) => c.station === env), general = this.clips.filter((c) => !c.station);
+    const pool = mine.length ? mine : (general.length ? general : this.clips);
+    const clip = pool[this.i++ % pool.length];
     let buf = clip.buffer;
     if (!buf && clip.url) { buf = await A.load(clip.url); if (!buf) return; }
     if (this.cur || this.blocked()) return;

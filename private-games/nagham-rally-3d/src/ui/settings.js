@@ -9,7 +9,8 @@ import * as C from '../data/contest.js';
 import { DOMAINS, DOMAIN, LEVELS, INSTRUMENTS } from '../data/content.js';
 import { FIG } from '../data/figures.js';
 import { noteName } from '../notation/staff.js';
-import { THEMES } from '../world/world.js';
+import { TOD_NAMES } from '../world/world.js';
+import { STATIONS, ORDER, routeBetween } from '../world/stations.js';
 
 const TABS = [['contest', '📚 المسابقة'], ['questions', '❓ الأسئلة'], ['names', '👥 المتسابقون'], ['play', '🎮 طريقة اللعب والمظهر']];
 const SPEED = ['هادئة', 'متوسطة', 'سريعة', 'سريعة جدًا'];
@@ -91,7 +92,7 @@ export function openSettings(app, { tab = 'contest' } = {}) {
     pane.append(el('div', { class: 'field' }, el('label', {}, 'اسم المسابقة'), el('div', { class: 'row' }, title, auto), el('span', { class: 'hint' }, 'يُكتب تلقائيًا «مسابقة درس …» عند اختيار الدرس، ويمكنك تعديله')));
     pane.append(info); paintInfo();
   }
-  const pickKeep = (c) => (c ? { vehicle: c.settings.vehicle, driver: c.settings.driver, theme: c.settings.theme, flag: c.settings.flag } : {});
+  const pickKeep = (c) => (c ? { vehicle: c.settings.vehicle, driver: c.settings.driver, theme: c.settings.theme, from: c.settings.from, to: c.settings.to, tod: c.settings.tod, flag: c.settings.flag } : {});
 
   // ================================================================ تبويب الأسئلة
   function tQuestions() {
@@ -262,7 +263,18 @@ export function openSettings(app, { tab = 'contest' } = {}) {
       f('الشخصية', seg([{ id: 'female', html: '👩🏻 السائقة' }, { id: 'male', html: '👨🏽 السائق' }], S.driver, set('driver'))),
       f('الكاميرا الافتراضية', seg([{ id: 'chase', html: '🎥 خلف المركبة' }, { id: 'pov', html: '👁️ منظور السائق' }], S.camera === 'pov' ? 'pov' : 'chase', set('camera')), 'منظور السائق: لوحة القيادة والمقود (أو المقود واليدين في الموتوسيكل) من عيني السائق'),
       el('div', { class: 'field' }, toggle('السماح للطالب بتبديل الكاميرا أثناء اللعب', S.allowCamera !== false, set('allowCamera'))),
-      f('البيئة', seg(Object.entries(THEMES).map(([id, T]) => ({ id, html: T.name })), S.theme, set('theme'))),
+      // ——— الرحلة الجغرافية: من محطة إلى محطة عبر سلطنة عُمان ———
+      (() => {
+        if (!S.from) S.from = 'salalah'; if (!S.to) S.to = 'diba';
+        const hint = el('span', { class: 'hint' });
+        const show = () => { const ids = routeBetween(S.from, S.to).ids; hint.textContent = `مسار الرحلة (${AR(ids.length)} ${ids.length > 10 ? 'محطة' : 'محطات'}): ` + ids.map((id) => STATIONS[id].name.replace('مسقط – ', '')).join(' ← ') + ' — تتغير المحطة على الطريق أمام السائق دون توقف، وكل محطة تحتاج نحو سؤالين؛ فإن قلّت الأسئلة مرّت الرحلة بأبرز المحطات فقط (مثل صور ومطرح وبرج الصحوة) مع محطتي الانطلاق والوصول.'; };
+        const sel = (k) => { const e = el('select', { style: 'width:auto;min-width:150px' }); ORDER.forEach((id) => e.append(el('option', { value: id, selected: S[k] === id }, STATIONS[id].name))); e.onchange = () => { S[k] = e.value; mark(); app.world.ensureRoute(S.from, S.to, S.tod); show(); }; return e; };
+        show();
+        return el('div', { class: 'field' }, el('label', {}, '🧭 رحلة عُمان'), el('div', { style: 'display:flex;gap:10px;flex-wrap:wrap;align-items:center' }, el('span', {}, 'الانطلاق من'), sel('from'), el('span', {}, 'والوصول إلى'), sel('to')), hint);
+      })(),
+      f('توقيت الرحلة', seg(Object.entries(TOD_NAMES).map(([id, html]) => ({ id, html })), S.tod || 'day', (v) => { S.tod = v; mark(); app.world.ensureRoute(S.from, S.to, S.tod); })),
+      el('div', { class: 'field' }, toggle('لقطات سينمائية تلقائية عند المعالم (درون ولقطة جانبية)', S.cine !== false, set('cine')),
+        el('span', { class: 'hint' }, 'لقطة قصيرة تُظهر المعلم ثم تعود الكاميرا إلى منظور القيادة. لا تعمل والمفترق قريب، ويمكن تعطيلها للالتزام بمنظور واحد.')),
       el('div', { class: 'field' }, toggle('علم سلطنة عُمان على جانبي الطريق', S.flag !== false, set('flag'))),
       el('div', { class: 'field' }, toggle('اسم المتسابق على لوحة خلف المركبة', S.plate !== false, set('plate'))),
       el('div', { class: 'field' }, toggle('مقاطع وطنية قصيرة عند المرور بجوار المحلات (مذياع الطريق)', S.radio !== false, set('radio')),

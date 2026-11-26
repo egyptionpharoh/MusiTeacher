@@ -379,13 +379,14 @@ export function ornateLampGeo() {
   return parts;
 }
 /** تلال صخرية قريبة (شريط بطول L وعمق D): ارتفاعات متعرجة بخطوط طبقات، تتضاءل عند الطرفين ليلتحم الشريط بجاره */
-export function ridgeGeometry(L, D, hMin, hMax, seed) {
+export function ridgeGeometry(L, D, hMin, hMax, seed, pal) {
   const nz = 40, nx = 12;
   const g = new THREE.PlaneGeometry(D, L, nx, nz); g.rotateX(-Math.PI / 2);
   const p = g.attributes.position, col = [];
   const rnd = (a) => { const v = Math.sin(a * 12.9898 + seed * 78.233) * 43758.5453; return v - Math.floor(v); };
   const peaks = Array.from({ length: 6 }, (_, i) => ({ z: (rnd(i) - 0.5) * L * 0.9, x: (rnd(i + 9) - 0.2) * D * 0.6, h: hMin + rnd(i + 3) * (hMax - hMin), r: L * (0.12 + rnd(i + 5) * 0.12) }));
-  const c = new THREE.Color(), lo = new THREE.Color('#6a5242'), hi = new THREE.Color('#a48a70'), dark = new THREE.Color('#4b3a2f');
+  const P3 = pal || ['#6a5242', '#a48a70', '#4b3a2f'];
+  const c = new THREE.Color(), lo = new THREE.Color(P3[0]), hi = new THREE.Color(P3[1]), dark = new THREE.Color(P3[2]);
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), z = p.getZ(i);
     const edgeX = Math.min(1, (D / 2 - x) / (D * 0.25)) * Math.min(1, (x + D / 2) / (D * 0.12));

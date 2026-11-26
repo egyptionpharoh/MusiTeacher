@@ -31,9 +31,12 @@ export class Junction {
     // ---- جسر اللافتات ----
     const steel = new THREE.MeshStandardMaterial({ color: 0x3a4250, roughness: 0.45, metalness: 0.7 });
     const H = 6.6, ZG = 8;                                        // الجسر قبل البوابة بقليل (يُقرأ من بعيد)
-    for (const sg of [-1, 1]) { const p = new THREE.Mesh(new THREE.BoxGeometry(0.5, H + 1.2, 0.5), steel); p.position.set(sg * (ROAD_W / 2 + 1.1), (H + 1.2) / 2, ZG); g.add(p); }
-    const beam = new THREE.Mesh(new THREE.BoxGeometry(ROAD_W + 2.8, 0.45, 0.45), steel); beam.position.set(0, H + 0.9, ZG); g.add(beam);
-    const beam2 = beam.clone(); beam2.position.y = H - 1.75; g.add(beam2);
+    if (opts.style === 'gate') this._omaniGate(g, w, ZG, opts);       // تنويع: بوابة الولاية العُمانية تحمل لافتات الاختيارات بدل الجسر المعدني
+    else {
+      for (const sg of [-1, 1]) { const p = new THREE.Mesh(new THREE.BoxGeometry(0.5, H + 1.2, 0.5), steel); p.position.set(sg * (ROAD_W / 2 + 1.1), (H + 1.2) / 2, ZG); g.add(p); }
+      const beam = new THREE.Mesh(new THREE.BoxGeometry(ROAD_W + 2.8, 0.45, 0.45), steel); beam.position.set(0, H + 0.9, ZG); g.add(beam);
+      const beam2 = beam.clone(); beam2.position.y = H - 1.75; g.add(beam2);
+    }
     const sW = Math.min(3.5, w * 0.94), sH = sW * 0.625;
     for (let i = 0; i < n; i++) {
       const tex = await signTexture(this.ch.options[i].sign, LANE_COLORS[i], LANE_LETTERS[i]);
@@ -102,6 +105,37 @@ export class Junction {
     g.traverse((o) => { if (o.isMesh) { o.receiveShadow = true; } });
     this.scene.add(g);
     return this;
+  }
+
+  /** بوابة ولاية عُمانية (كريمية اللون، أقواس مدببة بعدد المسارات، شرفات، برجان دائريان) تُعلَّق عليها لافتات الاختيارات.
+   *  مستلهمة من صورة بوابة الولاية التي زوّدنا بها المعلم. كل قوس فوق مساره تمامًا، وأعمدتها فوق الحواجز الفاصلة. */
+  _omaniGate(g, w, ZG, opts) {
+    const cream = new THREE.MeshStandardMaterial({ color: 0xf0e6cc, roughness: 0.9 }), band = new THREE.MeshStandardMaterial({ color: 0xd8c8a4, roughness: 0.9 });
+    if (opts.night) for (const m of [cream, band]) { m.emissive.copy(m.color); m.emissiveIntensity = 0.24; }
+    const X = ROAD_W / 2 + 1.0, TOP = 9.2, ow = (w * 0.84) / 2, sp = 3.3, ap = 4.85;
+    const sh = new THREE.Shape(); sh.moveTo(-X, 0); sh.lineTo(X, 0); sh.lineTo(X, TOP); sh.lineTo(-X, TOP); sh.closePath();
+    for (const cx of this.xs) { const p = new THREE.Path(); p.moveTo(cx - ow, 0); p.lineTo(cx - ow, sp); p.quadraticCurveTo(cx - ow + 0.1, ap - 0.5, cx, ap); p.quadraticCurveTo(cx + ow - 0.1, ap - 0.5, cx + ow, sp); p.lineTo(cx + ow, 0); p.closePath(); sh.holes.push(p); }
+    const wall = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 1.2, bevelEnabled: false, curveSegments: 8 }), cream); wall.position.z = ZG - 1.1; g.add(wall);
+    // الشرفات (فوق الجدار وحول قمتي البرجين) في رسمة واحدة
+    const mer = new THREE.InstancedMesh(new THREE.BoxGeometry(0.55, 0.62, 0.45), cream, 90), t = new THREE.Object3D(); let q = 0;
+    const put = (x, y, z, ry = 0) => { t.position.set(x, y, z); t.rotation.set(0, ry, 0); t.updateMatrix(); mer.setMatrixAt(q++, t.matrix); };
+    for (let x = -X + 0.35; x <= X - 0.3; x += 1.08) for (const dz of [-0.85, -0.15]) put(x, TOP + 0.31, ZG + dz);
+    for (const sg of [-1, 1]) {
+      const tx = sg * (X + 1.75), tz = ZG - 0.5, TH = 11.2;
+      const tw = new THREE.Mesh(new THREE.CylinderGeometry(1.85, 2.15, TH, 18), cream); tw.position.set(tx, TH / 2, tz); g.add(tw);
+      const ring = new THREE.Mesh(new THREE.CylinderGeometry(2.05, 2.05, 0.4, 18), band); ring.position.set(tx, 7.4, tz); g.add(ring);
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(2.25, 2.3, 1.1, 18), band); base.position.set(tx, 0.55, tz); g.add(base);
+      for (let k = 0; k < 10; k++) { const a = (k / 10) * Math.PI * 2; put(tx + Math.cos(a) * 1.62, TH + 0.31, tz + Math.sin(a) * 1.62, -a); }
+      const win = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 1.2), new THREE.MeshBasicMaterial({ color: opts.night ? 0xffd27a : 0x3a2c22 })); win.position.set(tx, 8.9, tz + 1.93); g.add(win);
+    }
+    mer.count = q; g.add(mer);
+    const foot = new THREE.Mesh(new THREE.BoxGeometry(X * 2, 0.9, 0.12), band); foot.position.set(0, TOP - 0.45, ZG + 0.12); g.add(foot);
+    if (opts.name) {            // اسم المحطة أعلى البوابة
+      const c = document.createElement('canvas'); c.width = 512; c.height = 80; const x = c.getContext('2d');
+      x.fillStyle = '#d8c8a4'; x.fillRect(0, 0, 512, 80); x.fillStyle = '#5a3d22'; x.font = '800 54px Cairo, Tahoma, Arial'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(opts.name, 256, 44);
+      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+      const plate = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 0.86), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false })); plate.position.set(0, TOP - 0.45, ZG + 0.2); g.add(plate);
+    }
   }
 
   /** يكشف النتيجة: chosen = رقم المسار الذي دخله السائق */

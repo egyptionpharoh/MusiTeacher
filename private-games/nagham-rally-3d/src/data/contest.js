@@ -215,7 +215,7 @@ export function runtimeOf(q) {
 
 // ---------------------------------------------------------------- المسابقة والتخزين
 export const DEFAULT_SETTINGS = {
-  mode: 'turns', perTurn: 5, answerTime: 14, replays: 2, theme: 'oman', flag: true, plate: true,
+  mode: 'turns', perTurn: 5, answerTime: 14, replays: 2, theme: 'journey', from: 'salalah', to: 'diba', tod: 'day', cine: true, flag: true, plate: true,
   vehicle: 'car', lockVehicle: false, driver: 'female', camera: 'chase', allowCamera: true, level: 1,
   radio: true, radioVol: 0.7,
 };
@@ -315,7 +315,7 @@ export async function packForStudents(c) {
     if (localMedia(q)) { dropped++; droppedList.push({ prompt: q.prompt, why: q.kind === 'audio' ? 'تسجيل صوتي من جهازك' : 'صورة من جهازك' }); continue; }
     const x = { ...q }; delete x.preview; delete x.bankRef; qs.push(x);
   }
-  const s = c.settings, pack = { v: 1, t: c.title, l: c.lessonTitle || '', q: qs, s: { mode: s.mode, perTurn: s.perTurn, answerTime: s.answerTime, replays: s.replays, theme: s.theme, flag: s.flag, plate: s.plate, vehicle: s.vehicle, lockVehicle: s.lockVehicle, driver: s.driver, camera: s.camera, allowCamera: s.allowCamera, radio: s.radio, radioVol: s.radioVol } };
+  const s = c.settings, pack = { v: 1, t: c.title, l: c.lessonTitle || '', q: qs, s: { mode: s.mode, perTurn: s.perTurn, answerTime: s.answerTime, replays: s.replays, theme: s.theme, from: s.from, to: s.to, tod: s.tod, cine: s.cine, flag: s.flag, plate: s.plate, vehicle: s.vehicle, lockVehicle: s.lockVehicle, driver: s.driver, camera: s.camera, allowCamera: s.allowCamera, radio: s.radio, radioVol: s.radioVol } };
   return { hash: `rally=${await deflate(JSON.stringify(pack))}`, dropped, droppedList, count: qs.length };
 }
 export async function unpackFromHash(hash) {

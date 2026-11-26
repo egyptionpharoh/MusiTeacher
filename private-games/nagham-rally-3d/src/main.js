@@ -54,7 +54,7 @@ if (!contest) { contest = CT.activeContest(); if (!contest) contest = CT.demoCon
 app.contest = contest; app.CT = CT;
 app.radio = new RoadsideRadio(app);
 const S = contest.settings;
-app.world.setTheme(S.theme); app.world.setFlag(S.flag !== false);
+app.world.ensureRoute(S.from, S.to, S.tod); app.world.setFlag(S.flag !== false);
 
 // ------------------------------------------------------------------ المركبات
 app.vehicles.car = buildCar({ color: '#e63946', accent: '#ffffff', number: '7' });
@@ -126,7 +126,7 @@ app.playableCount = (c) => valid(c).length;
 /** يطبّق مسابقة على اللعبة (البيئة، العلم، المركبة، الشخصية) ويحدّث شاشة البداية */
 app.useContest = (c) => {
   app.contest = c; const s = c.settings;
-  if (app.world.theme !== s.theme) app.world.setTheme(s.theme);
+  app.world.ensureRoute(s.from, s.to, s.tod);
   app.world.setFlag(s.flag !== false);
   if (app.vehicle && app.vehicle.kind !== s.vehicle) app.setVehicle(s.vehicle);
   if (app.driver && app.driver.gender !== s.driver) app.setDriver(s.driver);
@@ -145,10 +145,12 @@ app.startContest = () => {
   const per = names.length ? Math.max(1, s.perTurn | 0) : Math.min(20, pool.length);
   // لكل متسابق أسئلة مختلفة بالترتيب الذي وضعه المعلم (وتتكرر من البداية إن لم تكفِ)
   const sets = players.map((_, k) => Array.from({ length: per }, (_, j) => pool[(k * per + j) % pool.length]));
-  session = { c, players, sets, turn: 0, results: [] };
+  session = { c, players, sets, per, turn: 0, results: [] };
   app.audio.ensure(); app.audio.preloadSfx();
   app.radio.setOptions(s.radio, s.radioVol); app.radio.load();
   garage.on = false; app.ui.showStart(false);
+  // «رحلة عُمان»: من محطة الانطلاق إلى محطة الوصول، موزّعة على كل أسئلة المسابقة
+  app.world.ensureRoute(s.from, s.to, s.tod); app.world.planJourney(players.length * per, Math.max(120, app.race.speedOf(s.level) * (s.answerTime || 14)) + 75);
   app.race.camMode = s.camera === 'pov' ? 'pov' : 'chase';
   playTurn();
 };
@@ -156,6 +158,7 @@ function playTurn() {
   const s = session.c.settings, k = session.turn;
   const set = session.sets[k];
   if (set[0] && set[0].audio) app.audio.preload(set[0].audio);
+  app.world.syncTurn(k * session.per);            // كل متسابق يكمل الرحلة من حيث يبلغها ترتيب أسئلته
   app.race.start({ ...s, level: s.level || 1 }, set, session.players[k] || '');
 }
 app.onTurnEnd = (res) => {
