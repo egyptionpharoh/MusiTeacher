@@ -1,0 +1,630 @@
+{
+ "lessonId": "g6s1-6e7502",
+ "grade": 6,
+ "sem": 1,
+ "title": "قراءة إيقاعية وصولفيج غنائي",
+ "source": "دليل المعلم — الصف السادس، الوحدة الثانية، الدرس الثاني (ص ٤٥–٥٢)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر أسماء النغمات والعلامات والأشكال الإيقاعية في المقطوعة الموسيقية."
+  },
+  {
+   "id": "o2",
+   "text": "يقرأ المقطوعة الموسيقية إيقاعيًّا وصولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يغنّي المقطوعة الموسيقية صولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "ينمّي ثقته بنفسه من خلال القراءة الإيقاعية والصولفائية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما ميزان المقطوعة الموسيقية في درس (قراءة إيقاعية وصولفيج غنائي) للصف السادس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 2,
+   "explain": "المقطوعة في الميزان الرباعي 4/4، وعدد موازيرها ٨.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم عدد موازير المقطوعة الموسيقية في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٨"
+    },
+    {
+     "t": "text",
+     "text": "١٢"
+    }
+   ],
+   "answer": 1,
+   "explain": "عدد موازير المقطوعة ٨ (عبارتان).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي شكل إيقاعي جديد تبدأ به معظم موازير المقطوعة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "طفافي"
+    },
+    {
+     "t": "text",
+     "text": "طفاتي"
+    },
+    {
+     "t": "text",
+     "text": "تاتيفي"
+    }
+   ],
+   "answer": 0,
+   "explain": "تبدأ الموازير بالشكل (طفافي): دوبل كروش + كروش + دوبل كروش.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الأشكال الإيقاعية في المقطوعة",
+    "level": "discriminate",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي المسارات يطابق إيقاع المازورة الأولى من المقطوعة؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses",
+      "q",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse",
+      "q",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses",
+      "ee",
+      "q",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الأولى: طفافي، نوار، تاتي، نوار.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "القراءة الإيقاعية للمقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي المسارات يطابق إيقاع المازورة الثانية من المقطوعة؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses",
+      "ee",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses",
+      "q",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "ee",
+      "ee",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الثانية: طفافي، تاتي، تاتي، نوار.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "القراءة الإيقاعية للمقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "صول – صول – صول – صول – مي – دو – صول"
+    },
+    {
+     "t": "text",
+     "text": "صول – صول – صول – صول – فا – ري – صول"
+    },
+    {
+     "t": "text",
+     "text": "لا – لا – لا – لا – مي – دو – صول"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الأولى: صول صول صول صول، مي دو، صول.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "فا – فا – فا – فا – مي – ري – فا"
+    },
+    {
+     "t": "text",
+     "text": "مي – مي – مي – مي – ري – دو – مي"
+    },
+    {
+     "t": "text",
+     "text": "فا – فا – فا – فا – ري – مي – فا"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الثالثة: فا فا فا فا، مي ري، فا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "A",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "B",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 5,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "صول – لا – سي – دو"
+    },
+    {
+     "t": "text",
+     "text": "فا – صول – لا – سي"
+    },
+    {
+     "t": "text",
+     "text": "صول – سي – لا – دو"
+    }
+   ],
+   "answer": 0,
+   "explain": "نهاية المقطوعة: صول، لا، سي، دو (الحادة).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    }
+   ],
+   "answer": 2,
+   "target": {
+    "step": "C",
+    "oct": 5,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (دو) الحادة في المسافة الثالثة — آخر نغمة في المقطوعة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "D",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (ري) أسفل الخط الأول.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي المسارات يطابق إيقاع مازورة النشاط الثاني (دو – مي مي مي – صول صول – دو)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ses",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "sse",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ess",
+      "ee",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "نوار، طفافي، تاتي، نوار.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "الصولفيج الإيقاعي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses",
+      "q",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "q",
+      "ses",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses",
+      "ee",
+      "ee",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا إيقاع المازورة الأولى: طفافي، نوار، تاتي، نوار.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الإيقاعية للمقطوعة",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "نغمات المقطوعة قُرئت من مسح الدليل بدقة 250؛ تُراجع المازورتان ١ و٣ و٨ (وهي المستخدمة في الأسئلة).",
+  "مازورات القرص الدوار (النشاط الأول) غير مقروءة بوضوح في المسح فلم يُبنَ عليها سؤال."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

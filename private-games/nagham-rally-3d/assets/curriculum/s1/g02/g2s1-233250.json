@@ -1,0 +1,376 @@
+{
+ "lessonId": "g2s1-233250",
+ "grade": 2,
+ "sem": 1,
+ "title": "النشيد الوطني",
+ "source": "دليل المعلم — الصف الثاني، الوحدة الأولى، الدرس الأول (ص ١٧–٢٢)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف المعنى العام للنشيد الوطني."
+  },
+  {
+   "id": "o2",
+   "text": "يتعرَّف كلمات الولاء (الله – الوطن – السلطان)."
+  },
+  {
+   "id": "o3",
+   "text": "يُنشد النشيد الوطني بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يعتزّ بانتمائه إلى وطنه من خلال إنشاد النشيد."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "أي هذه الأعلام هو علم سلطنة عُمان؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l1-uae.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l1-oman.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l1-bahrain.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "علم سلطنة عُمان: الأحمر والأبيض والأخضر، والشعار في أعلاه بجوار السارية.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التعرّف على علم سلطنة عُمان",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-oman.jpg",
+     "l1-uae.jpg",
+     "l1-bahrain.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "حدّد علم سلطنة عُمان",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l1-kuwait.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l1-qatar.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l1-oman.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "هذا علم سلطنة عُمان.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التعرّف على علم سلطنة عُمان",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-oman.jpg",
+     "l1-kuwait.jpg",
+     "l1-qatar.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما كلمات الولاء التي يدلّ عليها النشيد الوطني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الله – الوطن – السلطان"
+    },
+    {
+     "t": "text",
+     "text": "الأرض – البحر – السماء"
+    },
+    {
+     "t": "text",
+     "text": "العلم – العمل – الأمل"
+    }
+   ],
+   "answer": 0,
+   "explain": "كلمات الولاء: الله – الوطن – السلطان.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "outcome",
+     "steps"
+    ],
+    "skill": "كلمات الولاء",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي عبارة من النشيد الوطني تدلّ على الولاء للسلطان؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فارتقي هامَ السَّماء"
+    },
+    {
+     "t": "text",
+     "text": "يا ربَّنا احفظ لنا جلالة السلطان"
+    },
+    {
+     "t": "text",
+     "text": "واسعدي وانعمي بالرَّخاء"
+    }
+   ],
+   "answer": 1,
+   "explain": "«يا ربَّنا احفظ لنا جلالة السلطان» دعاءٌ يدلّ على الولاء للسلطان.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "العبارات الدالة على الولاء",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي عبارة من النشيد الوطني تدلّ على الولاء للوطن؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "وليدم مؤيَّدًا عاهلًا ممجَّدا"
+    },
+    {
+     "t": "text",
+     "text": "يا ربَّنا احفظ لنا جلالة السلطان"
+    },
+    {
+     "t": "text",
+     "text": "يا عُمانُ نحنُ من عهد النبي أوفياءُ من كرام العرب"
+    }
+   ],
+   "answer": 2,
+   "explain": "نخاطب عُمان ونقول إننا أوفياء لها منذ عهد النبي ﷺ؛ وهذا ولاء للوطن.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "العبارات الدالة على الولاء",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد الوطني: «يا عُمانُ نحنُ من عهدِ النبي …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "أوفياءُ من كرامِ العرب"
+    },
+    {
+     "t": "text",
+     "text": "بالعزِّ والأمان"
+    },
+    {
+     "t": "text",
+     "text": "واسعدي وانعمي بالرَّخاء"
+    }
+   ],
+   "answer": 0,
+   "explain": "«يا عُمانُ نحنُ من عهدِ النبي أوفياءُ من كرامِ العرب».",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «مؤيَّدًا» في النشيد الوطني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "معظَّمًا"
+    },
+    {
+     "t": "text",
+     "text": "منصورًا"
+    },
+    {
+     "t": "text",
+     "text": "نورًا وهداية"
+    }
+   ],
+   "answer": 1,
+   "explain": "مؤيَّدًا: منصورًا.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «عاهلًا» في النشيد الوطني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ملكًا أو سلطانًا"
+    },
+    {
+     "t": "text",
+     "text": "سعة العيش"
+    },
+    {
+     "t": "text",
+     "text": "أعالي السماء"
+    }
+   ],
+   "answer": 0,
+   "explain": "عاهلًا: ملكًا أو سلطانًا.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «ضياء» في النشيد الوطني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فارتفعي واصعدي"
+    },
+    {
+     "t": "text",
+     "text": "منصورًا"
+    },
+    {
+     "t": "text",
+     "text": "نورًا وهداية"
+    }
+   ],
+   "answer": 2,
+   "explain": "ضياء: نورًا وهداية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «فارتقي» في النشيد الوطني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فارتفعي واصعدي"
+    },
+    {
+     "t": "text",
+     "text": "وليبقَ"
+    },
+    {
+     "t": "text",
+     "text": "معظَّمًا"
+    }
+   ],
+   "answer": 0,
+   "explain": "فارتقي: فارتفعي واصعدي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  }
+ ],
+ "review": [
+  "صور الأعلام (النشاط الثاني) مقتطعة من الدليل نفسه.",
+  "نشاط «ضع دائرة حول معالم سلطنة عُمان»: الصور صغيرة جدًّا في المسح فلم يُستخدم."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

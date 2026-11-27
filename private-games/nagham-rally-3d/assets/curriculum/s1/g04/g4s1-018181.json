@@ -1,0 +1,509 @@
+{
+ "lessonId": "g4s1-018181",
+ "grade": 4,
+ "sem": 1,
+ "title": "عزف مقطوعة موسيقية على آلة الأورج",
+ "source": "دليل المعلم — الصف الرابع، الوحدة الثانية، الدرس الثالث (ص ٤٢–٤٦)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف طريقة العزف الصحيحة على آلة الأورج."
+  },
+  {
+   "id": "o2",
+   "text": "يقرأ المقطوعة الموسيقية إيقاعيًّا وصولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يعزف أول خمس نغمات من سلم (دو الكبير) مراعيًا أرقام الأصابع."
+  },
+  {
+   "id": "o4",
+   "text": "يعزف المقطوعة الموسيقية على آلة الأورج."
+  },
+  {
+   "id": "o5",
+   "text": "ينمّي ثقته بنفسه من خلال العزف الفردي."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما رقم الإصبع الذي يعزف نغمة (دو) عند العزف على الأورج باليد اليمنى؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١ (الإبهام)"
+    },
+    {
+     "t": "text",
+     "text": "٣ (الوسطى)"
+    },
+    {
+     "t": "text",
+     "text": "٥ (الخنصر)"
+    }
+   ],
+   "answer": 0,
+   "explain": "ترقيم الأصابع للخمس نغمات الأولى: دو=١، ري=٢، مي=٣، فا=٤، صول=٥.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "content",
+     "assessment"
+    ],
+    "skill": "ترقيم الأصابع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما رقم الإصبع الذي يعزف نغمة (مي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    }
+   ],
+   "answer": 1,
+   "explain": "مي = الإصبع ٣ (الوسطى).",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "content",
+     "assessment"
+    ],
+    "skill": "ترقيم الأصابع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما رقم الإصبع الذي يعزف نغمة (صول)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    },
+    {
+     "t": "text",
+     "text": "١"
+    }
+   ],
+   "answer": 1,
+   "explain": "صول = الإصبع ٥ (الخنصر).",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "content",
+     "assessment"
+    ],
+    "skill": "ترقيم الأصابع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "الإصبع رقم (٤) يعزف نغمة …",
+   "options": [
+    {
+     "t": "text",
+     "text": "فا"
+    },
+    {
+     "t": "text",
+     "text": "ري"
+    },
+    {
+     "t": "text",
+     "text": "صول"
+    }
+   ],
+   "answer": 0,
+   "explain": "فا = الإصبع ٤.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "content",
+     "assessment"
+    ],
+    "skill": "ترقيم الأصابع",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "عند الجلوس للعزف على الأورج نجلس في منتصف المقعد مقابل نغمة …",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو الوسطى"
+    },
+    {
+     "t": "text",
+     "text": "سي"
+    },
+    {
+     "t": "text",
+     "text": "صول"
+    }
+   ],
+   "answer": 0,
+   "explain": "الجلوس في منتصف المقعد الأمامي مقابل (دو) الوسطى مع استقامة الجزء العلوي من الجسم.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "طريقة العزف الصحيحة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف تكون الأصابع على لوحة المفاتيح أثناء العزف؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "متكوّرة وعمودية على المفاتيح"
+    },
+    {
+     "t": "text",
+     "text": "مفرودة ومسطّحة"
+    },
+    {
+     "t": "text",
+     "text": "مضمومة ومرتفعة عن المفاتيح"
+    }
+   ],
+   "answer": 0,
+   "explain": "تكون الأصابع متكوّرة وعمودية على لوحة المفاتيح، والإبهام منفرد إلى الأمام.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "طريقة العزف الصحيحة",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "أين نضع الكوع أثناء العزف على الأورج؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بعيدًا قليلًا عن الجسم حتى لا يقيّد حركة الذراع"
+    },
+    {
+     "t": "text",
+     "text": "ملتصقًا بالجسم"
+    },
+    {
+     "t": "text",
+     "text": "مرتكزًا على لوحة المفاتيح"
+    }
+   ],
+   "answer": 0,
+   "explain": "يُراعى وضع الكوع بعيدًا عن الجسم حتى لا يقيّد حركة الذراع والكتف.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "طريقة العزف الصحيحة",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأصابع الخمسة ترتكز على …",
+   "options": [
+    {
+     "t": "text",
+     "text": "خمسة مفاتيح متتالية"
+    },
+    {
+     "t": "text",
+     "text": "مفاتيح سوداء فقط"
+    },
+    {
+     "t": "text",
+     "text": "مفتاحين فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأصابع الخمسة مرتكزة على خمسة مفاتيح متتالية.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "طريقة العزف الصحيحة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "C",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (دو).",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "نغمات الخمس الأولى من سلم دو الكبير",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "F",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (فا) في المسافة الأولى.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "نغمات الخمس الأولى من سلم دو الكبير",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 2,
+   "target": {
+    "step": "G",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (صول) على الخط الثاني.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "نغمات الخمس الأولى من سلم دو الكبير",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان مقطوعة (السيمفونية التاسعة لبيتهوفن) في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 0,
+   "explain": "المقطوعة في الميزان 2/4، وعدد موازيرها ٨.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم عدد موازير المقطوعة الموسيقية (السيمفونية التاسعة لبيتهوفن) في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٨"
+    },
+    {
+     "t": "text",
+     "text": "١٢"
+    }
+   ],
+   "answer": 1,
+   "explain": "عدد موازير المقطوعة ٨.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "مخرجات العزف والثقة بالنفس أدائية/وجدانية لا تُقاس باختيار من متعدد.",
+  "ترقيم الأصابع (دو=١ … صول=٥) مأخوذ من النموذج (٢) وأرقام الأصابع تحت نغمات المقطوعة."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

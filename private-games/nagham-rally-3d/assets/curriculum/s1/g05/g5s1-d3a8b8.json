@@ -1,0 +1,432 @@
+{
+ "lessonId": "g5s1-d3a8b8",
+ "grade": 5,
+ "sem": 1,
+ "title": "نشيد (نهضة متجددة)",
+ "source": "دليل المعلم — الصف الخامس، الوحدة الأولى، الدرس الأول (ص ١٥–٢٢)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف المعنى العام للنشيد."
+  },
+  {
+   "id": "o2",
+   "text": "يُنشد النشيد بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يعزّز انتماءه وولاءه للوطن بإنشاد النشيد."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "أي الصورتين تمثّل المدرسة في سلطنة عُمان في عصر النهضة؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g05/l1-school-old.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g05/l1-school-new.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "الفصل الحديث المجهّز يمثّل عصر النهضة، والفصل القديم يمثّل ما قبل النهضة.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "سلطنة عُمان قبل عصر النهضة وأثناءه",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-school-old.jpg",
+     "l1-school-new.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الصورتين تمثّل سلطنة عُمان قبل عصر النهضة؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g05/l1-coast-new.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g05/l1-coast-old.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "الطريق الترابي والمباني القديمة تمثّل ما قبل عصر النهضة، والكورنيش الحديث يمثّل عصر النهضة.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "سلطنة عُمان قبل عصر النهضة وأثناءه",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-coast-old.jpg",
+     "l1-coast-new.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (نهضة متجددة): «منْ سبعينَ القرنِ الماضي …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "عِشنا في أمنٍ وتراضي"
+    },
+    {
+     "t": "text",
+     "text": "نبضُ بلادي أصبحَ نبضَهْ"
+    },
+    {
+     "t": "text",
+     "text": "سنجدّدُ نهضتَنا دومًا"
+    }
+   ],
+   "answer": 0,
+   "explain": "«منْ سبعينَ القرنِ الماضي عِشنا في أمنٍ وتراضي».",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (نهضة متجددة): «عمّرنا عُمانَ بأيدينا …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "وازدهرتْ بحرًا وأراضي"
+    },
+    {
+     "t": "text",
+     "text": "حتى نبتتْ فينا نهضَهْ"
+    },
+    {
+     "t": "text",
+     "text": "للعلياءِ جميعًا نمضي"
+    }
+   ],
+   "answer": 0,
+   "explain": "«عمّرنا عُمانَ بأيدينا وازدهرتْ بحرًا وأراضي».",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (نهضة متجددة): «أرضُ عُمانَ ستبقى روضي …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "والسلطانُ سيبقى نبضي"
+    },
+    {
+     "t": "text",
+     "text": "زرعَ جهودًا وسقى عزمًا"
+    },
+    {
+     "t": "text",
+     "text": "عشنا في أمنٍ وتراضي"
+    }
+   ],
+   "answer": 0,
+   "explain": "«أرضُ عُمانَ ستبقى روضي والسلطانُ سيبقى نبضي».",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «عمّرنا» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بنينا"
+    },
+    {
+     "t": "text",
+     "text": "هدمنا"
+    },
+    {
+     "t": "text",
+     "text": "سافرنا"
+    }
+   ],
+   "answer": 0,
+   "explain": "عمّرنا: بنينا.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «فرضَهْ» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "واجبه"
+    },
+    {
+     "t": "text",
+     "text": "هديّته"
+    },
+    {
+     "t": "text",
+     "text": "حقّه"
+    }
+   ],
+   "answer": 0,
+   "explain": "فرضه: واجبه.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «عزمًا» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جِدًّا وعقد النية"
+    },
+    {
+     "t": "text",
+     "text": "تعبًا"
+    },
+    {
+     "t": "text",
+     "text": "خوفًا"
+    }
+   ],
+   "answer": 0,
+   "explain": "عزمًا: جِدًّا، عقدُ النية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «روضي» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأرض الخضراء الواسعة"
+    },
+    {
+     "t": "text",
+     "text": "البيت الصغير"
+    },
+    {
+     "t": "text",
+     "text": "البحر العميق"
+    }
+   ],
+   "answer": 0,
+   "explain": "روضي: الأرض الخضراء الواسعة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "من كاتب كلمات نشيد (نهضة متجددة)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "محمد بن مرزوق اليحيائي"
+    },
+    {
+     "t": "text",
+     "text": "فهد بن راشد التمامي"
+    },
+    {
+     "t": "text",
+     "text": "سعيد بن راشد الخصيبي"
+    }
+   ],
+   "answer": 0,
+   "explain": "كلمات: محمد بن مرزوق اليحيائي، وألحان: فهد بن راشد التمامي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "كلمات النشيد وألحانه",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "من ملحّن نشيد (نهضة متجددة)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "محمد بن مرزوق اليحيائي"
+    },
+    {
+     "t": "text",
+     "text": "فهد بن راشد التمامي"
+    },
+    {
+     "t": "text",
+     "text": "محمد أحمد شعبان"
+    }
+   ],
+   "answer": 1,
+   "explain": "ألحان: فهد بن راشد التمامي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "كلمات النشيد وألحانه",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الفكرة العامة لنشيد (نهضة متجددة)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بناء عُمان في عصر النهضة والعزم على مواصلتها"
+    },
+    {
+     "t": "text",
+     "text": "وصف فصل الشتاء"
+    },
+    {
+     "t": "text",
+     "text": "آداب الطعام"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتحدث النشيد عن تعمير عُمان منذ سبعينيات القرن الماضي، وأداء كل فرد واجبه، والعزم على تجديد النهضة دومًا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "assessment",
+     "outcome",
+     "activity"
+    ],
+    "skill": "المعنى العام للنشيد",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "صور النشاط الأول (قبل النهضة وأثناءها) مقتطعة من الدليل؛ اختير زوجان واضحان (الفصل الدراسي والكورنيش).",
+  "أسئلة النشاط الثاني المفتوحة (عبّر عن حبك لوطنك، واجبك تجاه وطنك) وجدانية لا تُقاس باختيار من متعدد."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

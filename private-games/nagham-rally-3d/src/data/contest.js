@@ -134,9 +134,12 @@ function normSign(s) {
   return null;
 }
 export function normalize(q) {
-  const o = { id: q.id || uid(), src: ['gen', 'bank', 'ai', 'manual'].includes(q.src) ? q.src : 'manual', kind: KINDS[q.kind] || q.kind === 'gen' ? q.kind : 'text', prompt: modernPrompt(str(q.prompt, 400)), explain: str(q.explain, 500), answer: Number.isInteger(q.answer) ? q.answer : 0 };
+  const o = { id: q.id || uid(), src: ['gen', 'bank', 'ai', 'manual', 'curr', 'mine'].includes(q.src) ? q.src : 'manual', kind: KINDS[q.kind] || q.kind === 'gen' ? q.kind : 'text', prompt: modernPrompt(str(q.prompt, 400)), explain: str(q.explain, 500), answer: Number.isInteger(q.answer) ? q.answer : 0 };
   if (q.bankRef) o.bankRef = q.bankRef;
-  if (o.kind === 'gen') { o.gen = { domain: DOMAIN[q.gen && q.gen.domain] ? q.gen.domain : 'rhythm', level: Math.min(4, Math.max(1, (q.gen && q.gen.level) | 0 || 1)), seed: (q.gen && q.gen.seed) >>> 0 }; if (q.preview) o.preview = q.preview; o.options = []; return o; }
+  if (q.currRef) o.currRef = String(q.currRef).slice(0, 80);
+  if (q.noLabel) o.noLabel = true;            // لا يُكتب اسم العلامة تحت رسمها (حين يكون الاسم هو المطلوب)
+  if (q.mineRef) o.mineRef = String(q.mineRef).slice(0, 80);
+  if (o.kind === 'gen') { if (q.currRef) o.currRef = String(q.currRef).slice(0, 80); o.gen = { domain: DOMAIN[q.gen && q.gen.domain] ? q.gen.domain : 'rhythm', level: Math.min(4, Math.max(1, (q.gen && q.gen.level) | 0 || 1)), seed: (q.gen && q.gen.seed) >>> 0 }; if (q.preview) o.preview = q.preview; o.options = []; return o; }
   if (o.kind === 'staff') {
     o.mode = q.mode === 'where' ? 'where' : 'name';
     const nn = (n) => normSign({ t: 'staff', notes: [n] });
@@ -186,7 +189,7 @@ export function drawSpec(s) {
   if (s.t === 'meter') return { t: 'meter', n: s.n, d: s.d };
   return { t: 'text', text: '—' };
 }
-const SRC_NAME = { bank: { name: 'من نشاط الدرس', icon: '📘' }, ai: { name: 'من محتوى الدرس', icon: '📄' }, manual: { name: 'سؤال المعلم', icon: '✍️' } };
+const SRC_NAME = { curr: { name: 'من المنهج', icon: '📗' }, mine: { name: 'من أسئلتي', icon: '⭐' }, bank: { name: 'من نشاط الدرس', icon: '📘' }, ai: { name: 'من محتوى الدرس', icon: '📄' }, manual: { name: 'سؤال المعلم', icon: '✍️' } };
 /** يعيد تحديًا جاهزًا للعب: { prompt, cue, audio, options:[{key,label,sign}], answer, explain, domainName, domainIcon } أو null */
 export function runtimeOf(q) {
   if (q.kind === 'gen') {
@@ -203,7 +206,7 @@ export function runtimeOf(q) {
     else { cue = { t: 'text', text: noteName(t), sub: 'مفتاح صول' }; options = q.choices.map((n, i) => ({ key: 'n' + i, label: noteName(n), sign: staffSign([n], { S: 14 }) })); }
     if (q.listen) audio = { kind: 'notes', set: 'piano', notes: [{ midi: midiOf(t.step, t.oct, Math.trunc(t.acc)), cents: t.acc === -0.5 ? -50 : 0, t: 0, d: 1.4 }] };
   } else {
-    options = q.options.map((s, i) => ({ key: 'o' + i, label: label(s), sign: drawSpec(s) }));
+    options = q.options.map((s, i) => ({ key: 'o' + i, label: label(s), sign: q.noLabel && s.t === 'rhythm' ? rhythmSign(s.ids, '') : drawSpec(s) }));
     if (q.kind === 'audio') audio = { kind: 'url', url: q.audio };
     if (q.kind === 'rhythm' && q.listen) { const ids = q.options[answer].ids, ticks = ids.reduce((a, x) => a + FIG[x].ticks, 0); const reps = ticks && 48 % ticks === 0 ? 48 / ticks : 1; audio = { kind: 'rhythm', ids: Array(reps).fill(ids).flat(), bpm: 76, countIn: 4 }; }
     if (q.kind === 'instrument' && q.listen) audio = { kind: 'inst', inst: q.options[answer].id };
@@ -220,7 +223,7 @@ export const DEFAULT_SETTINGS = {
   radio: true, radioVol: 0.7,
 };
 export function newContest(o = {}) {
-  return { id: uid('race'), title: o.title || 'مسابقة جديدة', grade: o.grade || 0, lessonId: o.lessonId || '', lessonTitle: o.lessonTitle || '', questions: [], names: [], settings: { ...DEFAULT_SETTINGS }, createdAt: Date.now(), updatedAt: Date.now() };
+  return { id: uid('race'), title: o.title || 'مسابقة جديدة', grade: o.grade || 0, sem: o.sem || 1, lessonId: o.lessonId || '', lessonTitle: o.lessonTitle || '', questions: [], names: [], settings: { ...DEFAULT_SETTINGS }, createdAt: Date.now(), updatedAt: Date.now() };
 }
 /** مسابقة تجريبية جاهزة (أول تشغيل): تحديات موسيقية متنوعة من المكتبة */
 export function demoContest() {
@@ -253,6 +256,52 @@ export function saveContest(c) {
 export function deleteContest(id) { const d = loadAll(); d.contests = d.contests.filter((c) => c.id !== id); if (d.activeId === id) d.activeId = d.contests[0] ? d.contests[0].id : null; saveAll(d); }
 export function setActive(id) { const d = loadAll(); d.activeId = id; saveAll(d); }
 export function activeContest() { const d = loadAll(); return d.contests.find((c) => c.id === d.activeId) || d.contests[0] || null; }
+
+// ---------------------------------------------------------------- بنك أسئلة المنهج (ثابت داخل اللعبة — للقراءة فقط)
+// assets/curriculum/s{الفصل}/index.json  ←  { "<lessonId>": { "file": "g01/<lessonId>.json", "n": عدد الأسئلة } }
+// كل ملف درس: { lessonId, grade, sem, title, source, outcomes:[{id,text}], questions:[سؤال بصيغة اللعبة + meta], review:[ملاحظات] }
+// المعلم ينسخ ما يريده إلى مسابقته؛ تعديلاته تبقى في مسابقته وفي «أسئلتي» ولا تمس هذا البنك ولا بقية المعلمين.
+const CURR = {};
+async function currIndex(sem) {
+  if (!CURR[sem]) CURR[sem] = fetch(`./assets/curriculum/s${sem}/index.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+  return CURR[sem];
+}
+export async function curriculumFor(lesson) {
+  if (!lesson) return null;
+  const idx = await currIndex(lesson.sem || 1), e = idx[lesson.id]; if (!e) return null;
+  try { const r = await fetch(`./assets/curriculum/s${lesson.sem || 1}/${e.file}`, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch (err) { return null; }
+}
+/** معرّفات الدروس التي لها أسئلة مُسكَّنة فعلًا في بنك فصلٍ ما (لا دروس وهمية) */
+export async function curriculumLessonIds(sem) { const idx = await currIndex(sem || 1); return new Set(Object.keys(idx).filter((k) => idx[k] && idx[k].n > 0)); }
+/** كل أسئلة الدرس جاهزة للمسابقة: بنك المنهج (نسخ مستقلة) + «أسئلتي» لهذا الدرس — بلا تكرار */
+export async function lessonQuestions(lesson) {
+  if (!lesson) return [];
+  const doc = await curriculumFor(lesson);
+  const out = doc ? doc.questions.map((q) => fromCurriculum(doc, q)) : [];
+  const seen = new Set();
+  mineFor(lesson.id).forEach((m) => { if (m.mineRef && seen.has(m.mineRef)) return; seen.add(m.mineRef); out.push({ ...clone(m), id: uid(), src: 'mine' }); });
+  return out;
+}
+export async function curriculumCount(lesson) { if (!lesson) return 0; const idx = await currIndex(lesson.sem || 1); return (idx[lesson.id] && idx[lesson.id].n) || 0; }
+/** سؤال من بنك المنهج → نسخة مستقلة في مسابقة المعلم (يبقى المرجع للتعرّف على التكرار) */
+export function fromCurriculum(doc, q) {
+  const x = clone(q); delete x.meta;
+  const n = normalize({ ...x, id: uid(), src: 'curr', currRef: `${doc.lessonId}:${q.id}`, explain: x.explain || '' });
+  if (n.kind === 'gen') { const ch = runtimeOf(n); if (ch) { n.preview = { options: ch.options.map((o) => o.label), answer: ch.answer }; if (!n.explain) n.explain = ch.explain || ''; } }
+  n.src = 'curr'; return n;
+}
+
+// ---------------------------------------------------------------- «أسئلتي»: أسئلة المعلم الخاصة لكل درس (في حسابه فقط)
+const MINE = () => `nagham-rally.mine.${OWNER}`;
+function loadMine() { try { const d = JSON.parse(localStorage.getItem(MINE())); return d && typeof d === 'object' ? d : {}; } catch (e) { return {}; } }
+export function mineFor(lessonId) { return (loadMine()[lessonId || '_'] || []).map(normalize); }
+export function saveMine(lessonId, q) {
+  const d = loadMine(), k = lessonId || '_', list = d[k] || []; const n = normalize({ ...clone(q), src: 'mine' });
+  n.mineRef = n.mineRef || uid('mine'); const i = list.findIndex((x) => x.mineRef === n.mineRef);
+  if (i >= 0) list[i] = n; else list.push(n); d[k] = list;
+  try { localStorage.setItem(MINE(), JSON.stringify(d)); return n; } catch (e) { return null; }
+}
+export function deleteMine(lessonId, mineRef) { const d = loadMine(), k = lessonId || '_'; d[k] = (d[k] || []).filter((x) => x.mineRef !== mineRef); try { localStorage.setItem(MINE(), JSON.stringify(d)); } catch (e) { /* */ } }
 
 // ---------------------------------------------------------------- الاتصال بخادم MusiTeacher (نفس خدمات «عجلة الاختيار»)
 export function tokenFromParent(timeout = 2500) {

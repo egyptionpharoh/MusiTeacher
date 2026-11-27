@@ -1,0 +1,520 @@
+{
+ "lessonId": "g10s1-02c8c6",
+ "grade": 10,
+ "sem": 1,
+ "title": "آلات من التراث العماني",
+ "source": "دليل المعلم — الصف العاشر، الوحدة الثانية، الدرس الثالث (ص ٣٢–٣٤)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف آلات من التراث الشعبي العُماني (السماع – الجم – البرغام)."
+  },
+  {
+   "id": "o2",
+   "text": "يميّز بين هذه الآلات والآلات الشعبية الأخرى."
+  },
+  {
+   "id": "o3",
+   "text": "يتواصل وجدانيًّا مع بيئته."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g10/l6-sama.jpg"
+   },
+   "prompt": "ما اسم الآلة التراثية العُمانية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "السماع (الطار)"
+    },
+    {
+     "t": "text",
+     "text": "الجم"
+    },
+    {
+     "t": "text",
+     "text": "البرغام"
+    }
+   ],
+   "answer": 0,
+   "explain": "السماع (الطار): إطار خشبي مستدير مشدود عليه غشاء.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التمييز بين آلات السماع والجم والبرغام",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l6-sama.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g10/l6-jim.jpg"
+   },
+   "prompt": "ما اسم الآلة التراثية العُمانية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "السماع (الطار)"
+    },
+    {
+     "t": "text",
+     "text": "الجم"
+    },
+    {
+     "t": "text",
+     "text": "البرغام"
+    }
+   ],
+   "answer": 1,
+   "explain": "الجم: صدفة بحرية من فصيلة البوق.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التمييز بين آلات السماع والجم والبرغام",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l6-jim.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g10/l6-barghum.jpg"
+   },
+   "prompt": "ما اسم الآلة التراثية العُمانية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "السماع (الطار)"
+    },
+    {
+     "t": "text",
+     "text": "الجم"
+    },
+    {
+     "t": "text",
+     "text": "البرغام"
+    }
+   ],
+   "answer": 2,
+   "explain": "البرغام: يُصنع من قرن الغزال العربي الأبيض (المها).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التمييز بين آلات السماع والجم والبرغام",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l6-barghum.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الآلات التالية آلة إيقاعية؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g10/l6-jim.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g10/l6-barghum.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g10/l6-sama.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "السماع (الطار) آلة إيقاعية، والجم والبرغام من فصيلة البوق (نفخ).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "تصنيف الآلات",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l6-sama.jpg",
+     "l6-jim.jpg",
+     "l6-barghum.jpg"
+    ]
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "مِمَّ يُصنع غشاء آلة السماع (الطار) تقليديًّا؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جلد الغنم أو الماعز أو الغزال"
+    },
+    {
+     "t": "text",
+     "text": "جلد السمك"
+    },
+    {
+     "t": "text",
+     "text": "قرن الغزال"
+    }
+   ],
+   "answer": 0,
+   "explain": "غشاء من جلد الغنم أو الماعز أو الغزال، وفي وقتنا الحالي يصنع من البلاستيك.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "آلات من التراث العُماني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي فنين تُستخدم آلة السماع بشكل خاص؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "العيّالة والمالد"
+    },
+    {
+     "t": "text",
+     "text": "البرعة وطبل النساء"
+    },
+    {
+     "t": "text",
+     "text": "الليوا والشوباني"
+    }
+   ],
+   "answer": 0,
+   "explain": "تُستخدم بشكل خاص في فني العيالة والمالد.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "الفنون التي تستخدم الآلات",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف يتم الضرب على آلة السماع؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بكف اليد على الرقمة وهو ممسوك بكف اليد الأخرى ومرفوع إلى أعلى"
+    },
+    {
+     "t": "text",
+     "text": "بعصا خشبية"
+    },
+    {
+     "t": "text",
+     "text": "بالنفخ"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتم الضرب بكف اليد على رقمة السماع وهو ممسوك بكف اليد الأخرى ومرفوع إلى أعلى.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "آلات من التراث العُماني",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "آلة (الجم) عبارة عن …",
+   "options": [
+    {
+     "t": "text",
+     "text": "صدفة بحرية من فصيلة البوق"
+    },
+    {
+     "t": "text",
+     "text": "قرن غزال"
+    },
+    {
+     "t": "text",
+     "text": "إطار خشبي"
+    }
+   ],
+   "answer": 0,
+   "explain": "صدفة بحرية من فصيلة البوق تفتح في جانبها أو نهايتها العليا فتحة يُنفخ فيها.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "آلات من التراث العُماني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم صوتًا تصدر آلة (الجم)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "صوتًا واحدًا فقط"
+    },
+    {
+     "t": "text",
+     "text": "صوتين"
+    },
+    {
+     "t": "text",
+     "text": "سلمًا كاملًا"
+    }
+   ],
+   "answer": 0,
+   "explain": "تصدر صوتًا واحدًا فقط، وأكثر استعمالاتها مصاحبة للإيقاع.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "آلات من التراث العُماني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي المناطق تُعرف آلة (الجم)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "المناطق الساحلية"
+    },
+    {
+     "t": "text",
+     "text": "المناطق الداخلية"
+    },
+    {
+     "t": "text",
+     "text": "المناطق الجبلية فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "بحكم طبيعتها فهي معروفة في المناطق الساحلية من السلطنة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "آلات من التراث العُماني",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "من أي فنون تُستخدم فيها آلة (الجم)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الليوا والميدان والشوباني والمديمة"
+    },
+    {
+     "t": "text",
+     "text": "البرعة"
+    },
+    {
+     "t": "text",
+     "text": "الرزحة والعازي"
+    }
+   ],
+   "answer": 0,
+   "explain": "تستخدم في الليوا والميدان والشوباني والمديمة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "الفنون التي تستخدم الآلات",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "مِمَّ تُصنع آلة (البرغام)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "قرن الغزال العربي الأبيض (المها)"
+    },
+    {
+     "t": "text",
+     "text": "صدفة بحرية"
+    },
+    {
+     "t": "text",
+     "text": "الخشب والجلد"
+    }
+   ],
+   "answer": 0,
+   "explain": "تصنع من قرن الغزال العربي الأبيض المعروف بالمها.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "آلات من التراث العُماني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي المناطق تنتشر آلة (البرغام)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "المناطق الداخلية"
+    },
+    {
+     "t": "text",
+     "text": "المناطق الساحلية"
+    }
+   ],
+   "answer": 0,
+   "explain": "تنتشر في المناطق الداخلية من السلطنة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "آلات من التراث العُماني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي الفنون تُستخدم آلة (البرغام) كالبوق؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الرزحات والعازي"
+    },
+    {
+     "t": "text",
+     "text": "العيالة والمالد"
+    },
+    {
+     "t": "text",
+     "text": "الليوا"
+    }
+   ],
+   "answer": 0,
+   "explain": "تستخدم في أنواع الرزحات والعازي التي يغلب على نصوصها المدح والفخر.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "الفنون التي تستخدم الآلات",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q14"
+  }
+ ],
+ "review": [
+  "صور الآلات من مسح قديم وجودتها متوسطة."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

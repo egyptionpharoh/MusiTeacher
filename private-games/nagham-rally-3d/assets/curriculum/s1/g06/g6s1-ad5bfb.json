@@ -1,0 +1,440 @@
+{
+ "lessonId": "g6s1-ad5bfb",
+ "grade": 6,
+ "sem": 1,
+ "title": "التمييز السمعي",
+ "source": "دليل المعلم — الصف السادس، الوحدة الأولى، الدرس الثالث (ص ٣٠–٣٤)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف نوعي الأداء الموسيقي الآلي والغنائي (المنفرد - الجماعي)."
+  },
+  {
+   "id": "o2",
+   "text": "يميّز نوعي الأداء الموسيقي الآلي والغنائي (المنفرد - الجماعي) سمعيًّا."
+  },
+  {
+   "id": "o3",
+   "text": "يعزز لديه التذوق الموسيقي."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g06/l3-inst-solo.jpg"
+   },
+   "prompt": "ما نوع الأداء الموسيقي في الصورة الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أداء آلي منفرد"
+    },
+    {
+     "t": "text",
+     "text": "أداء آلي جماعي"
+    },
+    {
+     "t": "text",
+     "text": "أداء غنائي جماعي"
+    }
+   ],
+   "answer": 0,
+   "explain": "عازف واحد على آلة واحدة = أداء آلي منفرد.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment"
+    ],
+    "skill": "تمييز نوعي الأداء الآلي والغنائي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-inst-solo.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g06/l3-ensemble.jpg"
+   },
+   "prompt": "ما نوع الأداء الموسيقي في الصورة الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أداء آلي منفرد"
+    },
+    {
+     "t": "text",
+     "text": "أداء آلي جماعي"
+    },
+    {
+     "t": "text",
+     "text": "أداء غنائي منفرد"
+    }
+   ],
+   "answer": 1,
+   "explain": "مجموعة يعزفون على مجموعة من الآلات = أداء آلي جماعي.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment"
+    ],
+    "skill": "تمييز نوعي الأداء الآلي والغنائي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-ensemble.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g06/l3-voc-solo.jpg"
+   },
+   "prompt": "ما نوع الأداء الموسيقي في الصورة الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أداء آلي جماعي"
+    },
+    {
+     "t": "text",
+     "text": "أداء غنائي منفرد"
+    },
+    {
+     "t": "text",
+     "text": "أداء غنائي جماعي"
+    }
+   ],
+   "answer": 1,
+   "explain": "مؤدٍّ واحد يغني = أداء غنائي منفرد.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment"
+    ],
+    "skill": "تمييز نوعي الأداء الآلي والغنائي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-voc-solo.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g06/l3-choir.jpg"
+   },
+   "prompt": "ما نوع الأداء الموسيقي في الصورة الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أداء آلي منفرد"
+    },
+    {
+     "t": "text",
+     "text": "أداء غنائي منفرد"
+    },
+    {
+     "t": "text",
+     "text": "أداء غنائي جماعي"
+    }
+   ],
+   "answer": 2,
+   "explain": "مجموعة من المؤدين يغنّون (كورال) = أداء غنائي جماعي.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment"
+    ],
+    "skill": "تمييز نوعي الأداء الآلي والغنائي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-choir.jpg"
+    ]
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "ينقسم الأداء في الموسيقى إلى …",
+   "options": [
+    {
+     "t": "text",
+     "text": "أداء آلي وأداء غنائي"
+    },
+    {
+     "t": "text",
+     "text": "أداء سريع وأداء بطيء"
+    },
+    {
+     "t": "text",
+     "text": "أداء قوي وأداء ضعيف"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأداء في الموسيقى ينقسم إلى أداء آلي وأداء غنائي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "أنواع الأداء الموسيقي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأداء الآلي المنفرد هو …",
+   "options": [
+    {
+     "t": "text",
+     "text": "العزف على آلة واحدة منفردة"
+    },
+    {
+     "t": "text",
+     "text": "عزف مجموعة من الآلات الموسيقية"
+    },
+    {
+     "t": "text",
+     "text": "غناء لمؤدٍّ واحد"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأداء الآلي المنفرد يُؤدّى على آلة موسيقية واحدة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "الأداء الآلي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأداء الآلي الجماعي هو …",
+   "options": [
+    {
+     "t": "text",
+     "text": "عزف مجموعة من الآلات الموسيقية"
+    },
+    {
+     "t": "text",
+     "text": "العزف على آلة واحدة"
+    },
+    {
+     "t": "text",
+     "text": "غناء مجموعة من المؤدين"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأداء الآلي الجماعي يُؤدّى على مجموعة من الآلات الموسيقية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "الأداء الآلي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأداء الغنائي المنفرد هو …",
+   "options": [
+    {
+     "t": "text",
+     "text": "غناء لمؤدٍّ واحد فقط"
+    },
+    {
+     "t": "text",
+     "text": "غناء مجموعة من المؤدين"
+    },
+    {
+     "t": "text",
+     "text": "العزف على آلة واحدة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأداء الغنائي المنفرد: غناء لمؤدٍّ واحد.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "الأداء الغنائي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ماذا يُطلق على مجموعة المؤدين في الأداء الغنائي الجماعي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكورال"
+    },
+    {
+     "t": "text",
+     "text": "الأوركسترا"
+    },
+    {
+     "t": "text",
+     "text": "العازف المنفرد"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأداء الغنائي الجماعي هو غناء مجموعة من المؤدين ويطلق عليهم (الكورال).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "الأداء الغنائي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الصور تمثّل أداءً جماعيًّا؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l3-inst-solo.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l3-voc-solo.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l3-choir.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "صورة مجموعة الطلاب يغنّون معًا تمثّل أداءً غنائيًّا جماعيًّا.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز بين المنفرد والجماعي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-inst-solo.jpg",
+     "l3-voc-solo.jpg",
+     "l3-choir.jpg"
+    ]
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الصور تمثّل أداءً آليًّا؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l3-voc-solo.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l3-choir.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l3-inst-solo.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "العزف على الأورج أداء آلي (منفرد).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز بين الآلي والغنائي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-inst-solo.jpg",
+     "l3-voc-solo.jpg",
+     "l3-choir.jpg"
+    ]
+   },
+   "id": "q11"
+  }
+ ],
+ "review": [
+  "التمييز السمعي يحتاج نماذج صوتية للوزارة (ممنوع استخدامها) أو تسجيلات غير موجودة في اللعبة؛ لذلك جاء التمييز بالصور، كبديل ذوي الإعاقة السمعية في الدليل («بالمشاهدة»).",
+  "ممكن لاحقًا إضافة أسئلة سمعية لو أرفقت تسجيلات خاصة بيك."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

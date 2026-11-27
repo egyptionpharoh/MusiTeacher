@@ -1,0 +1,366 @@
+{
+ "lessonId": "g2s1-d1b9de",
+ "grade": 2,
+ "sem": 1,
+ "title": "الشدة والخفوت",
+ "source": "دليل المعلم — الصف الثاني، الوحدة الثانية، الدرس الثالث (ص ٥٣–٥٧)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف الفرق بين (الشِّدّة والخفوت)."
+  },
+  {
+   "id": "o2",
+   "text": "يميّز بين (الشِّدّة والخفوت) في أثناء الاستماع."
+  },
+  {
+   "id": "o3",
+   "text": "يتعوّد الإصغاء الجيد والتركيز فيما يستمع له."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "الأداء القوي يعبّر عن …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الشِّدّة"
+    },
+    {
+     "t": "text",
+     "text": "الخفوت"
+    },
+    {
+     "t": "text",
+     "text": "البطء"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأداء القوي يعبّر عن الشدة ويسمّى (Forte).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "outcome"
+    ],
+    "skill": "مفهوم الشدة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأداء الخافت يسمّى …",
+   "options": [
+    {
+     "t": "text",
+     "text": "Forte"
+    },
+    {
+     "t": "text",
+     "text": "Piano"
+    },
+    {
+     "t": "text",
+     "text": "Allegro"
+    }
+   ],
+   "answer": 1,
+   "explain": "الأداء الخافت يسمّى (Piano) ويرمز له بالرمز (P).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "مفهوم الخفوت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الرمز الدال على الشِّدّة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "F"
+    },
+    {
+     "t": "text",
+     "text": "P"
+    }
+   ],
+   "answer": 0,
+   "explain": "الشدة (Forte) رمزها (F).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment",
+     "activity"
+    ],
+    "skill": "رموز الشدة والخفوت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الرمز الدال على الخفوت؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "F"
+    },
+    {
+     "t": "text",
+     "text": "P"
+    }
+   ],
+   "answer": 1,
+   "explain": "الخفوت (Piano) رمزه (P).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment",
+     "activity"
+    ],
+    "skill": "رموز الشدة والخفوت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة يناسبها الرمز (F)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-cat.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-lion.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-bird.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "صوت الأسد قوي فيناسبه الرمز (F).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز بين الشدة والخفوت",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l6-lion.jpg",
+     "l6-cat.jpg",
+     "l6-bird.jpg"
+    ]
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة يناسبها الرمز (P)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-elephant.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-train.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-cat.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "صوت القطة خافت فيناسبه الرمز (P).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز بين الشدة والخفوت",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l6-cat.jpg",
+     "l6-elephant.jpg",
+     "l6-train.jpg"
+    ]
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة يناسبها الرمز (P)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-bird.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-elephant.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "صوت العصفور خافت فيناسبه الرمز (P)، أما الفيل فصوته قوي.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز بين الشدة والخفوت",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l6-bird.jpg",
+     "l6-elephant.jpg"
+    ]
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة يناسبها الرمز (F)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-bird.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l6-train.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "صوت القطار قوي فيناسبه الرمز (F).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز بين الشدة والخفوت",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l6-train.jpg",
+     "l6-bird.jpg"
+    ]
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "text",
+    "text": "F"
+   },
+   "prompt": "عندما نرى هذا الرمز فوق المقطع الموسيقي فإننا نؤدّيه …",
+   "options": [
+    {
+     "t": "text",
+     "text": "بقوة"
+    },
+    {
+     "t": "text",
+     "text": "بخفوت"
+    }
+   ],
+   "answer": 0,
+   "explain": "(F) تعني الأداء القوي (الشدة).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تطبيق رموز الشدة والخفوت",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "text",
+    "text": "P"
+   },
+   "prompt": "عندما نرى هذا الرمز فوق المقطع الموسيقي فإننا نؤدّيه …",
+   "options": [
+    {
+     "t": "text",
+     "text": "بقوة"
+    },
+    {
+     "t": "text",
+     "text": "بخفوت"
+    }
+   ],
+   "answer": 1,
+   "explain": "(P) تعني الأداء الخافت.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تطبيق رموز الشدة والخفوت",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  }
+ ],
+ "review": [
+  "التمييز السمعي بين الشدة والخفوت غير متاح بأدوات اللعبة الحالية؛ قيس بالتمييز البصري (صور النشاط الثاني).",
+  "صورة السيارة في النشاط الثاني لم تُستخدم لأن تصنيفها (F أو P) غير محسوم في الدليل."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

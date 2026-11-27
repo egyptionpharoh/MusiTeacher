@@ -1,0 +1,405 @@
+{
+ "lessonId": "g1s1-d4c90d",
+ "grade": 1,
+ "sem": 1,
+ "title": "النشيد الوطني",
+ "source": "دليل المعلم — الصف الأول، الوحدة الأولى، الدرس الأول (ص ١٣–١٧)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف المعنى العام للنشيد الوطني."
+  },
+  {
+   "id": "o2",
+   "text": "يتعرَّف ألوان علم سلطنة عُمان وشعاره."
+  },
+  {
+   "id": "o3",
+   "text": "ينشد النشيد الوطني بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يَعتزّ بانتمائه إلى وطنه من خلال إنشاد النشيد."
+  },
+  {
+   "id": "o5",
+   "text": "يُنمّي ثقته بنفسه من خلال إنشاد النشيد."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما ألوان علم سلطنة عُمان؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأحمر والأبيض والأخضر"
+    },
+    {
+     "t": "text",
+     "text": "الأحمر والأبيض والأزرق"
+    },
+    {
+     "t": "text",
+     "text": "الأخضر والأصفر والأحمر"
+    }
+   ],
+   "answer": 0,
+   "explain": "علم سلطنة عُمان ألوانه: الأحمر والأبيض والأخضر.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "outcome",
+     "assessment",
+     "activity"
+    ],
+    "skill": "ألوان علم سلطنة عُمان",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g01/l1-flag.jpg"
+   },
+   "prompt": "ما الذي يظهر في أعلى العلم بجوار السارية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "نجمة"
+    },
+    {
+     "t": "text",
+     "text": "شعار سلطنة عُمان"
+    },
+    {
+     "t": "text",
+     "text": "هلال"
+    }
+   ],
+   "answer": 1,
+   "explain": "يظهر شعار سلطنة عُمان في أعلى العلم بجوار السارية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "outcome",
+     "steps"
+    ],
+    "skill": "مكوّنات علم سلطنة عُمان وشعاره",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l1-flag.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g01/l1-flag.jpg"
+   },
+   "prompt": "في أي لون من ألوان العلم يقع شعار سلطنة عُمان؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأخضر"
+    },
+    {
+     "t": "text",
+     "text": "الأبيض"
+    },
+    {
+     "t": "text",
+     "text": "الأحمر"
+    }
+   ],
+   "answer": 2,
+   "explain": "يقع الشعار على الجزء الأحمر من العلم بجوار السارية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "outcome",
+     "steps",
+     "activity"
+    ],
+    "skill": "مكوّنات علم سلطنة عُمان",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-flag.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد الوطني: «يا ربَّنا احفظ لنا …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "جلالة السلطان"
+    },
+    {
+     "t": "text",
+     "text": "كرام العرب"
+    },
+    {
+     "t": "text",
+     "text": "هام السماء"
+    }
+   ],
+   "answer": 0,
+   "explain": "«يا ربَّنا احفظ لنا جلالة السلطان».",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد الوطني: «والشَّعبَ في الأوطان …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "بالرَّخاء"
+    },
+    {
+     "t": "text",
+     "text": "بالعزِّ والأمان"
+    },
+    {
+     "t": "text",
+     "text": "بالنفوس يُفتدى"
+    }
+   ],
+   "answer": 1,
+   "explain": "«والشَّعبَ في الأوطان بالعزِّ والأمان».",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبِّر عن عبارة «فارتقي هامَ السَّماء»؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-dua.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-people.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-sky.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "«هام السماء» معناها أعالي السماء، فالصورة المناسبة صورة السماء.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "المعنى العام للنشيد الوطني",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l1-sky.jpg",
+     "l1-dua.jpg",
+     "l1-people.jpg"
+    ]
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبِّر عن عبارة «والشَّعبَ في الأوطان»؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-people.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-sky.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-dua.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "الشعب هم أبناء الوطن، فالصورة المناسبة صورة جمع من الناس.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "المعنى العام للنشيد الوطني",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l1-people.jpg",
+     "l1-sky.jpg",
+     "l1-dua.jpg"
+    ]
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبِّر عن عبارة «يا ربَّنا احفظ لنا جلالة السلطان»؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-sky.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-dua.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l1-scouts.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "العبارة دعاء لجلالة السلطان، فالصورة المناسبة صورة اليدين المرفوعتين بالدعاء.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "المعنى العام للنشيد الوطني",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l1-dua.jpg",
+     "l1-sky.jpg",
+     "l1-scouts.jpg"
+    ]
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى «هامَ السَّماء» في النشيد الوطني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سعة العيش"
+    },
+    {
+     "t": "text",
+     "text": "نورًا وهداية"
+    },
+    {
+     "t": "text",
+     "text": "أعالي السماء"
+    }
+   ],
+   "answer": 2,
+   "explain": "هام السماء: أعالي السماء.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى «بالرَّخاء» في النشيد الوطني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سعة العيش"
+    },
+    {
+     "t": "text",
+     "text": "منصورًا"
+    },
+    {
+     "t": "text",
+     "text": "ملكًا أو سلطانًا"
+    }
+   ],
+   "answer": 0,
+   "explain": "بالرخاء: سعة العيش.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد الوطني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  }
+ ],
+ "review": [
+  "المخرج الثالث (الإنشاد) أدائي: قيس بأسئلة تذكّر كلمات النشيد فقط.",
+  "المخرجان الرابع والخامس وجدانيان: لا تقاس بأسئلة اختيار."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

@@ -1,0 +1,446 @@
+{
+ "lessonId": "g11s1-8bfaf5",
+ "grade": 11,
+ "sem": 1,
+ "title": "مكونات آلة الجيتار",
+ "source": "دليل المعلم — الصف الحادي عشر، الوحدة الثالثة، الدرس الثاني (ص ٤٤–٤٨)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر مكونات آلة الجيتار."
+  },
+  {
+   "id": "o2",
+   "text": "يشرح وظيفة كل جزء من أجزاء آلة الجيتار."
+  },
+  {
+   "id": "o3",
+   "text": "يقارن بين أنواع آلة الجيتار من حيث الشكل."
+  },
+  {
+   "id": "o4",
+   "text": "يميّز آلة الجيتار الأسباني عند الاستماع إليها."
+  },
+  {
+   "id": "o5",
+   "text": "تتولد لديه الرغبة في اقتناء آلة الجيتار."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "مِمَّ يتكوّن صندوق آلة الجيتار؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "صندوق من الخشب له فتحة دائرية في منتصفه"
+    },
+    {
+     "t": "text",
+     "text": "صندوق معدني مغلق"
+    },
+    {
+     "t": "text",
+     "text": "جلد مشدود"
+    }
+   ],
+   "answer": 0,
+   "explain": "تتكون من صندوق من الخشب له فتحة دائرية في منتصفه.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ماذا تُسمّى الفواصل المعدنية التي تقسم ذراع الجيتار؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الدساتين"
+    },
+    {
+     "t": "text",
+     "text": "الفرس"
+    },
+    {
+     "t": "text",
+     "text": "المفاتيح"
+    }
+   ],
+   "answer": 0,
+   "explain": "ذراع طويلة مقسمة بفواصل معدنية تسمى الدساتين.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما وظيفة (الدساتين) في الجيتار؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "تحديد مكان الضغط على الوتر لتغيير درجته الصوتية"
+    },
+    {
+     "t": "text",
+     "text": "حمل الأوتار فوق الصندوق"
+    },
+    {
+     "t": "text",
+     "text": "ضبط الأوتار"
+    }
+   ],
+   "answer": 0,
+   "explain": "الدساتين تحدد مكان الضغط على الوتر لتغيير درجته الصوتية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم تساوي المسافة بين كل دستان وآخر؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "نصف درجة صوتية"
+    },
+    {
+     "t": "text",
+     "text": "درجة كاملة"
+    },
+    {
+     "t": "text",
+     "text": "ربع درجة"
+    }
+   ],
+   "answer": 0,
+   "explain": "المسافة بين كل فاصل وآخر تساوي نصف درجة صوتية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "ماذا تُسمّى قطعة الخشب التي تُشد عليها الأوتار فوق الصندوق؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الفرس"
+    },
+    {
+     "t": "text",
+     "text": "الأنف"
+    },
+    {
+     "t": "text",
+     "text": "الدستان"
+    }
+   ],
+   "answer": 0,
+   "explain": "تُشد الأوتار من فوق الصندوق بقطعة من الخشب تسمى الفرس.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم مفتاحًا في نهاية ذراع الجيتار؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ستة"
+    },
+    {
+     "t": "text",
+     "text": "أربعة"
+    },
+    {
+     "t": "text",
+     "text": "اثنا عشر"
+    }
+   ],
+   "answer": 0,
+   "explain": "ستة مفاتيح بعدد الأوتار المستخدمة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "مِمَّ تُصنع أوتار الجيتار؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "النايلون أو المعدن"
+    },
+    {
+     "t": "text",
+     "text": "الحرير فقط"
+    },
+    {
+     "t": "text",
+     "text": "الجلد"
+    }
+   ],
+   "answer": 0,
+   "explain": "تصنع الأوتار من النايلون أو المعدن.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما أسماء أوتار الجيتار الستة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "مي – لا – ري – صول – سي – مي"
+    },
+    {
+     "t": "text",
+     "text": "دو – ري – مي – فا – صول – لا"
+    },
+    {
+     "t": "text",
+     "text": "مي – صول – سي – ري – فا – لا"
+    }
+   ],
+   "answer": 0,
+   "explain": "E A D G B E: مي، لا، ري، صول، سي، مي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g11/l8-spanish.jpg"
+   },
+   "prompt": "ما نوع الجيتار الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الجيتار الأسباني"
+    },
+    {
+     "t": "text",
+     "text": "الجيتار الإلكتروني"
+    }
+   ],
+   "answer": 0,
+   "explain": "الجيتار الأسباني بصندوقه الصوتي الخشبي.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "أنواع الجيتار",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l8-spanish.jpg"
+    ]
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الصورتين للجيتار الإلكتروني؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g11/l8-spanish.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g11/l8-electric.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "الجيتار الإلكتروني ليس به صندوق صوتي ويحل محله كتلة خشبية مصمتة.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "أنواع الجيتار",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l8-spanish.jpg",
+     "l8-electric.jpg"
+    ]
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "بماذا يتميز الجيتار الأسباني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "صوته الرخيم الذي لا يحتاج كثيرًا إلى مكبرات صوت"
+    },
+    {
+     "t": "text",
+     "text": "لا يعمل إلا بمكبرات الصوت"
+    },
+    {
+     "t": "text",
+     "text": "ليس له صندوق صوتي"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتميز بصوته الرخيم الذي لا يحتاج في كثير من الأحيان إلى مكبرات صوت.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الفرق الأساسي بين الجيتار الإلكتروني والجيتار الأسباني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الإلكتروني ليس به صندوق صوتي ولا يعمل إلا بمكبرات الصوت"
+    },
+    {
+     "t": "text",
+     "text": "الإلكتروني له أوتار أكثر"
+    },
+    {
+     "t": "text",
+     "text": "الأسباني أكبر حجمًا فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "الإلكتروني يحل محل صندوقه كتلة خشبية مصمتة ولا يعمل إلا من خلال مكبرات الصوت.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الجيتار",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "أسماء الأوتار مأخوذة من رسم رأس الجيتار بالدليل (E A D G B E).",
+  "التمييز السمعي غير مُقاس."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

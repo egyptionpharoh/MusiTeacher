@@ -1,0 +1,434 @@
+{
+ "lessonId": "g4s1-3c5fca",
+ "grade": 4,
+ "sem": 1,
+ "title": "تدريبات صوتية بالتظليلات",
+ "source": "دليل المعلم — الصف الرابع، الوحدة الأولى، الدرس الأول (ص ١٥–١٨)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف الصوت المتصل (Legato)، والصوت المتقطع (Staccato)."
+  },
+  {
+   "id": "o2",
+   "text": "يغنّي التدريبات الصوتية بالتظليلات اللحنية المختلفة بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يستشعر التظليلات اللحنية من خلال أداء التدريبات الصوتية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدلّ على الصوت المتصل (Legato)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-staccato.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-legato.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "الليجاتو يُعبَّر عنه بوضع قوس أسفل النغمات المراد أداؤها بشكل متصل.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "activity",
+     "assessment"
+    ],
+    "skill": "رمز الليجاتو",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-legato.jpg",
+     "l1-staccato.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدلّ على الصوت المتقطع (Staccato)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-legato.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-staccato.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "الاستكاتو يُعبَّر عنه بوضع نقطة تحت النغمة المراد أداؤها بشكل متقطع.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "activity",
+     "assessment"
+    ],
+    "skill": "رمز الاستكاتو",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-legato.jpg",
+     "l1-staccato.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف يُعبَّر عن الأداء المتصل (Legato) في التدوين؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بوضع قوس أسفل النغمات المراد أداؤها بشكل متصل"
+    },
+    {
+     "t": "text",
+     "text": "بوضع نقطة تحت كل نغمة"
+    },
+    {
+     "t": "text",
+     "text": "بكتابة الرمز f"
+    }
+   ],
+   "answer": 0,
+   "explain": "الليجاتو: قوس أسفل النغمات المراد أداؤها بشكل متصل.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "تدوين الليجاتو",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف يُعبَّر عن الأداء المتقطع (Staccato) في التدوين؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بوضع قوس فوق النغمات"
+    },
+    {
+     "t": "text",
+     "text": "بوضع نقطة تحت النغمة المراد أداؤها بشكل متقطع"
+    },
+    {
+     "t": "text",
+     "text": "بكتابة الرمز p"
+    }
+   ],
+   "answer": 1,
+   "explain": "الاستكاتو: نقطة تحت النغمة المراد أداؤها بشكل متقطع.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "تدوين الاستكاتو",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g04/l1-legato.jpg"
+   },
+   "prompt": "ما اسم المصطلح التعبيري الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الليجاتو"
+    },
+    {
+     "t": "text",
+     "text": "الاستكاتو"
+    },
+    {
+     "t": "text",
+     "text": "الكريشيندو"
+    }
+   ],
+   "answer": 0,
+   "explain": "هذا رمز الليجاتو (الأداء المتصل).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "المصطلحات التعبيرية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-legato.jpg"
+    ]
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g04/l1-staccato.jpg"
+   },
+   "prompt": "كيف نؤدّي النغمات الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بشكل متصل"
+    },
+    {
+     "t": "text",
+     "text": "بشكل متقطع"
+    }
+   ],
+   "answer": 1,
+   "explain": "النقطة تحت النغمة تعني الأداء المتقطع (Staccato).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "أداء الاستكاتو",
+    "level": "apply",
+    "display": "visual",
+    "media": [
+     "l1-staccato.jpg"
+    ]
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى الأداء المتقطع (Staccato)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أداء النغمات منفصلة بعضها عن بعض"
+    },
+    {
+     "t": "text",
+     "text": "أداء النغمات بشكل متصل"
+    },
+    {
+     "t": "text",
+     "text": "أداء النغمات بصوت مرتفع"
+    }
+   ],
+   "answer": 0,
+   "explain": "الاستكاتو: أداء النغمات بشكل متقطع (منفصلة).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "مفهوم الاستكاتو",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرموز يدلّ على الصوت الضعيف (البيانو)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-f.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-p.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-cresc.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "(p) البيانو: صوت ضعيف (خافت).",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "رموز المصطلحات التعبيرية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-p.jpg",
+     "l1-f.jpg",
+     "l1-cresc.jpg"
+    ]
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرموز يدلّ على الصوت القوي (الفورتي)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-dim.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-p.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-f.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "(f) الفورتي: صوت قوي.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "رموز المصطلحات التعبيرية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-f.jpg",
+     "l1-p.jpg",
+     "l1-dim.jpg"
+    ]
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g04/l1-dim.jpg"
+   },
+   "prompt": "ما اسم المصطلح التعبيري الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكريشيندو"
+    },
+    {
+     "t": "text",
+     "text": "الديمنويندو"
+    },
+    {
+     "t": "text",
+     "text": "الليجاتو"
+    }
+   ],
+   "answer": 1,
+   "explain": "هذا رمز الديمنويندو: تدرّج الصوت من القوة إلى الخفوت.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "رموز المصطلحات التعبيرية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-dim.jpg"
+    ]
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g04/l1-cresc.jpg"
+   },
+   "prompt": "ما اسم المصطلح التعبيري الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكريشيندو"
+    },
+    {
+     "t": "text",
+     "text": "الديمنويندو"
+    },
+    {
+     "t": "text",
+     "text": "البيانو"
+    }
+   ],
+   "answer": 0,
+   "explain": "هذا رمز الكريشيندو: تدرّج الصوت من الخفوت إلى القوة.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "رموز المصطلحات التعبيرية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-cresc.jpg"
+    ]
+   },
+   "id": "q11"
+  }
+ ],
+ "review": [
+  "رموز المصطلحات مقتطعة من بطاقات النشاط الثاني بالدليل.",
+  "الدليل يكتب «الديمينوندو/الكريشنيدو» على البطاقات و«الكريشندو والديمنوندو» في الخطوات؛ استُخدم الإملاء المعتمد في درس الصف الثالث (الكريشيندو والديمنويندو)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

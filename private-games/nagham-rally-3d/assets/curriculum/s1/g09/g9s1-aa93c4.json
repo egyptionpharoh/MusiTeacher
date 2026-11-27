@@ -1,0 +1,607 @@
+{
+ "lessonId": "g9s1-aa93c4",
+ "grade": 9,
+ "sem": 1,
+ "title": "الآلات الإيقاعية العربية",
+ "source": "دليل المعلم — الصف التاسع، الدرس السابع (ص ٣٧–٣٩)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف بعض الآلات الإيقاعية العربية."
+  },
+  {
+   "id": "o2",
+   "text": "يتعرّف الخامات المصنوع منها الآلات الإيقاعية العربية."
+  },
+  {
+   "id": "o3",
+   "text": "يتعرّف أماكن الضغط القوي والخفيف على كل آلة."
+  },
+  {
+   "id": "o4",
+   "text": "يمارس العزف على أحد الآلات الإيقاعية العربية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g09/l7-riq.jpg"
+   },
+   "prompt": "ما اسم الآلة الإيقاعية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الدف (الرق)"
+    },
+    {
+     "t": "text",
+     "text": "المزهر"
+    },
+    {
+     "t": "text",
+     "text": "الطبلة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الدف (الرق): إطار خشبي مثبت به صنوج نحاسية ويشد عليه غشاء من جلد السمك.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التعرّف على الآلات الإيقاعية العربية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l7-riq.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g09/l7-tabla.jpg"
+   },
+   "prompt": "ما اسم الآلة الإيقاعية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "المزهر"
+    },
+    {
+     "t": "text",
+     "text": "الطبلة"
+    },
+    {
+     "t": "text",
+     "text": "الرحماني"
+    }
+   ],
+   "answer": 1,
+   "explain": "الطبلة: على شكل قمع كبير من الفخار أو الخشب المطعم بالصدف.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التعرّف على الآلات الإيقاعية العربية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l7-tabla.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g09/l7-mazhar.jpg"
+   },
+   "prompt": "ما اسم الآلة الإيقاعية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الدف (الرق)"
+    },
+    {
+     "t": "text",
+     "text": "الكاسر"
+    },
+    {
+     "t": "text",
+     "text": "المزهر (البندير)"
+    }
+   ],
+   "answer": 2,
+   "explain": "المزهر: مثل الدف لكنه أكبر حجمًا ويخلو من الصنوج.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التعرّف على الآلات الإيقاعية العربية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l7-mazhar.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g09/l7-kasir.jpg"
+   },
+   "prompt": "ما اسم الآلة الإيقاعية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكاسر"
+    },
+    {
+     "t": "text",
+     "text": "الرحماني"
+    },
+    {
+     "t": "text",
+     "text": "الطبلة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الكاسر: الطبل الأنحف من ثنائي الطبول العُمانية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التعرّف على الآلات الإيقاعية العربية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l7-kasir.jpg"
+    ]
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g09/l7-rahmani.jpg"
+   },
+   "prompt": "ما اسم الآلة الإيقاعية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكاسر"
+    },
+    {
+     "t": "text",
+     "text": "الرحماني"
+    },
+    {
+     "t": "text",
+     "text": "المزهر"
+    }
+   ],
+   "answer": 1,
+   "explain": "الرحماني: الطبل الأكبر والأعمق صوتًا.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التعرّف على الآلات الإيقاعية العربية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l7-rahmani.jpg"
+    ]
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الآلات التالية آلة رئيسية في التخت العربي؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g09/l7-mazhar.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g09/l7-riq.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g09/l7-kasir.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "الرق آلة رئيسية في التخت العربي وفرق الموسيقا العربية الحديثة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "الآلات الإيقاعية في التخت العربي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l7-riq.jpg",
+     "l7-mazhar.jpg",
+     "l7-kasir.jpg"
+    ]
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "من أي جلد يُصنع غشاء الدف (الرق)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جلد السمك"
+    },
+    {
+     "t": "text",
+     "text": "جلد الماعز"
+    },
+    {
+     "t": "text",
+     "text": "جلد الغنم"
+    }
+   ],
+   "answer": 0,
+   "explain": "يُشد على إطار الرق غشاء من جلد السمك.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "خامات صنع الآلات الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم زوجًا من الصنوج النحاسية يُثبَّت في الدف (الرق)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "خمسة"
+    },
+    {
+     "t": "text",
+     "text": "عشرة"
+    },
+    {
+     "t": "text",
+     "text": "عشرون"
+    }
+   ],
+   "answer": 1,
+   "explain": "يثبت بها عشرة أزواج من الصنوج النحاسية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "خامات صنع الآلات الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "من أي خامة تُصنع الطبلة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الفخار أو الخشب المطعّم بالصدف"
+    },
+    {
+     "t": "text",
+     "text": "المعدن فقط"
+    },
+    {
+     "t": "text",
+     "text": "البلاستيك"
+    }
+   ],
+   "answer": 0,
+   "explain": "تُصنع من الفخار أو الخشب المطعم بالصدف، وتُغطى الفتحة الكبرى بجلد السمك.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "خامات صنع الآلات الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "من أي جلد يُصنع غشاء المزهر؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جلد الماعز"
+    },
+    {
+     "t": "text",
+     "text": "جلد السمك"
+    },
+    {
+     "t": "text",
+     "text": "جلد البقر"
+    }
+   ],
+   "answer": 0,
+   "explain": "يشد على المزهر غشاء من جلد الماعز.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "خامات صنع الآلات الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "من أي جلد تُصنع عادةً كسوة فتحتي طبل الكاسر؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جلد الغنم"
+    },
+    {
+     "t": "text",
+     "text": "جلد الماعز"
+    },
+    {
+     "t": "text",
+     "text": "جلد السمك"
+    }
+   ],
+   "answer": 0,
+   "explain": "كسوة فتحتي الكاسر عادة من جلد الغنم، وكسوة الرحماني قد تكون من جلد الماعز.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "خامات صنع الآلات الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي المناسبات يُستخدم المزهر بأعداد كبيرة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "مصاحبة الإنشاد الديني والأعراس"
+    },
+    {
+     "t": "text",
+     "text": "الأوركسترا السيمفونية"
+    },
+    {
+     "t": "text",
+     "text": "الفرق العسكرية"
+    }
+   ],
+   "answer": 0,
+   "explain": "يُستخدم بأعداد كبيرة في مصاحبة الإنشاد الديني والأعراس.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "استخدامات الآلات الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "أين يُنقر (الدُّم) على الدف (الرق)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "في الوسط"
+    },
+    {
+     "t": "text",
+     "text": "على الحافة"
+    },
+    {
+     "t": "text",
+     "text": "على الصنوج"
+    }
+   ],
+   "answer": 0,
+   "explain": "تنقر الدم في وسط الرق، والتك على حافته أو على الصنوج.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "أماكن الضغط القوي والخفيف",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "prompt": "أين يُنقر (الدُّم) على المزهر؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "على الحافة"
+    },
+    {
+     "t": "text",
+     "text": "في الوسط"
+    }
+   ],
+   "answer": 0,
+   "explain": "في المزهر: الدم على الحافة والتك في الوسط (عكس الرق والطبلة).",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "أماكن الضغط القوي والخفيف",
+    "level": "discriminate",
+    "display": "text",
+    "media": []
+   },
+   "id": "q14"
+  },
+  {
+   "kind": "text",
+   "prompt": "النبر القوي يُسمّى …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الدُّم"
+    },
+    {
+     "t": "text",
+     "text": "التك"
+    }
+   ],
+   "answer": 0,
+   "explain": "النبر القوي «الدم» والنبر الخفيف «التك».",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "الدم والتك",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q15"
+  },
+  {
+   "kind": "text",
+   "prompt": "يوجد نوع من طبل الكاسر يُستخدم في فن العيّالة يُسمّى …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكاسر المفلطح"
+    },
+    {
+     "t": "text",
+     "text": "الرحماني الصغير"
+    },
+    {
+     "t": "text",
+     "text": "البندير"
+    }
+   ],
+   "answer": 0,
+   "explain": "يوجد نوع من الكاسر يسمى الكاسر المفلطح ويستخدم في فن العيالة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "آلات إيقاعية من التراث العُماني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q16"
+  }
+ ],
+ "review": [
+  "دليل هذا الدرس بالشكل القديم (أهداف + خطوات + تقويم، بدون نشاط أول وثاني).",
+  "الصور جودتها متوسطة لأنها من مسح قديم.",
+  "العزف والتمييز السمعي بين الدم والتك غير مُقاسين (لا تسجيلات)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

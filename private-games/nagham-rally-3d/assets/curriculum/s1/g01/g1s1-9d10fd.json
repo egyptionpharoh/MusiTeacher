@@ -1,0 +1,341 @@
+{
+ "lessonId": "g1s1-9d10fd",
+ "grade": 1,
+ "sem": 1,
+ "title": "الحدة والغلظة - السرعة والبطء",
+ "source": "دليل المعلم — الصف الأول، الوحدة الأولى، الدرس الثالث (ص ٢٢–٢٥)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يعرف الفرق بين (الحِدَّة والغِلْظة)، (السُّرعة والبطء)."
+  },
+  {
+   "id": "o2",
+   "text": "يميّز سمعيًّا بين (الحِدَّة والغِلْظة)، (السُّرعة والبطء)."
+  },
+  {
+   "id": "o3",
+   "text": "يعبّر عن (السُّرعة والبطء) من خلال الأداء الحركي."
+  },
+  {
+   "id": "o4",
+   "text": "يدرك الفرق بين (الحِدَّة والغِلْظة)، (السُّرعة والبطء)."
+  },
+  {
+   "id": "o5",
+   "text": "ينمو لديه التذوق الموسيقي من خلال الاستماع."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبِّر عن السُّرعة؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l3-turtle.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l3-rabbit.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "الأرنب سريع الحركة فيعبّر عن السرعة.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "السرعة والبطء",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l3-rabbit.jpg",
+     "l3-turtle.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبِّر عن البُطء؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l3-turtle.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l3-rabbit.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "السلحفاة بطيئة الحركة فتعبّر عن البطء.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "السرعة والبطء",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l3-rabbit.jpg",
+     "l3-turtle.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الآلتين صوتها حادّ؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l3-drum.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l3-triangle.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "صوت المثلث حادّ، وصوت الطبل غليظ.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "الحدة والغلظة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-triangle.jpg",
+     "l3-drum.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الآلتين صوتها غليظ؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l3-drum.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l3-triangle.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "صوت الطبل غليظ، وصوت المثلث حادّ.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "الحدة والغلظة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-triangle.jpg",
+     "l3-drum.jpg"
+    ]
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "صوت العصفور صوتٌ …",
+   "options": [
+    {
+     "t": "text",
+     "text": "غليظ"
+    },
+    {
+     "t": "text",
+     "text": "حادّ"
+    }
+   ],
+   "answer": 1,
+   "explain": "صوت العصفور حادّ، وصوت الأسد غليظ.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الحدة والغلظة",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "صوت الأسد صوتٌ …",
+   "options": [
+    {
+     "t": "text",
+     "text": "غليظ"
+    },
+    {
+     "t": "text",
+     "text": "حادّ"
+    }
+   ],
+   "answer": 0,
+   "explain": "صوت الأسد غليظ، وصوت العصفور حادّ.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الحدة والغلظة",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "gen",
+   "gen": {
+    "domain": "pitch",
+    "level": 1,
+    "seed": 101
+   },
+   "prompt": "استمع إلى صوتين: هل الصوت الثاني أحدّ أم أغلظ من الأول؟",
+   "options": [],
+   "answer": 0,
+   "explain": "",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "outcome",
+     "assessment"
+    ],
+    "skill": "التمييز السمعي بين الحدة والغلظة",
+    "level": "discriminate",
+    "display": "audio+text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "gen",
+   "gen": {
+    "domain": "pitch",
+    "level": 1,
+    "seed": 2207
+   },
+   "prompt": "استمع إلى صوتين: هل الصوت الثاني أحدّ أم أغلظ من الأول؟",
+   "options": [],
+   "answer": 0,
+   "explain": "",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "outcome",
+     "assessment"
+    ],
+    "skill": "التمييز السمعي بين الحدة والغلظة",
+    "level": "discriminate",
+    "display": "audio+text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "عند سماع النغمة الغليظة نعبّر عنها بـ …",
+   "options": [
+    {
+     "t": "text",
+     "text": "التصفيق إلى أعلى"
+    },
+    {
+     "t": "text",
+     "text": "الضرب على الأرض بالأرجل"
+    }
+   ],
+   "answer": 1,
+   "explain": "نصفّق إلى أعلى عند النغمة الحادة، ونضرب الأرض بأرجلنا عند النغمة الغليظة.",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التعبير الحركي عن الحدة والغلظة",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "عند سماع اللحن السريع نعبّر عنه بـ …",
+   "options": [
+    {
+     "t": "text",
+     "text": "المشي ببطء في المكان"
+    },
+    {
+     "t": "text",
+     "text": "الركض في المكان"
+    }
+   ],
+   "answer": 1,
+   "explain": "نركض في أماكننا عند سماع اللحن السريع، ونمشي ببطء عند سماع اللحن البطيء.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "التعبير الحركي عن السرعة والبطء",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  }
+ ],
+ "review": [
+  "التمييز السمعي بين السرعة والبطء غير متاح في أدوات اللعبة الحالية (لا مقاطع بسرعات مختلفة)؛ قيس بصريًّا ونظريًّا فقط.",
+  "سؤالا الاستماع للحدة والغلظة من مولّد اللعبة (نغمتان على البيانو بفارق كبير)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

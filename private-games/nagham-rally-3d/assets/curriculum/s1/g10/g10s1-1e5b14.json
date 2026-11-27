@@ -1,0 +1,650 @@
+{
+ "lessonId": "g10s1-1e5b14",
+ "grade": 10,
+ "sem": 1,
+ "title": "مفتاح (فا) الخط الرابع",
+ "source": "دليل المعلم — الصف العاشر، الوحدة الأولى، الدرس الأول (ص ١٤–١٧)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف مفتاح (فا) الخط الرابع."
+  },
+  {
+   "id": "o2",
+   "text": "يتعرّف المدرج الموسيقي الكبير واستخداماته."
+  },
+  {
+   "id": "o3",
+   "text": "يقرأ النغمات المدوّنة على مدرج مفتاح (فا)."
+  },
+  {
+   "id": "o4",
+   "text": "يقارن بين مفتاحي (صول) و(فا)."
+  },
+  {
+   "id": "o5",
+   "text": "يقدّر دراسة اللغة الموسيقية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين هو مفتاح (فا) الخط الرابع؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g10/l1-gclef.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g10/l1-fclef.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "مفتاح فا الخط الرابع، وله نقطتان تحددان الخط الرابع.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "التمييز بين مفتاحي صول وفا",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-fclef.jpg",
+     "l1-gclef.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g10/l1-fclef.jpg"
+   },
+   "prompt": "ما اسم المفتاح الموسيقي الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "مفتاح (فا) الخط الرابع"
+    },
+    {
+     "t": "text",
+     "text": "مفتاح (صول)"
+    },
+    {
+     "t": "text",
+     "text": "مفتاح (دو)"
+    }
+   ],
+   "answer": 0,
+   "explain": "هذا مفتاح فا الخط الرابع.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مفتاح فا الخط الرابع",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-fclef.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "لماذا سُمّي الخط الرابع بـ(فا) في مدرج مفتاح فا؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "لأن رسم المفتاح يبدأ منه"
+    },
+    {
+     "t": "text",
+     "text": "لأنه أعلى خط"
+    },
+    {
+     "t": "text",
+     "text": "لأنه يحمل نغمة دو الوسطى"
+    }
+   ],
+   "answer": 0,
+   "explain": "يبدأ رسم المفتاح من الخط الرابع، ولذا سُمّي الخط الرابع بـ(فا).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "مفتاح فا الخط الرابع",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "خُصّص مفتاح (فا) الخط الرابع لتدوين الأصوات …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الغليظة والمتوسطة الحدة"
+    },
+    {
+     "t": "text",
+     "text": "الحادة جدًّا فقط"
+    },
+    {
+     "t": "text",
+     "text": "الحادة والمتوسطة"
+    }
+   ],
+   "answer": 0,
+   "explain": "لتدوين الأصوات الغليظة والأصوات متوسطة الحدة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مفتاح فا الخط الرابع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "لتدوين أي صوت بشري يُستخدم مدرج مفتاح (فا) الخط الرابع؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "صوت الباص (أغلظ أصوات الرجال)"
+    },
+    {
+     "t": "text",
+     "text": "صوت السوبرانو"
+    },
+    {
+     "t": "text",
+     "text": "صوت الأطفال"
+    }
+   ],
+   "answer": 0,
+   "explain": "يستخدم لتدوين صوت الباص، وكذلك التدوين لآلة التشيللو.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مفتاح فا الخط الرابع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الآلات التالية تُدوَّن على مدرج مفتاح (فا) الخط الرابع؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "التشيللو"
+    },
+    {
+     "t": "text",
+     "text": "الكمان"
+    },
+    {
+     "t": "text",
+     "text": "الفلوت"
+    }
+   ],
+   "answer": 0,
+   "explain": "يستخدم مدرج مفتاح فا لتدوين آلة التشيللو.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مفتاح فا الخط الرابع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم نغمة يضم مدرج مفتاح (فا) دون خطوط إضافية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٧"
+    },
+    {
+     "t": "text",
+     "text": "٩"
+    },
+    {
+     "t": "text",
+     "text": "١١"
+    }
+   ],
+   "answer": 1,
+   "explain": "يضم المدرج تسع نغمات فقط، ويمكن زيادتها بالخطوط الإضافية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مفتاح فا الخط الرابع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما المفتاح الآخر من عائلة مفتاح فا ويُستخدم للنغمات الأكثر غلظة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "مفتاح (فا) الخط الثالث"
+    },
+    {
+     "t": "text",
+     "text": "مفتاح (صول) الخط الثاني"
+    },
+    {
+     "t": "text",
+     "text": "مفتاح (دو) الخط الأول"
+    }
+   ],
+   "answer": 0,
+   "explain": "يوجد مفتاح آخر يسمى مفتاح (فا) الخط الثالث للنغمات الأكثر غلظة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مفتاح فا الخط الرابع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g10/l1-grand.jpg"
+   },
+   "prompt": "ماذا يُسمّى المدرج الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "المدرج الكبير"
+    },
+    {
+     "t": "text",
+     "text": "مدرج مفتاح صول"
+    },
+    {
+     "t": "text",
+     "text": "مدرج الإيقاع"
+    }
+   ],
+   "answer": 0,
+   "explain": "المدرج الكبير: مدرجان، الأعلى مفتاح صول والأسفل مفتاح فا الخط الرابع.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "المدرج الكبير",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-grand.jpg"
+    ]
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم عدد خطوط المدرج الكبير (مع خط دو الوسطى)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١٠"
+    },
+    {
+     "t": "text",
+     "text": "١١"
+    },
+    {
+     "t": "text",
+     "text": "١٢"
+    }
+   ],
+   "answer": 1,
+   "explain": "مدرجان من خمسة خطوط يتوسطهما خط إضافي لنغمة دو الوسطى = ١١ خطًا.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "المدرج الكبير",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما النغمة التي تُدوَّن على الخط الإضافي الذي يتوسط المدرجين في المدرج الكبير؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو الوسطى"
+    },
+    {
+     "t": "text",
+     "text": "صول"
+    },
+    {
+     "t": "text",
+     "text": "فا"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتوسط المدرجين خط إضافي يدون عليه نغمة (دو الوسطى).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "المدرج الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "لأي الآلات يُستخدم المدرج الكبير؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الآلات التي تستخدم اليدين معًا مثل البيانو والأكورديون"
+    },
+    {
+     "t": "text",
+     "text": "الآلات الإيقاعية"
+    },
+    {
+     "t": "text",
+     "text": "آلات النفخ"
+    }
+   ],
+   "answer": 0,
+   "explain": "الآلات التي تستخدم اليدين معًا في العزف مثل البيانو والأكورديون.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "استخدامات المدرج الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "في المدرج الكبير، المدرج الأعلى يحمل مفتاح …",
+   "options": [
+    {
+     "t": "text",
+     "text": "صول"
+    },
+    {
+     "t": "text",
+     "text": "فا الخط الرابع"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأعلى مفتاح صول، والأسفل مفتاح فا الخط الرابع.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "المدرج الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما فائدة استخدام المفاتيح الموسيقية المتعددة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "يختص كل مفتاح بطبقة أو طبقتين من الطبقات الصوتية"
+    },
+    {
+     "t": "text",
+     "text": "تحديد سرعة الأداء"
+    },
+    {
+     "t": "text",
+     "text": "تحديد الميزان"
+    }
+   ],
+   "answer": 0,
+   "explain": "تختلف الطبقات الصوتية، فيختص كل مفتاح بطبقة أو طبقتين منها.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o5"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "فائدة المفاتيح الموسيقية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q14"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما أسماء خطوط مدرج مفتاح (فا) الخط الرابع من أسفل إلى أعلى؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "صول – سي – ري – فا – لا"
+    },
+    {
+     "t": "text",
+     "text": "مي – صول – سي – ري – فا"
+    },
+    {
+     "t": "text",
+     "text": "فا – لا – دو – مي – صول"
+    }
+   ],
+   "answer": 0,
+   "explain": "خطوط مدرج مفتاح فا من أسفل لأعلى: صول، سي، ري، فا، لا (كراس النشاط ص٩).",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "قراءة النغمات على مدرج مفتاح فا",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q15"
+  },
+  {
+   "kind": "text",
+   "prompt": "يُستخدم مفتاح … في تدوين النغمات الحادة.",
+   "options": [
+    {
+     "t": "text",
+     "text": "صول"
+    },
+    {
+     "t": "text",
+     "text": "فا الخط الرابع"
+    },
+    {
+     "t": "text",
+     "text": "فا الخط الثالث"
+    }
+   ],
+   "answer": 0,
+   "explain": "مفتاح صول للنغمات الحادة (كراس النشاط ص٩).",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "المقارنة بين مفتاحي صول وفا",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q16"
+  },
+  {
+   "kind": "text",
+   "prompt": "يتكوّن المدرج الكبير من …",
+   "options": [
+    {
+     "t": "text",
+     "text": "مدرجين"
+    },
+    {
+     "t": "text",
+     "text": "مدرج واحد"
+    },
+    {
+     "t": "text",
+     "text": "ثلاثة مدرجات"
+    }
+   ],
+   "answer": 0,
+   "explain": "المدرج الكبير مدرجان (كراس النشاط ص٩).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "المدرج الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q17"
+  },
+  {
+   "kind": "text",
+   "prompt": "نغمة على الخط الرابع في مدرج مفتاح (فا) اسمها …",
+   "options": [
+    {
+     "t": "text",
+     "text": "فا"
+    },
+    {
+     "t": "text",
+     "text": "ري"
+    },
+    {
+     "t": "text",
+     "text": "لا"
+    }
+   ],
+   "answer": 0,
+   "explain": "الخط الرابع في مدرج مفتاح فا يسمى فا.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "قراءة النغمات على مدرج مفتاح فا",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q18"
+  }
+ ],
+ "review": [
+  "أُضيفت أسئلة من كراس نشاط الطالب للصف العاشر وإجاباته (المرفقين منك).",
+  "محرّك المدرج في اللعبة يرسم مفتاح صول فقط؛ لذلك لم تُبنَ أسئلة قراءة نغمات على مدرج مفتاح فا (تحتاج تطوير المحرك أو صور). مقترح للمرحلة القادمة.",
+  "عدد خطوط المدرج الكبير (١١) من نص الدليل."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

@@ -1,0 +1,546 @@
+{
+ "lessonId": "g8s1-c6eba5",
+ "grade": 8,
+ "sem": 1,
+ "title": "أبعاد سلَّم (دو) الكبير",
+ "source": "دليل المعلم — الصف الثامن، الوحدة الثانية، الدرس الأول (ص ٣٧–٤٣)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف أبعاد سلّم (دو) الكبير."
+  },
+  {
+   "id": "o2",
+   "text": "يدوّن سلّم (دو) الكبير بأبعاده."
+  },
+  {
+   "id": "o3",
+   "text": "يميّز سمعيًّا البعد الكامل ونصف البعد بين النغمات."
+  },
+  {
+   "id": "o4",
+   "text": "يدرك البعد الكامل ونصف البعد بين النغمات من خلال لوحة المفاتيح."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ماذا تُسمّى المسافات بين درجات السلم الموسيقي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأبعاد"
+    },
+    {
+     "t": "text",
+     "text": "الموازين"
+    },
+    {
+     "t": "text",
+     "text": "القفلات"
+    }
+   ],
+   "answer": 0,
+   "explain": "المسافات بين درجات السلم الموسيقي تسمى الأبعاد.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "أبعاد سلم دو الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "على لوحة المفاتيح، وجود مفتاح أسود بين مفتاحين أبيضين يعني أن البعد بينهما …",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعد كامل"
+    },
+    {
+     "t": "text",
+     "text": "نصف بُعد"
+    },
+    {
+     "t": "text",
+     "text": "لا يوجد بُعد"
+    }
+   ],
+   "answer": 0,
+   "explain": "المفتاح الأسود يوجد فقط بين النغمتين اللتين بينهما بعد كامل.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "البعد على لوحة المفاتيح",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "على لوحة المفاتيح، عدم وجود مفتاح أسود بين مفتاحين أبيضين يعني أن البعد بينهما …",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعد كامل"
+    },
+    {
+     "t": "text",
+     "text": "نصف بُعد"
+    },
+    {
+     "t": "text",
+     "text": "بُعدان"
+    }
+   ],
+   "answer": 1,
+   "explain": "عدم وجود مفتاح أسود يعني أن بين النغمتين نصف بعد.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "البعد على لوحة المفاتيح",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما البعد بين نغمتي (مي) و(فا)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعد كامل"
+    },
+    {
+     "t": "text",
+     "text": "نصف بُعد"
+    }
+   ],
+   "answer": 1,
+   "explain": "في سلم دو الكبير: نصف بعد بين (مي–فا) و(سي–دو).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "أبعاد سلم دو الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما البعد بين نغمتي (سي) و(دو)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعد كامل"
+    },
+    {
+     "t": "text",
+     "text": "نصف بُعد"
+    }
+   ],
+   "answer": 1,
+   "explain": "نصف بعد بين (سي–دو).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "أبعاد سلم دو الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما البعد بين نغمتي (دو) و(ري)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعد كامل"
+    },
+    {
+     "t": "text",
+     "text": "نصف بُعد"
+    }
+   ],
+   "answer": 0,
+   "explain": "بين دو وري بعد كامل.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "أبعاد سلم دو الكبير",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما البعد بين نغمتي (صول) و(لا)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعد كامل"
+    },
+    {
+     "t": "text",
+     "text": "نصف بُعد"
+    }
+   ],
+   "answer": 0,
+   "explain": "بين صول ولا بعد كامل.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "أبعاد سلم دو الكبير",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ترتيب أبعاد سلم (دو) الكبير صعودًا؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١ – ١ – ½ – ١ – ١ – ١ – ½"
+    },
+    {
+     "t": "text",
+     "text": "١ – ½ – ١ – ١ – ½ – ١ – ١"
+    },
+    {
+     "t": "text",
+     "text": "½ – ١ – ١ – ١ – ½ – ١ – ١"
+    }
+   ],
+   "answer": 0,
+   "explain": "دو-ري ١، ري-مي ١، مي-فا ½، فا-صول ١، صول-لا ١، لا-سي ١، سي-دو ½.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "أبعاد سلم دو الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم بعدًا كاملًا في سلم (دو) الكبير؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٥"
+    },
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٧"
+    }
+   ],
+   "answer": 0,
+   "explain": "خمسة أبعاد كاملة ونصفا بعد.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "أبعاد سلم دو الكبير",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "بأي رمز يُدوَّن البعد الكامل على المدرج في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "قوس للأعلى"
+    },
+    {
+     "t": "text",
+     "text": "علامة على شكل (V)"
+    },
+    {
+     "t": "text",
+     "text": "خط مستقيم"
+    }
+   ],
+   "answer": 0,
+   "explain": "البعد الكامل يُرمز له بقوس، ونصف البعد بعلامة على شكل (V).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تدوين أبعاد السلم",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "ما مجموع الأبعاد بين النغمتين الظاهرتين أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعد ونصف"
+    },
+    {
+     "t": "text",
+     "text": "بُعدان"
+    },
+    {
+     "t": "text",
+     "text": "بُعد واحد"
+    }
+   ],
+   "answer": 0,
+   "explain": "مي–فا (½) + فا–صول (١) = ١½.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "مجموع الأبعاد بين نغمتين",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "A",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "ما مجموع الأبعاد بين النغمتين الظاهرتين أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعدان"
+    },
+    {
+     "t": "text",
+     "text": "بُعدان ونصف"
+    },
+    {
+     "t": "text",
+     "text": "ثلاثة أبعاد"
+    }
+   ],
+   "answer": 1,
+   "explain": "مي–فا (½) + فا–صول (١) + صول–لا (١) = ٢½.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "مجموع الأبعاد بين نغمتين",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 5,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "ما مجموع الأبعاد بين النغمتين الظاهرتين أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ثلاثة أبعاد"
+    },
+    {
+     "t": "text",
+     "text": "ثلاثة أبعاد ونصف"
+    },
+    {
+     "t": "text",
+     "text": "أربعة أبعاد"
+    }
+   ],
+   "answer": 1,
+   "explain": "فا–صول ١ + صول–لا ١ + لا–سي ١ + سي–دو ½ = ٣½.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "مجموع الأبعاد بين نغمتين",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "ما مجموع الأبعاد بين النغمتين الظاهرتين أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بُعدان"
+    },
+    {
+     "t": "text",
+     "text": "بُعد ونصف"
+    },
+    {
+     "t": "text",
+     "text": "بُعد واحد"
+    }
+   ],
+   "answer": 0,
+   "explain": "دو–ري ١ + ري–مي ١ = ٢.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "مجموع الأبعاد بين نغمتين",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q14"
+  }
+ ],
+ "review": [
+  "التمييز السمعي بين البعد الكامل ونصف البعد غير مضاف (لا يوجد مولّد مسافات في اللعبة)، ويمكن إضافته لاحقًا كسؤال مولّد.",
+  "إجابات النشاط الثاني محسوبة من النغمات المدوّنة (الدليل لا يذكرها)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

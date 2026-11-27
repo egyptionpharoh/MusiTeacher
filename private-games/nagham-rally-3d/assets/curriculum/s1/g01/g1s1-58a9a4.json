@@ -1,0 +1,497 @@
+{
+ "lessonId": "g1s1-58a9a4",
+ "grade": 1,
+ "sem": 1,
+ "title": "تطبيقات على المدرج الموسيقي",
+ "source": "دليل المعلم — الصف الأول، الوحدة الثانية، الدرس الثالث (ص ٣٩–٤١)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر أسماء الخطوط والمسافات على المدرج الموسيقي."
+  },
+  {
+   "id": "o2",
+   "text": "يقرأ النغمات المدوَّنة على المدرج الموسيقي."
+  },
+  {
+   "id": "o3",
+   "text": "يغنّي النغمات المدوَّنة على المدرج الموسيقي."
+  },
+  {
+   "id": "o4",
+   "text": "ينمّي التذوق الموسيقي لديه من خلال الاستماع والغناء."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "E",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة على الخط الأول اسمها مي.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment",
+     "outcome"
+    ],
+    "skill": "قراءة النغمات على المدرج",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "C",
+    "oct": 5,
+    "acc": 0
+   },
+   "explain": "النغمة في المسافة الثالثة اسمها دو.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment",
+     "outcome"
+    ],
+    "skill": "قراءة النغمات على المدرج",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "D",
+     "oct": 5,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "D",
+    "oct": 5,
+    "acc": 0
+   },
+   "explain": "النغمة على الخط الرابع اسمها ري.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment",
+     "outcome"
+    ],
+    "skill": "قراءة النغمات على المدرج",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "A",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة في المسافة الثانية اسمها لا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment",
+     "outcome"
+    ],
+    "skill": "قراءة النغمات على المدرج",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "F",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة في المسافة الأولى اسمها فا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment",
+     "outcome"
+    ],
+    "skill": "قراءة النغمات على المدرج",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "B",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة على الخط الثالث اسمها سي.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment",
+     "outcome"
+    ],
+    "skill": "قراءة النغمات على المدرج",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 2,
+   "target": {
+    "step": "G",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة على الخط الثاني اسمها صول.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "assessment",
+     "outcome"
+    ],
+    "skill": "قراءة النغمات على المدرج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "A",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "مي – صول – فا – لا"
+    },
+    {
+     "t": "text",
+     "text": "مي – فا – صول – لا"
+    },
+    {
+     "t": "text",
+     "text": "صول – مي – لا – فا"
+    }
+   ],
+   "answer": 0,
+   "explain": "النغمات بالترتيب: مي (الخط الأول)، صول (الخط الثاني)، فا (المسافة الأولى)، لا (المسافة الثانية).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القراءة الصولفائية للنغمات",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "مي – فا – صول – مي"
+    },
+    {
+     "t": "text",
+     "text": "فا – صول – فا – مي"
+    },
+    {
+     "t": "text",
+     "text": "مي – صول – فا – مي"
+    }
+   ],
+   "answer": 2,
+   "explain": "النغمات بالترتيب: مي – صول – فا – مي.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القراءة الصولفائية للنغمات",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "النغمتان (مي) و(صول) تُكتبان على المدرج …",
+   "options": [
+    {
+     "t": "text",
+     "text": "على الخطوط"
+    },
+    {
+     "t": "text",
+     "text": "في المسافات"
+    }
+   ],
+   "answer": 0,
+   "explain": "(مي) على الخط الأول و(صول) على الخط الثاني.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "outcome"
+    ],
+    "skill": "أسماء الخطوط والمسافات",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "النغمتان (فا) و(لا) تُكتبان على المدرج …",
+   "options": [
+    {
+     "t": "text",
+     "text": "على الخطوط"
+    },
+    {
+     "t": "text",
+     "text": "في المسافات"
+    }
+   ],
+   "answer": 1,
+   "explain": "(فا) في المسافة الأولى و(لا) في المسافة الثانية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "outcome"
+    ],
+    "skill": "أسماء الخطوط والمسافات",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  }
+ ],
+ "review": [
+  "مخرج الغناء أدائي ولا يُقاس بالاختيار؛ اكتُفي بالقراءة الصولفائية (تسمية النغمات)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

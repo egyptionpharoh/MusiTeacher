@@ -1,0 +1,477 @@
+{
+ "lessonId": "g6s1-383b96",
+ "grade": 6,
+ "sem": 1,
+ "title": "الشكل الإيقاعي (طفافي)",
+ "source": "دليل المعلم — الصف السادس، الوحدة الثانية، الدرس الأول (ص ٣٧–٤٤)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف الشكل الإيقاعي (طفافي)."
+  },
+  {
+   "id": "o2",
+   "text": "يحدّد القيمة الزمنية للتقسيم الداخلي للشكل الإيقاعي (طفافي)."
+  },
+  {
+   "id": "o3",
+   "text": "يؤدّي الشكل الإيقاعي (طفافي) بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يدوّن الشكل الإيقاعي (طفافي)."
+  },
+  {
+   "id": "o5",
+   "text": "يؤدّي تمرينًا إيقاعيًّا يحوي الشكل الإيقاعي (طفافي)."
+  },
+  {
+   "id": "o6",
+   "text": "يدرك التقسيم الداخلي للشكل الإيقاعي (طفافي)."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه الأشكال هو الشكل الإيقاعي (طفافي)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ess"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "(طفافي): دوبل كروش ثم كروش ثم دوبل كروش.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome",
+     "steps"
+    ],
+    "skill": "التعرّف على الشكل طفافي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "التقسيم الداخلي للشكل الإيقاعي (طفافي) هو …",
+   "options": [
+    {
+     "t": "text",
+     "text": "دوبل كروش + كروش + دوبل كروش"
+    },
+    {
+     "t": "text",
+     "text": "دوبل كروش + دوبل كروش + كروش"
+    },
+    {
+     "t": "text",
+     "text": "كروش + دوبل كروش + دوبل كروش"
+    }
+   ],
+   "answer": 0,
+   "explain": "ينتج الشكل من دمج الدوبل كروش الثاني والثالث في كروش واحدة.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o6"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "التقسيم الداخلي للشكل طفافي",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "ses"
+    ]
+   },
+   "prompt": "ما القيمة الزمنية للشكل الإيقاعي الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "نصف وحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدة واحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدتان"
+    }
+   ],
+   "answer": 1,
+   "explain": "¼ + ½ + ¼ = وحدة واحدة (نوار).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "assessment",
+     "steps"
+    ],
+    "skill": "القيمة الزمنية للشكل طفافي",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "لتكوين الشكل (طفافي) من أربع دوبل كروش ندمج …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الدوبل كروش الثاني والثالث"
+    },
+    {
+     "t": "text",
+     "text": "الدوبل كروش الأول والثاني"
+    },
+    {
+     "t": "text",
+     "text": "الدوبل كروش الثالث والرابع"
+    }
+   ],
+   "answer": 0,
+   "explain": "دمج العلامتين الوسطيين يعطي (طفافي)، ودمج الأوليين يعطي (تاتيفي)، ودمج الأخيرتين يعطي (طفاتي).",
+   "meta": {
+    "outcomes": [
+     "o6"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "تكوين الشكل طفافي",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "ندمج الدوبل كروش الأول والثاني من الشكل (طفاتيفي). ما الشكل الناتج؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ess"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "دمج الأوليين = كروش + دوبل كروش + دوبل كروش.",
+   "meta": {
+    "outcomes": [
+     "o6"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "استنتاج الأشكال الإيقاعية بالدمج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "ندمج الدوبل كروش الثالث والرابع من الشكل (طفاتيفي). ما الشكل الناتج؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ess"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "دمج الأخيرتين = دوبل كروش + دوبل كروش + كروش.",
+   "meta": {
+    "outcomes": [
+     "o6"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "استنتاج الأشكال الإيقاعية بالدمج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "ندمج الدوبل كروش الأربعة كلها في علامة واحدة. ما الناتج؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "٤ دوبل كروش = نوار.",
+   "meta": {
+    "outcomes": [
+     "o6"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "استنتاج الأشكال الإيقاعية بالدمج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان التمرين الإيقاعي في درس الشكل (طفافي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 0,
+   "explain": "التمرين في الميزان 2/4.",
+   "meta": {
+    "outcomes": [
+     "o5"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل التمرين الإيقاعي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "ses",
+     "ses",
+     "q"
+    ]
+   },
+   "prompt": "كم وحدة زمنية في المسار الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    }
+   ],
+   "answer": 1,
+   "explain": "طفافي (١) + طفافي (١) + نوار (١) = ٣.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القيمة الزمنية في التمرين",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ses",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا: طفافي ثم نوار.",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التمييز السمعي للشكل طفافي",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "sse"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "ses"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "ess"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سمعنا: تاتي ثم طفافي.",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التمييز السمعي للشكل طفافي",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q11"
+  }
+ ],
+ "review": [
+  "الدليل يكتب اسم الشكل بالرمز فقط؛ استُخدم «طفافي» كما في قائمة دروس اللعبة. اسمه في مكتبة اللعبة «تفافي» فأُخفي تحت الرسوم."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

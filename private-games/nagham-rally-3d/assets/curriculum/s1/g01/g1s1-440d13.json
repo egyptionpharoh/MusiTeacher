@@ -1,0 +1,517 @@
+{
+ "lessonId": "g1s1-440d13",
+ "grade": 1,
+ "sem": 1,
+ "title": "المدرج الموسيقي ومفتاح صول",
+ "source": "دليل المعلم — الصف الأول، الوحدة الثانية، الدرس الثاني (ص ٣٥–٣٨)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف المدرج الموسيقي، ومفتاح صول."
+  },
+  {
+   "id": "o2",
+   "text": "يذكر أسماء الخطوط والمسافات على المدرج الموسيقي."
+  },
+  {
+   "id": "o3",
+   "text": "يرسم مفتاح صول على المدرج الموسيقي بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يدرك أهمية مفتاح صول على المدرج الموسيقي."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "كم خطًّا في المدرج الموسيقي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    },
+    {
+     "t": "text",
+     "text": "٦"
+    }
+   ],
+   "answer": 1,
+   "explain": "يتكوّن المدرج الموسيقي من خمسة خطوط وأربع مسافات.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "outcome"
+    ],
+    "skill": "مكوّنات المدرج الموسيقي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم مسافة في المدرج الموسيقي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتكوّن المدرج الموسيقي من خمسة خطوط وأربع مسافات.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "outcome"
+    ],
+    "skill": "مكوّنات المدرج الموسيقي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف تُرتَّب خطوط المدرج الموسيقي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "من الأعلى إلى الأسفل"
+    },
+    {
+     "t": "text",
+     "text": "من الأسفل إلى الأعلى"
+    }
+   ],
+   "answer": 1,
+   "explain": "تُرتَّب خطوط المدرج من الأسفل إلى الأعلى؛ فالخط الأول هو الأسفل.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "ترتيب خطوط المدرج",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "يكون التدوين على المدرج الموسيقي …",
+   "options": [
+    {
+     "t": "text",
+     "text": "من اليسار إلى اليمين"
+    },
+    {
+     "t": "text",
+     "text": "من اليمين إلى اليسار"
+    }
+   ],
+   "answer": 0,
+   "explain": "يكون التدوين على المدرج الموسيقي من اليسار إلى اليمين.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "اتجاه التدوين على المدرج",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "متى نستطيع تسمية الخطوط والمسافات على المدرج الموسيقي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بعد رسم علامة النوار"
+    },
+    {
+     "t": "text",
+     "text": "بعد وضع المفتاح على المدرج"
+    },
+    {
+     "t": "text",
+     "text": "بعد رسم خط النهاية"
+    }
+   ],
+   "answer": 1,
+   "explain": "تُسمّى الخطوط والمسافات بعد وضع المفتاح على المدرج، ولهذا فمفتاح صول مهم.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps",
+     "outcome"
+    ],
+    "skill": "أهمية مفتاح صول",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "يبدأ رسم مفتاح صول على المدرج من الخط …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأول"
+    },
+    {
+     "t": "text",
+     "text": "الثاني"
+    },
+    {
+     "t": "text",
+     "text": "الخامس"
+    }
+   ],
+   "answer": 1,
+   "explain": "يبدأ تدوين مفتاح صول من الخط الثاني على المدرج.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "assessment",
+     "activity"
+    ],
+    "skill": "رسم مفتاح صول",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "تُكتب النغمة على الخط بحيث يكون الخط …",
+   "options": [
+    {
+     "t": "text",
+     "text": "في منتصفها"
+    },
+    {
+     "t": "text",
+     "text": "فوقها"
+    },
+    {
+     "t": "text",
+     "text": "تحتها"
+    }
+   ],
+   "answer": 0,
+   "explain": "عند تدوين النغمة على الخط يكون الخط في منتصفها، وفي المسافة تكون بين خطين.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تدوين النغمات على الخطوط والمسافات",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما اسم الخط الأول في المدرج الموسيقي بمفتاح صول؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فا"
+    },
+    {
+     "t": "text",
+     "text": "مي"
+    },
+    {
+     "t": "text",
+     "text": "صول"
+    }
+   ],
+   "answer": 1,
+   "explain": "خطوط المدرج بمفتاح صول من الأسفل: مي، صول، سي، ري، فا.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "أسماء خطوط المدرج",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "G",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة على الخط الثاني اسمها صول.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity",
+     "assessment"
+    ],
+    "skill": "أسماء خطوط المدرج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "D",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "E",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة على الخط الأول اسمها مي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity",
+     "assessment"
+    ],
+    "skill": "أسماء خطوط المدرج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 2,
+   "target": {
+    "step": "A",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة في المسافة الثانية اسمها لا.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity",
+     "assessment"
+    ],
+    "skill": "أسماء مسافات المدرج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "staff",
+   "mode": "where",
+   "prompt": "أين تُكتب النغمة (دو) على المدرج؟ اختر المسار الذي يحمل موضعها الصحيح",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 5,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "C",
+    "oct": 5,
+    "acc": 0
+   },
+   "explain": "(دو) تُكتب في المسافة الثالثة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity",
+     "assessment"
+    ],
+    "skill": "تحديد أماكن المسافات على المدرج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "staff",
+   "mode": "where",
+   "prompt": "أين تُكتب النغمة (سي) على المدرج؟ اختر المسار الذي يحمل موضعها الصحيح",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "B",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "(سي) تُكتب على الخط الثالث.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity",
+     "assessment"
+    ],
+    "skill": "تحديد أماكن الخطوط على المدرج",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "المخرج الثالث (رسم مفتاح صول) مهارة كتابية: قيس بسؤال عن نقطة بدء الرسم فقط.",
+  "نص خطوات رسم المفتاح في النموذج (٣) صغير في المسح؛ اعتُمد منه «يبدأ تدوين مفتاح صول من الخط الثاني» فقط."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

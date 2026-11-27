@@ -1,0 +1,537 @@
+{
+ "lessonId": "g5s1-a732ac",
+ "grade": 5,
+ "sem": 1,
+ "title": "العلامة الإيقاعية (الروند) والسكتة المقابلة لها",
+ "source": "دليل المعلم — الصف الخامس، الوحدة الأولى، الدرس الثالث (ص ٣١–٣٩)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف العلامة الإيقاعية الروند والسكتة المقابلة لها."
+  },
+  {
+   "id": "o2",
+   "text": "يحدّد القيمة الزمنية للعلامة الإيقاعية الروند والسكتة المقابلة لها."
+  },
+  {
+   "id": "o3",
+   "text": "يؤدّي تمرينًا إيقاعيًّا يحوي العلامة الإيقاعية الروند والسكتة المقابلة لها."
+  },
+  {
+   "id": "o4",
+   "text": "يدوّن العلامة الإيقاعية الروند والسكتة المقابلة لها بطريقة صحيحة."
+  },
+  {
+   "id": "o5",
+   "text": "يدرك القيمة الزمنية للعلامة الإيقاعية الروند والسكتة المقابلة لها من خلال الأداء."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه العلامات هي العلامة الإيقاعية (الروند)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "w"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "الروند: دائرة مفرغة بلا ساق.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome",
+     "steps"
+    ],
+    "skill": "التعرّف على الروند",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه هي السكتة المقابلة للروند؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "rh"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rw"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rq"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سكتة الروند: خط قصير جدًّا يُرسم أفقيًّا أسفل الخط الرابع من المدرج.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "السكتة المقابلة للروند",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما القيمة الزمنية للعلامة الإيقاعية (الروند)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "وحدتان"
+    },
+    {
+     "t": "text",
+     "text": "٣ وحدات"
+    },
+    {
+     "t": "text",
+     "text": "٤ وحدات"
+    }
+   ],
+   "answer": 2,
+   "explain": "الروند = ٤ وحدات زمنية (أربع نوارات).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القيمة الزمنية للروند",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما القيمة الزمنية لسكتة الروند؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "وحدة واحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدتان"
+    },
+    {
+     "t": "text",
+     "text": "٤ وحدات"
+    }
+   ],
+   "answer": 2,
+   "explain": "السكتة المقابلة للروند تساوي قيمته: ٤ وحدات صمت.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القيمة الزمنية لسكتة الروند",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف تُدوَّن سكتة الروند على المدرج الموسيقي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "خط قصير جدًّا أسفل الخط الرابع"
+    },
+    {
+     "t": "text",
+     "text": "خط قصير فوق الخط الثالث"
+    },
+    {
+     "t": "text",
+     "text": "دائرة مفرغة على الخط الثالث"
+    }
+   ],
+   "answer": 0,
+   "explain": "سكتة الروند: خط قصير جدًّا يُرسم أفقيًّا أسفل الخط الرابع، بينما سكتة البلانش تُرسم فوق الخط الثالث.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تدوين سكتة الروند",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "الروند الواحد يساوي …",
+   "options": [
+    {
+     "t": "text",
+     "text": "بلانشين"
+    },
+    {
+     "t": "text",
+     "text": "نوارين"
+    },
+    {
+     "t": "text",
+     "text": "بلانش واحد"
+    }
+   ],
+   "answer": 0,
+   "explain": "الروند = ٢ بلانش = ٤ نوار.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "العلاقة الزمنية بين العلامات",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم نوارًا يساوي الروند؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    }
+   ],
+   "answer": 2,
+   "explain": "الروند = ٤ نوار.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "العلاقة الزمنية بين العلامات",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "q",
+     "rw"
+    ]
+   },
+   "prompt": "ما مجموع القيم الزمنية للعلامات الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    }
+   ],
+   "answer": 1,
+   "explain": "نوار (١) + سكتة روند (٤) = ٥.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "جمع القيم الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "h",
+     "h"
+    ]
+   },
+   "prompt": "ما مجموع القيم الزمنية للعلامات الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    }
+   ],
+   "answer": 1,
+   "explain": "بلانش (٢) + بلانش (٢) = ٤ = روند.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "جمع القيم الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "ssss",
+     "h"
+    ]
+   },
+   "prompt": "ما مجموع القيم الزمنية للعلامات الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٢"
+    }
+   ],
+   "answer": 0,
+   "explain": "تفاتيفي (١) + بلانش (٢) = ٣.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "جمع القيم الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "rq",
+     "q"
+    ]
+   },
+   "prompt": "ما مجموع القيم الزمنية للعلامات الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١"
+    },
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    }
+   ],
+   "answer": 1,
+   "explain": "سكتة نوار (١) + نوار (١) = ٢.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "جمع القيم الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي علامة تكمل المازورة في الميزان الرباعي؟ (المازورة فارغة تمامًا)",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "w"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "hd"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة في الميزان الرباعي ٤ وحدات = روند.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "إكمال المازورة حسب الميزان",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "h",
+      "w"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "h",
+      "h"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا: نوار، نوار، بلانش، ثم روند (٤ وحدات).",
+   "meta": {
+    "outcomes": [
+     "o5",
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "إدراك القيمة الزمنية للروند من خلال الأداء",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "رسم سكتة الروند في اللعبة يكون منفردًا بدون مدرج؛ موضعها (أسفل الخط الرابع) سُئل عنه نصًّا."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

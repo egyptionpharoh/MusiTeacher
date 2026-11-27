@@ -1,0 +1,606 @@
+{
+ "lessonId": "g2s1-7ead10",
+ "grade": 2,
+ "sem": 1,
+ "title": "سلم (دو) الكبير وإشارات اليد الدالة على الأثر النفسي",
+ "source": "دليل المعلم — الصف الثاني، الوحدة الأولى، الدرس الثاني (ص ٢٣–٢٩)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف سُلَّم (دو الكبير)."
+  },
+  {
+   "id": "o2",
+   "text": "يتعرَّف إشارات اليد الدالة على الأثر النفسي."
+  },
+  {
+   "id": "o3",
+   "text": "يدوّن نغمتَي (دو) الوسطى، و(ري) على المدرج الموسيقي."
+  },
+  {
+   "id": "o4",
+   "text": "يغنّي سُلَّم (دو الكبير) صعودًا وهبوطًا بطريقة صحيحة."
+  },
+  {
+   "id": "o5",
+   "text": "يؤدّي إشارات اليد الدالة على الأثر النفسي."
+  },
+  {
+   "id": "o6",
+   "text": "يستشعر الأثر النفسي لكلّ نغمة يؤديها."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "من كم درجة صوتية متتالية يتكوّن السُّلَّم الموسيقي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "خمس"
+    },
+    {
+     "t": "text",
+     "text": "سبع"
+    },
+    {
+     "t": "text",
+     "text": "ثمان"
+    }
+   ],
+   "answer": 1,
+   "explain": "يتكوّن السلّم الموسيقي من سبع درجات صوتية متتالية، والدرجة الثامنة جواب الأولى.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "تعريف السلّم الموسيقي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "الدرجة الثامنة في السُّلَّم الموسيقي تكون …",
+   "options": [
+    {
+     "t": "text",
+     "text": "جواب الدرجة الأولى"
+    },
+    {
+     "t": "text",
+     "text": "نغمة جديدة مختلفة"
+    },
+    {
+     "t": "text",
+     "text": "سكتة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الدرجة الثامنة تكون جواب الدرجة الأولى.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "تعريف السلّم الموسيقي",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "رتّب نغمات سلَّم (دو الكبير) صعودًا: اختر الترتيب الصحيح",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو – ري – مي – فا – صول – لا – سي – دو"
+    },
+    {
+     "t": "text",
+     "text": "دو – مي – ري – فا – لا – صول – سي – دو"
+    },
+    {
+     "t": "text",
+     "text": "دو – ري – فا – مي – صول – سي – لا – دو"
+    }
+   ],
+   "answer": 0,
+   "explain": "سلّم دو الكبير صعودًا: دو، ري، مي، فا، صول، لا، سي، دو.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "assessment",
+     "steps"
+    ],
+    "skill": "أسماء نغمات سلّم دو الكبير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "من العالم الموسيقي الذي ابتكر إشارات اليد الدالة على الأثر النفسي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جون كراون"
+    },
+    {
+     "t": "text",
+     "text": "إيمي باري"
+    },
+    {
+     "t": "text",
+     "text": "موتسارت"
+    }
+   ],
+   "answer": 0,
+   "explain": "ابتكر العالم الموسيقي جون كراون (John Curwen) سبع إشارات تؤدّى باليد.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "إشارات اليد الدالة على الأثر النفسي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم إشارة يد ابتكرها جون كراون للدلالة على الأثر النفسي للنغمات؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "خمس"
+    },
+    {
+     "t": "text",
+     "text": "سبع"
+    },
+    {
+     "t": "text",
+     "text": "عشر"
+    }
+   ],
+   "answer": 1,
+   "explain": "سبع إشارات؛ لكل نغمة إشارة ذات أثر نفسي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "إشارات اليد الدالة على الأثر النفسي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "staff",
+   "mode": "where",
+   "prompt": "أين تُكتب نغمة (دو الوسطى) على المدرج؟ اختر المسار الذي يحمل موضعها الصحيح",
+   "choices": [
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "C",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "(دو الوسطى) تُدوَّن على الخط الإضافي أسفل المدرج.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "تدوين نغمة دو الوسطى",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "staff",
+   "mode": "where",
+   "prompt": "أين تُكتب نغمة (ري) على المدرج؟ اختر المسار الذي يحمل موضعها الصحيح",
+   "choices": [
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "D",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "(ري) تُدوَّن على المسافة أسفل الخط الأول للمدرج.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "تدوين نغمة ري",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "C",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة على الخط الإضافي أسفل المدرج اسمها (دو الوسطى).",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "قراءة نغمة دو الوسطى",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "D",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة أسفل الخط الأول اسمها (ري).",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "قراءة نغمة ري",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "أين تُكتب نغمة (دو الوسطى) على المدرج؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "على الخط الإضافي أسفل المدرج"
+    },
+    {
+     "t": "text",
+     "text": "على الخط الأول"
+    },
+    {
+     "t": "text",
+     "text": "في المسافة الأولى"
+    }
+   ],
+   "answer": 0,
+   "explain": "تُدوَّن (دو الوسطى) على الخط الإضافي أسفل المدرج.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تدوين نغمة دو الوسطى",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي إشارة يد تدلّ على النغمة (دو)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-do.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-fa.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-si.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "هذه إشارة اليد الدالة على النغمة (دو).",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "إشارات اليد الدالة على الأثر النفسي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l2-hand-do.jpg",
+     "l2-hand-fa.jpg",
+     "l2-hand-si.jpg"
+    ]
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي إشارة يد تدلّ على النغمة (فا)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-do.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-fa.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-mi.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "هذه إشارة اليد الدالة على النغمة (فا).",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "إشارات اليد الدالة على الأثر النفسي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l2-hand-fa.jpg",
+     "l2-hand-do.jpg",
+     "l2-hand-mi.jpg"
+    ]
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي إشارة يد تدلّ على النغمة (سي)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-re.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-la.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-si.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "هذه إشارة اليد الدالة على النغمة (سي). (الإصبع يشير إلى أعلى).",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "إشارات اليد الدالة على الأثر النفسي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l2-hand-si.jpg",
+     "l2-hand-re.jpg",
+     "l2-hand-la.jpg"
+    ]
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي إشارة يد تدلّ على النغمة (مي)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-mi.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-sol.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g02/l2-hand-do.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "هذه إشارة اليد الدالة على النغمة (مي).",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "إشارات اليد الدالة على الأثر النفسي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l2-hand-mi.jpg",
+     "l2-hand-sol.jpg",
+     "l2-hand-do.jpg"
+    ]
+   },
+   "id": "q14"
+  },
+  {
+   "kind": "text",
+   "prompt": "أثناء غناء السلَّم مع إشارات اليد، نرفع اليد …",
+   "options": [
+    {
+     "t": "text",
+     "text": "كلما ارتفعت الدرجة الصوتية"
+    },
+    {
+     "t": "text",
+     "text": "كلما انخفضت الدرجة الصوتية"
+    },
+    {
+     "t": "text",
+     "text": "في النغمة الأولى فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "نراعي رفع اليد طبقًا لارتفاع الدرجة الصوتية.",
+   "meta": {
+    "outcomes": [
+     "o5",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "أداء إشارات اليد مع الغناء",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q15"
+  }
+ ],
+ "review": [
+  "صور إشارات اليد مقتطعة من النموذج (١) في الدليل، وربطها بالنغمات وفق موضع كل نغمة على المدرج بجانبها (دو، ري، مي، فا، صول، لا، سي).",
+  "الدليل يكتب اسم العالم «جون كراون (John Curwen)» فاستُخدم كما ورد."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

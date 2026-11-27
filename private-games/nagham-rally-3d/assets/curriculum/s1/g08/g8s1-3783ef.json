@@ -1,0 +1,643 @@
+{
+ "lessonId": "g8s1-3783ef",
+ "grade": 8,
+ "sem": 1,
+ "title": "نشيدان من فني (البرعة) و(طبل النساء)",
+ "source": "دليل المعلم — الصف الثامن، الوحدة الأولى، الدرس الثاني (ص ٢٠–٢٨)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف المعنى العام للنشيد."
+  },
+  {
+   "id": "o2",
+   "text": "يُنشد نشيدًا من فن البرعة (للذكور)، ونشيدًا من فن طبل النساء (للإناث) بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يؤدّي إيقاع فن البرعة (للذكور)، وفن طبل النساء (للإناث)، مع إنشاد النشيد."
+  },
+  {
+   "id": "o4",
+   "text": "يشارك زملاءه في أداء فن البرعة (للذكور)، وطبل النساء (للإناث)."
+  },
+  {
+   "id": "o5",
+   "text": "يعتزّ بالهوية العُمانية من خلال كلمات النشيدين."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "نشيد (نبتَ الحقُّ عليها مُزهِرا) من أي فن عُماني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فن البرعة"
+    },
+    {
+     "t": "text",
+     "text": "فن طبل النساء"
+    },
+    {
+     "t": "text",
+     "text": "فن الرزحة"
+    }
+   ],
+   "answer": 0,
+   "explain": "نشيد (نبت الحق عليها مزهرا) من فن البرعة (للذكور)، ونشيد (زاهي وطنا بيومك) من فن طبل النساء (للإناث).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "النشيدان والفنان",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "نشيد (زاهي وطنّا بيومك) من أي فن عُماني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فن البرعة"
+    },
+    {
+     "t": "text",
+     "text": "فن طبل النساء"
+    },
+    {
+     "t": "text",
+     "text": "فن العازي"
+    }
+   ],
+   "answer": 1,
+   "explain": "نشيد (زاهي وطنا بيومك) من فن طبل النساء.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "النشيدان والفنان",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (نبت الحق عليها مزهرا): «أيها الهَيْثَمُ مُرْنا ما ترى …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "كلُّنا جندٌ على هذا الثرى"
+    },
+    {
+     "t": "text",
+     "text": "بشبابٍ حالمٍ عافَ الكرى"
+    },
+    {
+     "t": "text",
+     "text": "غرزَ العزمَ على هامِ الذرى"
+    }
+   ],
+   "answer": 0,
+   "explain": "«أيها الهيثم مرنا ما ترى، كلنا جند على هذا الثرى».",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «فعُمانٌ مذ حداها فارسٌ …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "قِبلةٌ للعالمين ومنبرا"
+    },
+    {
+     "t": "text",
+     "text": "نبتَ الحقُّ عليها مُزهِرا"
+    },
+    {
+     "t": "text",
+     "text": "ووشاحًا ورداءً للسُّرى"
+    }
+   ],
+   "answer": 0,
+   "explain": "«فعمان مذ حداها فارس، قبلة للعالمين ومنبرا».",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "من كاتب كلمات نشيد (نبت الحق عليها مزهرا)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "علي بن أحمد المعشني"
+    },
+    {
+     "t": "text",
+     "text": "د. سعيدة بنت خاطر الفارسي"
+    },
+    {
+     "t": "text",
+     "text": "يوسف الكمالي"
+    }
+   ],
+   "answer": 0,
+   "explain": "كلمات: علي بن أحمد المعشني.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «الثّرى» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "التراب"
+    },
+    {
+     "t": "text",
+     "text": "النعاس"
+    },
+    {
+     "t": "text",
+     "text": "السير ليلًا"
+    }
+   ],
+   "answer": 0,
+   "explain": "الثرى: التراب.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «الكرى» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "النعاس"
+    },
+    {
+     "t": "text",
+     "text": "الكره"
+    },
+    {
+     "t": "text",
+     "text": "التراب"
+    }
+   ],
+   "answer": 0,
+   "explain": "الكرى: النعاس.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «السُّرى» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "السير ليلًا"
+    },
+    {
+     "t": "text",
+     "text": "الأعالي"
+    },
+    {
+     "t": "text",
+     "text": "شدة العشق"
+    }
+   ],
+   "answer": 0,
+   "explain": "السرى: السير ليلًا.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى «حَداها» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ساقها وقادها"
+    },
+    {
+     "t": "text",
+     "text": "تركها"
+    },
+    {
+     "t": "text",
+     "text": "بناها"
+    }
+   ],
+   "answer": 0,
+   "explain": "حداها: ساقها وقادها.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى «الذُّرى» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جمع ذروة، وهي من كل شيء أعلاه"
+    },
+    {
+     "t": "text",
+     "text": "الوديان"
+    },
+    {
+     "t": "text",
+     "text": "الأمواج"
+    }
+   ],
+   "answer": 0,
+   "explain": "الذرى: جمع ذروة، وهي من كل شيء أعلاه.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (زاهي وطنّا بيومك): «زاهي وطنّا بيومك …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "مبروك يا قرّة العين"
+    },
+    {
+     "t": "text",
+     "text": "وصار العمل لك عبادة"
+    },
+    {
+     "t": "text",
+     "text": "بالمرأة في كل ميدان"
+    }
+   ],
+   "answer": 0,
+   "explain": "«زاهي وطنا بيومك، مبروك يا قرة العين».",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «اليوم فرحتنا تزدان …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "بالمرأة في كل ميدان"
+    },
+    {
+     "t": "text",
+     "text": "حوّطها بقول آمين"
+    },
+    {
+     "t": "text",
+     "text": "تاريخ يحكي ويفاخر"
+    }
+   ],
+   "answer": 0,
+   "explain": "«اليوم فرحتنا تزدان، بالمرأة في كل ميدان».",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "من كاتبة كلمات نشيد (زاهي وطنّا بيومك)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "د. سعيدة بنت خاطر الفارسي"
+    },
+    {
+     "t": "text",
+     "text": "علي بن أحمد المعشني"
+    },
+    {
+     "t": "text",
+     "text": "فيصل الشبلي"
+    }
+   ],
+   "answer": 0,
+   "explain": "كلمات: د. سعيدة بنت خاطر الفارسي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «زاهي» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جميل المنظر"
+    },
+    {
+     "t": "text",
+     "text": "حزين"
+    },
+    {
+     "t": "text",
+     "text": "قديم"
+    }
+   ],
+   "answer": 0,
+   "explain": "زاهي: جميل المنظر.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q14"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى «قُرّة العين» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ما تُسعَد به العين"
+    },
+    {
+     "t": "text",
+     "text": "دمعة العين"
+    },
+    {
+     "t": "text",
+     "text": "لون العين"
+    }
+   ],
+   "answer": 0,
+   "explain": "قرة العين: ما تسعد به العين.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q15"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى «حوّطها» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "حصّنتُها"
+    },
+    {
+     "t": "text",
+     "text": "تركتُها"
+    },
+    {
+     "t": "text",
+     "text": "رسمتُها"
+    }
+   ],
+   "answer": 0,
+   "explain": "حوّطها: حصّنتها.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q16"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الإيقاعين نؤدّيه مع نشيد (نبت الحق عليها مزهرا)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g08/l1-r-baraa.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g08/l1-r-women.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "النشيد من فن البرعة، فنؤدّي إيقاع البرعة.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "إيقاع الفن مع النشيد",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-r-baraa.jpg",
+     "l1-r-women.jpg"
+    ]
+   },
+   "id": "q17"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الإيقاعين نؤدّيه مع نشيد (زاهي وطنّا بيومك)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g08/l1-r-baraa.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g08/l1-r-women.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "النشيد من فن طبل النساء، فنؤدّي إيقاع طبل النساء.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "إيقاع الفن مع النشيد",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l1-r-baraa.jpg",
+     "l1-r-women.jpg"
+    ]
+   },
+   "id": "q18"
+  }
+ ],
+ "review": [
+  "المجلد فيه ٣ ملفات لهذا الدرس؛ استُخدم الملف الكامل «نشيدان من فني البرعة وطبل النساء» (الملفان الآخران أجزاء منه).",
+  "الدرس يُدرَّس فيه نشيد للذكور ونشيد للإناث؛ البنك يحوي أسئلة الاثنين — اختر ما يناسب صفك عند إضافة الأسئلة.",
+  "أسماء الملحنين غير واضحة في المسح فلم تُسأل.",
+  "صور إيقاعي الفنين معاد استخدامها من الدرس الأول."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

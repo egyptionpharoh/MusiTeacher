@@ -1,0 +1,480 @@
+{
+ "lessonId": "g10s1-fc5835",
+ "grade": 10,
+ "sem": 1,
+ "title": "العصر الرومانسي (الرومانتيكي) (١٨٠٠ - ١٩٠٠)",
+ "source": "دليل المعلم — الصف العاشر، الوحدة الثالثة، الدرس الأول (ص ٣٦–٣٧) + كراس النشاط (ص ٢١–٢٢)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف العصر الرومانسي وأهم سماته."
+  },
+  {
+   "id": "o2",
+   "text": "يتعرّف بعض مؤلفي هذا العصر."
+  },
+  {
+   "id": "o3",
+   "text": "يقارن بين العصرين الكلاسيكي والرومانسي من حيث السمات المميزة لكل منهما."
+  },
+  {
+   "id": "o4",
+   "text": "يقدّر القيم الجمالية للعصر الرومانسي."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما الفترة الزمنية للعصر الرومانسي (الرومانتيكي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١٨٠٠ – ١٩٠٠م"
+    },
+    {
+     "t": "text",
+     "text": "١٦٠٠ – ١٧٥٠م"
+    },
+    {
+     "t": "text",
+     "text": "١٧٥٠ – ١٨٠٠م"
+    }
+   ],
+   "answer": 0,
+   "explain": "العصر الرومانسي (١٨٠٠ – ١٩٠٠م).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "العصر الرومانسي وسماته",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ماذا تعني كلمة (رومانسي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الخيال والعاطفة"
+    },
+    {
+     "t": "text",
+     "text": "العقلانية والواقعية"
+    },
+    {
+     "t": "text",
+     "text": "الزخرفة اللحنية"
+    }
+   ],
+   "answer": 0,
+   "explain": "كلمة (رومانتيك) تعني العاطفة والخيال والكشف عن العواطف.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "العصر الرومانسي وسماته",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "بماذا اتسمت الموسيقا في العصر الكلاسيكي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "العقلانية والواقعية"
+    },
+    {
+     "t": "text",
+     "text": "الإغراق في الخيال"
+    },
+    {
+     "t": "text",
+     "text": "الغنائية الشديدة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الكلاسيكي اتسم بالواقعية والاعتدال، بعكس الرومانسي.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "المقارنة بين الكلاسيكي والرومانسي",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي عصر اتّسم بالتعقيدات اللحنية وكثرة الزخارف الموسيقية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "عصر الباروك"
+    },
+    {
+     "t": "text",
+     "text": "العصر الكلاسيكي"
+    },
+    {
+     "t": "text",
+     "text": "العصر الرومانسي"
+    }
+   ],
+   "answer": 0,
+   "explain": "اتسم عصر الباروك بالتعقيدات اللحنية وكثرة الزخارف.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "المقارنة بين العصور",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي مما يلي من سمات العصر الرومانسي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الاهتمام بالطبيعة والتأكيد على القومية"
+    },
+    {
+     "t": "text",
+     "text": "البعد عن التعبير الذاتي"
+    },
+    {
+     "t": "text",
+     "text": "الالتزام الصارم بالعقلانية"
+    }
+   ],
+   "answer": 0,
+   "explain": "من قيمه الجمالية: التعبير عن الذات، الهروب إلى الغامض، الاهتمام بالطبيعة، التأكيد على القومية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "العصر الرومانسي وسماته",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أهم ما يميز الموسيقا الرومانسية هو البعد عن الواقعية والإسراف في …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الخيال"
+    },
+    {
+     "t": "text",
+     "text": "العقلانية"
+    },
+    {
+     "t": "text",
+     "text": "الزخرفة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الميل إلى حرية التعبير عن الذات والإسراف في الخيال.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "العصر الرومانسي وسماته",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "انتشرت روح الرومانسية مع بداية القرن …",
+   "options": [
+    {
+     "t": "text",
+     "text": "التاسع عشر"
+    },
+    {
+     "t": "text",
+     "text": "الثامن عشر"
+    },
+    {
+     "t": "text",
+     "text": "العشرين"
+    }
+   ],
+   "answer": 0,
+   "explain": "بدأ العصر الرومانسي مع بداية القرن التاسع عشر.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "العصر الرومانسي وسماته",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما جنسية المؤلف (فرانز شوبرت)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "نمساوي"
+    },
+    {
+     "t": "text",
+     "text": "بولندي"
+    },
+    {
+     "t": "text",
+     "text": "إيطالي"
+    }
+   ],
+   "answer": 0,
+   "explain": "فرانز شوبرت (١٧٩٧–١٨٢٨) مؤلف نمساوي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity",
+     "assessment"
+    ],
+    "skill": "مؤلفو العصر الرومانسي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما أشهر أعمال (فرانز شوبرت)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "السيمفونية الناقصة"
+    },
+    {
+     "t": "text",
+     "text": "المارش الجنائزي"
+    },
+    {
+     "t": "text",
+     "text": "فالس الدانوب الأزرق"
+    }
+   ],
+   "answer": 0,
+   "explain": "من أشهر أعماله (السيمفونية الناقصة).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity",
+     "assessment"
+    ],
+    "skill": "مؤلفو العصر الرومانسي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما جنسية (فريدريك شوبان)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بولندي"
+    },
+    {
+     "t": "text",
+     "text": "نمساوي"
+    },
+    {
+     "t": "text",
+     "text": "ألماني"
+    }
+   ],
+   "answer": 0,
+   "explain": "فريدريك شوبان (١٨١٠–١٨٤٩) مؤلف وعازف بولندي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity",
+     "assessment"
+    ],
+    "skill": "مؤلفو العصر الرومانسي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما أشهر أعمال (فريدريك شوبان)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "المارش الجنائزي"
+    },
+    {
+     "t": "text",
+     "text": "السيمفونية الناقصة"
+    },
+    {
+     "t": "text",
+     "text": "أوبرا عطيل"
+    }
+   ],
+   "answer": 0,
+   "explain": "من أشهر أعماله (المارش الجنائزي).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity",
+     "assessment"
+    ],
+    "skill": "مؤلفو العصر الرومانسي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "من مؤلف (فالس الدانوب الأزرق)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "يوهان شتراوس"
+    },
+    {
+     "t": "text",
+     "text": "فرانز شوبرت"
+    },
+    {
+     "t": "text",
+     "text": "جوزيبه فردي"
+    }
+   ],
+   "answer": 0,
+   "explain": "يوهان شتراوس (١٨٢٥–١٨٩٩) مؤلف نمساوي، من أشهر أعماله فالس الدانوب الأزرق.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity",
+     "assessment"
+    ],
+    "skill": "مؤلفو العصر الرومانسي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما جنسية المؤلف (جوزيبه فردي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "إيطالي"
+    },
+    {
+     "t": "text",
+     "text": "نمساوي"
+    },
+    {
+     "t": "text",
+     "text": "بولندي"
+    }
+   ],
+   "answer": 0,
+   "explain": "جوزيبه فردي (١٨١٣–١٩٠١) مؤلف أوبرا إيطالي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity",
+     "assessment"
+    ],
+    "skill": "مؤلفو العصر الرومانسي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "الملف «ص22» هو صفحتا كراس النشاط للدرس؛ استُخدمت أنشطته الثلاثة.",
+  "لم تُستخدم صور المؤلفين الشخصية في الأسئلة."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

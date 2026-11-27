@@ -1,0 +1,510 @@
+{
+ "lessonId": "g3s1-789d56",
+ "grade": 3,
+ "sem": 1,
+ "title": "عزف مقطوعة موسيقية على آلة الإكسيلوفون",
+ "source": "دليل المعلم — الصف الثالث، الوحدة الثانية، الدرس الثالث (ص ٥٥–٥٩)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر طريقة العزف على آلة الإكسيلوفون."
+  },
+  {
+   "id": "o2",
+   "text": "يقرأ المقطوعة الموسيقية إيقاعيًّا وصولفائيًّا."
+  },
+  {
+   "id": "o3",
+   "text": "يعزف المقطوعة الموسيقية على آلة الإكسيلوفون."
+  },
+  {
+   "id": "o4",
+   "text": "يبدي اهتمامًا لتعلّم العزف على آلة الإكسيلوفون."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما ميزان المقطوعة الموسيقية في درس العزف على الإكسيلوفون؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 0,
+   "explain": "المقطوعة مكتوبة في الميزان الثنائي 2/4.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة: الميزان",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم مازورة في المقطوعة الموسيقية (النموذج ٢) للعزف على الإكسيلوفون؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٨"
+    },
+    {
+     "t": "text",
+     "text": "٦"
+    }
+   ],
+   "answer": 1,
+   "explain": "تتكوّن المقطوعة من ٨ موازير (عبارتين).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة: عدد الموازير",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ نغمات المازورة الأولى من المقطوعة الظاهرة أمامك، ثم اختر أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو – دو – ري – ري"
+    },
+    {
+     "t": "text",
+     "text": "ري – ري – مي – مي"
+    },
+    {
+     "t": "text",
+     "text": "دو – ري – دو – ري"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الأولى: دو – دو – ري – ري.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك، ثم اختر أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "مي – مي – فا – صول"
+    },
+    {
+     "t": "text",
+     "text": "مي – فا – فا – صول"
+    },
+    {
+     "t": "text",
+     "text": "ري – ري – مي – فا"
+    }
+   ],
+   "answer": 0,
+   "explain": "النغمات: مي – مي – فا – صول.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك، ثم اختر أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "صول – فا – مي – ري"
+    },
+    {
+     "t": "text",
+     "text": "صول – لا – سي – دو"
+    },
+    {
+     "t": "text",
+     "text": "فا – مي – ري – دو"
+    }
+   ],
+   "answer": 0,
+   "explain": "النغمات: صول – فا – مي – ري (هابطة).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "بأي نغمة تنتهي المقطوعة؟ اقرأ نغمات المازورة الأخيرة الظاهرة أمامك",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو"
+    },
+    {
+     "t": "text",
+     "text": "ري"
+    },
+    {
+     "t": "text",
+     "text": "صول"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الأخيرة: مي – ري – دو؛ فتنتهي المقطوعة بنغمة (دو).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أكثر شكل إيقاعي تكرّر في المقطوعة هو كروشان متصلان (تا-تي). أي الأشكال هو؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "الكروشان المتصلان (تا-تي) يساويان وحدة زمنية واحدة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة: الأشكال الإيقاعية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما العلامة الإيقاعية التي تنتهي بها كل عبارة من عبارتي المقطوعة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "النوار"
+    },
+    {
+     "t": "text",
+     "text": "البلانش"
+    },
+    {
+     "t": "text",
+     "text": "الروند"
+    }
+   ],
+   "answer": 0,
+   "explain": "تنتهي المازورتان ٤ و٨ بعلامة نوار (صول ثم دو).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة: العلامات الإيقاعية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "الرمز (R) تحت النغمة يعني العزف بالمطرقة …",
+   "options": [
+    {
+     "t": "text",
+     "text": "اليمنى"
+    },
+    {
+     "t": "text",
+     "text": "اليسرى"
+    }
+   ],
+   "answer": 0,
+   "explain": "R = اليد اليمنى، و L = اليد اليسرى.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "طريقة العزف على الإكسيلوفون",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف تتحرك اليدان عند العزف على الإكسيلوفون حسب الرموز (R L R L)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بشكل تبادلي"
+    },
+    {
+     "t": "text",
+     "text": "باليد اليمنى فقط"
+    },
+    {
+     "t": "text",
+     "text": "باليدين معًا في الوقت نفسه"
+    }
+   ],
+   "answer": 0,
+   "explain": "تتحرك اليدان بشكل تبادلي: يمين ثم يسار.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "طريقة العزف على الإكسيلوفون",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "F",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "النغمة في المسافة الأولى (فا).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "قراءة النغمات",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  }
+ ],
+ "review": [
+  "المقطوعة تخص هذا الدرس (النموذج ٢). عزفها أداء عملي؛ قيست القراءة الصولفائية والتحليل فقط.",
+  "نوتات المدرج في أسئلة القراءة تُعرض في اللعبة بلا قيم زمنية (رؤوس نغمات فقط)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

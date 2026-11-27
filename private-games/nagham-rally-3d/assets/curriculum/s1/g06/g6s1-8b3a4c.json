@@ -1,0 +1,526 @@
+{
+ "lessonId": "g6s1-8b3a4c",
+ "grade": 6,
+ "sem": 1,
+ "title": "الأزمنة الأساسية وتقسيماتها",
+ "source": "دليل المعلم — الصف السادس، الوحدة الأولى، الدرس الأول (ص ١٥–٢٢)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يحدّد الأزمنة الأساسية وتقسيماتها."
+  },
+  {
+   "id": "o2",
+   "text": "يدوّن بعض الأشكال والعلامات الإيقاعية والسكتات المقابلة لها."
+  },
+  {
+   "id": "o3",
+   "text": "يؤدّي التمرين الإيقاعي بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يربط العلاقة بين الأزمنة الأساسية وتقسيماتها."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما القيمة الزمنية للكروش؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "وحدة واحدة"
+    },
+    {
+     "t": "text",
+     "text": "نصف وحدة"
+    },
+    {
+     "t": "text",
+     "text": "ربع وحدة"
+    }
+   ],
+   "answer": 1,
+   "explain": "الكروش = ½ وحدة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "القيم الزمنية للعلامات الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما القيمة الزمنية للدوبل كروش؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "نصف وحدة"
+    },
+    {
+     "t": "text",
+     "text": "ربع وحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدتان"
+    }
+   ],
+   "answer": 1,
+   "explain": "الدوبل كروش = ¼ وحدة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "القيم الزمنية للعلامات الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه هي السكتة المقابلة للكروش؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "rq"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "re"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rs"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سكتة الكروش لها رأس واحد، وسكتة الدوبل كروش لها رأسان.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "السكتات المقابلة للعلامات",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه هي السكتة المقابلة للدوبل كروش؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "re"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rs"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rh"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سكتة الدوبل كروش لها رأسان.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "السكتات المقابلة للعلامات",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "الوحدة الأساسية (النوار) تنقسم إلى …",
+   "options": [
+    {
+     "t": "text",
+     "text": "كروشين أو أربع دوبل كروش"
+    },
+    {
+     "t": "text",
+     "text": "بلانشين"
+    },
+    {
+     "t": "text",
+     "text": "روند"
+    }
+   ],
+   "answer": 0,
+   "explain": "النوار = ٢ كروش = ٤ دوبل كروش.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تقسيمات الوحدة الأساسية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "البلانش ينقسم إلى …",
+   "options": [
+    {
+     "t": "text",
+     "text": "نوارين"
+    },
+    {
+     "t": "text",
+     "text": "كروشين"
+    },
+    {
+     "t": "text",
+     "text": "روندين"
+    }
+   ],
+   "answer": 0,
+   "explain": "في شجرة الأزمنة: البلانش = ٢ نوار.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "العلاقة بين الأزمنة وتقسيماتها",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم كروشًا يساوي البلانش؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٨"
+    }
+   ],
+   "answer": 1,
+   "explain": "البلانش = ٢ نوار = ٤ كروش.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "العلاقة بين الأزمنة وتقسيماتها",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "الروند = بلانش + نوار + كروش + دوبل كروش + …",
+   "options": [
+    {
+     "t": "text",
+     "text": "دوبل كروش"
+    },
+    {
+     "t": "text",
+     "text": "كروش"
+    },
+    {
+     "t": "text",
+     "text": "نوار"
+    }
+   ],
+   "answer": 0,
+   "explain": "٢ + ١ + ½ + ¼ + ¼ = ٤ (النموذج ٣).",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "مجموع الوحدات الزمنية",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "جمّع: دوبل كروش + دوبل كروش + كروش. ما الشكل الناتج؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ess"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "دوبل كروش + دوبل كروش + كروش = الشكل (طفاتي).",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تجميع تقسيمات النوار",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "جمّع: كروش + دوبل كروش + دوبل كروش. ما الشكل الناتج؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ess"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "كروش + دوبل كروش + دوبل كروش = الشكل (تاتيفي).",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تجميع تقسيمات النوار",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي بطاقة تساوي قيمتها الزمنية (الروند)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "rq"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ee"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "بلانش (٢) + نوار (١) + نوار (١) = ٤ = روند.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "العلاقة بين الأزمنة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي بطاقة تساوي قيمتها الزمنية (البلانش)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "rq",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "re",
+      "e",
+      "h"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "نوار (١) + تاتي (١) = ٢ = بلانش.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "العلاقة بين الأزمنة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان التمرين الإيقاعي في درس (الأزمنة الأساسية وتقسيماتها)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 1,
+   "explain": "التمرين في الميزان الثلاثي 3/4.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل التمرين الإيقاعي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "أسماء الأشكال الناتجة (طفاتي/تاتيفي) من دروس الصفوف السابقة؛ النموذج (٤) يعرضها بالرسم فقط، لذلك جاءت الخيارات رسومًا بلا أسماء.",
+  "حل النشاط الثاني (أي بطاقة = روند / بلانش) محسوب من القيم الزمنية، الدليل لا يذكره."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

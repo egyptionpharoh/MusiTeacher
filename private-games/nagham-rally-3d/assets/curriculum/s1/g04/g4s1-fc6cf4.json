@@ -1,0 +1,414 @@
+{
+ "lessonId": "g4s1-fc6cf4",
+ "grade": 4,
+ "sem": 1,
+ "title": "نشيد (سلامتي)",
+ "source": "دليل المعلم — الصف الرابع، الوحدة الثانية، الدرس الأول (ص ٣٣–٣٧)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف المعنى العام للنشيد."
+  },
+  {
+   "id": "o2",
+   "text": "يعدّد بعض طرق السلامة."
+  },
+  {
+   "id": "o3",
+   "text": "يُنشد النشيد بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يدرك أهمية تحقيق السلامة من خلال التزامه بالسلوك الصحيح."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبّر عن (سلامتي في الطريق)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-home.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-road.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-bus.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "عبور الطريق من ممر المشاة بمساعدة شرطي المرور = سلامتي في الطريق.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "طرق السلامة",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l4-road.jpg",
+     "l4-home.jpg",
+     "l4-bus.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبّر عن (سلامتي في الحافلة)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-bus.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-school.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-road.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "الوقوف بنظام في انتظار الحافلة = سلامتي في الحافلة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "طرق السلامة",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l4-bus.jpg",
+     "l4-school.jpg",
+     "l4-road.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبّر عن (سلامتي في المنزل)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-school.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-road.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-home.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "تنظيف الأسنان والعناية بالنظافة = سلامتي في المنزل.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "طرق السلامة",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l4-home.jpg",
+     "l4-school.jpg",
+     "l4-road.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبّر عن (سلامتي في المدرسة)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-school.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l4-bus.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "صعود الدرج بنظام مع الإمساك بالدرابزين = سلامتي في المدرسة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "طرق السلامة",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l4-school.jpg",
+     "l4-bus.jpg"
+    ]
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (سلامتي): «في الحافلة سلامتي …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "بالالتزام تكتمل"
+    },
+    {
+     "t": "text",
+     "text": "تنظم الطريق لي"
+    },
+    {
+     "t": "text",
+     "text": "تصونني بالاهتمام"
+    }
+   ],
+   "answer": 0,
+   "explain": "«في الحافلةِ سلامتي بالالتزامِ تكتمل».",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (سلامتي): «في شارعي إشارتي …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "تنظّم الطريق لي"
+    },
+    {
+     "t": "text",
+     "text": "تُنير في قلبي الأمل"
+    },
+    {
+     "t": "text",
+     "text": "هيّا معًا نحو السلام"
+    }
+   ],
+   "answer": 0,
+   "explain": "«في شارعي إشارتي تنظّمُ الطريقَ لي».",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (سلامتي): «نظافتي وصحّتي …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "تقودني لمنزلي"
+    },
+    {
+     "t": "text",
+     "text": "تصونني بالاهتمام"
+    },
+    {
+     "t": "text",
+     "text": "بالالتزام تكتمل"
+    }
+   ],
+   "answer": 1,
+   "explain": "«نظافتي وصحّتي تصونني بالاهتمام».",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «وِجهتي» في نشيد (سلامتي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "اتجاهي أو طريقي"
+    },
+    {
+     "t": "text",
+     "text": "وجهي"
+    },
+    {
+     "t": "text",
+     "text": "بيتي"
+    }
+   ],
+   "answer": 0,
+   "explain": "وجهتي: اتجاهي أو طريقي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «تصونني» في نشيد (سلامتي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "تحافظ عليَّ"
+    },
+    {
+     "t": "text",
+     "text": "تُتعبني"
+    },
+    {
+     "t": "text",
+     "text": "تُرشدني"
+    }
+   ],
+   "answer": 0,
+   "explain": "تصونني: تحافظ عليَّ.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "من كاتب كلمات نشيد (سلامتي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "خليفة بن عبد الله الفطيسي"
+    },
+    {
+     "t": "text",
+     "text": "سعيد بن راشد الخصيبي"
+    },
+    {
+     "t": "text",
+     "text": "سعيد بن علي الحارثي"
+    }
+   ],
+   "answer": 0,
+   "explain": "كلمات: خليفة بن عبد الله الفطيسي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الفكرة العامة لنشيد (سلامتي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أهمية الالتزام بالسلوك الصحيح لتحقيق السلامة"
+    },
+    {
+     "t": "text",
+     "text": "وصف جمال الطبيعة"
+    },
+    {
+     "t": "text",
+     "text": "الاحتفال بيوم المعلم"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتحدث النشيد عن السلامة في الحافلة والشارع والنظافة والصحة.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "assessment",
+     "outcome"
+    ],
+    "skill": "المعنى العام للنشيد",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  }
+ ],
+ "review": [
+  "ربط صور النشاط الأول بالعبارات اجتهاد من محتوى الصور نفسها (الدليل لا يذكر الحل)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

@@ -1,0 +1,430 @@
+{
+ "lessonId": "g9s1-b213a2",
+ "grade": 9,
+ "sem": 1,
+ "title": "ضربا سماعي سربند وسماعي ثقيل",
+ "source": "دليل المعلم — الصف التاسع، الدرس الثامن (ص ٤٠–٤٢)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف ضربي سماعي سربند وسماعي ثقيل."
+  },
+  {
+   "id": "o2",
+   "text": "يتعرّف ميزانين جديدين (3/8) و(10/8) وحدتهما الكروش."
+  },
+  {
+   "id": "o3",
+   "text": "يؤدّي ضرب سماعي سربند (3/8)، وضرب سماعي ثقيل (10/8) على أحد الآلات الإيقاعية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "بماذا يُسمّى ضرب (سماعي سربند) أيضًا؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "السماعي الطائر"
+    },
+    {
+     "t": "text",
+     "text": "السماعي الثقيل"
+    },
+    {
+     "t": "text",
+     "text": "الدارج"
+    }
+   ],
+   "answer": 0,
+   "explain": "يسمى السماعي الطائر، وهو أحد الضروب العربية السريعة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "ضرب سماعي سربند",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان ضرب (سماعي سربند)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "3/8"
+    },
+    {
+     "t": "text",
+     "text": "10/8"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتكون من ثلاث وحدات من الكروش: 3/8.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "ضرب سماعي سربند",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان ضرب (سماعي ثقيل)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "3/8"
+    },
+    {
+     "t": "text",
+     "text": "10/8"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 1,
+   "explain": "يتكون من عشر وحدات من الكروش: 10/8.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "ضرب سماعي ثقيل",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما وحدة الميزانين الجديدين (3/8) و(10/8)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكروش"
+    },
+    {
+     "t": "text",
+     "text": "النوار"
+    },
+    {
+     "t": "text",
+     "text": "البلانش"
+    }
+   ],
+   "answer": 0,
+   "explain": "وحدة الميزانين الكروش (الرقم ٨ أسفل الكسر).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "outcome"
+    ],
+    "skill": "الميزانان الجديدان",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "إشارات اليد لضرب (سماعي سربند) مثل إشارات الميزان …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الثلاثي"
+    },
+    {
+     "t": "text",
+     "text": "الثنائي"
+    },
+    {
+     "t": "text",
+     "text": "الرباعي"
+    }
+   ],
+   "answer": 0,
+   "explain": "إشاراته باليد مثل إشارات الميزان الثلاثي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "إشارات اليد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "يُقسَّم ضرب (سماعي ثقيل) في إشارات اليد إلى …",
+   "options": [
+    {
+     "t": "text",
+     "text": "ثلاثي ثم رباعي ثم ثلاثي"
+    },
+    {
+     "t": "text",
+     "text": "رباعي ثم ثلاثي ثم ثلاثي"
+    },
+    {
+     "t": "text",
+     "text": "ثنائي ثم ثنائي ثم ستة"
+    }
+   ],
+   "answer": 0,
+   "explain": "أولًا إشارات الثلاثي، ثانيًا الرباعي، أخيرًا الثلاثي (٣+٤+٣=١٠).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "إشارات اليد",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الضربين يُصاغ عليه قالب (السماعي) وكثير من الموشحات؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سماعي ثقيل"
+    },
+    {
+     "t": "text",
+     "text": "سماعي سربند"
+    }
+   ],
+   "answer": 0,
+   "explain": "سماعي ثقيل من الضروب الشائعة، ويصاغ عليه قالب السماعي وكثير من الموشحات.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "ضرب سماعي ثقيل",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الضربين من الضروب العربية السريعة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سماعي سربند"
+    },
+    {
+     "t": "text",
+     "text": "سماعي ثقيل"
+    }
+   ],
+   "answer": 0,
+   "explain": "سماعي سربند (السماعي الطائر) من الضروب السريعة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "ضرب سماعي سربند",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي التدوينين لضرب (سماعي ثقيل)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g09/l8-sarband.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g09/l8-thaqil.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "سماعي ثقيل في الميزان 10/8.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "تدوين الضربين",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l8-thaqil.jpg",
+     "l8-sarband.jpg"
+    ]
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g09/l8-sarband.jpg"
+   },
+   "prompt": "ما اسم الضرب المدوّن أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سماعي سربند"
+    },
+    {
+     "t": "text",
+     "text": "سماعي ثقيل"
+    },
+    {
+     "t": "text",
+     "text": "الوحدة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الميزان 3/8 = سماعي سربند.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "تدوين الضربين",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l8-sarband.jpg"
+    ]
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم وحدة كروش في ضرب (سماعي ثقيل)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٨"
+    },
+    {
+     "t": "text",
+     "text": "١٠"
+    }
+   ],
+   "answer": 2,
+   "explain": "يتكوّن من عشر وحدات من الكروش.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "ضرب سماعي ثقيل",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما أهمية الضروب العربية في الموسيقا؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ضبط الزمن والوحدة الموسيقية"
+    },
+    {
+     "t": "text",
+     "text": "تحديد المقام"
+    },
+    {
+     "t": "text",
+     "text": "تحديد اسم المؤلف"
+    }
+   ],
+   "answer": 0,
+   "explain": "يعطي المعلم نبذة عن الضروب العربية وأهميتها في ضبط الزمن والوحدة الموسيقية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الضروب العربية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "الدليل يكتب «سربند» والملف «سرباند»؛ استُخدم «سربند» كما في نص الدليل.",
+  "مكتبة اللعبة لا تحوي موازين 3/8 و10/8 ولا الدم والتك، فجاء التدوين بصور من الدليل.",
+  "الدليل في الشكل الأول للضرب يضع شكلين؛ اختير الشكل الذي فيه السكتة لأنه الأوضح."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

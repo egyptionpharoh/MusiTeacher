@@ -1,0 +1,587 @@
+{
+ "lessonId": "g3s1-1899b5",
+ "grade": 3,
+ "sem": 1,
+ "title": "الشكل الإيقاعي (طفاتيفي)",
+ "source": "دليل المعلم — الصف الثالث، الوحدة الأولى، الدرس الثاني (ص ٢٣–٣٠)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف الشكل الإيقاعي (طفاتيفي)."
+  },
+  {
+   "id": "o2",
+   "text": "يحدّد القيمة الزمنية للشكل الإيقاعي (طفاتيفي)."
+  },
+  {
+   "id": "o3",
+   "text": "يدوّن الشكل الإيقاعي (طفاتيفي) بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يؤدّي الشكل الإيقاعي (طفاتيفي)."
+  },
+  {
+   "id": "o5",
+   "text": "يؤدّي تمرينًا إيقاعيًّا بالتصفيق وحركات (كارل أورف)."
+  },
+  {
+   "id": "o6",
+   "text": "يدرك التقسيم الداخلي للشكل الإيقاعي (طفاتيفي)."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه الأشكال هو الشكل الإيقاعي (طفاتيفي)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "الشكل (طفاتيفي) أربع علامات دوبل كروش متصلة بخطين.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome",
+     "steps"
+    ],
+    "skill": "التعرّف على الشكل الإيقاعي طفاتيفي",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "ssss"
+    ]
+   },
+   "prompt": "ما القيمة الزمنية للشكل الإيقاعي الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "نصف وحدة زمنية"
+    },
+    {
+     "t": "text",
+     "text": "وحدة زمنية واحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدتان زمنيتان"
+    }
+   ],
+   "answer": 1,
+   "explain": "الشكل (طفاتيفي) يساوي وحدة زمنية واحدة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "القيمة الزمنية للشكل طفاتيفي",
+    "level": "remember",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "العلامة الإيقاعية النوار تنقسم إلى … أجزاء متساوية من الدوبل كروش",
+   "options": [
+    {
+     "t": "text",
+     "text": "اثنين"
+    },
+    {
+     "t": "text",
+     "text": "ثلاثة"
+    },
+    {
+     "t": "text",
+     "text": "أربعة"
+    }
+   ],
+   "answer": 2,
+   "explain": "النوار تنقسم إلى أربعة أجزاء متساوية، كل جزء دوبل كروش.",
+   "meta": {
+    "outcomes": [
+     "o6"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "التقسيم الداخلي للشكل طفاتيفي",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "علامة الدوبل كروش تساوي …",
+   "options": [
+    {
+     "t": "text",
+     "text": "نصف الكروش وربع النوار"
+    },
+    {
+     "t": "text",
+     "text": "ضعف الكروش"
+    },
+    {
+     "t": "text",
+     "text": "نصف النوار"
+    }
+   ],
+   "answer": 0,
+   "explain": "الدوبل كروش تساوي نصف الكروش وربع النوار.",
+   "meta": {
+    "outcomes": [
+     "o6",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التقسيم الداخلي للشكل طفاتيفي",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه العلامات هي الدوبل كروش؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "e"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "s"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "الدوبل كروش لها شَرطتان (رايتان) على الساق.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o6"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التعرّف على علامة الدوبل كروش",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم علامة دوبل كروش تتجمع لتكوين الشكل الإيقاعي (طفاتيفي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    }
+   ],
+   "answer": 2,
+   "explain": "نجمع الدوبل كروش الأول والثاني والثالث والرابع لينتج شكل واحد يساوي وحدة زمنية.",
+   "meta": {
+    "outcomes": [
+     "o6",
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "تكوين الشكل طفاتيفي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "h",
+     "q",
+     "rq"
+    ]
+   },
+   "prompt": "اجمع الوحدات الزمنية للعلامات الظاهرة أمامك",
+   "options": [
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    }
+   ],
+   "answer": 1,
+   "explain": "بلانش (٢) + نوار (١) + سكتة نوار (١) = ٤ وحدات.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "جمع الوحدات الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "ee",
+     "rq",
+     "ssss"
+    ]
+   },
+   "prompt": "اجمع الوحدات الزمنية للأشكال الظاهرة أمامك",
+   "options": [
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٢"
+    }
+   ],
+   "answer": 0,
+   "explain": "تاتي (١) + سكتة نوار (١) + طفاتيفي (١) = ٣ وحدات.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "جمع الوحدات الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "s",
+     "s",
+     "e"
+    ]
+   },
+   "prompt": "اجمع الوحدات الزمنية للعلامات الظاهرة أمامك",
+   "options": [
+    {
+     "t": "text",
+     "text": "نصف وحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدة واحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدتان"
+    }
+   ],
+   "answer": 1,
+   "explain": "دوبل كروش (¼) + دوبل كروش (¼) + كروش (½) = وحدة واحدة.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o6"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "جمع الوحدات الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "h",
+     "ssss",
+     "h"
+    ]
+   },
+   "prompt": "اجمع الوحدات الزمنية للأشكال الظاهرة أمامك",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    },
+    {
+     "t": "text",
+     "text": "٦"
+    }
+   ],
+   "answer": 1,
+   "explain": "بلانش (٢) + طفاتيفي (١) + بلانش (٢) = ٥ وحدات.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "جمع الوحدات الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "في حركات (كارل أورف) بالنموذج (٤) نؤدّي الشكل الإيقاعي (طفاتيفي) بـ …",
+   "options": [
+    {
+     "t": "text",
+     "text": "التصفيق"
+    },
+    {
+     "t": "text",
+     "text": "دق القدم"
+    },
+    {
+     "t": "text",
+     "text": "فرقعة الأصابع"
+    }
+   ],
+   "answer": 0,
+   "explain": "في النموذج (٤): طفاتيفي بالتصفيق، والكروشان بالربت على الرجلين، والنوار بفرقعة الأصابع، والبلانش بدق القدم.",
+   "meta": {
+    "outcomes": [
+     "o5"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "حركات كارل أورف",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "في حركات (كارل أورف) بالنموذج (٤) نؤدّي علامة النوار بـ …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الربت على الرجلين"
+    },
+    {
+     "t": "text",
+     "text": "فرقعة الأصابع"
+    },
+    {
+     "t": "text",
+     "text": "دق القدم"
+    }
+   ],
+   "answer": 1,
+   "explain": "النوار بفرقعة الأصابع.",
+   "meta": {
+    "outcomes": [
+     "o5"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "حركات كارل أورف",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المازورة، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ssss"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا: طفاتيفي ثم نوار.",
+   "meta": {
+    "outcomes": [
+     "o4",
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز السمعي للشكل طفاتيفي",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المازورة، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ssss"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "q"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سمعنا: نوار ثم طفاتيفي.",
+   "meta": {
+    "outcomes": [
+     "o4",
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز السمعي للشكل طفاتيفي",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q14"
+  }
+ ],
+ "review": [
+  "اسم الشكل في قائمة دروس اللعبة «طفاتيفي»، واسمه في مكتبة اللعبة «تفاتيفي»؛ أُخفي الاسم تحت الرسم في الخيارات (noLabel) واستُخدم «طفاتيفي» في النصوص.",
+  "أسئلة الاستماع تستخدم صوت الإيقاع المولَّد في اللعبة."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

@@ -1,0 +1,380 @@
+{
+ "lessonId": "g1s1-2f9b29",
+ "grade": 1,
+ "sem": 1,
+ "title": "العلامة الإيقاعية النوار والسكتة المقابلة لها",
+ "source": "دليل المعلم — الصف الأول، الوحدة الأولى، الدرس الثاني (ص ١٨–٢١)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف العلامة الإيقاعية النُّوار (♩)، والسكتة المقابلة لها (𝄽)."
+  },
+  {
+   "id": "o2",
+   "text": "يؤدّي العلامة الإيقاعية النُّوار (♩) بالتصفيق."
+  },
+  {
+   "id": "o3",
+   "text": "يدوّن العلامة الإيقاعية النُّوار (♩)، والسكتة المقابلة لها (𝄽) بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يستشعر زمن العلامة الإيقاعية النُّوار (♩)، والسكتة المقابلة لها (𝄽)."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي العلامتين هي العلامة الإيقاعية النُّوار؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "rq"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "هذه علامة النُّوار ♩، أما الأخرى فهي سكتة النُّوار.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome",
+     "steps",
+     "activity"
+    ],
+    "skill": "التعرّف على علامة النوار",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي العلامتين هي سكتة النُّوار؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "rq"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "هذه سكتة النُّوار 𝄽، وتقابل علامة النُّوار.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome",
+     "steps",
+     "activity"
+    ],
+    "skill": "التعرّف على سكتة النوار",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم تساوي القيمة الزمنية للعلامة الإيقاعية النُّوار؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "وحدتان زمنيتان"
+    },
+    {
+     "t": "text",
+     "text": "وحدة زمنية واحدة"
+    },
+    {
+     "t": "text",
+     "text": "ثلاث وحدات زمنية"
+    }
+   ],
+   "answer": 1,
+   "explain": "القيمة الزمنية للنُّوار تساوي وحدة زمنية واحدة.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "زمن علامة النوار",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "زمن سكتة النُّوار يساوي زمن …",
+   "options": [
+    {
+     "t": "text",
+     "text": "علامة نُوار واحدة"
+    },
+    {
+     "t": "text",
+     "text": "علامتي نُوار"
+    },
+    {
+     "t": "text",
+     "text": "ثلاث علامات نُوار"
+    }
+   ],
+   "answer": 0,
+   "explain": "زمن سكتة النُّوار يساوي زمن علامة النُّوار، أي وحدة زمنية واحدة.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "زمن سكتة النوار",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "عند أداء علامة النُّوار بطريقة (إيمي باري) فإننا ننطقها …",
+   "options": [
+    {
+     "t": "text",
+     "text": "تي"
+    },
+    {
+     "t": "text",
+     "text": "لا"
+    },
+    {
+     "t": "text",
+     "text": "تا"
+    }
+   ],
+   "answer": 2,
+   "explain": "تُنطق علامة النُّوار (تا) بطريقة إيمي باري.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "نطق النوار بطريقة إيمي باري",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "عندما تمرّ بنا سكتة النُّوار أثناء التصفيق فإننا …",
+   "options": [
+    {
+     "t": "text",
+     "text": "نصفّق مرتين"
+    },
+    {
+     "t": "text",
+     "text": "نتوقف عن التصفيق مدة وحدة زمنية"
+    },
+    {
+     "t": "text",
+     "text": "نصفّق بقوة"
+    }
+   ],
+   "answer": 1,
+   "explain": "السكتة لا تُصفَّق؛ نسكت مدة زمنها، وهي وحدة زمنية واحدة.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أداء السكتة واستشعار زمنها",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "q",
+     "rq",
+     "q",
+     "q",
+     "rq"
+    ]
+   },
+   "prompt": "كم سكتة نُوار في الشكل الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    }
+   ],
+   "answer": 0,
+   "explain": "في الشكل سكتتا نُوار وثلاث علامات نُوار.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التمييز بين النوار وسكتته وعدّهما",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "q",
+     "q",
+     "q",
+     "rq"
+    ]
+   },
+   "prompt": "كم وحدة زمنية في الشكل الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    }
+   ],
+   "answer": 1,
+   "explain": "ثلاث علامات نُوار (٣ وحدات) وسكتة نُوار (وحدة واحدة) = ٤ وحدات زمنية.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "استشعار زمن النوار وسكتته",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل الشكل الذي سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "q",
+      "rq"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rq",
+      "q",
+      "q",
+      "q"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سمعنا ثلاث علامات نُوار ثم سكتة نُوار.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "التمييز السمعي بين النوار وسكتته",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q9"
+  }
+ ],
+ "review": [
+  "المخرج الثالث (التدوين) مهارة كتابية: لم تُكتب له أسئلة مباشرة؛ اكتُفي بالتعرّف البصري على العلامتين.",
+  "سؤال الاستماع يستخدم صوت الإيقاع المولَّد في اللعبة وليس نموذج الوزارة."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

@@ -1,0 +1,461 @@
+{
+ "lessonId": "g2s1-29f2f6",
+ "grade": 2,
+ "sem": 1,
+ "title": "نشيد (أقسمت أحبك يا وطني)",
+ "source": "دليل المعلم — الصف الثاني، الوحدة الثانية، الدرس الثاني (ص ٤٦–٥٢)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف المعنى العام للنشيد."
+  },
+  {
+   "id": "o2",
+   "text": "يُنشد النشيد بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يشعر بالانتماء إلى الهوية العُمانية من خلال النشيد."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «أقسمتُ أُحبُّكَ يا وطني …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "وأُحبُّ سماكْ"
+    },
+    {
+     "t": "text",
+     "text": "وأُحبُّ ثَراكْ"
+    },
+    {
+     "t": "text",
+     "text": "ما اخترتُ سِواكْ"
+    }
+   ],
+   "answer": 1,
+   "explain": "«أقسمتُ أُحبُّكَ يا وطني وأُحبُّ ثَراكْ».",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «وأُحبُّ بحارَكَ والصَّحرا …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "وأُحبُّ سماكْ"
+    },
+    {
+     "t": "text",
+     "text": "في خدِّ الشمسْ"
+    },
+    {
+     "t": "text",
+     "text": "والرُّوحُ فِداكْ"
+    }
+   ],
+   "answer": 0,
+   "explain": "«وأُحبُّ بحارَكَ والصَّحرا وأُحبُّ سماكْ».",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «لو كلُّ العالمِ جنّاتٌ …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "في اليومِ وأمسْ"
+    },
+    {
+     "t": "text",
+     "text": "ما اخترتُ سِواكْ"
+    },
+    {
+     "t": "text",
+     "text": "كلِّ الكلماتْ"
+    }
+   ],
+   "answer": 1,
+   "explain": "«لو كلُّ العالمِ جنّاتٌ ما اخترتُ سِواكْ».",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "content",
+     "assessment"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «وكتبتُ حروفَكَ يا وطني …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "في خدِّ الشمسْ"
+    },
+    {
+     "t": "text",
+     "text": "في اليومِ وأمسْ"
+    },
+    {
+     "t": "text",
+     "text": "ما احتجتُ لغاتْ"
+    }
+   ],
+   "answer": 0,
+   "explain": "«وكتبتُ حروفَكَ يا وطني في خدِّ الشمسْ».",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «وطني سجّادةُ أحلامي …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "في خدِّ الشمسْ"
+    },
+    {
+     "t": "text",
+     "text": "يختالُ هواكْ"
+    },
+    {
+     "t": "text",
+     "text": "في اليومِ وأمسْ"
+    }
+   ],
+   "answer": 2,
+   "explain": "«وطني سجّادةُ أحلامي في اليومِ وأمسْ».",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «إلا اسمَكَ يا وطني …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "ما احتجتُ لغاتْ"
+    },
+    {
+     "t": "text",
+     "text": "والرُّوحُ فِداكْ"
+    },
+    {
+     "t": "text",
+     "text": "وأُحبُّ ثَراكْ"
+    }
+   ],
+   "answer": 0,
+   "explain": "«إلا اسمَكَ يا وطني ما احتجتُ لغاتْ».",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «ثَراك» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سماؤك"
+    },
+    {
+     "t": "text",
+     "text": "تُرابك"
+    },
+    {
+     "t": "text",
+     "text": "بحارك"
+    }
+   ],
+   "answer": 1,
+   "explain": "ثراك: تُرابك.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «سِواك» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "غيرك"
+    },
+    {
+     "t": "text",
+     "text": "مثلك"
+    },
+    {
+     "t": "text",
+     "text": "قربك"
+    }
+   ],
+   "answer": 0,
+   "explain": "سواك: غيرك.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «المُعجم» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "كتاب يشرح معاني الكلمات في اللغة"
+    },
+    {
+     "t": "text",
+     "text": "كتاب الأناشيد"
+    },
+    {
+     "t": "text",
+     "text": "كتاب القصص"
+    }
+   ],
+   "answer": 0,
+   "explain": "المعجم: كتاب يشرح معاني الكلمات في اللغة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «يختالُ» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "يتباهى"
+    },
+    {
+     "t": "text",
+     "text": "يختفي"
+    },
+    {
+     "t": "text",
+     "text": "يحزن"
+    }
+   ],
+   "answer": 0,
+   "explain": "يختال: يتباهى.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "معنى «لو كلُّ العالمِ جنّاتٌ ما اخترتُ سِواكْ» أنني …",
+   "options": [
+    {
+     "t": "text",
+     "text": "أحب السفر إلى بلاد كثيرة"
+    },
+    {
+     "t": "text",
+     "text": "لا أختار غير وطني مهما كانت البلاد الأخرى جميلة"
+    },
+    {
+     "t": "text",
+     "text": "أحب الحدائق كثيرًا"
+    }
+   ],
+   "answer": 1,
+   "explain": "المعنى: لا أختار غير وطني حتى لو كان العالم كله جنّات.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "assessment",
+     "outcome"
+    ],
+    "skill": "المعنى العام للنشيد",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "من كاتبة كلمات نشيد (أقسمتُ أُحبُّكَ يا وطني)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "شميسة النعمانية"
+    },
+    {
+     "t": "text",
+     "text": "إبراهيم المنذري"
+    }
+   ],
+   "answer": 0,
+   "explain": "الكلمات: شميسة النعمانية، والألحان: إبراهيم المنذري.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "كلمات النشيد وألحانه",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "من ملحّن نشيد (أقسمتُ أُحبُّكَ يا وطني)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "شميسة النعمانية"
+    },
+    {
+     "t": "text",
+     "text": "إبراهيم المنذري"
+    }
+   ],
+   "answer": 1,
+   "explain": "الألحان: إبراهيم المنذري.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "كلمات النشيد وألحانه",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "ملف المجلد مرقّم (4) مثل درس البلانش؛ وهو الدرس الخامس في خطة الفصل."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

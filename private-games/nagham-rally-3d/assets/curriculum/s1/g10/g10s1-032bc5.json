@@ -1,0 +1,471 @@
+{
+ "lessonId": "g10s1-032bc5",
+ "grade": 10,
+ "sem": 1,
+ "title": "جوزيبه فردي (١٨١٣ - ١٩٠١)",
+ "source": "دليل المعلم — الصف العاشر، الوحدة الثالثة، الدرس الثاني (ص ٣٨–٣٩)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف شخصية المؤلف الموسيقي (جوزيبه فردي) وبعض أعماله."
+  },
+  {
+   "id": "o2",
+   "text": "يستمع لأحد مؤلفات (فردي)."
+  },
+  {
+   "id": "o3",
+   "text": "يتذوّق الطابع اللحني المميز للعصر الرومانسي."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "في أي بلد وُلد (جوزيبه فردي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "إيطاليا"
+    },
+    {
+     "t": "text",
+     "text": "النمسا"
+    },
+    {
+     "t": "text",
+     "text": "بولندا"
+    }
+   ],
+   "answer": 0,
+   "explain": "وُلد في إيطاليا لأسرة ريفية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما سنتا ميلاد ووفاة (جوزيبه فردي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١٨١٣ – ١٩٠١م"
+    },
+    {
+     "t": "text",
+     "text": "١٧٥٦ – ١٧٩١م"
+    },
+    {
+     "t": "text",
+     "text": "١٨١٠ – ١٨٤٩م"
+    }
+   ],
+   "answer": 0,
+   "explain": "جوزيبه فردي (١٨١٣ – ١٩٠١م).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "على أي آلة تلقّى (فردي) دروس العزف في كنيسة قريته؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأورغن"
+    },
+    {
+     "t": "text",
+     "text": "الكمان"
+    },
+    {
+     "t": "text",
+     "text": "البيانو"
+    }
+   ],
+   "answer": 0,
+   "explain": "التحق بفرقة المنشدين التابعة لكنيسة قريته وتلقى فيها دروس العزف على آلة الأورغن.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "إلى أي مدينة سافر (فردي) لإكمال دراسته الموسيقية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ميلانو"
+    },
+    {
+     "t": "text",
+     "text": "فيينا"
+    },
+    {
+     "t": "text",
+     "text": "باريس"
+    }
+   ],
+   "answer": 0,
+   "explain": "سافر إلى ميلانو لإكمال دراسته الموسيقية بمساعدة صديق لوالده.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "يُعدّ (فردي) من أشهر مؤلفي … في إيطاليا.",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأوبرا"
+    },
+    {
+     "t": "text",
+     "text": "السيمفونية"
+    },
+    {
+     "t": "text",
+     "text": "الموشحات"
+    }
+   ],
+   "answer": 0,
+   "explain": "يعد من أشهر مؤلفي الأوبرا في إيطاليا.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأوبرا هي …",
+   "options": [
+    {
+     "t": "text",
+     "text": "مسرحية غنائية تعتمد على الغناء والموسيقا بمصاحبة الأوركسترا"
+    },
+    {
+     "t": "text",
+     "text": "مؤلف آلي يخلو من الغناء"
+    },
+    {
+     "t": "text",
+     "text": "رقصة شعبية"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأوبرا مسرحية غنائية تعتمد على الغناء والموسيقا، وتؤدى بمصاحبة الأوركسترا.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي عام قدّم (فردي) أول أعماله الأوبرالية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١٨٣٩م"
+    },
+    {
+     "t": "text",
+     "text": "١٨٤٧م"
+    },
+    {
+     "t": "text",
+     "text": "١٨٧١م"
+    }
+   ],
+   "answer": 0,
+   "explain": "قدم أول أعماله الأوبرالية عام ١٨٣٩م.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الأوبرا التي كانت من أهم أعمال (فردي) عام ١٨٤٧م؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ماكبث"
+    },
+    {
+     "t": "text",
+     "text": "عايدة"
+    },
+    {
+     "t": "text",
+     "text": "عطيل"
+    }
+   ],
+   "answer": 0,
+   "explain": "كانت أوبرا ماكبث عام ١٨٤٧م من أهم أعماله الأوبرالية في ذلك الحين.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما أشهر مؤلفات (فردي) التي أكّدت شهرته العالمية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أوبرا عايدة"
+    },
+    {
+     "t": "text",
+     "text": "أوبرا الناي السحري"
+    },
+    {
+     "t": "text",
+     "text": "السيمفونية الناقصة"
+    }
+   ],
+   "answer": 0,
+   "explain": "تأكدت شهرته العالمية من خلال أوبرا عايدة عام ١٨٧١م.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما المناسبة التي أُلّفت لها أوبرا (عايدة)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "احتفالات مصر بافتتاح قناة السويس"
+    },
+    {
+     "t": "text",
+     "text": "تتويج ملك إيطاليا"
+    },
+    {
+     "t": "text",
+     "text": "افتتاح دار أوبرا فيينا"
+    }
+   ],
+   "answer": 0,
+   "explain": "كلّفه الخديوي إسماعيل بكتابتها لتُعزف في احتفالات مصر بافتتاح قناة السويس.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "من الذي كلّف (فردي) بكتابة أوبرا (عايدة)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الخديوي إسماعيل"
+    },
+    {
+     "t": "text",
+     "text": "ملك إيطاليا"
+    },
+    {
+     "t": "text",
+     "text": "نابليون"
+    }
+   ],
+   "answer": 0,
+   "explain": "الخديوي إسماعيل.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "بماذا اتسمت ألحان (فردي)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "البساطة والحيوية والغنائية الشديدة"
+    },
+    {
+     "t": "text",
+     "text": "التعقيد والزخرفة"
+    },
+    {
+     "t": "text",
+     "text": "العقلانية الصارمة"
+    }
+   ],
+   "answer": 0,
+   "explain": "اتسمت ألحانه بالبساطة والحيوية والغنائية الشديدة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "اشتهر (فردي) بميله لمعالجة المواضيع …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الإنسانية المأساوية والتاريخية السياسية"
+    },
+    {
+     "t": "text",
+     "text": "الكوميدية فقط"
+    },
+    {
+     "t": "text",
+     "text": "الدينية فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "اشتهر بميله لمعالجة المواضيع الإنسانية المأساوية والتاريخية السياسية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "جوزيبه فردي وأعماله",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "الاستماع والتذوق غير مُقاسين (لا تسجيلات).",
+  "الدليل يكتب الاسم «جوزيبه فردي» والملف «جوزيه فيردي»؛ اعتُمد نص الدليل."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

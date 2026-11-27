@@ -1,0 +1,344 @@
+{
+ "lessonId": "g3s1-3dc205",
+ "grade": 3,
+ "sem": 1,
+ "title": "الكريشيندو والديمنويندو",
+ "source": "دليل المعلم — الصف الثالث، الوحدة الأولى، الدرس الثالث (ص ٣١–٣٥)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف المصطلحين التعبيريين (الكريشيندو)، و(الديمنويندو)."
+  },
+  {
+   "id": "o2",
+   "text": "يميّز بين المصطلحين التعبيريين (الكريشيندو)، و(الديمنويندو) عند الاستماع."
+  },
+  {
+   "id": "o3",
+   "text": "يعبّر حركيًّا عن المصطلحين التعبيريين (الكريشيندو)، و(الديمنويندو)."
+  },
+  {
+   "id": "o4",
+   "text": "يستشعر التدرّج في شدّة الصوت عند الاستماع."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "المصطلح التعبيري الذي يعبّر عن تدرّج الصوت من الخفوت إلى القوة هو …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكريشيندو"
+    },
+    {
+     "t": "text",
+     "text": "الديمنويندو"
+    },
+    {
+     "t": "text",
+     "text": "البيانو"
+    }
+   ],
+   "answer": 0,
+   "explain": "الكريشيندو (Crescendo): تدرّج الصوت من الخفوت إلى القوة.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "content",
+     "assessment",
+     "activity"
+    ],
+    "skill": "مفهوم الكريشيندو",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "المصطلح التعبيري الذي يعبّر عن تدرّج الصوت من القوة إلى الخفوت هو …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الفورتي"
+    },
+    {
+     "t": "text",
+     "text": "الكريشيندو"
+    },
+    {
+     "t": "text",
+     "text": "الديمنويندو"
+    }
+   ],
+   "answer": 2,
+   "explain": "الديمنويندو (Diminuendo): تدرّج الصوت من القوة إلى الخفوت.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "content",
+     "assessment",
+     "activity"
+    ],
+    "skill": "مفهوم الديمنويندو",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدلّ على الكريشيندو؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g03/l3-cresc.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g03/l3-dim.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "رمز الكريشيندو يبدأ ضيقًا ثم ينفتح (تدرّج من الخفوت إلى القوة).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "رمز الكريشيندو",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-cresc.jpg",
+     "l3-dim.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدلّ على الديمنويندو؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g03/l3-cresc.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g03/l3-dim.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "رمز الديمنويندو يبدأ مفتوحًا ثم يضيق (تدرّج من القوة إلى الخفوت).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "رمز الديمنويندو",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-cresc.jpg",
+     "l3-dim.jpg"
+    ]
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g03/l3-cresc.jpg"
+   },
+   "prompt": "ما اسم المصطلح التعبيري الذي يرمز له الرمز الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الديمنويندو"
+    },
+    {
+     "t": "text",
+     "text": "الكريشيندو"
+    }
+   ],
+   "answer": 1,
+   "explain": "هذا رمز الكريشيندو.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "رموز المصطلحات التعبيرية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l3-cresc.jpg"
+    ]
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g03/l3-dim.jpg"
+   },
+   "prompt": "ما معنى الرمز الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "تدرّج الصوت من الخفوت إلى القوة"
+    },
+    {
+     "t": "text",
+     "text": "تدرّج الصوت من القوة إلى الخفوت"
+    },
+    {
+     "t": "text",
+     "text": "أداء الصوت بقوة ثابتة"
+    }
+   ],
+   "answer": 1,
+   "explain": "هذا رمز الديمنويندو: تدرّج من القوة إلى الخفوت.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "رموز المصطلحات التعبيرية",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l3-dim.jpg"
+    ]
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الاسم الأجنبي لمصطلح الكريشيندو؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "Crescendo"
+    },
+    {
+     "t": "text",
+     "text": "Diminuendo"
+    },
+    {
+     "t": "text",
+     "text": "Forte"
+    }
+   ],
+   "answer": 0,
+   "explain": "الكريشيندو = Crescendo.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "المصطلحات التعبيرية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "عند سماع جملة موسيقية بالديمنويندو نعبّر عنها حركيًّا بـ …",
+   "options": [
+    {
+     "t": "text",
+     "text": "ضمّ رسغي الكفين"
+    },
+    {
+     "t": "text",
+     "text": "ضمّ أطراف أصابع الكفين مع فتح الرسغين"
+    }
+   ],
+   "answer": 1,
+   "explain": "ضمّ أطراف الأصابع مع فتح الرسغين يكوّن رمز الديمنويندو، وضمّ الرسغين يكوّن رمز الكريشيندو.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التعبير الحركي عن المصطلحات",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "المصطلحان (الكريشيندو والديمنويندو) يعبّران عن التدرّج في …",
+   "options": [
+    {
+     "t": "text",
+     "text": "شدّة الصوت"
+    },
+    {
+     "t": "text",
+     "text": "سرعة اللحن"
+    },
+    {
+     "t": "text",
+     "text": "حدّة الصوت"
+    }
+   ],
+   "answer": 0,
+   "explain": "يعبّران عن التدرّج في شدّة الصوت (القوة والخفوت).",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "outcome",
+     "steps"
+    ],
+    "skill": "التدرج في شدة الصوت",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  }
+ ],
+ "review": [
+  "التمييز السمعي بين الكريشيندو والديمنويندو غير متاح بأدوات اللعبة الحالية؛ قيس بصريًّا ونظريًّا.",
+  "رمزا المصطلحين مقتطعان من بطاقات النشاط الثاني بالدليل."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

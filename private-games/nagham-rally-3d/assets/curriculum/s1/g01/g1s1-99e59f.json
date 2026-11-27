@@ -1,0 +1,467 @@
+{
+ "lessonId": "g1s1-99e59f",
+ "grade": 1,
+ "sem": 1,
+ "title": "اللعبة الشعبية (حبوه موه تدوري)",
+ "source": "دليل المعلم — الصف الأول، الوحدة الثانية، الدرس الأول (ص ٢٩–٣٤)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف اللعبة الشعبية ومعاني كلماتها."
+  },
+  {
+   "id": "o2",
+   "text": "يؤدّي اللعبة الشعبية مع زملائه بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "ينمّي ارتباطه وانتماءه إلى مجتمعه من خلال أداء اللعبة الشعبية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "في اللعبة الشعبية سأل الأحفاد: «حبُّوه موه تدوري؟» فبماذا أجابت الجدة؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l4-bag.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l4-needle.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l4-eggs.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "أجابت الجدة: «أدور إبرة».",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات اللعبة الشعبية",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l4-needle.jpg",
+     "l4-bag.jpg",
+     "l4-eggs.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "سأل الأحفاد الجدة: «حال موه الكيس؟» أي صورة تعبّر عن جوابها؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l4-needle.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l4-ten.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g01/l4-eggs.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "أجابت الجدة: «حال البيض»؛ أي أنها تحتاج الكيس للبيض.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات اللعبة الشعبية",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l4-eggs.jpg",
+     "l4-needle.jpg",
+     "l4-ten.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "سأل الأحفاد الجدة: «كم أولادش؟» فأجابت الجدة: …",
+   "options": [
+    {
+     "t": "text",
+     "text": "خمسة"
+    },
+    {
+     "t": "text",
+     "text": "عشرة"
+    },
+    {
+     "t": "text",
+     "text": "ثلاثة"
+    }
+   ],
+   "answer": 1,
+   "explain": "أجابت الجدة: «عشرة».",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "content"
+    ],
+    "skill": "كلمات اللعبة الشعبية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «تدوري» في اللعبة الشعبية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "تبحثي"
+    },
+    {
+     "t": "text",
+     "text": "تجلسي"
+    },
+    {
+     "t": "text",
+     "text": "تغنّي"
+    }
+   ],
+   "answer": 0,
+   "explain": "تدوري: تبحثي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات اللعبة الشعبية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى «حال موه» في اللعبة الشعبية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أين؟"
+    },
+    {
+     "t": "text",
+     "text": "متى؟"
+    },
+    {
+     "t": "text",
+     "text": "لماذا؟"
+    }
+   ],
+   "answer": 2,
+   "explain": "حال موه: لماذا؟",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات اللعبة الشعبية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «أولادش» في اللعبة الشعبية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أولادك"
+    },
+    {
+     "t": "text",
+     "text": "أصدقاؤك"
+    },
+    {
+     "t": "text",
+     "text": "جيرانك"
+    }
+   ],
+   "answer": 0,
+   "explain": "أولادش: أولادك.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات اللعبة الشعبية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "من قائل عبارة «أدور إبرة» في اللعبة الشعبية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأحفاد"
+    },
+    {
+     "t": "text",
+     "text": "الجدة"
+    }
+   ],
+   "answer": 1,
+   "explain": "الجدة هي التي تقول: «أدور إبرة» جوابًا عن سؤال الأحفاد.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "أدوار اللعبة الشعبية",
+    "level": "discriminate",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "من قائل عبارة «حبُّوه موه تدوري؟» في اللعبة الشعبية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأحفاد"
+    },
+    {
+     "t": "text",
+     "text": "الجدة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأحفاد يسألون الجدة: «حبُّوه موه تدوري؟».",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "أدوار اللعبة الشعبية",
+    "level": "discriminate",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف يقف الأحفاد (الأولاد والبنات) عند أداء اللعبة الشعبية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "في صف طويل"
+    },
+    {
+     "t": "text",
+     "text": "في حلقة دائرية"
+    },
+    {
+     "t": "text",
+     "text": "في مجموعتين متقابلتين"
+    }
+   ],
+   "answer": 1,
+   "explain": "يجلس أو يقف الأحفاد في حلقة دائرية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "طريقة أداء اللعبة الشعبية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "دور الجدة (الحبُّوه) في اللعبة الشعبية يقتصر على …",
+   "options": [
+    {
+     "t": "text",
+     "text": "البنات فقط"
+    },
+    {
+     "t": "text",
+     "text": "الأولاد فقط"
+    },
+    {
+     "t": "text",
+     "text": "الأولاد والبنات"
+    }
+   ],
+   "answer": 0,
+   "explain": "يقتصر دور الجدة (الحبُّوه) على البنات فقط.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "طريقة أداء اللعبة الشعبية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "ماذا تفعل الجدة بعد عبارة «حو عليش إنتي وأولادش»؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "تجلس وسط الحلقة"
+    },
+    {
+     "t": "text",
+     "text": "تجري خلف الأحفاد"
+    },
+    {
+     "t": "text",
+     "text": "تبدأ الغناء وحدها"
+    }
+   ],
+   "answer": 1,
+   "explain": "بعد هذه العبارة تجري الجدة خلف الأحفاد بعد هروبهم.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "طريقة أداء اللعبة الشعبية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "الطفل الذي تُمسك به الجدة في اللعبة الشعبية …",
+   "options": [
+    {
+     "t": "text",
+     "text": "يصبح هو الجدة"
+    },
+    {
+     "t": "text",
+     "text": "يفوز في اللعبة"
+    },
+    {
+     "t": "text",
+     "text": "لا يشارك في اللعبة التالية"
+    }
+   ],
+   "answer": 2,
+   "explain": "الذي تمسك به الجدة لا يشارك في اللعبة التالية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "طريقة أداء اللعبة الشعبية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأهزوجة هي …",
+   "options": [
+    {
+     "t": "text",
+     "text": "آلة موسيقية شعبية"
+    },
+    {
+     "t": "text",
+     "text": "نوع من الأناشيد الشعبية الغنائية"
+    },
+    {
+     "t": "text",
+     "text": "حركة من حركات اللعبة"
+    }
+   ],
+   "answer": 1,
+   "explain": "الأهزوجة: نوع من الأناشيد الشعبية الغنائية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مفهوم الأهزوجة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "اسم الملف في المجلد «الأغنية الشعبية» واسم الدرس في الدليل «اللعبة الشعبية (حبّوه موه تدوري)».",
+  "المخرج الثاني (الأداء) قيس بأسئلة عن طريقة الأداء وأدوار اللاعبين فقط، والثالث وجداني."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

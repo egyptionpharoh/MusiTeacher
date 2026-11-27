@@ -1,0 +1,494 @@
+{
+ "lessonId": "g8s1-2a0d82",
+ "grade": 8,
+ "sem": 1,
+ "title": "قراءة إيقاعية وصولفيج غنائي",
+ "source": "دليل المعلم — الصف الثامن، الوحدة الثانية، الدرس الثاني (ص ٤٤–٥١)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر أسماء العلامات والأشكال الإيقاعية والنغمات في المقطوعة الموسيقية."
+  },
+  {
+   "id": "o2",
+   "text": "يقرأ المقطوعة الموسيقية إيقاعيًّا وصولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يغنّي المقطوعة الموسيقية صولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يعزّز ثقته بنفسه من خلال القراءة الإيقاعية والصولفائية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "من مؤلف مقطوعة (Bolero) في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "موريس رافيل"
+    },
+    {
+     "t": "text",
+     "text": "موتسارت"
+    },
+    {
+     "t": "text",
+     "text": "بيتهوفن"
+    }
+   ],
+   "answer": 0,
+   "explain": "المقطوعة (Bolero) من تأليف موريس رافيل (Maurice Ravel).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان مقطوعة (Bolero) في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 1,
+   "explain": "المقطوعة في الميزان الثلاثي 3/4.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم عدد موازير مقطوعة (Bolero) في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٨"
+    },
+    {
+     "t": "text",
+     "text": "١٢"
+    }
+   ],
+   "answer": 1,
+   "explain": "عدد موازير المقطوعة ٨ (عبارتان).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "نؤدّي مع المقطوعة إشارات اليد الدالة على الميزان …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الثنائي"
+    },
+    {
+     "t": "text",
+     "text": "الثلاثي"
+    },
+    {
+     "t": "text",
+     "text": "الرباعي"
+    }
+   ],
+   "answer": 1,
+   "explain": "المقطوعة في 3/4، فنؤدي إشارات اليد الدالة على الميزان الثلاثي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "إشارات اليد للميزان الثلاثي",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان النموذج (١) في التمهيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 0,
+   "explain": "النموذج (١) في الميزان 2/4، وعدد موازيره ٤.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي المسارات يطابق إيقاع المازورة الأولى من النموذج (١)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "نوار (دو)، ثم كروشان (ري مي).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الإيقاعية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي المسارات يطابق إيقاع المازورة الثانية من النموذج (١)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ess",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "دوبل كروشان وكروش (فا فا فا)، ثم نوار (صول).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الإيقاعية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو – ري – مي"
+    },
+    {
+     "t": "text",
+     "text": "ري – مي – فا"
+    },
+    {
+     "t": "text",
+     "text": "دو – مي – صول"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الأولى من النموذج (١): دو، ري، مي.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الصولفائية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "C",
+    "oct": 5,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (دو) الحادة — آخر نغمات النموذج (١).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "G",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (صول) على الخط الثاني.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "في النشاط الثاني (الكنز)، ما الرقم السري الذي حصل عليه المستكشف؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١٧٤٤"
+    },
+    {
+     "t": "text",
+     "text": "١٩٧٠"
+    },
+    {
+     "t": "text",
+     "text": "١٧٩١"
+    }
+   ],
+   "answer": 0,
+   "explain": "الإجابة: (١٧٤٤م) عام تأسيس الدولة البوسعيدية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "التعرّف على موازير المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما مدلول الرقم (١٧٤٤م) الذي يفتح الكنز في النشاط الثاني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "عام تأسيس الدولة البوسعيدية"
+    },
+    {
+     "t": "text",
+     "text": "عام ميلاد موتسارت"
+    },
+    {
+     "t": "text",
+     "text": "عام النهضة"
+    }
+   ],
+   "answer": 0,
+   "explain": "١٧٤٤م عام تأسيس الدولة البوسعيدية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "مدلول التاريخ",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "موازير بوليرو فيها أشكال ثلاثية وربط معقّد يصعب قراءتها بدقة من المسح، فبُنيت أسئلة القراءة على النموذج (١) الأبسط.",
+  "سؤالا الكنز (١٧٤٤) مأخوذان من الإجابة المكتوبة في الدليل."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

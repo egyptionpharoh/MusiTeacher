@@ -1,0 +1,585 @@
+{
+ "lessonId": "g7s1-46e5e6",
+ "grade": 7,
+ "sem": 1,
+ "title": "الرباط الزمني والنقطة الزمنية",
+ "source": "دليل المعلم — الصف السابع، الوحدة الأولى، الدرس الثاني (ص ٢٣–٢٩)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف الرباط الزمني والنقطة الزمنية."
+  },
+  {
+   "id": "o2",
+   "text": "يدوّن الرباط الزمني والنقطة الزمنية بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يؤدّي تمارين تحوي الرباط الزمني والنقطة الزمنية."
+  },
+  {
+   "id": "o4",
+   "text": "يدرك أهمية الرباط الزمني والنقطة الزمنية من خلال الأداء."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "الرباط الزمني أداة تدوينية على شكل …",
+   "options": [
+    {
+     "t": "text",
+     "text": "قوس يوضع أعلى أو أسفل النغمة"
+    },
+    {
+     "t": "text",
+     "text": "نقطة توضع يمين رأس العلامة"
+    },
+    {
+     "t": "text",
+     "text": "خط عمودي يفصل الموازير"
+    }
+   ],
+   "answer": 0,
+   "explain": "الرباط الزمني: قوس يوضع أعلى أو أسفل النغمة، يربط قيمًا زمنية لعلامات متتالية على الدرجة الصوتية نفسها.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "تعريف الرباط الزمني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "يربط الرباط الزمني بين علامات إيقاعية …",
+   "options": [
+    {
+     "t": "text",
+     "text": "على الدرجة الصوتية نفسها"
+    },
+    {
+     "t": "text",
+     "text": "على درجات صوتية مختلفة"
+    },
+    {
+     "t": "text",
+     "text": "من موازين مختلفة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الرباط الزمني يربط العلامات ذات الدرجة الصوتية نفسها.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "وظيفة الرباط الزمني",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "القيمة الزمنية الناتجة عن الرباط الزمني هي …",
+   "options": [
+    {
+     "t": "text",
+     "text": "مجموع القيم الزمنية المربوطة معًا"
+    },
+    {
+     "t": "text",
+     "text": "القيمة الزمنية للعلامة الأولى فقط"
+    },
+    {
+     "t": "text",
+     "text": "نصف مجموع القيم"
+    }
+   ],
+   "answer": 0,
+   "explain": "القيمة الناتجة = مجموع القيم الزمنية المربوطة معًا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "وظيفة الرباط الزمني",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "من أسباب استخدام الرباط الزمني …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الحاجة إلى قيم زمنية متصلة تتخطى الخط الفاصل للمازورة"
+    },
+    {
+     "t": "text",
+     "text": "زيادة سرعة الأداء"
+    },
+    {
+     "t": "text",
+     "text": "تغيير الميزان"
+    }
+   ],
+   "answer": 0,
+   "explain": "يُستخدم لتدوين قيم لا توفرها العلامات، وللقيم المتصلة التي تتخطى الخط الفاصل.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "أسباب استخدام الرباط الزمني",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي التدوينين صحيح للرباط الزمني (النموذج ٦)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g07/l2-tie6-bad.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g07/l2-tie6-ok.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "عندما تكون السيقان لأسفل يُدوَّن القوس أعلى الرؤوس (جهة عكس السيقان).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التدوين الصحيح للرباط الزمني",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l2-tie6-ok.jpg",
+     "l2-tie6-bad.jpg"
+    ]
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي التدوينين صحيح للرباط الزمني (النموذج ٧)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g07/l2-tie7-ok.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g07/l2-tie7-bad.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "عندما تكون السيقان لأعلى يُدوَّن القوس أسفل الرؤوس.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التدوين الصحيح للرباط الزمني",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l2-tie7-ok.jpg",
+     "l2-tie7-bad.jpg"
+    ]
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "النقطة الزمنية توضع يمين رأس العلامة فتزيد قيمتها بمقدار …",
+   "options": [
+    {
+     "t": "text",
+     "text": "نصف قيمتها الأصلية"
+    },
+    {
+     "t": "text",
+     "text": "ضعف قيمتها"
+    },
+    {
+     "t": "text",
+     "text": "ربع قيمتها"
+    }
+   ],
+   "answer": 0,
+   "explain": "النقطة الزمنية تزيد القيمة الزمنية بمقدار نصف قيمتها الأصلية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "تعريف النقطة الزمنية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ماذا تُسمّى العلامة المضاف إليها نقطة زمنية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بوانتيه (Pointé)"
+    },
+    {
+     "t": "text",
+     "text": "ليجاتو"
+    },
+    {
+     "t": "text",
+     "text": "تريوليه"
+    }
+   ],
+   "answer": 0,
+   "explain": "تنطق (بوانتيه).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "النقطة الزمنية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "hd"
+    ]
+   },
+   "prompt": "ما القيمة الزمنية للعلامة المنقوطة الظاهرة أمامك بالوحدة الأساسية (النوار)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    }
+   ],
+   "answer": 1,
+   "explain": "البلانش بوانتيه = ٢ + ١ = ٣.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القيمة الزمنية للعلامات المنقوطة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "qd"
+    ]
+   },
+   "prompt": "ما القيمة الزمنية للعلامة المنقوطة الظاهرة أمامك بالوحدة الأساسية (النوار)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١"
+    },
+    {
+     "t": "text",
+     "text": "١ ونصف"
+    },
+    {
+     "t": "text",
+     "text": "٢"
+    }
+   ],
+   "answer": 1,
+   "explain": "النوار بوانتيه = ١ + ½ = ١½.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القيمة الزمنية للعلامات المنقوطة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما القيمة الزمنية للروند المنقوط؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    },
+    {
+     "t": "text",
+     "text": "٦"
+    }
+   ],
+   "answer": 2,
+   "explain": "الروند المنقوط = ٤ + ٢ = ٦.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القيمة الزمنية للعلامات المنقوطة",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما القيمة الزمنية للكروش المنقوط؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "½ + ¼"
+    },
+    {
+     "t": "text",
+     "text": "١ + ½"
+    },
+    {
+     "t": "text",
+     "text": "¼"
+    }
+   ],
+   "answer": 0,
+   "explain": "الكروش المنقوط = ½ + ¼ = ¾.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القيمة الزمنية للعلامات المنقوطة",
+    "level": "apply",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي علامة تساوي قيمتها الزمنية (نوار مربوط بكروش)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "qd"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "hd"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "نوار (١) + كروش (½) = ١½ = النوار بوانتيه؛ النقطة بديل عن الرباط.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o4"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "النقطة الزمنية بديلًا عن الرباط",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي مسار يملأ مازورة كاملة في الميزان 3/4؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "qd",
+      "e",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "qd",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "hd",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "نوار بوانتيه (١½) + كروش (½) + نوار (١) = ٣.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "تمارين تحوي النقطة الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q14"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "qd",
+      "e",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا: نوار بوانتيه، كروش، نوار (النموذج ٩).",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "إدراك النقطة الزمنية من خلال الأداء",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q15"
+  }
+ ],
+ "review": [
+  "مكتبة اللعبة لا ترسم الرباط الزمني بين علامتين؛ لذلك جاء تدوين الرباط بصور مقتطعة من الدليل (النموذجان ٦ و٧).",
+  "الكروش المنقوط غير موجود كعلامة منفردة في مكتبة اللعبة، فسُئل عنه نصًّا."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

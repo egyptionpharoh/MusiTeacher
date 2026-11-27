@@ -1,0 +1,512 @@
+{
+ "lessonId": "g2s1-aa803a",
+ "grade": 2,
+ "sem": 1,
+ "title": "العلامة الإيقاعية البلانش والسكتة المقابلة لها",
+ "source": "دليل المعلم — الصف الثاني، الوحدة الثانية، الدرس الأول (ص ٣٩–٤٥)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرَّف العلامة الإيقاعية البلانش والسكتة المقابلة لها."
+  },
+  {
+   "id": "o2",
+   "text": "يحدّد القيمة الزمنية للعلامة الإيقاعية البلانش والسكتة المقابلة لها."
+  },
+  {
+   "id": "o3",
+   "text": "يدوّن العلامة الإيقاعية البلانش والسكتة المقابلة لها بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يؤدّي نموذجًا إيقاعيًّا يحوي العلامة الإيقاعية البلانش والسكتة المقابلة لها."
+  },
+  {
+   "id": "o5",
+   "text": "ينمو لديه الإحساس بالقيمة الزمنية لعلامة البلانش والسكتة المقابلة لها من خلال الأداء."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي العلامتين هي العلامة الإيقاعية البلانش؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "البلانش رأسها مفرغ (أبيض) ولها ساق، أما النوار فرأسها مُصمت.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "outcome"
+    ],
+    "skill": "التمييز بين النوار والبلانش",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه العلامات هي سكتة البلانش؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "rq"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rh"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "re"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سكتة البلانش خطّ قصير جدًّا يُرسم أفقيًّا فوق الخط الثالث.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "التعرّف على سكتة البلانش",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "ما السكتة المقابلة لعلامة النوار؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "rh"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "re"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rq"
+     ]
+    }
+   ],
+   "answer": 2,
+   "explain": "السكتة المقابلة للنوار هي سكتة النوار.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "توصيل العلامة بسكتتها",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "h"
+    ]
+   },
+   "prompt": "ما القيمة الزمنية للعلامة الإيقاعية الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "وحدة زمنية واحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدتان زمنيتان"
+    },
+    {
+     "t": "text",
+     "text": "أربع وحدات زمنية"
+    }
+   ],
+   "answer": 1,
+   "explain": "القيمة الزمنية للبلانش وحدتان زمنيتان.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "assessment",
+     "steps",
+     "outcome"
+    ],
+    "skill": "القيمة الزمنية للبلانش",
+    "level": "remember",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "rh"
+    ]
+   },
+   "prompt": "كم وحدة زمنية تساوي السكتة الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "وحدتان زمنيتان"
+    },
+    {
+     "t": "text",
+     "text": "وحدة زمنية واحدة"
+    },
+    {
+     "t": "text",
+     "text": "نصف وحدة"
+    }
+   ],
+   "answer": 0,
+   "explain": "سكتة البلانش تساوي زمن البلانش: وحدتان زمنيتان.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "assessment",
+     "outcome"
+    ],
+    "skill": "القيمة الزمنية لسكتة البلانش",
+    "level": "remember",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "زمن علامة البلانش يساوي زمن …",
+   "options": [
+    {
+     "t": "text",
+     "text": "علامة نوار واحدة"
+    },
+    {
+     "t": "text",
+     "text": "علامتي نوار"
+    },
+    {
+     "t": "text",
+     "text": "ثلاث علامات نوار"
+    }
+   ],
+   "answer": 1,
+   "explain": "البلانش = وحدتان = نواران.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o5"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "مقارنة القيم الزمنية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "q",
+     "h"
+    ]
+   },
+   "prompt": "قارن بين زمن العلامتين: النوار ( ♩ ) … البلانش",
+   "options": [
+    {
+     "t": "text",
+     "text": ">"
+    },
+    {
+     "t": "text",
+     "text": "<"
+    },
+    {
+     "t": "text",
+     "text": "="
+    }
+   ],
+   "answer": 1,
+   "explain": "زمن النوار (وحدة) أقل من زمن البلانش (وحدتان).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "مقارنة القيم الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "rh",
+     "h"
+    ]
+   },
+   "prompt": "قارن بين زمن سكتة البلانش وزمن علامة البلانش",
+   "options": [
+    {
+     "t": "text",
+     "text": ">"
+    },
+    {
+     "t": "text",
+     "text": "<"
+    },
+    {
+     "t": "text",
+     "text": "="
+    }
+   ],
+   "answer": 2,
+   "explain": "زمن سكتة البلانش يساوي زمن البلانش.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "مقارنة القيم الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "أين تُرسم سكتة البلانش على المدرج الموسيقي؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "أسفل الخط الرابع"
+    },
+    {
+     "t": "text",
+     "text": "فوق الخط الثالث"
+    },
+    {
+     "t": "text",
+     "text": "على الخط الأول"
+    }
+   ],
+   "answer": 1,
+   "explain": "سكتة البلانش خطّ قصير جدًّا يُرسم أفقيًّا فوق الخط الثالث.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تدوين سكتة البلانش",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "في طريقة (كارل أورف) نؤدّي علامة البلانش بـ …",
+   "options": [
+    {
+     "t": "text",
+     "text": "التصفيق"
+    },
+    {
+     "t": "text",
+     "text": "الدق بالقدمين"
+    },
+    {
+     "t": "text",
+     "text": "الربت على الرجلين"
+    }
+   ],
+   "answer": 1,
+   "explain": "في النموذج (٦): البلانش بالدق بالقدمين، والنوار بالتصفيق، والكروشان بالربت على الرجلين.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "أداء النموذج الإيقاعي بطريقة كارل أورف",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "ee",
+     "q",
+     "rh",
+     "ee",
+     "q",
+     "h"
+    ]
+   },
+   "prompt": "كم وحدة زمنية في النموذج الإيقاعي الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٦"
+    },
+    {
+     "t": "text",
+     "text": "٧"
+    },
+    {
+     "t": "text",
+     "text": "٨"
+    }
+   ],
+   "answer": 2,
+   "explain": "تاتي(١)+نوار(١)+سكتة بلانش(٢)+تاتي(١)+نوار(١)+بلانش(٢)=٨ وحدات.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4",
+     "o5"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الإحساس بالقيمة الزمنية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل الشكل الذي سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "h"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "h",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا: نوار، نوار، ثم بلانش.",
+   "meta": {
+    "outcomes": [
+     "o4",
+     "o5"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "التمييز السمعي للبلانش",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "قيمة البلانش (وحدتان زمنيتان) لم تُكتب رقمًا صريحًا في صفحات الدرس، لكنها مطلوبة في التقويم ومبنية على أن النوار وحدة واحدة (الصف الأول)؛ راجعها.",
+  "سؤال الاستماع يستخدم صوت الإيقاع المولَّد في اللعبة."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

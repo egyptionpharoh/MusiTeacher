@@ -1,0 +1,457 @@
+{
+ "lessonId": "g6s1-1d073c",
+ "grade": 6,
+ "sem": 1,
+ "title": "عزف مقطوعة موسيقية",
+ "source": "دليل المعلم — الصف السادس، الوحدة الثانية، الدرس الثالث (ص ٥٣–٦٠)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر طريقة العزف الصحيحة على آلة الأورج."
+  },
+  {
+   "id": "o2",
+   "text": "يعزف المقطوعة الموسيقية بالأداءين التعبيريين المتصل (Legato) والمتقطع (staccato) بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يشعر بقيمة الانتماء إلى الفريق من خلال الأداء الجماعي."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "عند العزف على الأورج نجلس في منتصف المقعد مقابل نغمة …",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو الوسطى"
+    },
+    {
+     "t": "text",
+     "text": "صول"
+    },
+    {
+     "t": "text",
+     "text": "لا"
+    }
+   ],
+   "answer": 0,
+   "explain": "الجلوس في منتصف المقعد مقابل (دو) الوسطى مع استقامة الجسم.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment",
+     "content"
+    ],
+    "skill": "طريقة العزف الصحيحة على الأورج",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف تكون الأصابع على لوحة مفاتيح الأورج أثناء العزف؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "متكوّرة وعمودية على المفاتيح"
+    },
+    {
+     "t": "text",
+     "text": "مفرودة ومسطّحة"
+    },
+    {
+     "t": "text",
+     "text": "مضمومة ومرتفعة"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأصابع متكوّرة وعمودية على لوحة المفاتيح.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment",
+     "content"
+    ],
+    "skill": "طريقة العزف الصحيحة على الأورج",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "في ترقيم أصابع اليد اليمنى، الإبهام يحمل الرقم …",
+   "options": [
+    {
+     "t": "text",
+     "text": "١"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    }
+   ],
+   "answer": 0,
+   "explain": "الإبهام = ١، السبابة = ٢، الوسطى = ٣، البنصر = ٤، الخنصر = ٥.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment",
+     "content"
+    ],
+    "skill": "طريقة العزف الصحيحة على الأورج",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "في ترقيم أصابع اليد اليمنى، الخنصر يحمل الرقم …",
+   "options": [
+    {
+     "t": "text",
+     "text": "١"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    }
+   ],
+   "answer": 2,
+   "explain": "الخنصر = ٥.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment",
+     "content"
+    ],
+    "skill": "طريقة العزف الصحيحة على الأورج",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدل على الأداء المتصل (Legato) في المقطوعة؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-staccato.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-legato.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "الأداء المتصل يُدوَّن بقوس فوق/تحت النغمات المراد أداؤها متصلة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التظليلات اللحنية: المتصل والمتقطع",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "g04/l1-legato.jpg",
+     "g04/l1-staccato.jpg"
+    ]
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدل على الأداء المتقطع (Staccato) في المقطوعة؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-staccato.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-legato.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأداء المتقطع يُدوَّن بنقطة على النغمة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التظليلات اللحنية: المتصل والمتقطع",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "g04/l1-legato.jpg",
+     "g04/l1-staccato.jpg"
+    ]
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأداء المتصل (Legato) يعني …",
+   "options": [
+    {
+     "t": "text",
+     "text": "عزف النغمات متصلة دون انقطاع"
+    },
+    {
+     "t": "text",
+     "text": "عزف النغمات منفصلة"
+    },
+    {
+     "t": "text",
+     "text": "عزف النغمات بصوت قوي"
+    }
+   ],
+   "answer": 0,
+   "explain": "Legato: أداء متصل.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التظليلات اللحنية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأداء المتقطع (Staccato) يعني …",
+   "options": [
+    {
+     "t": "text",
+     "text": "عزف النغمات متصلة"
+    },
+    {
+     "t": "text",
+     "text": "عزف النغمات منفصلة بعضها عن بعض"
+    },
+    {
+     "t": "text",
+     "text": "عزف النغمات ببطء"
+    }
+   ],
+   "answer": 1,
+   "explain": "Staccato: أداء متقطع.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التظليلات اللحنية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "A",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "A",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "A",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك (مازورتا النشاط الأول)، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو – صول – صول – لا – لا – لا – دو"
+    },
+    {
+     "t": "text",
+     "text": "دو – فا – فا – صول – صول – صول – دو"
+    },
+    {
+     "t": "text",
+     "text": "ري – صول – صول – لا – لا – لا – ري"
+    }
+   ],
+   "answer": 0,
+   "explain": "دو، صول صول، لا لا لا، دو.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "قراءة نغمات المقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي المسارات يطابق إيقاع مازورتي النشاط الأول (الميزان 2/4)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ee",
+      "ses",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ee",
+      "sse",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "ses",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "نوار، تاتي | طفافي، نوار.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "قراءة إيقاع المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "في النشاط الثاني نبتكر مازورتين لحنيتين في الميزان …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الثنائي 2/4"
+    },
+    {
+     "t": "text",
+     "text": "الثلاثي 3/4"
+    },
+    {
+     "t": "text",
+     "text": "الرباعي 4/4"
+    }
+   ],
+   "answer": 1,
+   "explain": "ابتكار مازورتين لحنيتين في الميزان الثلاثي.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o3"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "الابتكار اللحني",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  }
+ ],
+ "review": [
+  "رمزا المتصل والمتقطع مأخوذان من درس الصف الرابع (نفس السلسلة)؛ تأكد إن الرسم مطابق لما يُدرَّس في السادس.",
+  "سؤال اختيار وضع اليد الصحيح (النشاط الأول) لم يُبنَ لأن الدليل لا يحدد الإجابة والرسم غير واضح بما يكفي.",
+  "تفاصيل طريقة الجلوس وتكوير الأصابع من درس الأورج بالصف الرابع، لأن هذا الدليل يحيل إلى «إرشادات المعلم» دون ذكرها."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

@@ -1,0 +1,577 @@
+{
+ "lessonId": "g7s1-ba5857",
+ "grade": 7,
+ "sem": 1,
+ "title": "قراءة إيقاعية وصولفيج غنائي",
+ "source": "دليل المعلم — الصف السابع، الوحدة الثانية، الدرس الثاني (ص ٤٩–٥٧)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر أسماء العلامات والأشكال الإيقاعية والنغمات في المقطوعة الموسيقية."
+  },
+  {
+   "id": "o2",
+   "text": "يقرأ المقطوعة الموسيقية إيقاعيًّا وصولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يغنّي المقطوعة الموسيقية صولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يعزّز ثقته بنفسه من خلال القراءة الإيقاعية والصولفائية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "من مؤلف المقطوعة الموسيقية (Eine kleine Nachtmusik) في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فولفجانج أماديوس موتسارت"
+    },
+    {
+     "t": "text",
+     "text": "بيتهوفن"
+    },
+    {
+     "t": "text",
+     "text": "باخ"
+    }
+   ],
+   "answer": 0,
+   "explain": "المقطوعة من تأليف موتسارت.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان مقطوعة (Eine kleine Nachtmusik) في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 2,
+   "explain": "المقطوعة في الميزان الرباعي 4/4، وعدد موازيرها ٨ مع علامة إعادة (مرجّع).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي علامة تظهر في آخر المقطوعة وتدل على تكرار أدائها؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "المرجّع (علامة الإعادة)"
+    },
+    {
+     "t": "text",
+     "text": "الرباط الزمني"
+    },
+    {
+     "t": "text",
+     "text": "النقطة الزمنية"
+    }
+   ],
+   "answer": 0,
+   "explain": "يُطلب تحليل المقطوعة من حيث الميزان وعدد الموازير والعلامات والمرجّع.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي المسارات يطابق إيقاع المازورة الأولى من المقطوعة؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "qd",
+      "e",
+      "qd",
+      "e"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "e",
+      "q",
+      "e"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "hd",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "نوار بوانتيه، كروش، نوار بوانتيه، كروش.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "القراءة الإيقاعية للمقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "النشاط الثاني: أي مازورة تكمل العبارة الأولى مكان علامة الاستفهام (المازورة الثانية)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "ee",
+      "q",
+      "rq"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "qd",
+      "e",
+      "qd",
+      "e"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "q",
+      "ee",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الناقصة: كروشان، كروشان، نوار، سكتة نوار.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "إكمال المازورة الناقصة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "النشاط الثاني: أي مازورة تكمل العبارة الثانية مكان علامة الاستفهام (المازورة السابعة)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "qd",
+      "e",
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "qd",
+      "e",
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "ee",
+      "qd",
+      "e"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الناقصة: كروشان، نوار بوانتيه، كروش، كروشان.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "إكمال المازورة الناقصة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "C",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو – صول – دو – صول"
+    },
+    {
+     "t": "text",
+     "text": "دو – لا – دو – لا"
+    },
+    {
+     "t": "text",
+     "text": "سي – صول – سي – صول"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الأولى: دو (الحادة)، صول، دو، صول.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "F",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 5,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "فا – ري – فا – ري"
+    },
+    {
+     "t": "text",
+     "text": "مي – دو – مي – دو"
+    },
+    {
+     "t": "text",
+     "text": "صول – مي – صول – مي"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الثالثة: فا، ري، فا، ري (الحادة).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "E",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 5,
+     "acc": 0
+    }
+   ],
+   "answer": 2,
+   "target": {
+    "step": "G",
+    "oct": 5,
+    "acc": 0
+   },
+   "explain": "نغمة (صول) أعلى المدرج الموسيقي فوق الخط الخامس، كما في المازورة (٢).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "نغمة صول أعلى المدرج",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "D",
+     "oct": 5,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "C",
+    "oct": 5,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (دو) الحادة في المسافة الثالثة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 5,
+     "acc": 0
+    },
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "B",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (سي) على الخط الثالث.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "qd",
+      "e",
+      "qd",
+      "e"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "ee",
+      "q",
+      "rq"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "q",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا إيقاع المازورة الأولى: نوار بوانتيه، كروش، نوار بوانتيه، كروش.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القراءة الإيقاعية للمقطوعة",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "النشاط الثاني في الدليل خياراته بالنغمات والعزف؛ حُوِّل إلى اختيار الإيقاع الصحيح للمازورة الناقصة (بدون عزف من الوزارة).",
+  "نغمات المقطوعة قُرئت من مسح بدقة 250."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

@@ -1,0 +1,509 @@
+{
+ "lessonId": "g3s1-16b040",
+ "grade": 3,
+ "sem": 1,
+ "title": "آلة الإكسيلوفون",
+ "source": "دليل المعلم — الصف الثالث، الوحدة الثانية، الدرس الثاني (ص ٤٦–٥٤)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف آلة الإكسيلوفون ومكوناتها."
+  },
+  {
+   "id": "o2",
+   "text": "يتعرّف الطريقة الصحيحة للعزف على آلة الإكسيلوفون."
+  },
+  {
+   "id": "o3",
+   "text": "يعزف سلم (دو الكبير) على آلة الإكسيلوفون."
+  },
+  {
+   "id": "o4",
+   "text": "يميّز صوت آلة الإكسيلوفون من بين الآلات الموسيقية الأخرى."
+  },
+  {
+   "id": "o5",
+   "text": "تنمو لديه الثقة بالنفس من خلال العزف على آلة الإكسيلوفون."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g03/l5-xylo.jpg"
+   },
+   "prompt": "ما اسم الآلة الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الإكسيلوفون"
+    },
+    {
+     "t": "text",
+     "text": "الأورج"
+    },
+    {
+     "t": "text",
+     "text": "الأكورديون"
+    }
+   ],
+   "answer": 0,
+   "explain": "هذه آلة الإكسيلوفون.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome",
+     "steps",
+     "assessment"
+    ],
+    "skill": "التعرّف على آلة الإكسيلوفون",
+    "level": "remember",
+    "display": "visual",
+    "media": [
+     "l5-xylo.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "آلة الإكسيلوفون من آلات …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الطَّرق"
+    },
+    {
+     "t": "text",
+     "text": "النفخ"
+    },
+    {
+     "t": "text",
+     "text": "الأوتار"
+    }
+   ],
+   "answer": 0,
+   "explain": "الإكسيلوفون آلة موسيقية من آلات الطَّرق.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "تصنيف آلة الإكسيلوفون",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "تتكوّن آلة الإكسيلوفون من مجموعة قضبان …",
+   "options": [
+    {
+     "t": "text",
+     "text": "معدنية مختلفة الأطوال"
+    },
+    {
+     "t": "text",
+     "text": "خشبية متساوية الأطوال"
+    },
+    {
+     "t": "text",
+     "text": "وترية مشدودة"
+    }
+   ],
+   "answer": 0,
+   "explain": "تتكون من مجموعة قضبان معدنية مختلفة الأطوال.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "مكونات آلة الإكسيلوفون",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "على أي شيء تُثبَّت قضبان آلة الإكسيلوفون؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "إطار خشبي أو بلاستيكي"
+    },
+    {
+     "t": "text",
+     "text": "قاعدة من الجلد"
+    },
+    {
+     "t": "text",
+     "text": "حامل معدني فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "تُثبّت القضبان على إطار خشبي أو بلاستيكي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "مكونات آلة الإكسيلوفون",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "بماذا يتم العزف على آلة الإكسيلوفون؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "مطرقتين"
+    },
+    {
+     "t": "text",
+     "text": "قوس"
+    },
+    {
+     "t": "text",
+     "text": "الأصابع مباشرة"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتم العزف بواسطة مطرقتين: زوج من العصي منتهية بكرة مصمتة من الخشب أو المعدن.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "مكونات آلة الإكسيلوفون",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "ترتيب نغمات قضبان الإكسيلوفون يكون بالتدريج من …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الغلظة إلى الحدة"
+    },
+    {
+     "t": "text",
+     "text": "الحدة إلى الغلظة"
+    },
+    {
+     "t": "text",
+     "text": "دون ترتيب"
+    }
+   ],
+   "answer": 0,
+   "explain": "النغمات مرتبة بالتدريج من الغلظة إلى الحدة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مكونات آلة الإكسيلوفون",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "من الطريقة الصحيحة للعزف على الإكسيلوفون أن يكون العزف من …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الرسغ وليس من الذراع كاملًا"
+    },
+    {
+     "t": "text",
+     "text": "الذراع كاملًا"
+    },
+    {
+     "t": "text",
+     "text": "الكتف"
+    }
+   ],
+   "answer": 0,
+   "explain": "العزف من الرسغ وليس من الذراع كاملًا، مع تحريك الذراعين دون مبالغة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "الطريقة الصحيحة للعزف",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى الرمزين (R-L) عند العزف على الإكسيلوفون؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "العزف بالمطرقتين بشكل تبادلي بين اليد اليمنى واليسرى"
+    },
+    {
+     "t": "text",
+     "text": "العزف بقوة ثم بخفوت"
+    },
+    {
+     "t": "text",
+     "text": "العزف بسرعة ثم ببطء"
+    }
+   ],
+   "answer": 0,
+   "explain": "R-L تعني حركة كلتا اليدين في شكل تبادلي باستخدام المطرقة (يمين – يسار).",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "steps"
+    ],
+    "skill": "الطريقة الصحيحة للعزف",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "لماذا لا نحرّك الذراعين إلى أعلى بشكل مبالغ فيه عند العزف على الإكسيلوفون؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "حتى لا يكون الصوت الصادر قويًّا وجافًّا"
+    },
+    {
+     "t": "text",
+     "text": "حتى نعزف بسرعة أكبر"
+    },
+    {
+     "t": "text",
+     "text": "حتى لا تتحرك الآلة"
+    }
+   ],
+   "answer": 0,
+   "explain": "حتى لا يكون الصوت الصادر قويًّا وجافًّا.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "الطريقة الصحيحة للعزف",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "instrument",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الصوتي: أيّ آلة تعزف؟ اختر المسار الذي يحمل صورتها",
+   "options": [
+    {
+     "t": "inst",
+     "id": "xylophone"
+    },
+    {
+     "t": "inst",
+     "id": "piano"
+    },
+    {
+     "t": "inst",
+     "id": "violin"
+    }
+   ],
+   "answer": 0,
+   "explain": "هذا صوت آلة الإكسيلوفون.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "outcome",
+     "steps",
+     "assessment"
+    ],
+    "skill": "تمييز صوت الإكسيلوفون",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "instrument",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الصوتي: أيّ آلة تعزف؟ اختر المسار الذي يحمل صورتها",
+   "options": [
+    {
+     "t": "inst",
+     "id": "accordion"
+    },
+    {
+     "t": "inst",
+     "id": "xylophone"
+    },
+    {
+     "t": "inst",
+     "id": "snare"
+    }
+   ],
+   "answer": 1,
+   "explain": "هذا صوت آلة الإكسيلوفون.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "outcome",
+     "steps",
+     "assessment"
+    ],
+    "skill": "تمييز صوت الإكسيلوفون",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "C",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (دو) أول نغمات سلم دو الكبير.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "نغمات سلم دو الكبير على الإكسيلوفون",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "A",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "B",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 2,
+   "target": {
+    "step": "B",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (سي) على الخط الثالث.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "نغمات سلم دو الكبير على الإكسيلوفون",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "اسم الآلة في الدليل «الإكسيلوفون» واسمها في مكتبة أصوات اللعبة «الإكسيليفون»؛ يظهر هذا الاسم تحت أيقونة الآلة في سؤالي الاستماع. يُقترح توحيد التسمية في مكتبة اللعبة.",
+  "آلة الدليل قضبانها معدنية؛ صوت «الإكسيليفون» في اللعبة تسجيل آلة إكسيلوفون مسجّل في مكتبة اللعبة — راجع تطابق الصوت.",
+  "ملاحظة الدليل: طريقة العزف يوضحها المعلم دون إلزام التلميذ بحفظها."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

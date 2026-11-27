@@ -1,0 +1,471 @@
+{
+ "lessonId": "g6s1-0e921d",
+ "grade": 6,
+ "sem": 1,
+ "title": "نشيد (عُمان عظيمة بشعبها)",
+ "source": "دليل المعلم — الصف السادس، الوحدة الأولى، الدرس الثاني (ص ٢٣–٢٩)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف المعنى العام للنشيد."
+  },
+  {
+   "id": "o2",
+   "text": "يُنشد النشيد بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يقدّر أهمية التكاتف الوطني من خلال إنشاد النشيد."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبّر عن «يُعانقُ الشمسَ صباحا»؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l2-mud.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l2-sun.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l2-aid.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "صورة شروق الشمس تعبّر عن «يعانق الشمس صباحا».",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "ربط الصورة بكلمات النشيد",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l2-mud.jpg",
+     "l2-aid.jpg",
+     "l2-sun.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبّر عن «كَمْ قبّلَ الطينُ يدا»؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l2-aid.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l2-sun.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l2-mud.jpg"
+    }
+   ],
+   "answer": 2,
+   "explain": "صورة المتطوعين يزيلون الطين والأنقاض تعبّر عن «كم قبّل الطين يدا».",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "ربط الصورة بكلمات النشيد",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l2-mud.jpg",
+     "l2-aid.jpg",
+     "l2-sun.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي صورة تعبّر عن التكاتف الوطني بين أبناء الشعب العُماني؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l2-sun.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g06/l2-aid.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "صورة أبناء عُمان يتعاونون في حمل المساعدات تعبّر عن التكاتف الوطني.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "activity",
+     "outcome"
+    ],
+    "skill": "أهمية التكاتف الوطني",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l2-aid.jpg",
+     "l2-sun.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من نشيد (عُمان عظيمة بشعبها): «ماءٌ على الماءِ جرى …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "شعبٌ إلى الشعبِ جرى"
+    },
+    {
+     "t": "text",
+     "text": "شقَّ البحارَ والذُّرى"
+    },
+    {
+     "t": "text",
+     "text": "يُعانقُ الشمسَ صباحا"
+    }
+   ],
+   "answer": 0,
+   "explain": "«ماءٌ على الماء جرى، شعبٌ إلى الشعب جرى».",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «عُمانُ يا أرضَ النّدى …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "أنجبتِ شعبًا أجودا"
+    },
+    {
+     "t": "text",
+     "text": "وصافحَ الغيمُ يدا"
+    },
+    {
+     "t": "text",
+     "text": "يتلو على الأرضِ صباحا"
+    }
+   ],
+   "answer": 0,
+   "explain": "«عُمانُ يا أرضَ النّدى، أنجبتِ شعبًا أجودا».",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "أكمل من النشيد: «عيني لدمعةِ الوطنْ …»",
+   "options": [
+    {
+     "t": "text",
+     "text": "وجهي لبسمةِ الوطنْ"
+    },
+    {
+     "t": "text",
+     "text": "يومَ الرخاءِ والمحنْ"
+    },
+    {
+     "t": "text",
+     "text": "بهِ أفاوضُ الزمنْ"
+    }
+   ],
+   "answer": 0,
+   "explain": "«عيني لدمعة الوطن، وجهي لبسمة الوطن».",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «الذُّرى» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جمع ذروة، وهي كل ما ارتفع عن الأرض"
+    },
+    {
+     "t": "text",
+     "text": "الأودية"
+    },
+    {
+     "t": "text",
+     "text": "الرمال"
+    }
+   ],
+   "answer": 0,
+   "explain": "الذرى: جمع ذروة، وهي كل ما ارتفع عن الأرض.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «النّدى» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "قطرات الماء التي تتكوّن في الليل أو الصباح الباكر"
+    },
+    {
+     "t": "text",
+     "text": "المطر الغزير"
+    },
+    {
+     "t": "text",
+     "text": "موج البحر"
+    }
+   ],
+   "answer": 0,
+   "explain": "الندى: قطرات الماء التي تتكوّن في الليل أو الصباح الباكر.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «المِحَن» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "جمع محنة، وهي البلاء والشدة"
+    },
+    {
+     "t": "text",
+     "text": "سعة العيش"
+    },
+    {
+     "t": "text",
+     "text": "الأفراح"
+    }
+   ],
+   "answer": 0,
+   "explain": "المحن: جمع محنة، وهي البلاء والشدة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «الرّخاء» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سعة العيش وحسن الحال"
+    },
+    {
+     "t": "text",
+     "text": "البلاء والشدة"
+    },
+    {
+     "t": "text",
+     "text": "التعب"
+    }
+   ],
+   "answer": 0,
+   "explain": "الرخاء: سعة العيش وحسن الحال.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى كلمة «شقَّ» في النشيد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فتح"
+    },
+    {
+     "t": "text",
+     "text": "أغلق"
+    },
+    {
+     "t": "text",
+     "text": "رسم"
+    }
+   ],
+   "answer": 0,
+   "explain": "شقّ: فتح.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "معاني كلمات النشيد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "من كاتب كلمات نشيد (عُمان عظيمة بشعبها)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "يوسف بن عبد القادر الكمالي"
+    },
+    {
+     "t": "text",
+     "text": "فيصل بن أحمد الشبلي"
+    },
+    {
+     "t": "text",
+     "text": "محمد بن مرزوق اليحيائي"
+    }
+   ],
+   "answer": 0,
+   "explain": "كلمات: يوسف بن عبد القادر الكمالي، وألحان: فيصل بن أحمد الشبلي.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "كلمات النشيد وألحانه",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الفكرة العامة لنشيد (عُمان عظيمة بشعبها)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "تكاتف أبناء الشعب العُماني ووقوفهم مع وطنهم في الرخاء والشدة"
+    },
+    {
+     "t": "text",
+     "text": "وصف رحلة بحرية"
+    },
+    {
+     "t": "text",
+     "text": "الحث على النظافة"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتحدث النشيد عن تكاتف الشعب العُماني وتعاضده مع وطنه في الرخاء والمحن.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "assessment",
+     "outcome"
+    ],
+    "skill": "المعنى العام للنشيد",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  }
+ ],
+ "review": [
+  "ربط صور النشاط الأول بالأبيات اجتهاد من محتوى الصور (القطع مبعثرة في الدليل ولا يذكر الحل)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

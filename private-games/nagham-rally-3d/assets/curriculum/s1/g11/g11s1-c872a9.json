@@ -1,0 +1,508 @@
+{
+ "lessonId": "g11s1-c872a9",
+ "grade": 11,
+ "sem": 1,
+ "title": "عنصر التعبير (التظليل)",
+ "source": "دليل المعلم — الصف الحادي عشر، الوحدة الأولى، الدرس الثالث (ص ٢١–٢٤)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر أسماء مصطلحات التعبير الموسيقي."
+  },
+  {
+   "id": "o2",
+   "text": "يفرّق بين أسماء مصطلحات التعبير الموسيقي وحروف الاختصار لها."
+  },
+  {
+   "id": "o3",
+   "text": "يميّز الآلات الموسيقية التي درسها عند الاستماع إليها من المقطوعات الموسيقية."
+  },
+  {
+   "id": "o4",
+   "text": "يميّز التعبيرات الموسيقية الموجودة في مقطوعة موسيقية عند الاستماع إليها."
+  },
+  {
+   "id": "o5",
+   "text": "يعزف جملة موسيقية على آلته تتضح فيها التعبيرات الموسيقية المضمنة بها."
+  },
+  {
+   "id": "o6",
+   "text": "يبادر في التمييز بين المصطلحات الموسيقية التي تعرض عليه."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "التظليل (وسائل التعبير) هو العنصر … من عناصر الموسيقا.",
+   "options": [
+    {
+     "t": "text",
+     "text": "الثالث"
+    },
+    {
+     "t": "text",
+     "text": "الأول"
+    },
+    {
+     "t": "text",
+     "text": "الثاني"
+    }
+   ],
+   "answer": 0,
+   "explain": "وسائل التعبير (التظليل) هي العنصر الثالث من عناصر الموسيقا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات شدة الصوت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما اختصار المصطلح (Pianissimo)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "pp"
+    },
+    {
+     "t": "text",
+     "text": "p"
+    },
+    {
+     "t": "text",
+     "text": "mp"
+    }
+   ],
+   "answer": 0,
+   "explain": "Pianissimo = pp = خافت جدًّا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات شدة الصوت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى المصطلح (mf – Mezzo-forte)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "متوسط الشدة"
+    },
+    {
+     "t": "text",
+     "text": "شديد جدًّا"
+    },
+    {
+     "t": "text",
+     "text": "متوسط الخفوت"
+    }
+   ],
+   "answer": 0,
+   "explain": "mf = متوسط الشدة.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات شدة الصوت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما معنى المصطلح (mp – Mezzo-piano)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "متوسط الخفوت"
+    },
+    {
+     "t": "text",
+     "text": "خافت جدًّا"
+    },
+    {
+     "t": "text",
+     "text": "متوسط الشدة"
+    }
+   ],
+   "answer": 0,
+   "explain": "mp = متوسط الخفوت.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات شدة الصوت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما اختصار المصطلح (Fortissimo)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ff"
+    },
+    {
+     "t": "text",
+     "text": "f"
+    },
+    {
+     "t": "text",
+     "text": "mf"
+    }
+   ],
+   "answer": 0,
+   "explain": "Fortissimo = ff = شديد جدًّا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات شدة الصوت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "رتّب المصطلحات من الأخفت إلى الأشد:",
+   "options": [
+    {
+     "t": "text",
+     "text": "pp – p – mp – mf – f – ff"
+    },
+    {
+     "t": "text",
+     "text": "p – pp – mp – f – mf – ff"
+    },
+    {
+     "t": "text",
+     "text": "pp – mp – p – f – mf – ff"
+    }
+   ],
+   "answer": 0,
+   "explain": "خافت جدًّا ← خافت ← متوسط الخفوت ← متوسط الشدة ← شديد ← شديد جدًّا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات شدة الصوت",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدل على التدرّج من الخفوت إلى الشدة (Crescendo)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-dim.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-cresc.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "Crescendo: التدرج من الخفوت إلى الشدة.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات شدة الصوت",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "g04/l1-cresc.jpg",
+     "g04/l1-dim.jpg"
+    ]
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "المقصود بـ(اللمس) في التعبير الموسيقي هو …",
+   "options": [
+    {
+     "t": "text",
+     "text": "أداء النغمات متصلة أو متقطعة"
+    },
+    {
+     "t": "text",
+     "text": "سرعة الأداء"
+    },
+    {
+     "t": "text",
+     "text": "شدة الصوت"
+    }
+   ],
+   "answer": 0,
+   "explain": "اللمس: أداء النغمات متصلة أو متقطعة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "اللمس",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "الأداء المتقطع (Staccato) هو أداء النغمة …",
+   "options": [
+    {
+     "t": "text",
+     "text": "مع اختصار قيمتها الزمنية"
+    },
+    {
+     "t": "text",
+     "text": "مع إطالة قيمتها الزمنية"
+    },
+    {
+     "t": "text",
+     "text": "بصوت شديد"
+    }
+   ],
+   "answer": 0,
+   "explain": "أداء النغمة مع اختصار قيمتها الزمنية، ويُعبر عنه بنقطة تحت النغمة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "اللمس",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما دلالة المصطلح (Lento)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بطيء"
+    },
+    {
+     "t": "text",
+     "text": "متوسط السرعة"
+    },
+    {
+     "t": "text",
+     "text": "سريع"
+    }
+   ],
+   "answer": 0,
+   "explain": "Lento = بطيء.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات السرعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما دلالة المصطلح (Andante)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "متوسط السرعة"
+    },
+    {
+     "t": "text",
+     "text": "بطيء"
+    },
+    {
+     "t": "text",
+     "text": "سريع"
+    }
+   ],
+   "answer": 0,
+   "explain": "Andante = متوسط السرعة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات السرعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما دلالة المصطلح (Allegro)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سريع"
+    },
+    {
+     "t": "text",
+     "text": "بطيء"
+    },
+    {
+     "t": "text",
+     "text": "متوسط السرعة"
+    }
+   ],
+   "answer": 0,
+   "explain": "Allegro = سريع.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات السرعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "أين توضع مصطلحات السرعة في المقطوعة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "في بدايتها"
+    },
+    {
+     "t": "text",
+     "text": "في نهايتها"
+    },
+    {
+     "t": "text",
+     "text": "تحت كل نغمة"
+    }
+   ],
+   "answer": 0,
+   "explain": "مصطلحات توضع في بداية المقطوعة لتحديد سرعة الأداء.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "مصطلحات السرعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "prompt": "(الصوت) كوسيلة تعبير يُقصد به …",
+   "options": [
+    {
+     "t": "text",
+     "text": "نوع مصدر الصوت (غنائي أو آلي)"
+    },
+    {
+     "t": "text",
+     "text": "شدة الصوت"
+    },
+    {
+     "t": "text",
+     "text": "سرعة الأداء"
+    }
+   ],
+   "answer": 0,
+   "explain": "الصوت نوع من التلوين الموسيقي، ويُقصد به نوع مصدر الصوت: غنائي أو آلي.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "الصوت (التلوين)",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q14"
+  }
+ ],
+ "review": [
+  "التمييز السمعي للآلات والتعبيرات غير مُقاس (لا تسجيلات).",
+  "الدليل يكتب «Legata» و«Alegro»؛ استُخدم الإملاء الصحيح Legato/Allegro."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

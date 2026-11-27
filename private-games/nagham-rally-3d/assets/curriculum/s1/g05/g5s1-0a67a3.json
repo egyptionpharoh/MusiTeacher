@@ -1,0 +1,566 @@
+{
+ "lessonId": "g5s1-0a67a3",
+ "grade": 5,
+ "sem": 1,
+ "title": "قراءة إيقاعية وصولفيج غنائي",
+ "source": "دليل المعلم — الصف الخامس، الوحدة الثانية، الدرس الثاني (ص ٥٣–٦١)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر أسماء النغمات والعلامات الإيقاعية في المقطوعة الموسيقية."
+  },
+  {
+   "id": "o2",
+   "text": "يقرأ المقطوعة الموسيقية إيقاعيًّا وصولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يغنّي المقطوعة الموسيقية صولفائيًّا بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يدرك أهمية الربط بين الإيقاع والنغم من خلال المقطوعة الموسيقية."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما ميزان المقطوعة الموسيقية (Mary Had a Little Lamb) في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 2,
+   "explain": "المقطوعة في الميزان الرباعي 4/4.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "كم عدد موازير المقطوعة الموسيقية في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٨"
+    },
+    {
+     "t": "text",
+     "text": "١٦"
+    }
+   ],
+   "answer": 1,
+   "explain": "عدد موازير المقطوعة ٨ (عبارتان، كل عبارة ٤ موازير).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما العلامات الإيقاعية المستخدمة في المقطوعة الموسيقية بالدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "النوار والبلانش والروند"
+    },
+    {
+     "t": "text",
+     "text": "الكروش والدوبل كروش"
+    },
+    {
+     "t": "text",
+     "text": "النوار والكروش فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "تتكوّن المقطوعة من النوار والبلانش والروند.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "تحليل المقطوعة",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "مي – ري – دو – ري"
+    },
+    {
+     "t": "text",
+     "text": "ري – مي – دو – ري"
+    },
+    {
+     "t": "text",
+     "text": "مي – دو – ري – دو"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الأولى: مي، ري، دو، ري.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "مي – صول – صول"
+    },
+    {
+     "t": "text",
+     "text": "مي – فا – فا"
+    },
+    {
+     "t": "text",
+     "text": "ري – صول – صول"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الرابعة: مي، صول، صول.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "القراءة الصولفائية للمقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "C",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "اقرأ النغمات الظاهرة أمامك قراءة صولفائية، ثم اختر المسار الذي يحمل أسماءها بالترتيب",
+   "options": [
+    {
+     "t": "text",
+     "text": "دو – مي – صول"
+    },
+    {
+     "t": "text",
+     "text": "دو – ري – مي"
+    },
+    {
+     "t": "text",
+     "text": "ري – فا – لا"
+    }
+   ],
+   "answer": 0,
+   "explain": "بطاقة القراءة الصولفائية: دو، مي، صول.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "القراءة الصولفائية",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 1,
+   "target": {
+    "step": "C",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (دو) على الخط الإضافي أسفل المدرج — آخر نغمات المقطوعة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "C",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "D",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 2,
+   "target": {
+    "step": "D",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (ري) أسفل الخط الأول.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "staff",
+   "mode": "name",
+   "prompt": "ما اسم النغمة المكتوبة على المدرج الظاهر أمامك؟",
+   "choices": [
+    {
+     "step": "E",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "G",
+     "oct": 4,
+     "acc": 0
+    },
+    {
+     "step": "F",
+     "oct": 4,
+     "acc": 0
+    }
+   ],
+   "answer": 0,
+   "target": {
+    "step": "E",
+    "oct": 4,
+    "acc": 0
+   },
+   "explain": "هذه نغمة (مي) على الخط الأول.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "content"
+    ],
+    "skill": "أسماء النغمات في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي المسارات يطابق إيقاع بطاقة القراءة الإيقاعية: نوار – نوار – بلانش؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "h"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "h",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "نوار، نوار، بلانش = ٤ وحدات.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "القراءة الإيقاعية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى إيقاع المازورة، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "w"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "h"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا أربع نوارات، كالمازورة الأولى من المقطوعة.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الربط بين الإيقاع والنغم",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى إيقاع المازورة، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "q",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "h"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "w"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سمعنا بلانشين، كالمازورة السابعة من المقطوعة.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الربط بين الإيقاع والنغم",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "الغناء الصولفائي أداء لا يُقاس باختيار من متعدد؛ قيس بدلًا منه القراءة الصولفائية للنغمات."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

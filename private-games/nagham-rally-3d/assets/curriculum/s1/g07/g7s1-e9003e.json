@@ -1,0 +1,621 @@
+{
+ "lessonId": "g7s1-e9003e",
+ "grade": 7,
+ "sem": 1,
+ "title": "الشكلان الإيقاعيان (تافي) و(تافا)",
+ "source": "دليل المعلم — الصف السابع، الوحدة الأولى، الدرس الثالث (ص ٣٠–٣٧)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف الشكلين الإيقاعيين (كروش منقوط + دوبل كروش) و(دوبل كروش + كروش منقوط)."
+  },
+  {
+   "id": "o2",
+   "text": "يحدّد التقسيم الداخلي للشكلين الإيقاعيين."
+  },
+  {
+   "id": "o3",
+   "text": "يؤدّي الشكلين الإيقاعيين بطريقة صحيحة."
+  },
+  {
+   "id": "o4",
+   "text": "يدوّن الشكلين الإيقاعيين بطريقة صحيحة."
+  },
+  {
+   "id": "o5",
+   "text": "يؤدّي تمرينًا إيقاعيًّا يحوي الشكلين الإيقاعيين."
+  },
+  {
+   "id": "o6",
+   "text": "يدرك القيمة الزمنية للشكلين الإيقاعيين من خلال الأداء."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه الأشكال ينتج من دمج الدوبل كروش الأول والثاني والثالث من الشكل (طفاتيفي)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "eds"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sed"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ess"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "دمج الثلاثة الأولى = كروش منقوط، ثم دوبل كروش.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "التعرّف على الشكلين الجديدين",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه الأشكال ينتج من دمج الدوبل كروش الثاني والثالث والرابع من الشكل (طفاتيفي)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "eds"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sed"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "دمج الثلاثة الأخيرة = دوبل كروش، ثم كروش منقوط.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "steps",
+     "activity"
+    ],
+    "skill": "التعرّف على الشكلين الجديدين",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "eds"
+    ]
+   },
+   "prompt": "ما التقسيم الداخلي للشكل الإيقاعي الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "كروش منقوط + دوبل كروش"
+    },
+    {
+     "t": "text",
+     "text": "دوبل كروش + كروش منقوط"
+    },
+    {
+     "t": "text",
+     "text": "كروش + كروش"
+    }
+   ],
+   "answer": 0,
+   "explain": "كروش منقوط (¾) + دوبل كروش (¼).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "assessment",
+     "steps"
+    ],
+    "skill": "التقسيم الداخلي",
+    "level": "understand",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "sed"
+    ]
+   },
+   "prompt": "ما التقسيم الداخلي للشكل الإيقاعي الظاهر أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "كروش منقوط + دوبل كروش"
+    },
+    {
+     "t": "text",
+     "text": "دوبل كروش + كروش منقوط"
+    },
+    {
+     "t": "text",
+     "text": "دوبل كروش + كروش + دوبل كروش"
+    }
+   ],
+   "answer": 1,
+   "explain": "دوبل كروش (¼) + كروش منقوط (¾).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "assessment",
+     "steps"
+    ],
+    "skill": "التقسيم الداخلي",
+    "level": "understand",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما القيمة الزمنية لكل من الشكلين الإيقاعيين الجديدين في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "وحدة واحدة (نوار)"
+    },
+    {
+     "t": "text",
+     "text": "نصف وحدة"
+    },
+    {
+     "t": "text",
+     "text": "وحدتان"
+    }
+   ],
+   "answer": 0,
+   "explain": "القيمة الزمنية لكل شكل تساوي نوار (¾ + ¼ = ١).",
+   "meta": {
+    "outcomes": [
+     "o6"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القيمة الزمنية للشكلين",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف يمكن الحصول على الكروش المنقوط من ثلاثة دوبل كروش؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بربطها بالرباط الزمني أو بتجميعها في علامة واحدة"
+    },
+    {
+     "t": "text",
+     "text": "بإضافة سكتة"
+    },
+    {
+     "t": "text",
+     "text": "بفصلها عن بعض"
+    }
+   ],
+   "answer": 0,
+   "explain": "نربط ثلاث دوبل كروش بالرباط الزمني، أو نجمعها، فتُدوَّن كروشًا منقوطًا.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تكوين الشكلين بالرباط والنقطة",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "لغز المازورة الأولى (3/4): شكل من دمج الدوبل كروش ١و٢و٣ – علامة قيمتها وحدة – شكل من ٤ دوبل كروش",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "eds",
+      "q",
+      "ssss"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sed",
+      "q",
+      "ssss"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "eds",
+      "ee",
+      "ssss"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "كروش منقوط ودوبل كروش، نوار، أربع دوبل كروش.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "لغز المازورة: تكوين مازورة من وصف الأشكال",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "لغز المازورة الثانية (3/4): شكل من ٤ دوبل كروش – شكل من دمج الدوبل كروش ٢و٣و٤ – شكل من كروشين",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "eds",
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "sed",
+      "ee"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ssss",
+      "sed",
+      "q"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "أربع دوبل كروش، دوبل كروش وكروش منقوط، كروشان.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "لغز المازورة: تكوين مازورة من وصف الأشكال",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "لغز المازورة الرابعة (3/4): شكل من دمج الدوبل كروش ٢و٣و٤ – شكل من دمج الدوبل كروش ٢و٣ – علامة قيمتها وحدة",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "sed",
+      "ses",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sed",
+      "sse",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "eds",
+      "ses",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "دوبل كروش وكروش منقوط، طفافي، نوار.",
+   "meta": {
+    "outcomes": [
+     "o2",
+     "o4"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "لغز المازورة: تكوين مازورة من وصف الأشكال",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان التمرين الإيقاعي في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 2,
+   "explain": "التمرين في الميزان الرباعي 4/4.",
+   "meta": {
+    "outcomes": [
+     "o5"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "تحليل التمرين الإيقاعي",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "eds",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sed",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا: كروش منقوط ودوبل كروش، ثم نوار.",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o6"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التمييز السمعي للشكلين",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "استمع إلى المقطع الإيقاعي، ثم اختر المسار الذي يحمل ما سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "eds"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "sse"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "sed"
+     ]
+    }
+   ],
+   "answer": 2,
+   "explain": "سمعنا: نوار، ثم دوبل كروش وكروش منقوط.",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o6"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التمييز السمعي للشكلين",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه الأشكال هو الشكل الإيقاعي (تافي)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "eds"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sed"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "(تافي): كروش منقوط ثم دوبل كروش.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome"
+    ],
+    "skill": "التعرّف على الشكلين تافي وتافا",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه الأشكال هو الشكل الإيقاعي (تافا)؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "eds"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sed"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "sse"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "(تافا): دوبل كروش ثم كروش منقوط.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome"
+    ],
+    "skill": "التعرّف على الشكلين تافي وتافا",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q14"
+  }
+ ],
+ "review": [
+  "اعتُمد الاسمان «تافي» (كروش منقوط + دوبل كروش) و«تافا» (دوبل كروش + كروش منقوط) بتأكيد منك. اسم الثاني في مكتبة اللعبة «تفا» فبقي مخفيًّا تحت الرسوم.",
+  "حلول ألغاز المازورة محسوبة من نص اللغز (الدليل لا يذكر الحل)."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

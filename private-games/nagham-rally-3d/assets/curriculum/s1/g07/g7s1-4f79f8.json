@@ -1,0 +1,533 @@
+{
+ "lessonId": "g7s1-4f79f8",
+ "grade": 7,
+ "sem": 1,
+ "title": "شخصية موسيقية عالمية (موتسارت)",
+ "source": "دليل المعلم — الصف السابع، الوحدة الثانية، الدرس الأول (ص ٤١–٤٨)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف الشخصية الموسيقية العالمية (موتسارت)."
+  },
+  {
+   "id": "o2",
+   "text": "يستمع لبعض المؤلفات الموسيقية لـ(موتسارت)."
+  },
+  {
+   "id": "o3",
+   "text": "يتذوّق بعض الألحان والمؤلفات الموسيقية لـ(موتسارت) من خلال الاستماع."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما الاسم الكامل للمؤلف الموسيقي (موتسارت)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فولفجانج أماديوس موتسارت"
+    },
+    {
+     "t": "text",
+     "text": "فولفجانس أماديوس موتسارت"
+    },
+    {
+     "t": "text",
+     "text": "لودفيج فان موتسارت"
+    }
+   ],
+   "answer": 0,
+   "explain": "الاسم: فولفجانج أماديوس موتسارت.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "activity"
+    ],
+    "skill": "البطاقة التعريفية لموتسارت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي سنة وُلد (موتسارت)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١٧٣٠م"
+    },
+    {
+     "t": "text",
+     "text": "١٧٥٦م"
+    },
+    {
+     "t": "text",
+     "text": "١٧٩١م"
+    }
+   ],
+   "answer": 1,
+   "explain": "سنة الميلاد: ١٧٥٦م، وسنة الوفاة: ١٧٩١م.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "activity"
+    ],
+    "skill": "البطاقة التعريفية لموتسارت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "أين وُلد (موتسارت)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "سالزبورغ، النمسا"
+    },
+    {
+     "t": "text",
+     "text": "غراتس، النمسا"
+    },
+    {
+     "t": "text",
+     "text": "فيينا، النمسا"
+    }
+   ],
+   "answer": 0,
+   "explain": "مكان الميلاد: سالزبورغ، النمسا.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "activity"
+    ],
+    "skill": "البطاقة التعريفية لموتسارت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما مهنة (موتسارت) كما وردت في بطاقته التعريفية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "مؤلف موسيقي"
+    },
+    {
+     "t": "text",
+     "text": "مغنٍّ موسيقي"
+    },
+    {
+     "t": "text",
+     "text": "صانع آلات"
+    }
+   ],
+   "answer": 0,
+   "explain": "المهنة: مؤلف موسيقي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "activity"
+    ],
+    "skill": "البطاقة التعريفية لموتسارت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي سنة تُوفي (موتسارت)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١٧٥٦م"
+    },
+    {
+     "t": "text",
+     "text": "١٧٩١م"
+    },
+    {
+     "t": "text",
+     "text": "١٨٢٧م"
+    }
+   ],
+   "answer": 1,
+   "explain": "سنة الوفاة: ١٧٩١م.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "activity"
+    ],
+    "skill": "البطاقة التعريفية لموتسارت",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "يُعدّ (موتسارت) أحد أهم روّاد الموسيقا في العصر …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الكلاسيكي"
+    },
+    {
+     "t": "text",
+     "text": "الباروكي"
+    },
+    {
+     "t": "text",
+     "text": "الرومانسي"
+    }
+   ],
+   "answer": 0,
+   "explain": "أحد أهم روّاد الموسيقا في العصر الكلاسيكي.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "نبذة عن حياة موتسارت الفنية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "بماذا لُقّب (موتسارت) عندما أصبح قائدًا للأوركسترا في السابعة من عمره؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الطفل المعجزة"
+    },
+    {
+     "t": "text",
+     "text": "الموسيقار الصغير"
+    },
+    {
+     "t": "text",
+     "text": "أمير الموسيقا"
+    }
+   ],
+   "answer": 0,
+   "explain": "لُقّب (بالطفل المعجزة).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "نبذة عن حياة موتسارت الفنية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي سن ألّف (موتسارت) أول مقطوعة موسيقية؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الخامسة"
+    },
+    {
+     "t": "text",
+     "text": "الثامنة"
+    },
+    {
+     "t": "text",
+     "text": "الثالثة عشرة"
+    }
+   ],
+   "answer": 0,
+   "explain": "عزف على البيانو وألّف أول مقطوعة في سن الخامسة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "نبذة عن حياة موتسارت الفنية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي سن ألّف (موتسارت) السيمفونية رقم (١)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الخامسة"
+    },
+    {
+     "t": "text",
+     "text": "الثامنة"
+    },
+    {
+     "t": "text",
+     "text": "السابعة"
+    }
+   ],
+   "answer": 1,
+   "explain": "ألّف السيمفونية رقم (١) في سن الثامنة.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "نبذة عن حياة موتسارت الفنية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g07/l4-harpsi.jpg"
+   },
+   "prompt": "ما اسم الآلة الظاهرة أمامك، التي كانت أخت (موتسارت) عازفة عليها؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الهاربسكورد"
+    },
+    {
+     "t": "text",
+     "text": "الأرغن"
+    },
+    {
+     "t": "text",
+     "text": "الأكورديون"
+    }
+   ],
+   "answer": 0,
+   "explain": "الهاربسكورد: آلة تشبه آلة البيانو، وكانت أخته عازفة عليها.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "نبذة عن حياة موتسارت الفنية",
+    "level": "remember",
+    "display": "visual",
+    "media": [
+     "l4-harpsi.jpg"
+    ]
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g07/l4-pipeorgan.jpg"
+   },
+   "prompt": "عمل (موتسارت) عازفًا على الآلة الظاهرة أمامك. ما اسمها؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأرغن"
+    },
+    {
+     "t": "text",
+     "text": "الهاربسكورد"
+    },
+    {
+     "t": "text",
+     "text": "الكمان"
+    }
+   ],
+   "answer": 0,
+   "explain": "من أعماله المهنية: عازفًا على آلة الأُرغن.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "نبذة عن حياة موتسارت الفنية",
+    "level": "remember",
+    "display": "visual",
+    "media": [
+     "l4-pipeorgan.jpg"
+    ]
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما أشهر سيمفونيات (موتسارت) كما ورد في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "السيمفونية رقم (٤٠)"
+    },
+    {
+     "t": "text",
+     "text": "السيمفونية رقم (٩)"
+    },
+    {
+     "t": "text",
+     "text": "السيمفونية رقم (٥)"
+    }
+   ],
+   "answer": 0,
+   "explain": "تتراوح سيمفونياته بين ٤٠ و٤٩، أشهرها السيمفونية رقم (٤٠).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "أهم مؤلفات موتسارت ومميزاتها",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما أشهر أوبرات (موتسارت)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الناي السحري"
+    },
+    {
+     "t": "text",
+     "text": "عايدة"
+    },
+    {
+     "t": "text",
+     "text": "كارمن"
+    }
+   ],
+   "answer": 0,
+   "explain": "ألّف (٢٢) أوبرا أشهرها (الناي السحري).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "أهم مؤلفات موتسارت ومميزاتها",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "prompt": "بماذا اتسمت ألحان (موتسارت)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "المرح والرقة والقوة والجدية"
+    },
+    {
+     "t": "text",
+     "text": "الحزن والبطء فقط"
+    },
+    {
+     "t": "text",
+     "text": "الصخب والسرعة فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "اتسمت ألحانه بالمرح والرقة والقوة والجدية.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "steps",
+     "assessment"
+    ],
+    "skill": "أهم مؤلفات موتسارت ومميزاتها",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q14"
+  }
+ ],
+ "review": [
+  "مخرجا الاستماع والتذوق لا يُقاسان هنا (لا تسجيلات لموتسارت مرفقة، ولا تُستخدم أصوات الوزارة).",
+  "لم تُستخدم صورة موتسارت الشخصية في الأسئلة؛ فقط صورتا الهاربسكورد والأرغن من الدليل.",
+  "بطاقات النشاط الأول (البطاقة الصحيحة) حُوّلت إلى أسئلة نصية عن كل معلومة."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

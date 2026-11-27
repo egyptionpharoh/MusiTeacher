@@ -1,0 +1,541 @@
+{
+ "lessonId": "g10s1-52e67e",
+ "grade": 10,
+ "sem": 1,
+ "title": "فن المولد",
+ "source": "دليل المعلم — الصف العاشر، الوحدة الثانية، الدرس الأول (ص ٢٧–٢٨)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يتعرّف فنًّا جديدًا من الفنون الشعبية (فن المولد)."
+  },
+  {
+   "id": "o2",
+   "text": "يتذوّق طابع فن المولد وطريقة أدائه."
+  },
+  {
+   "id": "o3",
+   "text": "يميّز بين فن المولد والفنون الشعبية المختلفة."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "image",
+   "cueOnly": true,
+   "cue": {
+    "t": "image",
+    "src": "./assets/img/curr/s1/g10/l4-mawlid.jpg"
+   },
+   "prompt": "ما الفن العُماني الظاهر في الصورة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "فن المولد"
+    },
+    {
+     "t": "text",
+     "text": "فن البرعة"
+    },
+    {
+     "t": "text",
+     "text": "فن طبل النساء"
+    }
+   ],
+   "answer": 0,
+   "explain": "صورة فن المولد كما وردت في الدليل.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o3"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "تمييز فن المولد",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l4-mawlid.jpg"
+    ]
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الصورتين لفن (المولد)؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g08/l1-baraa.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g10/l4-mawlid.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "فن المولد يُؤدّى جلوسًا في صفّين مع الدفوف، والصورة الأخرى لفن البرعة.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "assessment"
+    ],
+    "skill": "التمييز بين فن المولد والفنون الأخرى",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l4-mawlid.jpg",
+     "g08/l1-baraa.jpg"
+    ]
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الآلة الإيقاعية الظاهرة بيد المؤدّين في صورة فن (المولد)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الدف"
+    },
+    {
+     "t": "text",
+     "text": "الكاسر"
+    },
+    {
+     "t": "text",
+     "text": "الرحماني"
+    }
+   ],
+   "answer": 0,
+   "explain": "يظهر المؤدون يحملون الدفوف، والدف من وسائل درس نشيد المولد.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "طريقة أداء فن المولد",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "l4-mawlid.jpg"
+    ]
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف يجلس المؤدّون في فن (المولد) كما في صورة الدليل؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "في صفّين متقابلين"
+    },
+    {
+     "t": "text",
+     "text": "في دائرة واقفين"
+    },
+    {
+     "t": "text",
+     "text": "صفًّا واحدًا واقفين"
+    }
+   ],
+   "answer": 0,
+   "explain": "يظهر المؤدّون جالسين في صفّين متقابلين.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "طريقة أداء فن المولد",
+    "level": "understand",
+    "display": "visual",
+    "media": [
+     "l4-mawlid.jpg"
+    ]
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "إلى أي نوع من الفنون ينتمي فن (المولد)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الفنون الشعبية العُمانية"
+    },
+    {
+     "t": "text",
+     "text": "الموسيقا الكلاسيكية"
+    },
+    {
+     "t": "text",
+     "text": "الأوبرا"
+    }
+   ],
+   "answer": 0,
+   "explain": "فن المولد فن من الفنون الشعبية.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "outcome"
+    ],
+    "skill": "التعرّف على فن المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما (المولد)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "قراءة للسيرة النبوية العطرة من كتاب البرزنجي"
+    },
+    {
+     "t": "text",
+     "text": "رقصة شعبية"
+    },
+    {
+     "t": "text",
+     "text": "قالب آلي"
+    }
+   ],
+   "answer": 0,
+   "explain": "المولد هو قراءة للسيرة النبوية العطرة من كتاب البرزنجي (كراس النشاط ص١٥).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "تعريف فن المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "في كم رواية أورد كتاب البرزنجي السيرة النبوية الشريفة؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ثماني عشرة رواية"
+    },
+    {
+     "t": "text",
+     "text": "اثنتي عشرة رواية"
+    },
+    {
+     "t": "text",
+     "text": "عشر روايات"
+    }
+   ],
+   "answer": 0,
+   "explain": "أوردها في ثماني عشرة رواية تحت عنوان (مولد أشرف الأنام).",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "تعريف فن المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "بم يُفتتح المولد؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بقراءة آيات من الذكر الحكيم: الفاتحة والفتح والمعوذتين والإخلاص"
+    },
+    {
+     "t": "text",
+     "text": "بالضرب على الدفوف"
+    },
+    {
+     "t": "text",
+     "text": "بإنشاد يا نبي سلام عليك"
+    }
+   ],
+   "answer": 0,
+   "explain": "يبدأ المولد بقراءة الفاتحة، وسورة الفتح، والمعوذتين، وسورة الإخلاص.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "طريقة أداء المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "لكل رواية ثلاثة أبيات من الشعر تُسمّى …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الشواهد"
+    },
+    {
+     "t": "text",
+     "text": "الخانات"
+    },
+    {
+     "t": "text",
+     "text": "التسليمة"
+    }
+   ],
+   "answer": 0,
+   "explain": "تسمى (الشواهد)، ينشدها المرددون ويختمونها بعبارة اللهم صل وسلم عليه.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "طريقة أداء المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "بعد نهاية كل بيت من أبيات الرواية يردد الحاضرون عبارة …",
+   "options": [
+    {
+     "t": "text",
+     "text": "اللهم صلِّ وسلّم وزد وبارك عليه"
+    },
+    {
+     "t": "text",
+     "text": "آمين"
+    },
+    {
+     "t": "text",
+     "text": "يا نبي سلام عليك"
+    }
+   ],
+   "answer": 0,
+   "explain": "حسب إجابة الكراس: اللهم صل وسلم وزد وبارك عليه.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "طريقة أداء المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "text",
+   "prompt": "ماذا يفعل الحاضرون عند ذكر ولادته ﷺ؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "يقومون وقوفًا وينشدون «يا نبي سلام عليك»"
+    },
+    {
+     "t": "text",
+     "text": "يجلسون صامتين"
+    },
+    {
+     "t": "text",
+     "text": "يضربون الدفوف فقط"
+    }
+   ],
+   "answer": 0,
+   "explain": "يقوم الجميع وقوفًا وينشدون: يا نبي سلام عليك.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "طريقة أداء المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "text",
+   "prompt": "في أي منطقة يُسمّى المولد في بعض ولاياتها (بالمالد)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الباطنة"
+    },
+    {
+     "t": "text",
+     "text": "الظاهرة"
+    },
+    {
+     "t": "text",
+     "text": "الشرقية"
+    }
+   ],
+   "answer": 0,
+   "explain": "يسمى في بعض ولايات منطقة الباطنة بالمالد.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "تعريف فن المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q12"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما الآلة المستخدمة عند قراءة (المالد) في بعض الولايات؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الدف"
+    },
+    {
+     "t": "text",
+     "text": "الرحماني"
+    },
+    {
+     "t": "text",
+     "text": "الكاسر"
+    }
+   ],
+   "answer": 0,
+   "explain": "تستخدم فيه الدفوف.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "الآلات في فن المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q13"
+  },
+  {
+   "kind": "text",
+   "prompt": "تتخلل الروايات بعض الترويحات من الابتهالات …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الفردية"
+    },
+    {
+     "t": "text",
+     "text": "الجماعية"
+    },
+    {
+     "t": "text",
+     "text": "الثنائية"
+    }
+   ],
+   "answer": 0,
+   "explain": "يتخلل ذلك بعض الترويحات من الابتهالات الفردية.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "activity"
+    ],
+    "skill": "طريقة أداء المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q14"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي مما يلي من المناسبات التي يُقرأ فيها المولد كاملًا؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الاحتفال بولادة مولود جديد"
+    },
+    {
+     "t": "text",
+     "text": "الاحتفال بالحصاد فقط"
+    },
+    {
+     "t": "text",
+     "text": "افتتاح المدارس"
+    }
+   ],
+   "answer": 0,
+   "explain": "يقرأ كاملًا: الاحتفال بمولد الرسول ﷺ، وبولادة مولود جديد، وعند السفر للحج والعودة منه، وعند الشفاء من مرض.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "content",
+     "activity"
+    ],
+    "skill": "مناسبات قراءة المولد",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q15"
+  }
+ ],
+ "review": [
+  "أُعيد بناء الدرس من كراس النشاط (ص١٥–١٦) وإجاباته؛ لم يعد ناقصًا.",
+  "سؤالا الدف وطريقة الجلوس مستنتجان من صورة الدليل."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

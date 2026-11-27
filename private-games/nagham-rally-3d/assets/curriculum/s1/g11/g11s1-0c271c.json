@@ -1,0 +1,515 @@
+{
+ "lessonId": "g11s1-0c271c",
+ "grade": 11,
+ "sem": 1,
+ "title": "عنصر الإيقاع",
+ "source": "دليل المعلم — الصف الحادي عشر، الوحدة الأولى، الدرس الأول (ص ١٤–١٦)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يعدّد عناصر الموسيقا."
+  },
+  {
+   "id": "o2",
+   "text": "يعرّف الإيقاع."
+  },
+  {
+   "id": "o3",
+   "text": "يحدّد القيمة الزمنية للأشكال الإيقاعية."
+  },
+  {
+   "id": "o4",
+   "text": "يؤدّي تمارين للأشكال الإيقاعية التي تمت دراستها."
+  },
+  {
+   "id": "o5",
+   "text": "يكتب الأشكال الإيقاعية التي تُملى عليه بطريقة صحيحة."
+  },
+  {
+   "id": "o6",
+   "text": "يشارك في أداء التمارين الإيقاعية."
+  },
+  {
+   "id": "o7",
+   "text": "يبادر في كتابة الإملاء الإيقاعي بطريقة صحيحة."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "prompt": "ما العنصر الأول من عناصر الموسيقا؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الإيقاع"
+    },
+    {
+     "t": "text",
+     "text": "النغم"
+    },
+    {
+     "t": "text",
+     "text": "الهارموني"
+    }
+   ],
+   "answer": 0,
+   "explain": "الإيقاع هو العنصر الأول من عناصر الموسيقا.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "عناصر الموسيقا",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما عناصر الموسيقا؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الإيقاع والنغم والتظليل والهارموني"
+    },
+    {
+     "t": "text",
+     "text": "الإيقاع والميزان والمفتاح"
+    },
+    {
+     "t": "text",
+     "text": "النغم والمدرج والسلم"
+    }
+   ],
+   "answer": 0,
+   "explain": "عناصر الموسيقا: الإيقاع، والنغم، والتظليل، والهارموني.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "عناصر الموسيقا",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "prompt": "الإيقاع هو علاقة الأصوات ببعضها من حيث …",
+   "options": [
+    {
+     "t": "text",
+     "text": "الطول أو القصر"
+    },
+    {
+     "t": "text",
+     "text": "الحدة أو الغلظ"
+    },
+    {
+     "t": "text",
+     "text": "القوة أو الضعف"
+    }
+   ],
+   "answer": 0,
+   "explain": "الإيقاع علاقة الأصوات ببعضها من حيث الطول أو القصر.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "content",
+     "assessment"
+    ],
+    "skill": "تعريف الإيقاع",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي هذه هي السكتة المقابلة للبلانش؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "rw"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rh"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "rq"
+     ]
+    }
+   ],
+   "answer": 1,
+   "explain": "سكتة البلانش فوق الخط الثالث، وسكتة الروند أسفل الخط الرابع.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "السكتات المقابلة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما القيمة الزمنية للدوبل كروش؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "ربع زمن النوار"
+    },
+    {
+     "t": "text",
+     "text": "نصف زمن النوار"
+    },
+    {
+     "t": "text",
+     "text": "زمن نوار"
+    }
+   ],
+   "answer": 0,
+   "explain": "الدوبل كروش ربع زمن النوار.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "القيمة الزمنية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "كيف يُؤدّى (الروند) بطريقة إيمي باري؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "تاااا"
+    },
+    {
+     "t": "text",
+     "text": "تاا"
+    },
+    {
+     "t": "text",
+     "text": "تا"
+    }
+   ],
+   "answer": 0,
+   "explain": "الروند: تاااا (٤ نوار)، البلانش: تاا، النوار: تا.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "content"
+    ],
+    "skill": "طريقة إيمي باري",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "ما ميزان التمرين الإيقاعي الثاني في الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "2/4"
+    },
+    {
+     "t": "text",
+     "text": "3/4"
+    },
+    {
+     "t": "text",
+     "text": "4/4"
+    }
+   ],
+   "answer": 1,
+   "explain": "التمرين الأول 2/4، والثاني 3/4، والثالث 4/4.",
+   "meta": {
+    "outcomes": [
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التمارين الإيقاعية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "q",
+     "rq"
+    ]
+   },
+   "prompt": "ما مجموع القيم الزمنية للمسار الظاهر أمامك (بالنوار)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "١"
+    },
+    {
+     "t": "text",
+     "text": "٢"
+    },
+    {
+     "t": "text",
+     "text": "٣"
+    }
+   ],
+   "answer": 1,
+   "explain": "نوار + سكتة نوار = ٢ (المازورة الأولى من التمرين الأول 2/4).",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القيمة الزمنية في التمارين",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "rhythm",
+    "ids": [
+     "h",
+     "qd",
+     "e"
+    ]
+   },
+   "prompt": "ما مجموع القيم الزمنية للمسار الظاهر أمامك (بالنوار)؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٣"
+    },
+    {
+     "t": "text",
+     "text": "٤"
+    },
+    {
+     "t": "text",
+     "text": "٥"
+    }
+   ],
+   "answer": 1,
+   "explain": "بلانش (٢) + نوار بوانتيه (١½) + كروش (½) = ٤.",
+   "meta": {
+    "outcomes": [
+     "o3"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "القيمة الزمنية في التمارين",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "rhythm",
+   "listen": false,
+   "noLabel": true,
+   "prompt": "أي مسار يكمل مازورة في الميزان 4/4؟",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ee",
+      "ssss",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "q",
+      "ee",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "h",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "١ + ١ + ١ + ١ = ٤.",
+   "meta": {
+    "outcomes": [
+     "o3",
+     "o4"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الإيقاع حسب الميزان",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q10"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "إملاء إيقاعي: استمع ثم اختر المسار الذي سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "ess",
+      "e",
+      "re",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "sse",
+      "e",
+      "re",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "ee",
+      "ee",
+      "e",
+      "re",
+      "q"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا: تاتي، تاتيفي، كروش، سكتة كروش، نوار.",
+   "meta": {
+    "outcomes": [
+     "o5",
+     "o7"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الإملاء الإيقاعي",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q11"
+  },
+  {
+   "kind": "rhythm",
+   "listen": true,
+   "prompt": "إملاء إيقاعي: استمع ثم اختر المسار الذي سمعته",
+   "options": [
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "qd",
+      "e"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "h",
+      "q",
+      "q"
+     ]
+    },
+    {
+     "t": "rhythm",
+     "ids": [
+      "w"
+     ]
+    }
+   ],
+   "answer": 0,
+   "explain": "سمعنا: بلانش، نوار بوانتيه، كروش.",
+   "meta": {
+    "outcomes": [
+     "o5",
+     "o7"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "الإملاء الإيقاعي",
+    "level": "discriminate",
+    "display": "audio+visual",
+    "media": []
+   },
+   "id": "q12"
+  }
+ ],
+ "review": [
+  "الإملاء الإيقاعي حُوّل إلى سؤال استماع واختيار (صوت اللعبة نفسها).",
+  "موازير التمارين مقروءة من المسح."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}

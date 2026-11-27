@@ -1,0 +1,445 @@
+{
+ "lessonId": "g7s1-d321e1",
+ "grade": 7,
+ "sem": 1,
+ "title": "عزف مقطوعة موسيقية",
+ "source": "دليل المعلم — الصف السابع، الوحدة الثانية، الدرس الثالث (ص ٥٨–٦٥)",
+ "outcomes": [
+  {
+   "id": "o1",
+   "text": "يذكر طريقة العزف الصحيحة على آلة الأورج."
+  },
+  {
+   "id": "o2",
+   "text": "يعزف المقطوعة الموسيقية بمصطلحات الأداء والتظليلات اللحنية بطريقة صحيحة."
+  },
+  {
+   "id": "o3",
+   "text": "يشعر بقيمة الانتماء إلى الفريق من خلال الأداء الجماعي."
+  }
+ ],
+ "questions": [
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "C",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "ما ترقيم أصابع اليد اليمنى المدوَّن لعزف النغمات الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢ – ١ – ٢ – ١"
+    },
+    {
+     "t": "text",
+     "text": "١ – ٢ – ١ – ٢"
+    },
+    {
+     "t": "text",
+     "text": "٥ – ١ – ٥ – ١"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الأولى: دو (٢)، صول (١)، دو (٢)، صول (١).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "ترقيم أصابع اليد اليمنى في المقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q1"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "C",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 4,
+      "acc": 0
+     },
+     {
+      "step": "C",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "E",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "G",
+      "oct": 5,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "ما ترقيم أصابع اليد اليمنى المدوَّن لعزف النغمات الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٢ – ١ – ٢ – ٣ – ٥"
+    },
+    {
+     "t": "text",
+     "text": "١ – ٢ – ٣ – ٤ – ٥"
+    },
+    {
+     "t": "text",
+     "text": "٢ – ١ – ٢ – ٤ – ٥"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الثانية: ٢ ١ ٢ ٣ ٥.",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "ترقيم أصابع اليد اليمنى في المقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q2"
+  },
+  {
+   "kind": "text",
+   "cue": {
+    "t": "staff",
+    "notes": [
+     {
+      "step": "F",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "F",
+      "oct": 5,
+      "acc": 0
+     },
+     {
+      "step": "D",
+      "oct": 5,
+      "acc": 0
+     }
+    ]
+   },
+   "prompt": "ما ترقيم أصابع اليد اليمنى المدوَّن لعزف النغمات الظاهرة أمامك؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "٤ – ٢ – ٤ – ٢"
+    },
+    {
+     "t": "text",
+     "text": "٣ – ١ – ٣ – ١"
+    },
+    {
+     "t": "text",
+     "text": "٥ – ٣ – ٥ – ٣"
+    }
+   ],
+   "answer": 0,
+   "explain": "المازورة الثالثة: فا (٤)، ري (٢)، فا (٤)، ري (٢).",
+   "meta": {
+    "outcomes": [
+     "o1",
+     "o2"
+    ],
+    "sources": [
+     "activity",
+     "steps"
+    ],
+    "skill": "ترقيم أصابع اليد اليمنى في المقطوعة",
+    "level": "apply",
+    "display": "visual",
+    "media": []
+   },
+   "id": "q3"
+  },
+  {
+   "kind": "text",
+   "prompt": "في آلة الأورج، أين تقع نغمة (صول) أعلى المدرج الموسيقي على لوحة المفاتيح؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "بعد (دو) التالية لـ(دو) الوسطى بخمس نغمات"
+    },
+    {
+     "t": "text",
+     "text": "بجوار (دو) الوسطى مباشرة"
+    },
+    {
+     "t": "text",
+     "text": "أسفل (دو) الوسطى"
+    }
+   ],
+   "answer": 0,
+   "explain": "صول أعلى المدرج تقع في الأوكتاف الذي يلي (دو) الوسطى: دو ري مي فا صول.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "أماكن النغمات على لوحة المفاتيح",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q4"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدل على الأداء بصوت قوي (فورتي) في المقطوعة؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-p.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-f.jpg"
+    }
+   ],
+   "answer": 1,
+   "explain": "(f) فورتي: صوت قوي، و(p) بيانو: صوت ضعيف.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "مصطلحات الأداء في المقطوعة",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "g04/l1-f.jpg",
+     "g04/l1-p.jpg"
+    ]
+   },
+   "id": "q5"
+  },
+  {
+   "kind": "text",
+   "prompt": "تبدأ العبارة الثانية من المقطوعة (المازورة ٥) بالرمز (p). ماذا يعني؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "الأداء بصوت ضعيف"
+    },
+    {
+     "t": "text",
+     "text": "الأداء بصوت قوي"
+    },
+    {
+     "t": "text",
+     "text": "الأداء المتقطع"
+    }
+   ],
+   "answer": 0,
+   "explain": "(p) بيانو: صوت ضعيف.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "مصطلحات الأداء في المقطوعة",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q6"
+  },
+  {
+   "kind": "text",
+   "prompt": "أي الرمزين يدل على الأداء المتصل في المقطوعة؟",
+   "options": [
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-legato.jpg"
+    },
+    {
+     "t": "image",
+     "src": "./assets/img/curr/s1/g04/l1-staccato.jpg"
+    }
+   ],
+   "answer": 0,
+   "explain": "القوس فوق النغمات يدل على الأداء المتصل (Legato).",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التظليلات اللحنية",
+    "level": "discriminate",
+    "display": "visual",
+    "media": [
+     "g04/l1-legato.jpg",
+     "g04/l1-staccato.jpg"
+    ]
+   },
+   "id": "q7"
+  },
+  {
+   "kind": "text",
+   "prompt": "النقاط فوق بعض نغمات المقطوعة (مثل المازورة الثانية) تدل على الأداء …",
+   "options": [
+    {
+     "t": "text",
+     "text": "المتقطع (Staccato)"
+    },
+    {
+     "t": "text",
+     "text": "المتصل (Legato)"
+    },
+    {
+     "t": "text",
+     "text": "القوي (Forte)"
+    }
+   ],
+   "answer": 0,
+   "explain": "النقطة فوق/تحت النغمة تعني الأداء المتقطع.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "التظليلات اللحنية",
+    "level": "understand",
+    "display": "text",
+    "media": []
+   },
+   "id": "q8"
+  },
+  {
+   "kind": "text",
+   "prompt": "من مؤلف المقطوعة التي نعزفها في هذا الدرس؟",
+   "options": [
+    {
+     "t": "text",
+     "text": "موتسارت"
+    },
+    {
+     "t": "text",
+     "text": "بيتهوفن"
+    },
+    {
+     "t": "text",
+     "text": "أحمد فتحي"
+    }
+   ],
+   "answer": 0,
+   "explain": "المقطوعة (Eine kleine Nachtmusik) لموتسارت.",
+   "meta": {
+    "outcomes": [
+     "o2"
+    ],
+    "sources": [
+     "steps"
+    ],
+    "skill": "المقطوعة الموسيقية",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q9"
+  },
+  {
+   "kind": "text",
+   "prompt": "عند العزف على الأورج تكون الأصابع …",
+   "options": [
+    {
+     "t": "text",
+     "text": "متكوّرة وعمودية على المفاتيح"
+    },
+    {
+     "t": "text",
+     "text": "مفرودة ومسطّحة"
+    },
+    {
+     "t": "text",
+     "text": "مرفوعة عن المفاتيح"
+    }
+   ],
+   "answer": 0,
+   "explain": "الأصابع متكوّرة وعمودية على لوحة المفاتيح.",
+   "meta": {
+    "outcomes": [
+     "o1"
+    ],
+    "sources": [
+     "steps",
+     "assessment"
+    ],
+    "skill": "طريقة العزف الصحيحة على الأورج",
+    "level": "remember",
+    "display": "text",
+    "media": []
+   },
+   "id": "q10"
+  }
+ ],
+ "review": [
+  "رموز f وp والليجاتو والاستكاتو مأخوذة من درس الصف الرابع.",
+  "وصف طريقة العزف (الأصابع المتكوّرة) من درس الأورج بالصف الرابع؛ هذا الدليل يحيل إلى «إرشادات المعلم».",
+  "ترقيم الأصابع منقول من النشاطين الأول والثاني."
+ ],
+ "notes": "",
+ "updated": "2026-11-27"
+}
