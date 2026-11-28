@@ -20,7 +20,6 @@ const qLine = (q) => (q.kind === 'gen' ? (q.preview ? q.preview.options.map((o, 
 export function openSettings(app, { tab = 'contest' } = {}) {
   let cur = C.clone(app.contest || C.newContest());
   let dirty = false;
-  let autoSig = null, loadTk = 0; // آخر أسئلة حُمِّلت تلقائيًا من الدرس (لمعرفة هل عدّلها المعلم) + رمز آخر تحميل
   const mark = () => { dirty = true; saveBtn.classList.add('pulse'); };
   const s = sheet({
     title: '⚙️ إعدادات اللعبة للمعلم', sub: 'تُحفظ مسابقاتك في حسابك على هذا الجهاز، ولا تؤثر في مسابقات غيرك', width: 1080, cls: 'settings',
@@ -62,65 +61,19 @@ export function openSettings(app, { tab = 'contest' } = {}) {
       el('button', { class: 'btn sm danger', onclick: async () => { if (!(await confirmBox(`حذف «${cur.title}» نهائيًا من هذا الجهاز؟`, { yes: '🗑 حذف', danger: true }))) return; C.deleteContest(cur.id); const nx = C.activeContest() || C.demoContest(); cur = C.clone(nx); dirty = false; app.useContest(nx); showTab('contest'); } }, '🗑 حذف')),
     el('span', { class: 'hint' }, 'كل مسابقة لها أسئلتها وقائمة متسابقيها وإعداداتها. المسابقة المختارة هي التي تبدأ عند «ابدأ السباق».'));
     pane.append(mine);
-    // الفصل الدراسي ← الصف ← الدرس (تظهر فقط الدروس المُسكَّنة فعلًا في بنك الفصل المختار)
-    const lesNow = C.lessonById(cur.lessonId);
-    cur.sem = lesNow ? lesNow.sem : (cur.sem === 2 ? 2 : 1);
-    const sm = el('select', { 'aria-label': 'الفصل الدراسي' });
-    [[1, 'الفصل الدراسي الأول'], [2, 'الفصل الدراسي الثاني']].forEach(([v, t]) => sm.append(el('option', { value: v, selected: cur.sem === v }, t)));
-    const g = el('select', { 'aria-label': 'الصف' });
-    const l = el('select', { 'aria-label': 'الدرس' });
-    const semHint = el('span', { class: 'hint' });
-    let avail = new Set();
-    const lessonsShown = () => C.lessonsOf(cur.grade).filter((x) => x.sem === cur.sem && (avail.has(x.id) || x.id === cur.lessonId));
-    const fillG = () => {
-      g.innerHTML = '';
-      const grades = []; for (let i = 1; i <= 12; i++) if (C.lessonsOf(i).some((x) => x.sem === cur.sem && (avail.has(x.id) || x.id === cur.lessonId))) grades.push(i);
-      g.append(el('option', { value: 0 }, grades.length ? '— اختر الصف —' : '— لا توجد دروس متاحة بعد —'));
-      grades.forEach((i) => g.append(el('option', { value: i, selected: cur.grade === i }, C.GRADE_NAME(i))));
-      if (cur.grade && !grades.includes(cur.grade)) g.value = 0;
-      semHint.textContent = grades.length ? 'تظهر دروس هذا الفصل فقط' : 'لم يُسكَّن محتوى هذا الفصل بعد — سيظهر هنا تلقائيًا عند إضافته';
-    };
-    const fillL = () => { l.innerHTML = ''; const ls = cur.grade ? lessonsShown() : []; l.append(el('option', { value: '' }, ls.length ? '— اختر الدرس —' : '—')); ls.forEach((x) => l.append(el('option', { value: x.id, selected: x.id === cur.lessonId }, x.title + (avail.has(x.id) ? '' : ' (بلا أسئلة منهج بعد)')))); };
-    const refreshAvail = () => C.curriculumLessonIds(cur.sem).then((ids) => { avail = ids; fillG(); fillL(); });
-    fillG(); fillL(); refreshAvail();
+    // الدرس يُختار من شاشة البداية مباشرة (الصف ← الفصل ← الدرس ← ابدأ السباق). هنا للعرض والتخصيص فقط.
     const title = el('input', { type: 'text', maxlength: '80', placeholder: 'اسم المسابقة' }); title.value = cur.title;
     const auto = el('button', { class: 'btn sm ghost', title: 'إعادة الاسم التلقائي', onclick: () => { cur.titleCustom = false; cur.title = cur.lessonTitle ? `مسابقة درس ${cur.lessonTitle}` : cur.title; title.value = cur.title; mark(); } }, '↺ تلقائي');
     const info = el('div', { class: 'linfo' });
     const paintInfo = () => {
       const les = C.lessonById(cur.lessonId); info.innerHTML = '';
-      if (!les) { info.append(el('p', { class: 'hint' }, 'اختر الفصل الدراسي ثم الصف ثم الدرس، فتُضاف أسئلة الدرس إلى المسابقة تلقائيًا. يمكنك أيضًا إنشاء مسابقة حرة بأسئلتك دون درس.')); return; }
-      const ds = C.domainsForLesson(les);
+      if (!les) { info.append(el('p', { class: 'hint' }, 'مسابقة حرة بلا درس. لاختيار درس: أغلق هذه النافذة واختر الصف والفصل والدرس من شاشة البداية، فتجهز أسئلته تلقائيًا.')); return; }
       info.append(el('p', {}, el('b', {}, 'الدرس: '), les.title, ` — ${C.GRADE_NAME(les.grade)}، ${les.sem === 2 ? 'الفصل الدراسي الثاني' : 'الفصل الدراسي الأول'}`));
-      info.append(el('p', { class: 'ok' }, `❓ أسئلة المسابقة الآن: ${AR(cur.questions.length)} — احذف أو أضف أو عدّل أو رتّب من تبويب الأسئلة.`));
-      info.append(el('p', { class: ds.length ? 'ok' : 'hint' }, ds.length ? `🎼 تحديات موسيقية مناسبة لهذا الدرس في المكتبة: ${ds.map((d) => DOMAIN[d].name).join('، ')}` : 'لا توجد تحديات صوتية/مرئية جاهزة مرتبطة بعنوان هذا الدرس؛ يمكنك الإضافة من بنك المنهج أو «أسئلتي» أو سؤال يدوي.'));
+      info.append(el('p', { class: 'ok' }, `❓ أسئلة المسابقة: ${AR(cur.questions.length)} — التعديل اختياري من تبويب الأسئلة، ويُحفظ لهذا الدرس في حسابك فقط.`));
+      info.append(el('p', { class: 'hint' }, 'لتغيير الدرس: من شاشة البداية مباشرة.'));
       info.append(el('button', { class: 'btn sm', onclick: () => showTab('questions') }, '❓ إلى الأسئلة ←'));
     };
-    sm.onchange = () => { cur.sem = +sm.value; cur.lessonId = ''; cur.lessonTitle = ''; fillG(); fillL(); refreshAvail(); paintInfo(); mark(); };
-    g.onchange = () => { cur.grade = +g.value; cur.lessonId = ''; cur.lessonTitle = ''; fillL(); paintInfo(); mark(); };
-    l.onchange = async () => {
-      const les = C.lessonById(l.value), prev = cur.lessonId;
-      if (les && les.id === prev) return;
-      if (les) {
-        // استبدال أسئلة المسابقة بأسئلة الدرس الجديد: بلا تأكيد إن كانت القائمة فارغة أو هي نفسها ما حُمِّل تلقائيًا ولم تُعدَّل
-        const sig = JSON.stringify(cur.questions.map((q) => q.id));
-        if (cur.questions.length && sig !== autoSig && !(await confirmBox(`اختيار الدرس الجديد سيستبدل أسئلة المسابقة الحالية (${AR(cur.questions.length)}) بأسئلة درس «${les.title}».\nالأسئلة المحذوفة لا تمس بنك اللعبة ولا «أسئلتي». متابعة؟`, { yes: 'استبدال الأسئلة' }))) { l.value = prev; return; }
-      }
-      cur.lessonId = les ? les.id : ''; cur.lessonTitle = les ? les.title : '';
-      if (les && !cur.titleCustom) { cur.title = `مسابقة درس ${les.title}`; title.value = cur.title; }
-      if (les) {
-        cur.settings.level = Math.min(cur.settings.level || 1, 4);
-        const tk = ++loadTk; const qs = await C.lessonQuestions(les);
-        if (tk !== loadTk || cur.lessonId !== les.id) return;
-        cur.questions = qs; autoSig = JSON.stringify(qs.map((q) => q.id));
-        toast(qs.length ? `أُضيفت أسئلة الدرس تلقائيًا: ${AR(qs.length)}` : 'لا توجد أسئلة مُسكَّنة لهذا الدرس بعد — أضف أسئلتك من تبويب الأسئلة');
-      }
-      paintInfo(); mark();
-    };
     title.oninput = () => { cur.title = title.value.trim() || 'مسابقة'; cur.titleCustom = true; mark(); };
-    pane.append(el('div', { class: 'grid2' },
-      el('div', { class: 'field' }, el('label', {}, 'الفصل الدراسي'), sm, semHint),
-      el('div', { class: 'field' }, el('label', {}, 'الصف'), g)));
-    pane.append(el('div', { class: 'field' }, el('label', {}, 'الدرس'), l, el('span', { class: 'hint' }, 'عند اختيار الدرس تُضاف كل أسئلته من بنك المنهج (ومن «أسئلتي») تلقائيًا، ثم تحذف أو تضيف أو تعدّل كما تشاء')));
     pane.append(el('div', { class: 'field' }, el('label', {}, 'اسم المسابقة'), el('div', { class: 'row' }, title, auto), el('span', { class: 'hint' }, 'يُكتب تلقائيًا «مسابقة درس …» عند اختيار الدرس، ويمكنك تعديله')));
     pane.append(info); paintInfo();
   }

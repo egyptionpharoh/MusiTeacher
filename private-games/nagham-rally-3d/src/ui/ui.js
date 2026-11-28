@@ -6,6 +6,7 @@
 import { $, el, AR, fmtT, pctText, esc, sheet, toast } from './dom.js';
 import { LANE_COLORS, LANE_LETTERS } from '../world/signs.js';
 import { GRADE_NAME } from '../data/contest.js';
+import { buildLessonPicker } from './lessonpick.js';
 
 // دوّاسة البنزين (Accelerator Pedal): صفيحة مطاطية مضلّعة على ذراع معدني
 const PEDAL_SVG = `<svg viewBox="0 0 100 132" aria-hidden="true"><rect x="44" y="96" width="12" height="34" rx="4" fill="#8a939e"/><rect x="46" y="96" width="4" height="34" rx="2" fill="#c3cad3"/><path d="M22 8H78Q85 8 86 15L91 90Q92 99 83 99H17Q8 99 9 90L14 15Q15 8 22 8Z" fill="#262a31" stroke="#b9c1cb" stroke-width="4"/><path d="M19.5 22H80.5" stroke="#0d1014" stroke-width="5" stroke-linecap="round"/><path d="M20.5 24.6H79.5" stroke="#4a515b" stroke-width="1.2" stroke-linecap="round"/><path d="M20.0 31H80.0" stroke="#0d1014" stroke-width="5" stroke-linecap="round"/><path d="M21.0 33.6H79.0" stroke="#4a515b" stroke-width="1.2" stroke-linecap="round"/><path d="M20.6 40H79.4" stroke="#0d1014" stroke-width="5" stroke-linecap="round"/><path d="M21.6 42.6H78.4" stroke="#4a515b" stroke-width="1.2" stroke-linecap="round"/><path d="M21.1 49H78.9" stroke="#0d1014" stroke-width="5" stroke-linecap="round"/><path d="M22.1 51.6H77.9" stroke="#4a515b" stroke-width="1.2" stroke-linecap="round"/><path d="M21.6 58H78.4" stroke="#0d1014" stroke-width="5" stroke-linecap="round"/><path d="M22.6 60.6H77.4" stroke="#4a515b" stroke-width="1.2" stroke-linecap="round"/><path d="M22.2 67H77.8" stroke="#0d1014" stroke-width="5" stroke-linecap="round"/><path d="M23.2 69.6H76.8" stroke="#4a515b" stroke-width="1.2" stroke-linecap="round"/><path d="M22.7 76H77.3" stroke="#0d1014" stroke-width="5" stroke-linecap="round"/><path d="M23.7 78.6H76.3" stroke="#4a515b" stroke-width="1.2" stroke-linecap="round"/><path d="M23.3 85H76.7" stroke="#0d1014" stroke-width="5" stroke-linecap="round"/><path d="M24.3 87.6H75.7" stroke="#4a515b" stroke-width="1.2" stroke-linecap="round"/></svg><span class="pl">بنزين</span>`;
@@ -24,8 +25,10 @@ export class UI {
     sb.append(el('div', { class: 'brand', html: `<img src="./assets/img/logo.png" alt="" onerror="this.remove()"><div><h1>رالي النغم</h1><small>NAGHAM RALLY 3D · MusiTeacher</small></div>` }));
     this.cTitle = el('div', { class: 'ctitle' });
     this.cSub = el('div', { class: 'csub' });
-    sb.append(this.cTitle, this.cSub);
-    sb.append(el('button', { class: 'btn pri go', onclick: () => this.app.startContest() }, '🚦 ابدأ السباق'));
+    this.lpHost = el('div', { class: 'lphost' });
+    sb.append(this.cTitle, this.cSub, this.lpHost);
+    this.goBtn = el('button', { class: 'btn pri go', onclick: () => this.app.startContest() }, '🚦 ابدأ السباق');
+    sb.append(this.goBtn);
     sb.append(el('button', { class: 'btn help-btn', onclick: () => this.openHelp() }, '❔ كيف ألعب؟'));
     this.teacherBtn = el('button', { class: 'btn sm teacher-btn hidden', onclick: () => this.app.openSettings() }, '⚙️ إعدادات اللعبة للمعلم');
     sb.append(this.teacherBtn);
@@ -35,6 +38,9 @@ export class UI {
   /** يعرض عنوان المسابقة الحالية ومعلوماتها المختصرة على شاشة البداية */
   showContest(c, { teacher } = {}) {
     this.teacherBtn.classList.toggle('hidden', !teacher);
+    // للمعلم: الصف ← الفصل ← الدرس مباشرة على شاشة البداية
+    if (teacher && !this.picker && this.app.CT) { this.picker = buildLessonPicker(this.app); this.lpHost.append(this.picker.el); }
+    if (this.picker) { this.picker.show(!!teacher); this.picker.sync(c); }
     if (!c) { this.cTitle.textContent = ''; this.cSub.textContent = ''; return; }
     this.cTitle.textContent = c.title || 'رالي النغم';
     const qs = this.app.playableCount ? this.app.playableCount(c) : c.questions.length;
@@ -45,6 +51,9 @@ export class UI {
     this.cSub.textContent = parts.join(' · ');
   }
   showStart(on) { this.start.classList.toggle('hidden', !on); }
+  setStartBusy(on) { this._busy = !!on; this._paintGo(); }
+  setStartBlocked(on) { this._blocked = !!on; this._paintGo(); }
+  _paintGo() { this.goBtn.disabled = !!(this._busy || this._blocked); this.goBtn.textContent = this._busy ? '⏳ تجهيز أسئلة الدرس…' : '🚦 ابدأ السباق'; }
 
   // ================================================================== لوحة السباق (مبسّطة)
   //  أعلى الوسط: لوحة سؤال واحدة بطابع تابلوه السيارة (السؤال + الصورة/النوتة إن وُجدت) وبجوارها مجموعة تحكم ثابتة:

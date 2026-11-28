@@ -271,3 +271,12 @@ body.pov #hud .opt img{height:clamp(44px,7.5vh,78px)}
 .modal.light .sheet{background:rgba(17,26,44,.97)}
 #who{max-width:min(380px,28vw)}
 @media (min-width:1500px){#hud .opt img{height:clamp(48px,9vh,104px)}#hud #opts{width:min(820px,calc(100vw - 330px))}}
+
+/* =================== اختيار الدرس من شاشة البداية (المعلم) =================== */
+.lpick{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.lpick.hidden{display:none}
+.lpick .lhead{font-weight:900;font-size:15px}
+.lpick .lrow{display:grid;grid-template-columns:56px 1fr;align-items:center;gap:8px;font-weight:800;font-size:14px}
+.lpick .lnote{font-size:13px;line-height:1.7;min-height:22px}.lpick .lnote .ok{color:var(--ok)}
+.lpick .lcustom{align-self:flex-start}
+.linkbtn{border:0;background:none;color:#74c0fc;font:inherit;font-weight:800;cursor:pointer;padding:0;text-decoration:underline}

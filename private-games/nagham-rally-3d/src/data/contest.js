@@ -271,6 +271,26 @@ export async function curriculumFor(lesson) {
   const idx = await currIndex(lesson.sem || 1), e = idx[lesson.id]; if (!e) return null;
   try { const r = await fetch(`./assets/curriculum/s${lesson.sem || 1}/${e.file}`, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch (err) { return null; }
 }
+/** بصمة أسئلة المسابقة: لمعرفة هل عدّل المعلم أسئلة الدرس المحمّلة تلقائيًا أم لا */
+export function qHash(qs) { const t = JSON.stringify((qs || []).map(normalize)); let h = 5381; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return `${h.toString(36)}:${(qs || []).length}`; }
+/** آخر مسابقة محفوظة لدرس ما */
+export function savedForLesson(lessonId) { return loadAll().contests.filter((c) => c.lessonId === lessonId).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0] || null; }
+/** مسابقة درس عدّل المعلم أسئلتها (حذف/إضافة/تعديل/ترتيب) — تُحترم ولا تُستبدل تلقائيًا */
+export const isCustomized = (c) => !!(c && c.lessonId && !(c.auto && c.autoHash === qHash(c.questions)));
+/** مسابقة الدرس الجاهزة للعب مباشرة:
+ *  - إن عدّل المعلم أسئلة هذا الدرس سابقًا ← نسخته المعدّلة كما هي.
+ *  - وإلا ← أحدث أسئلة الدرس من بنك المنهج + «أسئلتي» (نسخ مستقلة؛ البنك لا يتأثر)، مع الإبقاء على إعدادات المعلم وأسماء المتسابقين. */
+export async function lessonContest(lesson, base, { fresh = false } = {}) {
+  const old = savedForLesson(lesson.id);
+  if (old && !fresh && isCustomized(old)) return { c: clone(old), custom: true };
+  const qs = (await lessonQuestions(lesson)).map(normalize);
+  const c = old ? clone(old) : newContest({});
+  if (!old && base) { c.settings = { ...c.settings, ...clone(base.settings || {}) }; c.names = clone(base.names || []); }
+  Object.assign(c, { grade: lesson.grade, sem: lesson.sem || 1, lessonId: lesson.id, lessonTitle: lesson.title });
+  if (!c.titleCustom) c.title = `مسابقة درس ${lesson.title}`;
+  c.questions = qs; c.auto = true; c.autoHash = qHash(qs); delete c.demo;
+  return { c, custom: false };
+}
 /** معرّفات الدروس التي لها أسئلة مُسكَّنة فعلًا في بنك فصلٍ ما (لا دروس وهمية) */
 export async function curriculumLessonIds(sem) { const idx = await currIndex(sem || 1); return new Set(Object.keys(idx).filter((k) => idx[k] && idx[k].n > 0)); }
 /** كل أسئلة الدرس جاهزة للمسابقة: بنك المنهج (نسخ مستقلة) + «أسئلتي» لهذا الدرس — بلا تكرار */

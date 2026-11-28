@@ -133,9 +133,11 @@ app.useContest = (c) => {
   app.ui.showContest(c, { teacher: app.teacher });
   if (app.teacher) postShareState(c);
 };
-app.openSettings = () => { if (!app.teacher) return; openSettings(app); };
+app.openSettings = (o) => { if (!app.teacher) return; openSettings(app, o || {}); };
 let session = null;
 app.startContest = () => {
+  if (app.lessonLoading) { app.ui.toast('لحظة… جارٍ تجهيز أسئلة الدرس'); return; }
+  if (app.ui.goBtn && app.ui.goBtn.disabled) return;
   document.querySelectorAll('.modal').forEach((m) => m.remove());
   const c = app.contest, s = c.settings;
   const pool = valid(c).map(CT.runtimeOf).filter(Boolean);
