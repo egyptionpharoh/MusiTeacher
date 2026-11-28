@@ -294,7 +294,7 @@ export function portraitStand(imgTex, aspect, U) {
   const crest = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.9, 1.1, 3), gold); crest.rotation.x = Math.PI / 2; crest.rotation.z = Math.PI / 2; at(crest, -1.1, base + H + 1.0, 0); G.add(crest);
   const back = box(0.3, H + 0.2, W + 0.2, std({ color: 0x2a2017 })); at(back, -1.45, base + 0.1, 0); G.add(back);
   const pic = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: imgTex, toneMapped: false }));
-  pic.rotation.y = Math.PI / 2; at(pic, -1.05, base + H / 2 + 0.2, 0); G.add(pic);
+  pic.userData.keep = true; pic.rotation.y = Math.PI / 2; at(pic, -1.05, base + H / 2 + 0.2, 0); G.add(pic);
   // علمان على الجانبين وأحواض زهور
   const pm = std({ color: 0xd7dce2, metalness: 0.8, roughness: 0.3 });
   for (const s of [-1, 1]) {
@@ -304,7 +304,7 @@ export function portraitStand(imgTex, aspect, U) {
     const bed = box(2.6, 0.5, 3.4, std({ color: 0x6a4a32 })); at(bed, 0.6, 0, s * (W / 2 + 1.6)); G.add(bed);
     for (let k = 0; k < 14; k++) { const fl = new THREE.Mesh(new THREE.SphereGeometry(0.22, 6, 5), std({ color: [0xe63958, 0xffffff, 0xf28aa6][k % 3] })); at(fl, 0.6 + (Math.random() - 0.5) * 2.2, 0.62, s * (W / 2 + 1.6) + (Math.random() - 0.5) * 3); G.add(fl); }
   }
-  G.userData.half = W / 2 + 6; G.userData.depth = 4;
+  G.userData.half = W / 2 + 6; G.userData.depth = 4; G.userData.focus = pic; G.userData.lookY = base + H / 2; G.userData.faceH = H + 3.2;
   return G;
 }
 

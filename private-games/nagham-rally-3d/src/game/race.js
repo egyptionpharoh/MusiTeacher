@@ -29,7 +29,7 @@ export async function prepareImages(ch) {
   return { cue, opts };
 }
 
-const C_UP = 2.8, C_HOLD = 3.8, C_DOWN = 2.8;   // الكاميرا السينمائية: زمن الصعود والتحليق والهبوط (ث)
+const C_UP = 2.2, C_MIN = 5.5, C_MAX = 15, C_DOWN = 2.4;   // الكاميرا السينمائية: صعود، أقل مدة مشاهدة، أقصى مدة، هبوط (ث) — المدة الفعلية تحددها المسافة حتى تجاوز المعلم
 export class Race {
   constructor(app) {
     this.app = app; this.state = 'idle';
@@ -51,7 +51,7 @@ export class Race {
     this.prep = []; this.prepare(0); this.prepare(1);
     if (this.finishObj) { A.scene.remove(this.finishObj); this.finishObj = null; }
     // «رحلة عُمان»: المحطة الحالية يحددها main.js قبل بدء الدور (world.syncTurn)
-    const W = A.world; this.travel = null; this.cine = null; W.veil(0); W.reset();
+    const W = A.world; this.travel = null; this.cine = null; W.cineK = 0; if (A.ui.caption) A.ui.caption(null); W.veil(0); W.reset();
     this.gateNext = true;
     const veh = A.vehicle; veh.root.position.set(this.x, 0, 0); veh.root.rotation.set(0, Math.PI, 0);
     if (veh.setPlate) veh.setPlate(settings.plate !== false ? this.who : '');
@@ -159,7 +159,7 @@ export class Race {
       this.gapT = Math.max(2.6, A.radio ? A.radio.breakTime(this.z, this.vC) : 0);   // استراحة المذياع إن كان محلّه قريبًا
     } else {
       this.streak = 0;
-      if (this.S.mode === 'turns') {
+      if (this.S.mode === 'turns' || this.S.mode === 'team') {          // الأدوار ورحلة الأبطال: الخطأ ارتطام وتنتهي الجولة
         this.state = 'crash'; this.crashT = 0; J.scatter(chosen, this.v); A.audio.crash(); A.fx.stars(true);
         A.ui.feedback({ ok: false, crash: true, correctLabel, letter: J.ch.answer, explain: J.ch.explain, qid: this.qid });
       } else {
@@ -251,7 +251,7 @@ export class Race {
   }
   end(reason) {
     const A = this.app; this.state = 'over';
-    this.travel = null; A.world.veil(0); if (this.cine && this.cine.out) this._applyCam(); this.cine = null;
+    this.travel = null; A.world.veil(0); if (this.cine && this.cine.out) this._applyCam(); this.cine = null; A.world.cineK = 0; if (A.ui.caption) A.ui.caption(null);
     A.audio.engine(0, A.vehicle.kind, false); A.audio.stopQuestion(); A.fx.stars(false);
     if (A.radio) A.radio.stop(0.4);
     const played = this.results.filter((r) => !r.skipped);
@@ -291,17 +291,18 @@ export class Race {
     document.body.classList.toggle('pov', pov);
     if (A.ui && A.ui.camState) A.ui.camState(force || this.camMode);
   }
-  /** الكاميرا السينمائية: عند معلم بارز تنتقل تلقائيًا إلى لقطة درون أو لقطة جانبية قصيرة ثم تعود بسلاسة إلى منظور القيادة.
-   *  لا تبدأ والمفترق قريب (أقل من ١٠٠ م)، وتنسحب فورًا إذا اقترب (٥٨ م) حتى يرى الطالب الطريق والمسارات عند الاختيار. */
-  /** بعد الإجابة (أو عند الانطلاق): إن كان أمام السائق معلم له لقطة سينمائية، يؤجَّل السؤال التالي حتى تنتهي اللقطة — فلا تعمل الكاميرا السينمائية أثناء أي سؤال */
+  /** الكاميرا السينمائية: لكل معلم بارز لقطة خاصة مرتبطة بالمسافة لا بمؤقت ثابت —
+   *  صعود ناعم قبل المعلم، ثم تدور الكاميرا حوله (أو تواجه اللوحة مباشرة) طوال اقتراب السائق منه حتى يتجاوزه، ثم هبوط ناعم إلى منظور القيادة.
+   *  لا تعمل أبدًا أثناء سؤال: السؤال التالي يؤجَّل حتى تنتهي اللقطة كاملة. */
+  _cineEnd(o) { const t = o.userData.cine, h = o.userData.half || 12; return t === 'portrait' ? 6 : t === 'side' ? -h * 0.3 : -(h * 0.5 + 12); }
+  _cineLen(o) { const d = this.app.world.cineRange(o) - this._cineEnd(o); return clamp(d / Math.max(8, this.vC), C_UP + C_MIN, C_MAX) + C_DOWN + 0.4; }
+  /** بعد الإجابة (أو عند الانطلاق): إن كان أمام السائق معلم له لقطة، يؤجَّل السؤال التالي حتى تنتهي اللقطة */
   _planCine() {
     if (this.S.cine === false || this.state !== 'drive' || this.finishZ != null || this.idx >= this.list.length - 1) return;
-    const W = this.app.world, o = W.cineAhead(this.z); if (!o) return;
+    const W = this.app.world, o = W.cineAhead(this.z, Math.min(240, Math.max(75, this.vC * (this.S.answerTime || 14)))); if (!o) return;     // معلم سيُمرّ به أثناء السؤال التالي ← تُعرض لقطته أولًا
     const wait = Math.max(0, this.z - o.position.z - W.cineRange(o)) / Math.max(8, this.vC);
-    this.gapT = Math.max(this.gapT, wait + C_UP + C_HOLD + C_DOWN + 0.3);
+    this.gapT = Math.max(this.gapT, wait + this._cineLen(o));
   }
-  /** الكاميرا السينمائية (درون): صعود تدريجي ناعم، ثم تحليق هادئ يُظهر المعلم ومحيطه، ثم هبوط تدريجي إلى منظور القيادة.
-   *  تعمل فقط في الاستراحة بين سؤالين (لا سؤال ظاهر)، ولكل معلم لقطة واحدة في المسابقة. */
   _cine(dt) {
     const A = this.app, W = A.world; let c = this.cine;
     const ok = this.state === 'drive' && this.S.cine !== false && this.finishZ == null;
@@ -309,22 +310,38 @@ export class Race {
       if (!ok || this.j) return null;
       const o = W.cineTarget(this.z); if (!o) return null;
       W.cineSeen.add(o.userData.ckey);
-      if (this.gapT < 90) this.gapT = Math.max(this.gapT, C_UP + C_HOLD + C_DOWN + 0.3);
-      c = this.cine = { o, type: o.userData.cine, k: 0, t: 0, down: 0, k0: 1, pos: new THREE.Vector3(), look: new THREE.Vector3() };
+      if (this.gapT < 90) this.gapT = Math.max(this.gapT, this._cineLen(o));
+      c = this.cine = { o, type: o.userData.cine, k: 0, t: 0, down: 0, k0: 1, a0: this.z - o.position.z, pos: new THREE.Vector3(), look: new THREE.Vector3(), fov: 50, cap: false };
     }
     c.t += dt;
-    const o = c.o, ox = o.position.x, oz = o.position.z, mid = Math.abs(ox) < 3, sg = mid ? 1 : Math.sign(ox), h = o.userData.half || 12, ly = o.userData.lookY || 9;
-    const ss = (u) => { u = clamp(u, 0, 1); return u * u * u * (u * (u * 6 - 15) + 10); };       // تسارع وتباطؤ ناعمان في الطرفين
-    if (!c.down && (c.t > C_UP + C_HOLD || !ok || this.j || this.z - oz < -h * 0.3)) { c.down = c.t; c.k0 = c.k; }
+    const o = c.o, U = o.userData, ox = o.position.x, oz = o.position.z, oy = o.position.y, mid = Math.abs(ox) < 3, h = U.half || 12, ly = U.lookY || 9;
+    const sea = W.T && W.T.env && W.T.env.sea ? W.T.env.sea.side : 0, sg = mid ? (sea > 0 ? -1 : 1) : Math.sign(ox);   // معلم فوق الطريق: الدرون من جهة البحر (لا مبانٍ تحجب)
+    const a = this.z - oz, endA = this._cineEnd(o), u = clamp((c.a0 - a) / Math.max(1, c.a0 - endA), 0, 1.1);
+    const ss = (q) => { q = clamp(q, 0, 1); return q * q * q * (q * (q * 6 - 15) + 10); };       // تسارع وتباطؤ ناعمان في الطرفين
+    if (!c.down && ((a < endA && c.t > C_UP + C_MIN) || c.t > C_MAX || !ok || this.j)) { c.down = c.t; c.k0 = c.k; if (c.cap) { A.ui.caption(null); c.cap = false; } }
     if (!c.down) c.k = ss(c.t / C_UP);
-    else { const u = (c.t - c.down) / C_DOWN; c.k = c.k0 * (1 - ss(u)); if (u >= 1) { if (c.out) this._applyCam(); this.cine = null; return null; } }
-    const sway = Math.sin(c.t * 0.42), bob = Math.sin(c.t * 0.6) * 0.7, sea = o.position.y < 0;
-    if (c.type === 'side') { c.pos.set(-sg * 10, 3.2 + bob * 0.3, this.z + 8.5); c.look.set(ox * 0.5, 5, this.z - 5 + (oz - this.z) * 0.7); }
-    else { c.pos.set((mid ? 38 : -sg * (sea ? 6 : 13)) + sway * 2.2, (sea ? 20 : 24) + Math.min(h, 60) * 0.16 + bob, this.z + 30 - c.t * 0.8); c.look.set(ox * 0.6, ly * 0.55, Math.min(this.z - 14, oz + (this.z - oz) * 0.35)); }
+    else { const q = (c.t - c.down) / C_DOWN; c.k = c.k0 * (1 - ss(q)); if (q >= 1) { if (c.out) this._applyCam(); this.cine = null; return null; } }
+    if (!c.down && !c.cap && c.k > 0.55 && U.caption && !this.j) { A.ui.caption(U.caption); c.cap = true; }
+    const bob = Math.sin(c.t * 0.6) * 0.5;
+    if (c.type === 'portrait' && U.focus) {
+      // لوحة صاحب الجلالة: الكاميرا تواجه الصورة مباشرة على ارتفاعها، وتقترب ببطء شديد (لقطة وقورة ثابتة)
+      const f = U.focus.getWorldPosition(new THREE.Vector3()), n = U.focus.getWorldDirection(new THREE.Vector3());
+      if (Math.abs(n.z) < 0.3) n.z += 0.35;                    // اللوحة المتعامدة على الطريق: زاوية خفيفة من جهة القادم
+      n.y = 0; n.normalize();
+      const D = ((U.faceH || 8) * 1.8 + 4) * (1.2 - 0.2 * ss(u));
+      c.pos.copy(f).addScaledVector(n, D); c.pos.y = f.y - 0.6 + bob * 0.2; c.look.copy(f); c.fov = 44;
+    } else if (c.type === 'side') {
+      c.pos.set(-sg * 10, 3.2 + bob * 0.3, this.z + 8.5); c.look.set(ox * 0.5, 5, this.z - 5 + (oz - this.z) * 0.7); c.fov = 56;
+    } else {
+      // درون: يدور حول المعلم من أمامه المائل إلى جانبه، وعدسته موجّهة إلى المعلم نفسه طوال اللقطة
+      const R = U.orbitR || clamp(h * 1.6 + 25, mid ? 70 : 35, 140), Hh = clamp(ly * 0.9 + 14 + h * 0.25, mid ? 26 : 16, 70), phi = 0.5 + 1.0 * u;
+      c.pos.set(ox - sg * R * Math.sin(phi), Hh + bob, oz + R * Math.cos(phi)); c.look.set(ox, Math.max(2, ly * 0.55) + Math.min(0, oy), oz); c.fov = 50;
+    }
     return c;
   }
   _camera(dt) {
-    const c = this._cine(dt);
+    const c = this._cine(dt), W = this.app.world;
+    W.cineK = c ? c.k : 0;                                    // أثناء اللقطة يهدأ انحناء العالم وتبقى العناصر خلف السائق ظاهرة
     if (!c) return this._camBase(dt);
     const cam = this.app.camera, out = c.k > 0.1;
     if (this.camMode === 'pov' && out !== !!c.out) { c.out = out; this._applyCam(out ? 'chase' : undefined); }   // خارج المركبة تظهر الخوذة وما يُخفى في منظور السائق
@@ -332,7 +349,7 @@ export class Race {
     const e = c.k;
     cam.position.lerp(c.pos, e); cam.up.lerp(new THREE.Vector3(0, 1, 0), e).normalize();
     cam.lookAt(this.camLook.clone().lerp(c.look, e));
-    cam.fov += (56 - cam.fov) * e; cam.updateProjectionMatrix();
+    cam.fov += (c.fov - cam.fov) * e; cam.updateProjectionMatrix();
   }
   _camBase(dt) {
     const A = this.app, cam = A.camera, veh = A.vehicle, C = veh.camera;

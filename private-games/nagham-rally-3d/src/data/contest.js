@@ -36,6 +36,7 @@ export const MODES = {
   turns: { name: 'بالأدوار (الخطأ يُنهي الجولة)', short: 'بالأدوار', desc: 'الإجابة الخاطئة ارتطام وتنتهي جولة المتسابق، ثم يبدأ التالي في القائمة' },
   training: { name: 'التدريب', short: 'التدريب', desc: 'الخطأ يُبطئ المركبة ويظهر الشرح ثم يكمل المتسابق أسئلته' },
   points: { name: 'النقاط', short: 'النقاط', desc: 'يكمل كل متسابق أسئلته حتى النهاية ويُحسب مجموع الإجابات الصحيحة' },
+  team: { name: 'سباق الفريق – رحلة الأبطال', short: 'رحلة الأبطال', desc: 'فريق واحد يقطع الرحلة: لكل طالب مرحلة من الولايات؛ الصحيح يُكمل القيادة، والخطأ ارتطام ويتسلّم الطالب التالي المقود' },
 };
 export const POINTS = 10;                        // درجة كل سؤال
 
@@ -262,14 +263,31 @@ export function activeContest() { const d = loadAll(); return d.contests.find((c
 // كل ملف درس: { lessonId, grade, sem, title, source, outcomes:[{id,text}], questions:[سؤال بصيغة اللعبة + meta], review:[ملاحظات] }
 // المعلم ينسخ ما يريده إلى مسابقته؛ تعديلاته تبقى في مسابقته وفي «أسئلتي» ولا تمس هذا البنك ولا بقية المعلمين.
 const CURR = {};
+/** خطأ تحميل بنك المنهج (مثلًا انتهاء جلسة اللعبة على المنصة = 401) — لا يُعامل أبدًا كأنه «لا أسئلة» */
+export class CurrError extends Error { constructor(status) { super(`curriculum ${status}`); this.status = status; } }
+/** رسالة واضحة للمعلم عند تعذّر تحميل أسئلة الدرس */
+export function currErrorText(e) {
+  const st = e && e.status;
+  if (st === 401 || st === 403) return 'انتهت جلسة اللعبة على المنصة، فلم تُحمَّل أسئلة الدرس. أغلق اللعبة وافتحها من جديد من MusiTeacher.';
+  if (st === 0) return 'تعذّر الاتصال بالخادم لتحميل أسئلة الدرس. تحقق من الإنترنت ثم أعد اختيار الدرس.';
+  return 'تعذّر تحميل أسئلة الدرس. أعد اختيار الدرس، وإن تكرر ذلك أغلق اللعبة وافتحها من جديد.';
+}
+async function getJSON(url) {
+  let r; try { r = await fetch(url, { cache: 'no-cache' }); } catch (e) { throw new CurrError(0); }
+  if (!r.ok) throw new CurrError(r.status);
+  try { return await r.json(); } catch (e) { throw new CurrError(-1); }
+}
 async function currIndex(sem) {
-  if (!CURR[sem]) CURR[sem] = fetch(`./assets/curriculum/s${sem}/index.json`, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+  // فهرس الفصل الثاني قد لا يوجد بعد (404) = لا دروس؛ أي خطأ آخر لا يُحفظ في الذاكرة حتى تُعاد المحاولة لاحقًا
+  if (!CURR[sem]) CURR[sem] = getJSON(`./assets/curriculum/s${sem}/index.json`).catch((e) => { delete CURR[sem]; if (e.status === 404) return {}; throw e; });
   return CURR[sem];
 }
 export async function curriculumFor(lesson) {
   if (!lesson) return null;
   const idx = await currIndex(lesson.sem || 1), e = idx[lesson.id]; if (!e) return null;
-  try { const r = await fetch(`./assets/curriculum/s${lesson.sem || 1}/${e.file}`, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch (err) { return null; }
+  const doc = await getJSON(`./assets/curriculum/s${lesson.sem || 1}/${e.file}`);
+  if (e.n > 0 && !(doc && doc.questions && doc.questions.length)) throw new CurrError(-2);
+  return doc;
 }
 /** بصمة أسئلة المسابقة: لمعرفة هل عدّل المعلم أسئلة الدرس المحمّلة تلقائيًا أم لا */
 export function qHash(qs) { const t = JSON.stringify((qs || []).map(normalize)); let h = 5381; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return `${h.toString(36)}:${(qs || []).length}`; }
@@ -292,7 +310,7 @@ export async function lessonContest(lesson, base, { fresh = false } = {}) {
   return { c, custom: false };
 }
 /** معرّفات الدروس التي لها أسئلة مُسكَّنة فعلًا في بنك فصلٍ ما (لا دروس وهمية) */
-export async function curriculumLessonIds(sem) { const idx = await currIndex(sem || 1); return new Set(Object.keys(idx).filter((k) => idx[k] && idx[k].n > 0)); }
+export async function curriculumLessonIds(sem) { let idx; try { idx = await currIndex(sem || 1); } catch (e) { return null; } return new Set(Object.keys(idx).filter((k) => idx[k] && idx[k].n > 0)); }
 /** كل أسئلة الدرس جاهزة للمسابقة: بنك المنهج (نسخ مستقلة) + «أسئلتي» لهذا الدرس — بلا تكرار */
 export async function lessonQuestions(lesson) {
   if (!lesson) return [];
@@ -302,7 +320,7 @@ export async function lessonQuestions(lesson) {
   mineFor(lesson.id).forEach((m) => { if (m.mineRef && seen.has(m.mineRef)) return; seen.add(m.mineRef); out.push({ ...clone(m), id: uid(), src: 'mine' }); });
   return out;
 }
-export async function curriculumCount(lesson) { if (!lesson) return 0; const idx = await currIndex(lesson.sem || 1); return (idx[lesson.id] && idx[lesson.id].n) || 0; }
+export async function curriculumCount(lesson) { if (!lesson) return 0; let idx; try { idx = await currIndex(lesson.sem || 1); } catch (e) { return 0; } return (idx[lesson.id] && idx[lesson.id].n) || 0; }
 /** سؤال من بنك المنهج → نسخة مستقلة في مسابقة المعلم (يبقى المرجع للتعرّف على التكرار) */
 export function fromCurriculum(doc, q) {
   const x = clone(q); delete x.meta;

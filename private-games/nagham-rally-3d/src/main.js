@@ -148,6 +148,13 @@ app.startContest = () => {
   // لكل متسابق أسئلة مختلفة بالترتيب الذي وضعه المعلم (وتتكرر من البداية إن لم تكفِ)
   const sets = players.map((_, k) => Array.from({ length: per }, (_, j) => pool[(k * per + j) % pool.length]));
   session = { c, players, sets, per, turn: 0, results: [] };
+  // «سباق الفريق – رحلة الأبطال»: رحلة واحدة متصلة لكل الفريق. لكل طالب مرحلة (عدد أسئلة «لكل متسابق»)،
+  // الصحيح يُكمل القيادة حتى نهاية مرحلته، والخطأ ارتطام ويتسلّم التالي المقود من حيث توقفت الرحلة
+  if (s.mode === 'team' && names.length) {
+    const Q = players.length * per;
+    Object.assign(session, { team: true, seq: Array.from({ length: Q }, (_, j) => pool[j % pool.length]), pos: 0, k: 0,
+      stats: players.map((name) => ({ name, score: 0, ok: 0, wrong: 0, answered: 0, total: 0, time: 0, turns: 0, bestStreak: 0, results: [] })) });
+  }
   app.audio.ensure(); app.audio.preloadSfx();
   app.radio.setOptions(s.radio, s.radioVol); app.radio.load();
   garage.on = false; app.ui.showStart(false);
@@ -157,14 +164,40 @@ app.startContest = () => {
   playTurn();
 };
 function playTurn() {
+  if (session.team) return playStage();
   const s = session.c.settings, k = session.turn;
   const set = session.sets[k];
   if (set[0] && set[0].audio) app.audio.preload(set[0].audio);
   app.world.syncTurn(k * session.per);            // كل متسابق يكمل الرحلة من حيث يبلغها ترتيب أسئلته
   app.race.start({ ...s, level: s.level || 1 }, set, session.players[k] || '');
 }
+/** رحلة الأبطال: مرحلة الطالب الحالي = الأسئلة التالية في الرحلة (حتى «عدد الأسئلة لكل متسابق») */
+function playStage() {
+  const S = session, s = S.c.settings, set = S.seq.slice(S.pos, S.pos + S.per);
+  if (set[0] && set[0].audio) app.audio.preload(set[0].audio);
+  app.world.syncTurn(S.pos);                      // الرحلة تكمل من حيث توقفت (لا تبدأ من صلالة مع كل طالب)
+  app.race.start({ ...s, mode: 'team', level: s.level || 1 }, set, S.players[S.k] || '');
+  const st = app.world.stageLabel(S.pos, S.pos + set.length);
+  if (st) setTimeout(() => { if (session === S) app.ui.banner(`🗺️ مرحلة ${S.players[S.k]}: ${st}`); }, 900);
+}
+function teamTurnEnd(res) {
+  const S = session, P = S.stats[S.k], used = res.results.length + (res.skipped || 0);
+  P.turns++; P.score += res.score; P.ok += res.ok; P.wrong += res.results.filter((x) => !x.ok).length; P.answered += res.results.length; P.total += res.results.length;
+  P.time += res.time; P.bestStreak = Math.max(P.bestStreak, res.bestStreak || 0); P.results.push(...res.results);
+  S.pos += used;
+  if (S.pos >= S.seq.length) {                    // وصل الفريق إلى نهاية الرحلة
+    session = null;
+    app.ui.final(S.c, S.stats.filter((p) => p.turns), { onAgain: () => app.startContest(), onMenu: () => app.toMenu(), team: true });
+    return;
+  }
+  S.k = (S.k + 1) % S.players.length;
+  const next = S.players[S.k], st = app.world.stageLabel(S.pos, Math.min(S.seq.length, S.pos + S.per));
+  if (app.vehicle.setPlate && S.c.settings.plate !== false) app.vehicle.setPlate(next || '');
+  app.ui.transition({ ...res, name: res.name || P.name }, next, { index: S.k, count: S.players.length, team: { stage: st, done: S.pos, total: S.seq.length } }, () => playTurn());
+}
 app.onTurnEnd = (res) => {
   if (!session) return;
+  if (session.team) return teamTurnEnd(res);
   res.name = session.players[session.turn] || 'متسابق';
   session.results.push(res);
   session.turn++;

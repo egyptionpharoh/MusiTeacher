@@ -280,3 +280,16 @@ body.pov #hud .opt img{height:clamp(44px,7.5vh,78px)}
 .lpick .lnote{font-size:13px;line-height:1.7;min-height:22px}.lpick .lnote .ok{color:var(--ok)}
 .lpick .lcustom{align-self:flex-start}
 .linkbtn{border:0;background:none;color:#74c0fc;font:inherit;font-weight:800;cursor:pointer;padding:0;text-decoration:underline}
+
+/* عنوان اللقطة السينمائية: شريط وثائقي صغير أسفل يسار الشاشة */
+#cinecap{position:absolute;left:0;bottom:19%;max-width:min(62vw,720px);padding:10px 26px 11px 34px;background:linear-gradient(90deg,rgba(9,22,38,.86),rgba(9,22,38,.62) 78%,rgba(9,22,38,0));color:#fff;border-left:6px solid var(--gold,#ffb800);pointer-events:none;direction:rtl;text-align:right;transition:transform .6s cubic-bezier(.2,.9,.3,1),opacity .5s;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+#cinecap b{display:block;font-size:clamp(17px,2.3vw,30px);font-weight:900;line-height:1.3}
+#cinecap small{display:block;font-size:clamp(13px,1.5vw,19px);font-weight:700;opacity:.88;margin-top:2px}
+#cinecap.off{transform:translateX(-105%);opacity:0}
+
+/* رحلة الأبطال: مجموع الفريق */
+.teamsum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:4px 0 14px}
+.teamsum>div{background:linear-gradient(#fff8e0,#ffe7a3);color:#1d1606;border-radius:16px;padding:10px 8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.teamsum small{display:block;font-weight:800;opacity:.75}.teamsum b{font-size:clamp(22px,3vw,34px);font-weight:1000}
+.teamsum .ok{background:linear-gradient(#e7fbe9,#bdf0c4)}.teamsum .bad{background:linear-gradient(#ffecec,#ffc9c9)}
+@media (max-width:640px){.teamsum{grid-template-columns:repeat(2,1fr)}}

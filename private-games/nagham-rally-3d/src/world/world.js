@@ -8,9 +8,10 @@ import { BEND, bendTree, bendMaterial, dipMaterial } from './bend.js';
 import { omaniFacade, roadSign, OMAN_PLACES } from './oman.js';
 import { FLAG_ASPECT, flagGeometry, clothMaterial } from './flag.js';
 import { roadHeight, RAMP } from './bend.js';
-import { STATIONS, ORDER, DEFAULT_FROM, DEFAULT_TO, routeBetween, planStops, stationData } from './stations.js';
+import { STATIONS, ORDER, DEFAULT_FROM, DEFAULT_TO, routeBetween, planStops, stationData, captionFor } from './stations.js';
 import { educationMinistry } from './ministry.js';
 import { sahwaTower, giantFlagpole, tallShip, dhow, suspBridge, fortCastle, portCranes, blueMosque, lighthouse, muscatGate, billboard, cruiseShip } from './landmarks2.js';
+import { flyover, StreetTraffic } from './traffic.js';
 import { grandMosque, souqGate, ministryBuilding, portraitStand, fortHill, radioKiosk, muscatHouseTex, ornateLampGeo, ridgeGeometry, compact } from './oman3d.js';
 
 export const LANE_W = 3.4, ROAD_LANES = 4, ROAD_W = LANE_W * ROAD_LANES;
@@ -72,10 +73,10 @@ export class World {
   }
   /** يعيد بناء الرحلة فقط إذا تغيّر الانطلاق أو الوصول أو التوقيت */
   ensureRoute(from = DEFAULT_FROM, to = DEFAULT_TO, tod = 'day') { if (!(tod in TODS)) tod = 'day'; if (this.routeKey !== `${from}>${to}>${tod}`) this.setRoute(from, to, tod); }
-  /** خطة المسابقة: عدد الأسئلة ومتوسط المسافة لكل سؤال يحددان كم محطة تمر بها الرحلة (كل محطة ≈ ٤٣٠ م على الأقل) ومتى يحين الانتقال */
+  /** خطة المسابقة: عدد الأسئلة ومتوسط المسافة لكل سؤال يحددان كم محطة تمر بها الرحلة (كل محطة ≈ ٦٢٠ م على الأقل) ومتى يحين الانتقال */
   planJourney(questions, metersPerQuestion = 300) {
     const J = this.journey; J.N = Math.max(1, questions | 0); this.cineSeen.clear();
-    J.stops = planStops(J.ids, Math.min(J.N, Math.floor((J.N * metersPerQuestion) / 430) + 1)); J.n = 0; this._goto(0);
+    J.stops = planStops(J.ids, Math.min(J.N, Math.floor((J.N * metersPerQuestion) / 620) + 1));     // محطات أطول (≈ ٦٢٠ م على الأقل) فلا تبدو الرحلة مضغوطة J.n = 0; this._goto(0);
   }
   /** المحطة المناسبة بعد n سؤالًا (متقدمة بسؤال واحد: المحطة الجديدة تُبنى أمام السائق فيبلغها مع السؤال التالي) */
   _stopFor(n) { const J = this.journey; return Math.min(J.stops.length - 1, Math.floor((Math.min(J.N, n + 1) * J.stops.length) / J.N)); }
@@ -84,6 +85,12 @@ export class World {
   /** بعد كل سؤال: يعيد رقم المحطة التالية إن حان الانتقال إليها، وإلا −1 */
   answered() { const J = this.journey; J.n++; const k = this._stopFor(J.n); return k > J.i ? k : -1; }
   stationAt(k) { return STATIONS[this.journey.stops[k]]; }
+  /** «رحلة الأبطال»: أسماء المحطات التي تغطيها الأسئلة من n0 إلى n1 (مرحلة طالب) */
+  stageLabel(n0, n1) {
+    const J = this.journey, nm = (k) => STATIONS[J.stops[k]].name.replace('مسقط – ', '');
+    const a = this._stopFor(n0), b = Math.max(a, this._stopFor(Math.max(n0, n1 - 1)));
+    return a === b ? nm(a) : `${nm(a)} ← ${nm(b)}`;
+  }
   /** بناء محطة من أولها عند z = 0 (بداية دور أو معاينة) — بلا محطة سابقة */
   _goto(k) { const J = this.journey; this.queued = null; if (k === J.i && this.env === J.stops[k] && !this.old) { this.rebase(0); return; } J.i = k; this._build(J.stops[k], 0); }
   /** الانتقال المتصل: تُبنى المحطة التالية على الطريق أمام السائق (بعد حدٍّ يبعد ٣٤٠ م داخل الضباب) وتبقى الحالية حتى يتجاوزها.
@@ -117,7 +124,8 @@ export class World {
     for (const m of [this.road, ...this.kerbs, ...this.walks]) if (m && m !== this.strip) m.visible = false;      // الطريق والأرصفة يكملها الجذر الجديد
     for (const m of [this.ground, this.sea, this.strip]) if (m) m.position.z = zb + m.userData.len / 2;           // الأرض والبحر القديمان ينتهيان عند الحد
     if (this.breakKiosk) this.breakKiosk.visible = false;
-    this.old = { root: this.root, track: this.track, mount: this.mountains, zb };
+    if (this.traffic) this.traffic.back = hideAt;
+    this.old = { root: this.root, track: this.track, mount: this.mountains, zb, traffic: this.traffic };
     this.root = new THREE.Group(); this.scene.add(this.root);
   }
   _build(name, base = 0, keepOld = false) {
@@ -127,7 +135,7 @@ export class World {
     const sc = this.scene, first = !sc.fog;
     if (keepOld && !first) this._freeze(base);
     else { this._dropOld(); this._kill(this.root); this.root = new THREE.Group(); sc.add(this.root); if (this.mountains) { this._kill(this.mountains); this.mountains = null; } }
-    this.items = []; this.movers = []; this.flags = []; this.track = null; this.zones = []; this.radioSpots = [];
+    this.items = []; this.movers = []; this.flags = []; this.track = null; this.zones = []; this.radioSpots = []; this.zBase = base; this.traffic = null;
     this.walks = []; this.kerbs = []; this.sea = null; this.strip = null;
     // ألوان الجو والإضاءة: تُطبَّق فورًا، أو تتدرج من المحطة السابقة كلما اقترب السائق من الحد
     if (first) { sc.fog = new THREE.Fog(new THREE.Color(T.fog), 60, SPAN * 0.92); sc.background = new THREE.Color(T.fog); }
@@ -138,7 +146,7 @@ export class World {
     this._sky(T);
     this._env(this.old ? 0 : 1);
     if (this.old) {            // ربوتان صخريتان عند الحد (كأن الطريق يعبر مضيقًا بين منطقتين) تخفيان التقاء أرض المحطتين
-      for (const sd of [-1, 1]) this.zones.push({ off: -base, half: 46, side: sd, C: 1e9, near: true });
+      for (const sd of [-1, 1]) this.zones.push({ off: 0, half: 46, side: sd, C: 1e9, near: true });
       const pal = (T.env && T.env.ridges && T.env.ridges[0] && T.env.ridges[0][5]) || undefined, mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, flatShading: true });
       for (const sd of [-1, 1]) for (let q = 0; q < 2; q++) { const m = new THREE.Mesh(ridgeGeometry(120, 92, 9 + q * 6, 22 + q * 12, base * 0.013 + sd + q * 2.3, pal), mat); m.position.set(sd * (ROAD_W / 2 + 5.9 + 46 + q * 88), -0.2, base); if (sd < 0) m.rotation.y = Math.PI; this.root.add(m); }
     }
@@ -374,18 +382,23 @@ export class World {
     for (const it of list) {
       const o = compact(it.make(it.side)); const side = it.side, opt = it.opt || {};
       o.position.set(side * (ROAD_W / 2 + it.setback), it.y || 0, -it.off); if (side > 0) o.rotation.y = Math.PI;
-      if (it.cine) { o.userData.cine = it.cine; o.userData.ckey = `${this.env}:${o.name}:${it.off}`; } if (opt.slide) o.userData.slide = opt.slide;
+      if (it.cine) { o.userData.cine = it.cine; o.userData.ckey = `${this.env}:${o.name}:${it.off}`; o.userData.caption = captionFor(this.env, it.key); } if (opt.slide) o.userData.slide = opt.slide;
       if (it.scale) o.scale.setScalar(it.scale);
       o.userData.z0 = -it.off; this.root.add(o); objs.push(o);
       const half = opt.zone || (o.userData.half || 10) * (it.scale || 1) + 4;
-      if (!(it.y < 0)) for (const sd of side ? [side] : [-1, 1]) this.zones.push({ off: it.off, half, side: sd, C, near: true });
+      if (!(it.y < 0)) for (const sd of side ? [side] : [-1, 1]) this.zones.push({ off: it.off, half, side: sd, C, near: true, clear: it.cine === 'portrait' });
       if (o.userData.radio) this.radioSpots.push({ obj: o, side, x: o.position.x });
     }
     this.track = { C, objs };
   }
   /** هل موضع z على الجهة side محجوز لمعلم؟ (لتجنّب تداخل المباني المكرّرة مع المعالم) */
+  /** نطاق لوحة صاحب الجلالة: يُخلى الرصيف أمامها من النخيل حتى تظهر الصورة كاملة */
+  _clearAt(z, side) {
+    for (const Z of this.zones) { if (Z.side !== side || !Z.clear) continue; const d = (((z - (this.zBase || 0) + Z.off) % Z.C) + Z.C) % Z.C; if (d < Z.half + 14 || d > Z.C - Z.half - 14) return true; }
+    return false;
+  }
   _blocked(z, side) {
-    for (const Z of this.zones) { if (Z.side !== side || !Z.near) continue; const d = (((z + Z.off) % Z.C) + Z.C) % Z.C; if (d < Z.half || d > Z.C - Z.half) return true; }
+    for (const Z of this.zones) { if (Z.side !== side || !Z.near) continue; const d = (((z - (this.zBase || 0) + Z.off) % Z.C) + Z.C) % Z.C; if (d < Z.half || d > Z.C - Z.half) return true; }
     return false;
   }
   /** أقرب معلم أمام السائق له لقطة سينمائية لم تُعرض بعد في هذه المسابقة (extra: مدى إضافي للتخطيط المسبق) */
@@ -400,7 +413,7 @@ export class World {
   }
   cineRange(o) { return 150 + (o.userData.half || 10) * 0.5; }
   cineTarget(z) { return this._cinePending(z, 0); }
-  cineAhead(z) { return this._cinePending(z, 75); }
+  cineAhead(z, extra = 75) { return this._cinePending(z, extra); }
   /** يضع محل المذياع على الرصيف عند z في الجهة side (لا يتقاطع مع المباني لأنه أمامها) */
   placeBreakKiosk(z, side) {
     const o = this.breakKiosk; if (!o || this._bridgeAt(z) || this._bridgeAt(z + 30) || this._bridgeAt(z - 30)) return;
@@ -417,11 +430,11 @@ export class World {
       kiosk: radioKiosk, fort: () => fortHill(1), souq: souqGate, mosque: grandMosque, ministry: () => educationMinistry(U),
       flagpole: () => giantFlagpole(U), ship: tallShip, dhow: () => dhow(false), dhowYard: () => dhow(true),
       sahwa: () => sahwaTower(U, true), bridge: () => suspBridge(ROAD_W, E.sea ? E.sea.color : 0x1f9fb4), castle: () => fortCastle(U), port: portCranes, blueMosque, lighthouse,
-      gate: () => muscatGate(ROAD_W), cruise: cruiseShip,
+      gate: () => muscatGate(ROAD_W), cruise: cruiseShip, flyover: () => flyover(ROAD_W),
       // لوحات الطريق الوطنية (الصور الرسمية التي زوّدنا بها المعلم كما هي)
       bbQ: (sd) => billboard(this._portraitTex('portrait-qaboos.jpg'), 16 / 9, sd), bbH: (sd) => billboard(this._portraitTex('portrait-haitham.jpg'), 1140 / 570, sd),
     };
-    this._landmarks(E.C || 900, (E.marks || []).filter((m) => M[m[0]]).map(([k, off, side, setback, scale, y, cine, opt]) => ({ make: M[k], off, side, setback: setback || 0, scale, y, cine, opt })));
+    this._landmarks(E.C || 900, (E.marks || []).filter((m) => M[m[0]]).map(([k, off, side, setback, scale, y, cine, opt]) => ({ key: k, make: M[k], off, side, setback: setback || 0, scale, y, cine, opt })));
     const seaSide = E.sea ? E.sea.side : 0;
     // مبانٍ مكرّرة: واجهات حجرية بنوافذ مقوّسة + بيوت مسقط البيضاء بشرفات مسننة
     const B = E.build || { sides: [-1, 1], stone: 12, white: 12, every: 36 };
@@ -429,9 +442,12 @@ export class World {
     const merl = []; for (let k = 0; k < 7; k++) { const m = new THREE.BoxGeometry(0.07, 0.07, 0.09); m.translate(0.5 - 0.035, 1.035, -0.45 + k * 0.15); merl.push(m); }
     const house = mergeGeos([bGeo, ...merl]);
     const tints = ['#ffffff', '#f6efe2', '#efe3cc', '#fbf6ee', '#eadcc4'].map((c) => new THREE.Color(c));
+    // المدن: شوارع جانبية عرضية كل ١٤٤ م تصل الطريق بشارع الخدمة الداخلي (تقطع صف المباني فيبدو الحي مخططًا ككتل)
+    const zb0 = this.zBase, sideSt = E.street ? (z) => { const d = (((z - zb0 + 70) % 144) + 144) % 144; return d < 15 || d > 129; } : () => false;
+    this._sideSt = sideSt;
     for (const sg of B.sides) {
       // المبنى يُخفى إذا مسّ أي جزء منه (لا مركزه فقط) نطاق معلم أو لوحة — فلا يتداخل مبنى مع معلم
-      const hide = (t) => { const z = t.position.z; if (this._blocked(z, sg) || this._blocked(z + 10, sg) || this._blocked(z - 10, sg)) t.scale.setScalar(0.0001); };
+      const hide = (t) => { const z = t.position.z; if (this._blocked(z, sg) || this._blocked(z + 10, sg) || this._blocked(z - 10, sg) || (E.street && E.street.includes(sg) && (sideSt(z) || sideSt(z + 7) || sideSt(z - 7)))) t.scale.setScalar(0.0001); };
       if (B.stone) {
         const facMat = new THREE.MeshStandardMaterial({ map: tex(512, 512, (x, w, h) => omaniFacade(x, w, h), true), roughness: 0.85 });
         const a = this._pool(bGeo, facMat, B.stone, (t, i, P) => {
@@ -444,6 +460,32 @@ export class World {
         const w = 9 + r() * 6, d = 8 + r() * 5, hh = 6 + r() * 5;
         t.position.x = sg * (ROAD_W / 2 + 7.5 + w / 2 + r() * 2 + (B.every > 60 ? r() * 14 : 0)); t.scale.set(w, hh, d); if (sg > 0) t.rotation.y = Math.PI; hide(t);
       }, { every: B.every, offset: sg > 0 ? B.every * 0.6 : 4 });
+    }
+    // شارع خدمة داخلي خلف صف المباني (المدن فقط): حافلات «مواصلات» وسيارات أجرة وسيارات تتحرك في الاتجاهين، بعيدًا عن حارات السباق
+    if (E.street) {
+      const SX = ROAD_W / 2 + 33, asph = new THREE.MeshStandardMaterial({ color: 0x3b3e43, roughness: 0.95 }), mk = new THREE.MeshBasicMaterial({ color: 0xeeeadc });
+      const seg = new THREE.PlaneGeometry(13, 30.4); seg.rotateX(-Math.PI / 2); seg.translate(0, 0.05, 0);
+      const dash = new THREE.PlaneGeometry(0.2, 4); dash.rotateX(-Math.PI / 2); dash.translate(0, 0.07, 0);
+      const lanes = [];
+      for (const sg of E.street) {
+        const pl = (t) => { t.position.x = sg * SX; if (this._blocked(t.position.z, sg)) t.scale.setScalar(0.0001); };
+        this._pool(seg, asph, 16, pl, { every: 30 }); this._pool(dash, mk, 32, pl, { every: 15 });
+        lanes.push({ x: sg * SX + 3.2, dir: -1, side: sg }, { x: sg * SX - 3.2, dir: 1, side: sg });        // القيادة على اليمين كما في عُمان
+        // الشارع الجانبي العرضي (من حافة الرصيف إلى شارع الخدمة)
+        const cross = new THREE.PlaneGeometry(SX - ROAD_W / 2 - 5.9 + 6.5, 9); cross.rotateX(-Math.PI / 2); cross.translate(sg * ((ROAD_W / 2 + 5.9 + SX + 6.5) / 2), 0.045, 0);
+        this._pool(cross, asph, 3, (t) => { if (this._blocked(t.position.z, sg)) t.scale.setScalar(0.0001); }, { every: 144, offset: 70 });
+        // صف خلفي من المباني بارتفاعات متفاوتة (عمارات سكنية ومكتبية) خلف شارع الخدمة
+        const facB = new THREE.MeshStandardMaterial({ map: tex(512, 512, (x, w, h) => omaniFacade(x, w, h), true), roughness: 0.85 });
+        const bk = this._pool(new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0), facB, 15, (t, i, P) => {
+          const z = t.position.z, w = 11 + H(z, 31) * 9, d = 12 + H(z, 32) * 10, hh = 7 + H(z, 33) * H(z, 33) * 22;
+          t.position.x = sg * (SX + 8.5 + w / 2 + H(z, 34) * 4); t.scale.set(w, hh, d); P.im.setColorAt(i, pick(tints));
+          if (this._blocked(z, sg) || this._blocked(z + 11, sg) || this._blocked(z - 11, sg) || sideSt(z) || sideSt(z + 9) || sideSt(z - 9)) t.scale.setScalar(0.0001);
+        }, { every: 29, offset: sg > 0 ? 9 : 23 });
+        bk.im.instanceColor.needsUpdate = true;
+      }
+      const zones = this.zones, zb = this.zBase, blocked = (z, sd) => { for (const Z of zones) { if (Z.side !== sd || !Z.near || Z.C > 1e8) continue; const d = (((z - zb + Z.off) % Z.C) + Z.C) % Z.C; if (d < Z.half || d > Z.C - Z.half) return true; } return false; };
+      this.traffic = new StreetTraffic(this.root, lanes, E.streetN || 4, name.length * 13 + 3);
+      this.traffic.hide = (z, ln) => z > this.traffic.front || z < this.traffic.back || blocked(z, ln.side) || blocked(z + 8, ln.side) || blocked(z - 8, ln.side);
     }
     // أعمدة إنارة الكورنيش وفوانيسها
     const lampMat = new THREE.MeshStandardMaterial({ color: 0x14161a, roughness: 0.45, metalness: 0.6 });
@@ -550,7 +592,8 @@ export class World {
   }
   /** يعيد العناصر الجانبية إلى مواضعها الأولى ابتداءً من z = base (0 عند بدء سباق جديد) */
   rebase(base = 0) {
-    this.base = base;
+    this.base = base; this.zBase = base;     // نطاقات المعالم محسوبة من بداية المحطة (فلا يتداخل مبنى مع معلم في المحطات التالية)
+    if (this.traffic) { this.traffic.front = this.old ? base - 40 : Infinity; this.traffic.back = -Infinity; }
     for (const p of this.items) { for (let i = 0; i < p.n; i++) { p.z[i] = base - i * p.every - p.offset; this._place(p, i); } p.im.instanceMatrix.needsUpdate = true; if (p.im.instanceColor) p.im.instanceColor.needsUpdate = true; }
     for (const M of this.movers) for (const o of M.objs) o.position.z = base + o.userData.z0;
     if (this.track) for (const o of this.track.objs) o.position.z = base + o.userData.z0;
@@ -603,7 +646,7 @@ export class World {
     const cm = new THREE.MeshStandardMaterial({ color: 0x5b4a2a, roughness: 0.9 });
     for (const sg of o.sides || [-1, 1]) {
       const n = Math.round(count * density / 2), every = SPAN / n, offset = sg > 0 ? 0 : 9;
-      const pl = (t) => { const z = t.position.z; t.position.x = sg * (ROAD_W / 2 + (o.x0 || 4.5) + H(z, 1) * (o.spread || 2)); t.rotation.y = H(z, 2) * 6; t.scale.setScalar(this._blocked(z, sg) && (o.spread > 4 || this._bridgeAt(z)) ? 0.0001 : (0.8 + H(z, 3) * 0.5) * (o.sc || 1)); };
+      const pl = (t) => { const z = t.position.z; t.position.x = sg * (ROAD_W / 2 + (o.x0 || 4.5) + H(z, 1) * (o.spread || 2)); t.rotation.y = H(z, 2) * 6; t.scale.setScalar((this._blocked(z, sg) && (o.spread > 4 || this._bridgeAt(z))) || this._clearAt(z, sg) ? 0.0001 : (0.8 + H(z, 3) * 0.5) * (o.sc || 1)); };
       this._pool(trunk, tm, n, pl, { every, offset });
       this._pool(mergeGeos([crown]), cm, n, pl, { every, offset });
       this._pool(mergeGeos(leaves), lm, n, pl, { every, offset });
@@ -635,20 +678,23 @@ export class World {
       if (z < O.zb - 80) { this._dropOld(); if (this.queued != null) { const k = this.queued; this.queued = null; this.beginTravel(k, z); } }
     }
     // تدوير العناصر الجانبية
+    const keep = 30 + 70 * (this.cineK || 0);          // أثناء لقطة الدرون تبقى العناصر خلف السائق قليلًا فلا يظهر فراغ في المشهد
     for (const p of this.items) {
       let dirty = false;
       for (let i = 0; i < p.n; i++) {
-        if (p.z[i] > z + 30) { p.z[i] -= p.n * p.every; this._place(p, i); dirty = true; }
+        if (p.z[i] > z + keep) { p.z[i] -= p.n * p.every; this._place(p, i); dirty = true; }
       }
       if (dirty) { p.im.instanceMatrix.needsUpdate = true; if (p.im.instanceColor) p.im.instanceColor.needsUpdate = true; }
     }
     for (const M of this.movers) for (const o of M.objs) if (o.position.z > z + 30) o.position.z -= M.n * M.every;
+    for (const TR of [O && O.traffic, this.traffic]) if (TR) TR.update(z, dt || 0.016);
     let dipZ = 1e7, dipH = 60, dipD = 0, bx = 0, busy = 0;
     const each = (o, live) => {
       const U = o.userData;
       if (live && o.position.z > z + (U.half || 0) + 80) o.position.z -= this.track.C;
       o.visible = !U.gone && o.position.z > z - SPAN - 20;   // المعالم البعيدة جدًا (خلف الضباب) لا تُرسم: توفير في عدد أوامر الرسم
       const a = z - o.position.z;                            // a موجب: المعلم أمام السائق
+      if (U.tick && o.visible && a > -300 && a < SPAN) U.tick(dt || 0.016);     // حركة المرور أسفل الجسر العلوي
       if (U.slide) {         // الدوّار: الميدان يظهر في منتصف الطريق من بعيد، ثم ينحرف الطريق يمينًا ويدور حوله (الميدان عن يسار السائق)
         o.position.x = -U.slide * (1 - THREE.MathUtils.smoothstep(a, 80, 200));
         bx += 0.0015 * bell(a, 150, 55) - 0.0032 * bell(a, 15, 70); busy = Math.max(busy, bell(a, 60, 150));
@@ -666,9 +712,9 @@ export class World {
     // انحناء العالم: يتغير ببطء (منعطفات وتلال متتالية)
     BEND.uCamZ.value = camera.position.z;
     const d = -z;
-    const RD = (this.T && this.T.road) || [1, 1], calm = 1 - busy;     // لكل محطة شدّة منعطفاتها وتلالها (طرق جبلية ملتوية / طرق سهلية مستقيمة)
+    const RD = (this.T && this.T.road) || [1, 1], ck = 1 - 0.85 * (this.cineK || 0), calm = (1 - busy) * ck;     // أثناء لقطة الدرون يهدأ الانحناء فيبدو المشهد واقعيًا     // لكل محطة شدّة منعطفاتها وتلالها (طرق جبلية ملتوية / طرق سهلية مستقيمة)
     BEND.uBendX.value = RD[0] * calm * (0.0009 * Math.sin(d / 260) + 0.0005 * Math.sin(d / 97 + 1.3)) + bx;
-    BEND.uBendY.value = -0.0006 + RD[1] * calm * 0.0005 * Math.sin(d / 180 + 0.7);
+    BEND.uBendY.value = -0.0006 * ck + RD[1] * calm * 0.0005 * Math.sin(d / 180 + 0.7);
   }
 }
 

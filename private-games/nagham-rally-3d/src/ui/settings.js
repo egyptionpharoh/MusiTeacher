@@ -158,7 +158,7 @@ export function openSettings(app, { tab = 'contest' } = {}) {
   }
   /** بنك أسئلة المنهج + «أسئلتي» للدرس نفسه — تُنسخ إلى المسابقة ولا يتغير المصدر */
   async function curriculumDlg(les, add) {
-    const doc = await C.curriculumFor(les), mine = C.mineFor(les.id);
+    let doc = null; try { doc = await C.curriculumFor(les); } catch (e) { toast(C.currErrorText(e)); } const mine = C.mineFor(les.id);
     const d = sheet({ title: `📗 أسئلة الدرس — ${les.title}`, width: 860 });
     const have = new Set(cur.questions.map((q) => q.currRef || q.mineRef).filter(Boolean));
     const checks = [], items = [];
@@ -268,7 +268,7 @@ export function openSettings(app, { tab = 'contest' } = {}) {
     const L = el('div'), R = el('div');
     L.append(
       f('نمط اللعب', seg(Object.entries(C.MODES).map(([id, M]) => ({ id, html: `${M.name}<small>${M.desc}</small>` })), S.mode, set('mode'))),
-      f('عدد الأسئلة لكل متسابق', seg([3, 5, 8, 10].map((n) => ({ id: n, html: AR(n) })), S.perTurn, (v) => set('perTurn')(+v)), 'عند عدم وجود أسماء يلعب متسابق واحد كل أسئلة المسابقة'),
+      f('عدد الأسئلة لكل متسابق', seg([3, 5, 8, 10].map((n) => ({ id: n, html: AR(n) })), S.perTurn, (v) => set('perTurn')(+v)), 'عند عدم وجود أسماء يلعب متسابق واحد كل أسئلة المسابقة · في «رحلة الأبطال» هو طول مرحلة كل طالب (أسئلة الرحلة كلها = عدد الطلاب × هذا العدد)'),
       f('زمن الإجابة لكل مفترق', seg([10, 14, 18, 24].map((n) => ({ id: n, html: `${AR(n)} ث` })), S.answerTime, (v) => set('answerTime')(+v)), 'المسافة إلى البوابة تُحسب ليصل الطالب بعد هذا الزمن بالسرعة العادية'),
       f('مرات إعادة السماع', seg([{ id: 0, html: 'بلا إعادة' }, { id: 1, html: 'مرة' }, { id: 2, html: 'مرتان' }, { id: -1, html: 'بلا حدود' }], S.replays, (v) => set('replays')(+v))),
       f('سرعة المركبة', seg(SPEED.map((n, i) => ({ id: i + 1, html: n })), S.level, (v) => set('level')(+v))),

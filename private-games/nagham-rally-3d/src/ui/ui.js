@@ -90,7 +90,8 @@ export class UI {
     pedal.addEventListener('contextmenu', (e) => e.preventDefault());
     h.append(steer, pedal);
     this.lower = el('div', { id: 'lower3', class: 'off' });
-    h.append(el('div', { id: 'cd' }), el('div', { id: 'fb', class: 'off' }), el('div', { id: 'banner', class: 'off' }), this.lower);
+    this.capEl = el('div', { id: 'cinecap', class: 'off' });
+    h.append(el('div', { id: 'cd' }), el('div', { id: 'fb', class: 'off' }), el('div', { id: 'banner', class: 'off' }), this.lower, this.capEl);
     this.root.append(h);
   }
   hud(on) {
@@ -117,6 +118,7 @@ export class UI {
       return;
     }
     this.qid = qid; this.curCh = ch;
+    if (this.capEl) this.capEl.classList.add('off');
     clearTimeout(this._fbt); $('#fb').classList.add('off');
     this.qd.textContent = `${ch.domainIcon || '🎵'} ${ch.domainName || ''}`;
     this.qtext.textContent = ch.prompt;
@@ -169,6 +171,13 @@ export class UI {
       if (this.qid === qid) { this.opts.classList.add('off'); document.body.classList.remove('has-opts'); }
     }, f.ok ? 2400 : 3900);
   }
+  /** عنوان اللقطة السينمائية (اسم المعلم وولايته) — شريط سفلي صغير لا يغطي الطريق، ويختفي فورًا مع ظهور أي سؤال */
+  caption(t) {
+    const c = this.capEl; if (!c) return;
+    if (!t || this.curCh && !this.dash.classList.contains('idle')) { c.classList.add('off'); return; }
+    const [a, b] = String(t).split(' – ');
+    c.replaceChildren(el('b', {}, a), ...(b ? [el('small', {}, b)] : [])); c.classList.remove('off');
+  }
   banner(t) { const b = $('#banner'); b.textContent = t; b.classList.remove('off'); clearTimeout(this._bt); this._bt = setTimeout(() => b.classList.add('off'), 2600); }
   toast(t) { toast(t); }
 
@@ -187,14 +196,20 @@ export class UI {
   }
 
   // ================================================================== الانتقال بين المتسابقين
-  transition(done, next, { index, count }, onGo) {
+  transition(done, next, { index, count, team }, onGo) {
     this.hud(false);
     const m = el('div', { class: 'modal light trans' });
     const box = el('div', { class: 'tbox' });
     const icon = done.reason === 'finish' ? '🏁' : done.reason === 'skip' ? '⏭' : '💥';
-    box.append(el('div', { class: 'tdone' }, `${icon} انتهت جولة `, el('b', {}, done.name || 'المتسابق')));
-    box.append(el('div', { class: 'tscore' }, el('span', { class: 'pts' }, `${AR(done.score)} نقطة`), el('span', { class: 'pct' }, pctText(done.ok, done.total))));
-    box.append(el('div', { class: 'tnext' }, el('small', {}, `المتسابق التالي (${AR(index + 1)} من ${AR(count)})`), el('b', {}, next)));
+    if (team) {        // رحلة الأبطال: تسليم المقود للطالب التالي والرحلة مستمرة
+      box.append(el('div', { class: 'tdone' }, done.reason === 'crash' ? '💥 ارتطام! انتهت مرحلة ' : `${icon} أنهى مرحلته البطل `, el('b', {}, done.name || 'المتسابق')));
+      box.append(el('div', { class: 'tscore' }, el('span', { class: 'pts' }, `+${AR(done.score)} نقطة للفريق`), el('span', { class: 'pct' }, `أنجز الفريق ${AR(team.done)} من ${AR(team.total)} من أسئلة الرحلة`)));
+      box.append(el('div', { class: 'tnext' }, el('small', {}, '🔑 يتسلّم المقود الآن'), el('b', {}, next), team.stage ? el('small', {}, `مرحلته: ${team.stage}`) : null));
+    } else {
+      box.append(el('div', { class: 'tdone' }, `${icon} انتهت جولة `, el('b', {}, done.name || 'المتسابق')));
+      box.append(el('div', { class: 'tscore' }, el('span', { class: 'pts' }, `${AR(done.score)} نقطة`), el('span', { class: 'pct' }, pctText(done.ok, done.total))));
+      box.append(el('div', { class: 'tnext' }, el('small', {}, `المتسابق التالي (${AR(index + 1)} من ${AR(count)})`), el('b', {}, next)));
+    }
     const go = el('button', { class: 'btn pri go' }, '▶ ابدأ');
     const ring = el('div', { class: 'auto' });
     const hold = el('button', { class: 'btn sm ghost' }, '⏸ انتظر');
@@ -212,8 +227,9 @@ export class UI {
   }
 
   // ================================================================== النتائج النهائية
-  final(contest, results, { onAgain, onMenu }) {
+  final(contest, results, { onAgain, onMenu, team }) {
     this.hud(false);
+    if (team) return this._teamFinal(contest, results, { onAgain, onMenu });
     const board = results.map((r, i) => ({ ...r, order: i })).sort((a, b) => b.score - a.score || b.ok - a.ok || a.time - b.time || a.order - b.order);
     const single = results.length === 1;
     const s = sheet({ title: single ? '🏁 نتيجتك' : '🏆 النتائج النهائية', sub: contest.title, width: 720, cls: 'res', onClose: () => { onMenu(); return true; } });
@@ -239,6 +255,29 @@ export class UI {
     s.foot.append(el('button', { class: 'btn pri', onclick: () => { s.close(true); onAgain(); } }, '🔁 إعادة المسابقة من البداية'), el('button', { class: 'btn', onclick: () => { s.close(true); onMenu(); } }, '🏠 القائمة الرئيسية'));
   }
 
+  /** نتائج «رحلة الأبطال»: مجموع الفريق ثم نتيجة كل طالب */
+  _teamFinal(contest, results, { onAgain, onMenu }) {
+    const s = sheet({ title: '🏆 وصل الفريق! رحلة الأبطال', sub: contest.title, width: 720, cls: 'res', onClose: () => { onMenu(); return true; } });
+    const T = results.reduce((a, r) => ({ score: a.score + r.score, ok: a.ok + r.ok, wrong: a.wrong + r.wrong, time: a.time + r.time }), { score: 0, ok: 0, wrong: 0, time: 0 });
+    s.body.append(el('div', { class: 'teamsum' },
+      el('div', {}, el('small', {}, 'نقاط الفريق'), el('b', {}, AR(T.score))),
+      el('div', { class: 'ok' }, el('small', {}, 'إجابات صحيحة'), el('b', {}, AR(T.ok))),
+      el('div', { class: 'bad' }, el('small', {}, 'إجابات خاطئة'), el('b', {}, AR(T.wrong))),
+      el('div', {}, el('small', {}, 'زمن الرحلة'), el('b', {}, fmtT(T.time)))));
+    const tb = el('table', { class: 'board' });
+    tb.append(el('tr', {}, el('th', {}, 'الطالب'), el('th', {}, 'النقاط'), el('th', {}, 'صحيحة'), el('th', {}, 'خاطئة'), el('th', {}, 'مرات القيادة'), el('th', {}, 'الزمن')));
+    for (const r of results) tb.append(el('tr', {}, el('td', {}, r.name), el('td', {}, AR(r.score)), el('td', {}, AR(r.ok)), el('td', {}, AR(r.wrong)), el('td', {}, AR(r.turns)), el('td', {}, fmtT(r.time))));
+    s.body.append(tb);
+    s.body.append(el('p', { class: 'note' }, 'كل إجابة صحيحة = ١٠ نقاط للفريق. الخطأ يُنهي مرحلة الطالب ويتسلّم زميله التالي المقود من الموضع نفسه في الرحلة.'));
+    const mist = []; for (const r of results) for (const x of r.results) if (!x.ok) mist.push({ who: r.name, x });
+    if (mist.length) {
+      const d = el('details', { class: 'mist' }, el('summary', {}, `📝 مراجعة الإجابات الخاطئة (${AR(mist.length)})`));
+      for (const { who, x } of mist.slice(0, 40)) d.append(el('div', {}, el('b', {}, `${who}: ${x.ch.prompt}`), el('br'), `الصحيح: ${x.ch.options[x.ch.answer].label} — ${x.ch.explain || ''}`));
+      s.body.append(d);
+    }
+    s.foot.append(el('button', { class: 'btn pri', onclick: () => { s.close(true); onAgain(); } }, '🔁 رحلة جديدة للفريق'), el('button', { class: 'btn', onclick: () => { s.close(true); onMenu(); } }, '🏠 القائمة الرئيسية'));
+  }
+
   openHelp() {
     const s = sheet({ title: '❔ كيف ألعب؟', width: 700, cls: 'help' });
     s.body.innerHTML = `
@@ -247,6 +286,7 @@ export class UI {
       <p>٣) فوق الطريق جسر عليه لافتة لكل مسار (أ، ب، ج، د)، والخيارات نفسها أسفل الشاشة. <b>انتقل إلى مسار الإجابة الصحيحة</b> قبل البوابة.</p>
       <p>٤) قبل البوابة بقليل تبدأ <b>حواجز فاصلة</b>: بعدها لا يمكن تغيير المسار، فقرّر مبكرًا!</p>
       <p>٥) كل إجابة صحيحة = <b>١٠ نقاط</b> (تظهر النتائج في النهاية). الإجابة الخاطئة في نمط الأدوار = ارتطام كرتوني بالحواجز الإسفنجية وتنتهي الجولة، ويبدأ المتسابق التالي.</p>
+      <p>🏆 <b>سباق الفريق – رحلة الأبطال:</b> الفريق كله يقطع رحلة واحدة؛ لكل طالب مرحلة من الولايات. الإجابة الصحيحة تُكمل القيادة حتى نهاية المرحلة، والخاطئة ارتطام ويتسلّم الطالب التالي المقود (يظهر اسمه على لوحة السيارة)، وفي النهاية نتيجة الفريق ونتيجة كل طالب.</p>
       <p><b>التحكم باللمس أو الفأرة:</b> <b>◀ ▶</b> أسفل اليسار لتغيير المسار، و<b>دوّاسة البنزين</b> أسفل اليمين: اضغط عليها مطولًا لتزيد السرعة تدريجيًا، وارفع إصبعك لتعود المركبة إلى سرعتها العادية. ويمكنك أيضًا الضغط على بطاقة الإجابة فتتجه المركبة إلى مسارها.</p>
       <p><b>لوحة المفاتيح:</b> <span class="kbd">←</span><span class="kbd">→</span> تغيير المسار · <span class="kbd">↑</span> البنزين (اضغط مطولًا) · <span class="kbd">Enter</span> استراحة / متابعة · <span class="kbd">R</span> أعد الاستماع · <span class="kbd">1</span>–<span class="kbd">4</span> اختيار المسار مباشرة · <span class="kbd">C</span> منظور السائق / الكاميرا الخارجية · <span class="kbd">M</span> كتم الصوت.</p>`;
     s.foot.append(el('button', { class: 'btn pri', onclick: () => s.close(true) }, 'فهمت'));

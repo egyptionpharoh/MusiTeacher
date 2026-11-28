@@ -288,18 +288,18 @@ export function muscatGate(roadW) {
 // ---------------------------------------------------------------- لوحة طريق وطنية: صورة رسمية داخل إطار على قائمين، مائلة نحو القادم على الطريق
 export function billboard(imgTex, aspect, side = -1) {
   const G = new THREE.Group(); G.name = 'billboard';
-  const H = aspect > 1.9 ? 4.6 : 5.4, W = H * aspect, y0 = 4.4;
+  const H = aspect > 1.9 ? 6.6 : 7.4, W = H * aspect, y0 = 5.0;        // لوحة كبيرة واضحة من بعيد ومرتفعة فوق الأرصفة
   const steel = std({ color: 0x7d858d, metalness: 0.5, roughness: 0.5 }), white = std({ color: 0xf6f3ea, roughness: 0.6 }), gold = std({ color: 0xc9a23f, metalness: 0.75, roughness: 0.35 });
   const P = new THREE.Group();
   for (const s of [-1, 1]) P.add(at(box(0.34, y0 + H, 0.34, steel), -0.3, 0, s * (W / 2 - 0.9)));
   P.add(at(box(0.3, H + 0.7, W + 0.7, white), 0, y0 - 0.35, 0));
   for (const s of [-1, 1]) { P.add(at(box(0.36, 0.12, W + 0.76, gold), 0, s > 0 ? y0 + H + 0.26 : y0 - 0.35, 0)); P.add(at(box(0.36, H + 0.7, 0.12, gold), 0, y0 - 0.35, s * (W / 2 + 0.32))); }
-  const pic = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: imgTex, toneMapped: false })); pic.rotation.y = Math.PI / 2; P.add(at(pic, 0.16, y0 + H / 2, 0));
+  const pic = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: imgTex, toneMapped: false })); pic.userData.keep = true; pic.rotation.y = Math.PI / 2; P.add(at(pic, 0.16, y0 + H / 2, 0));
   // شريط بألوان العلم أسفل اللوحة
   [0xdb161b, 0xffffff, 0x008000].forEach((c, k) => P.add(at(box(0.32, 0.16, (W + 0.7) / 3, std({ color: c })), 0, y0 - 0.62, ((k - 1) * (W + 0.7)) / 3)));
   P.rotation.y = side > 0 ? 0.95 : -0.95; P.position.x = -W * 0.42;
   G.add(P);
-  G.userData.half = W * 0.5 + 1; G.userData.depth = W;
+  G.userData.half = W * 0.5 + 1; G.userData.depth = W; G.userData.focus = pic; G.userData.lookY = y0 + H / 2; G.userData.faceH = H + 1.4;
   return G;
 }
 

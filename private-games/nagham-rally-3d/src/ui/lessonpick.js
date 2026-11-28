@@ -16,7 +16,7 @@ export function buildLessonPicker(app) {
   const note = el('div', { class: 'lnote' });
   const custom = el('button', { class: 'btn sm ghost lcustom', onclick: () => app.openSettings({ tab: 'questions' }) }, '✏️ تخصيص الأسئلة (اختياري)');
   const lab = (t, x) => el('label', { class: 'lrow' }, el('span', {}, t), x);
-  box.append(el('div', { class: 'lhead' }, '📚 اختر الدرس ثم ابدأ السباق'), lab('الصف', g), lab('الفصل', s), lab('الدرس', l), note, custom);
+  box.append(el('div', { class: 'lhead' }, '📚 اختر الدرس ثم ابدأ السباق'), lab('الفصل', s), lab('الصف', g), lab('الدرس', l), note, custom);
 
   const avail = { 1: null, 2: null };
   let grade = 0, sem = 1, tk = 0;
@@ -29,7 +29,7 @@ export function buildLessonPicker(app) {
     l.innerHTML = '';
     const ls = grade ? lessonsFor(grade, sem) : [];
     const cur = C.lessonById(app.contest && app.contest.lessonId);
-    if (!grade) l.append(el('option', { value: '' }, '— اختر الصف أولًا —'));
+    if (!grade) l.append(el('option', { value: '' }, '— اختر الصف —'));
     else if (!avail[sem]) l.append(el('option', { value: '' }, '… جارٍ التحميل'));
     else if (!ls.length) l.append(el('option', { value: '' }, sem === 2 ? 'لم تُسكَّن دروس الفصل الدراسي الثاني بعد' : 'لا توجد دروس متاحة لهذا الصف'));
     ls.forEach((x) => l.append(el('option', { value: x.id, selected: !!cur && x.id === cur.id }, x.title)));
@@ -42,10 +42,15 @@ export function buildLessonPicker(app) {
   async function pick(id, { fresh = false, quiet = false } = {}) {
     const les = C.lessonById(id); if (!les) return;
     const my = ++tk; busy(true); note.className = 'lnote'; note.textContent = '⏳ جارٍ تجهيز أسئلة الدرس…';
-    let r; try { r = await C.lessonContest(les, app.contest, { fresh }); } catch (e) { r = null; }
+    let r, err = null; try { r = await C.lessonContest(les, app.contest, { fresh }); } catch (e) { r = null; err = e; }
     if (my !== tk) return;
     busy(false);
-    if (!r) { note.className = 'lnote warn'; note.textContent = 'تعذّر تحميل أسئلة الدرس. حاول مرة أخرى.'; return; }
+    if (!r) {
+      // لا نحفظ مسابقة فارغة أبدًا عند فشل التحميل، ونوقف «ابدأ السباق» حتى لا يبدأ سباق بأسئلة خاطئة
+      app.ui.setStartBlocked(true); note.className = 'lnote warn'; note.innerHTML = '';
+      note.append(el('span', {}, C.currErrorText(err) + ' '), el('button', { class: 'linkbtn', onclick: () => pick(id, { fresh }) }, '↻ إعادة المحاولة'));
+      return;
+    }
     const saved = C.saveContest(r.c) || r.c;
     app.useContest(saved);
     if (!quiet) toast(r.custom ? `درس «${les.title}» بأسئلتك المعدّلة` : `جاهز: ${AR(app.playableCount(saved))} من أسئلة درس «${les.title}»`);
@@ -73,11 +78,12 @@ export function buildLessonPicker(app) {
     note.textContent = !grade ? 'اختر الصف أولًا.' : sem === 2 ? 'لم يُسكَّن محتوى الفصل الدراسي الثاني بعد — سيظهر هنا تلقائيًا عند إضافته.' : 'لا توجد دروس متاحة لهذا الصف.';
   };
 
-  g.onchange = () => { grade = +g.value; fill(); autoFirst(); };
-  s.onchange = async () => { sem = +s.value; fill(); await ensure(sem); fill(); autoFirst(); };
+  const idxFail = () => { app.ui.setStartBlocked(true); note.className = 'lnote warn'; note.innerHTML = ''; note.append(el('span', {}, C.currErrorText({ status: 401 }) + ' '), el('button', { class: 'linkbtn', onclick: () => { ensure(sem).then(() => { fill(); if (avail[sem]) autoFirst(); else idxFail(); }); } }, '↻ إعادة المحاولة')); };
+  g.onchange = async () => { grade = +g.value; fill(); await ensure(sem); fill(); if (!avail[sem]) return idxFail(); autoFirst(); };
+  s.onchange = async () => { sem = +s.value; fill(); await ensure(sem); fill(); if (!avail[sem]) return idxFail(); if (grade) autoFirst(); };
   l.onchange = () => { if (l.value) pick(l.value); };
 
-  async function ensure(sm) { if (!avail[sm]) avail[sm] = await C.curriculumLessonIds(sm); }
+  async function ensure(sm) { if (!avail[sm]) avail[sm] = await C.curriculumLessonIds(sm); }   // null عند الفشل = يُعاد لاحقًا
 
   /** يطابق القوائم مع المسابقة الحالية (عند فتح اللعبة أو بعد التخصيص أو اختيار مسابقة أخرى) */
   function sync(c) {
